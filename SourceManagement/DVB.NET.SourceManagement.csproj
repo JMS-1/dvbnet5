@@ -11,4 +11,12 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
+  <Target Name="CopyCustomContentOnPublish" AfterTargets="Publish">
+    <Copy SourceFiles="foo.txt" DestinationFolder="$(PublishDir)" />
+  </Target>
+
+  <Target Name="CopyDefaultScanLocations" AfterTargets="AfterBuild">
+    <Copy SourceFiles="ScanLocations/BuiltIn.dss" DestinationFolder="$(OutDir)" />
+  </Target>
+
 </Project>

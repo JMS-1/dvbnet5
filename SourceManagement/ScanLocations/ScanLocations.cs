@@ -175,6 +175,7 @@ namespace JMS.DVB
 
             // Attach to the path of the scan locations
             DirectoryInfo locations = RunTimeLoader.GetDirectory("Scan Locations");
+
             if (locations.Exists)
             {
                 // Get all files
