@@ -15,6 +15,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\DVB.NET.Common.csproj" />
     <ProjectReference Include="..\SourceManagement\DVB.NET.SourceManagement.csproj" />
+    <ProjectReference Include="..\TS\DVB.NET.TS.csproj" />
+    <ProjectReference Include="..\SITables\DVB.NET.SITables.csproj" />
+    <ProjectReference Include="..\EPG\DVB.NET.EPG.csproj" />
+    <ProjectReference Include="..\HardwareAbstraction\DVB.NET.HardwareAbstraction.csproj" />
   </ItemGroup>
   <Target Name="CopyDefaultScanLocations" AfterTargets="AfterBuild">
     <Copy SourceFiles="../SourceManagement/ScanLocations/BuiltIn.dss" DestinationFolder="$(OutDir)" />

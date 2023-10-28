@@ -9,6 +9,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVB.NET.Common", "Common\DV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVBNETTests", "Tests\DVBNETTests.csproj", "{9635864E-6024-4D94-A6DD-FC79FFAACE2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVB.NET.HardwareAbstraction", "HardwareAbstraction\DVB.NET.HardwareAbstraction.csproj", "{A62E60CC-578E-40FE-8F50-F6E802934BE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVB.NET.EPG", "EPG\DVB.NET.EPG.csproj", "{829280F5-5959-4C6D-9A1C-33C5EEEECF20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVB.NET.SITables", "SITables\DVB.NET.SITables.csproj", "{4A67EE8E-0457-48F7-9D6F-AC904E6DD16B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVB.NET.TS", "TS\DVB.NET.TS.csproj", "{59319DBB-D75B-444F-BA3B-4165B2759EC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +35,22 @@ Global
 		{9635864E-6024-4D94-A6DD-FC79FFAACE2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9635864E-6024-4D94-A6DD-FC79FFAACE2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9635864E-6024-4D94-A6DD-FC79FFAACE2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A62E60CC-578E-40FE-8F50-F6E802934BE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A62E60CC-578E-40FE-8F50-F6E802934BE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A62E60CC-578E-40FE-8F50-F6E802934BE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A62E60CC-578E-40FE-8F50-F6E802934BE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{829280F5-5959-4C6D-9A1C-33C5EEEECF20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{829280F5-5959-4C6D-9A1C-33C5EEEECF20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{829280F5-5959-4C6D-9A1C-33C5EEEECF20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{829280F5-5959-4C6D-9A1C-33C5EEEECF20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A67EE8E-0457-48F7-9D6F-AC904E6DD16B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A67EE8E-0457-48F7-9D6F-AC904E6DD16B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A67EE8E-0457-48F7-9D6F-AC904E6DD16B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A67EE8E-0457-48F7-9D6F-AC904E6DD16B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59319DBB-D75B-444F-BA3B-4165B2759EC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59319DBB-D75B-444F-BA3B-4165B2759EC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59319DBB-D75B-444F-BA3B-4165B2759EC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59319DBB-D75B-444F-BA3B-4165B2759EC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
