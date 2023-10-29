@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Collections.Generic;
-
+﻿using System.Reflection;
 
 namespace JMS.DVB
 {
@@ -14,26 +11,6 @@ namespace JMS.DVB
         private const string LegacyAssemblyName = "JMS.DVB.Provider.Legacy";
 
         /// <summary>
-        /// DiSEqC Steuering für die neuere Nova-S Linie.
-        /// </summary>
-        private const string HauppaugeNovaSDiSEqC = "JMS.DVB.Provider.NovaS2.NovaDiSEqC, JMS.DVB.Provider.NovaS2";
-
-        /// <summary>
-        /// DVB-S2 Anwahl für die Nova-HD-S2.
-        /// </summary>
-        private const string HauppaugeNovaS2Modulation = "JMS.DVB.Provider.NovaS2.NovaHDS2Modulation, JMS.DVB.Provider.NovaS2";
-
-        /// <summary>
-        /// Signalinformationen für die Nova-HD-S2.
-        /// </summary>
-        private const string HauppaugeNovaS2Signal = "JMS.DVB.Provider.NovaS2.NovaHDS2Signal, JMS.DVB.Provider.NovaS2";
-
-        /// <summary>
-        /// Die BDA de facto Standardimplementierung für DiSEqC Ansteuerungen.
-        /// </summary>
-        private const string DiSEqCByFrequencyFilter = "JMS.DVB.StandardActions.ByFrequencyFilter, JMS.DVB.HardwareAbstraction";
-
-        /// <summary>
         /// Beschreibt die Abbildung der Abstraktionsklassen vor DVB.NET 4.0 auf die aktuelle Implementierung.
         /// </summary>
         private static readonly Dictionary<string, Type> s_LegacyMapping = new();
@@ -44,24 +21,9 @@ namespace JMS.DVB
         private static readonly Dictionary<string, Func<Profile, Type, Hardware>> s_Translators = new();
 
         /// <summary>
-        /// Alle bekannten DVB.NET 3.9 Sonderimplementierungen für eine DiSEqC Ansteuerung.
-        /// </summary>
-        private static readonly Dictionary<string, string> s_KnownDiSEqCProviders = new();
-
-        /// <summary>
-        /// Alle bekannten DVB.NET 3.9 Sonderimplementierungen für die Entschüsselung über CI/CAM.
-        /// </summary>
-        private static readonly Dictionary<string, string> s_KnownPayTVProviders = new();
-
-        /// <summary>
         /// Die Parameter des Geräteprofils zum Zeitpunkt der Erzeugung der Abstraktion.
         /// </summary>
         internal List<ProfileParameter> EffectiveProfileParameters { get; private set; }
-
-        /// <summary>
-        /// Die Geräteaspekte zum Zeitpunkt der Erzeugung der Abstraktion.
-        /// </summary>
-        internal List<DeviceAspect> EffectiveDeviceAspects { get; private set; }
 
         /// <summary>
         /// Wandelt die Parameter von der alten Darstellung vor DVB.NET 4.0 in die aktuelle Darstellung um.
@@ -69,9 +31,6 @@ namespace JMS.DVB
         /// <returns>Gesetzt, wenn die Umwandlung erfolgreich war.</returns>
         private bool Translate()
         {
-            // Reset copy from profile - will reprocess
-            EffectiveDeviceAspects.Clear();
-
             // Translate parameters
             for (int i = EffectiveProfileParameters.Count; i-- > 0;)
             {
@@ -85,10 +44,6 @@ namespace JMS.DVB
                 // Dispatch
                 switch (setting.Name)
                 {
-                    case "CaptureMoniker": EffectiveDeviceAspects.Add(new DeviceAspect { Aspekt = Aspect_CaptureMoniker, Value = setting.Value }); break;
-                    case "TunerMoniker": EffectiveDeviceAspects.Add(new DeviceAspect { Aspekt = Aspect_TunerMoniker, Value = setting.Value }); break;
-                    case "Capture": EffectiveDeviceAspects.Add(new DeviceAspect { Aspekt = Aspect_CaptureName, Value = setting.Value }); break;
-                    case "Tuner": EffectiveDeviceAspects.Add(new DeviceAspect { Aspekt = Aspect_TunerName, Value = setting.Value }); break;
                     case "Type": break;
                     default: continue;
                 }
@@ -224,21 +179,6 @@ namespace JMS.DVB
                 throw new ArgumentNullException("name");
             else
                 return EffectiveProfileParameters.GetParameter(name);
-        }
-
-        /// <summary>
-        /// Ermittelt einen Geräteparameter.
-        /// </summary>
-        /// <param name="name">Der Name des Parameters.</param>
-        /// <returns>Die gewünschten Informationen.</returns>
-        /// <exception cref="ArgumentNullException">Es wurde kein Name angegeben.</exception>
-        protected string GetDeviceAspect(string name)
-        {
-            // Validate
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException("name");
-            else
-                return EffectiveDeviceAspects.GetDeviceAspect(name);
         }
     }
 }

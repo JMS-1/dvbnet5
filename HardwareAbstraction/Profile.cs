@@ -165,11 +165,8 @@ namespace JMS.DVB
         /// </summary>
         /// <returns>Die neu erzeugte Instanz, die mit <see cref="IDisposable.Dispose"/>
         /// freigegeben werden muss.</returns>
-        public Hardware CreateHardware()
-        {
-            // Forward
-            return Hardware.Create(this, false);
-        }
+        public Hardware CreateHardware() => Hardware.Create(this, false);
+
 
         /// <summary>
         /// Stellt ein temporäres Profil auf ein permanentes um.

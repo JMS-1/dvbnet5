@@ -112,18 +112,20 @@ namespace JMS.DVB.EPG
         /// </summary>
         static Section()
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             // Load all encodings
-            SetEncoding( 0x01, "ISO-8859-5" );
-            SetEncoding( 0x02, "ISO-8859-6" );
-            SetEncoding( 0x03, "ISO-8859-7" );
-            SetEncoding( 0x04, "ISO-8859-8" );
-            SetEncoding( 0x05, "ISO-8859-9" );
-            SetEncoding( 0x06, "ISO-8859-10" );
-            SetEncoding( 0x07, "ISO-8859-11" );
-            SetEncoding( 0x08, "ISO-8859-12" );
-            SetEncoding( 0x09, "ISO-8859-13" );
-            SetEncoding( 0x0a, "ISO-8859-14" );
-            SetEncoding( 0x0b, "ISO-8859-15" );
+            SetEncoding(0x01, "ISO-8859-5");
+            SetEncoding(0x02, "ISO-8859-6");
+            SetEncoding(0x03, "ISO-8859-7");
+            SetEncoding(0x04, "ISO-8859-8");
+            SetEncoding(0x05, "ISO-8859-9");
+            SetEncoding(0x06, "ISO-8859-10");
+            SetEncoding(0x07, "ISO-8859-11");
+            SetEncoding(0x08, "ISO-8859-12");
+            SetEncoding(0x09, "ISO-8859-13");
+            SetEncoding(0x0a, "ISO-8859-14");
+            SetEncoding(0x0b, "ISO-8859-15");
 
             // Fallback
             // Not so easy, may create own ISO-6937 implementation since Microsoft's one is broken
@@ -159,11 +161,11 @@ namespace JMS.DVB.EPG
         /// Meldete eine erweiterte Dekompromierung an.
         /// </summary>
         /// <param name="index">Die laufende Nummer des Algorithmus.</param>
-        /// <param name="encoding">Der gewünschte Algorithmus.</param>
-        static public void RegisterEncoding( byte index, Encoding encoding )
+        /// <param name="encoding">Der gewï¿½nschte Algorithmus.</param>
+        static public void RegisterEncoding(byte index, Encoding encoding)
         {
             // Extend array if necessary
-            Array.Resize( ref m_Encodings, Math.Max( index + 1, m_Encodings.Length ) );
+            Array.Resize(ref m_Encodings, Math.Max(index + 1, m_Encodings.Length));
 
             // Remember
             m_Encodings[index] = encoding;
@@ -181,13 +183,13 @@ namespace JMS.DVB.EPG
         /// </remarks>
         /// <param name="index">The SI code page index.</param>
         /// <param name="name">The related encoding name.</param>
-        static private void SetEncoding( byte index, string name )
+        static private void SetEncoding(byte index, string name)
         {
             // Be safe
             try
             {
                 // Load
-                m_Encodings[index] = Encoding.GetEncoding( name );
+                m_Encodings[index] = Encoding.GetEncoding(name);
             }
             catch
             {
@@ -207,13 +209,13 @@ namespace JMS.DVB.EPG
         /// </remarks>
         /// <param name="index">The SI code page index.</param>
         /// <param name="codepage">The related windows code page.</param>
-        static private void SetEncoding( byte index, int codepage )
+        static private void SetEncoding(byte index, int codepage)
         {
             // Be safe
             try
             {
                 // Load
-                m_Encodings[index] = Encoding.GetEncoding( codepage );
+                m_Encodings[index] = Encoding.GetEncoding(codepage);
             }
             catch
             {
@@ -239,7 +241,7 @@ namespace JMS.DVB.EPG
         /// the first byte for our <see cref="Table"/>.</param>
         /// <param name="length">Number of bytes in our raw data.</param>
         /// <param name="isValid">Set if the <see cref="CRC32"/> checksum could be validated.</param>
-        private Section( byte tableIdentifier, byte flags, bool syntax, byte[] rawData, int offset, int length, bool isValid )
+        private Section(byte tableIdentifier, byte flags, bool syntax, byte[] rawData, int offset, int length, bool isValid)
         {
             // Remember
             TableIdentifier = tableIdentifier;
@@ -252,13 +254,13 @@ namespace JMS.DVB.EPG
             m_RawData = new byte[length];
 
             // Fill helper
-            Array.Copy( rawData, offset, m_RawData, 0, length );
+            Array.Copy(rawData, offset, m_RawData, 0, length);
 
             // Don't try to create table
             if (!IsValid) return;
 
             // Create the table
-            Table = EPG.Table.Create( this );
+            Table = EPG.Table.Create(this);
 
             // Discard
             if (!Table.IsValid) Table = null;
@@ -276,7 +278,7 @@ namespace JMS.DVB.EPG
         /// the raw data for the section. If a <see cref="Section"/> is reported
         /// it may have <see cref="Section.IsValid"/> unset to indicated that
         /// the <see cref="CRC32"/> validation failed.</returns>
-        static internal Section Create( byte[] buffer, int offset, int length, Parser parser )
+        static internal Section Create(byte[] buffer, int offset, int length, Parser parser)
         {
             // Check for the minimum size
             if (length < 7)
@@ -311,10 +313,10 @@ namespace JMS.DVB.EPG
             // Do the check - there are tables with no CRC support
             if (tableIdentifier != 0x70)
                 if (tableIdentifier != 0x71)
-                    crcOK = CRC32.CheckCRC( buffer, offset, 3 + size );
+                    crcOK = CRC32.CheckCRC(buffer, offset, 3 + size);
 
             // Create the new section
-            return new Section( tableIdentifier, (byte) (flags & 0xf0), syntax, buffer, offset + 3, size, crcOK );
+            return new Section(tableIdentifier, (byte)(flags & 0xf0), syntax, buffer, offset + 3, size, crcOK);
         }
 
         /// <summary>
@@ -344,13 +346,13 @@ namespace JMS.DVB.EPG
         /// maximum value allowed is <see cref="Length"/> <i>- 4</i>.</param>
         /// <param name="bytes">Number of bytes to return.</param>
         /// <returns>A copy of the indicated range.</returns>
-        public byte[] ReadBytes( int offset, int bytes )
+        public byte[] ReadBytes(int offset, int bytes)
         {
             // Create
             byte[] ret = new byte[bytes];
 
             // Fill
-            Array.Copy( m_RawData, offset, ret, 0, bytes );
+            Array.Copy(m_RawData, offset, ret, 0, bytes);
 
             // Report
             return ret;
@@ -360,13 +362,13 @@ namespace JMS.DVB.EPG
         /// Kopiert Rohdaten in ein Feld.
         /// </summary>
         /// <param name="offset">Erstes Byte in den Rohdaten, das kopiert werden soll.</param>
-        /// <param name="target">Das Zielfeld, das befüllt werden soll.</param>
+        /// <param name="target">Das Zielfeld, das befï¿½llt werden soll.</param>
         /// <param name="targetOffset">Das erste Byte im Zielfeld, das beschrieben werden soll.</param>
         /// <param name="bytes">Die Anzahl der zu kopierenden Bytes.</param>
-        public void CopyBytes( int offset, byte[] target, int targetOffset, int bytes )
+        public void CopyBytes(int offset, byte[] target, int targetOffset, int bytes)
         {
             // Fill
-            Array.Copy( m_RawData, offset, target, targetOffset, bytes );
+            Array.Copy(m_RawData, offset, target, targetOffset, bytes);
         }
 
         /// <summary>
@@ -378,10 +380,10 @@ namespace JMS.DVB.EPG
         /// maximum value allowed is <see cref="Length"/> <i>- 4</i>.</param>
         /// <param name="bytes">Number of characters to read.</param>
         /// <returns>The corresponding <see cref="string"/>.</returns>
-        public string ReadString( int offset, int bytes )
+        public string ReadString(int offset, int bytes)
         {
             // The fast way
-            return ReadEncodedString( Encoding.ASCII, offset, bytes, false );
+            return ReadEncodedString(Encoding.ASCII, offset, bytes, false);
         }
 
         /// <summary>
@@ -397,10 +399,10 @@ namespace JMS.DVB.EPG
         /// maximum value allowed is <see cref="Length"/> <i>- 4</i>.</param>
         /// <param name="bytes">Number of characters to read.</param>
         /// <returns>The corresponding <see cref="string"/>.</returns>
-        public string ReadEncodedString( int offset, int bytes )
+        public string ReadEncodedString(int offset, int bytes)
         {
             // Forward
-            return ReadEncodedString( offset, bytes, false );
+            return ReadEncodedString(offset, bytes, false);
         }
 
         /// <summary>
@@ -413,17 +415,17 @@ namespace JMS.DVB.EPG
         /// <param name="removeSpecial">Set to remove control characters instead
         /// of replacing it by blanks.</param>
         /// <returns>The corresponding <see cref="string"/>.</returns>
-        public string ReadEncodedString( Encoding encoding, int offset, int bytes, bool removeSpecial )
+        public string ReadEncodedString(Encoding encoding, int offset, int bytes, bool removeSpecial)
         {
             // Check for custom encoder
             if (encoding is ICustomEncoder)
             {
                 // Forward as is - encoder must do it all
-                return encoding.GetString( m_RawData, offset, bytes );
+                return encoding.GetString(m_RawData, offset, bytes);
             }
 
             // Allocate buffer
-            List<byte> scratch = new List<byte>( bytes );
+            List<byte> scratch = new List<byte>(bytes);
 
             // Process all
             while (bytes-- > 0)
@@ -435,23 +437,23 @@ namespace JMS.DVB.EPG
                 if (0x8a == ch)
                 {
                     // Line feed
-                    scratch.Add( 0x0a );
-                    scratch.Add( 0x0d );
+                    scratch.Add(0x0a);
+                    scratch.Add(0x0d);
                 }
                 else if (((ch >= 0x00) && (ch <= 0x1f)) || ((ch >= 0x80) && (ch <= 0x9f)))
                 {
                     // Control
-                    if (!removeSpecial) scratch.Add( 0x20 );
+                    if (!removeSpecial) scratch.Add(0x20);
                 }
                 else
                 {
                     // As is
-                    scratch.Add( ch );
+                    scratch.Add(ch);
                 }
             }
 
             // Process
-            return encoding.GetString( scratch.ToArray() );
+            return encoding.GetString(scratch.ToArray());
         }
 
         /// <summary>
@@ -469,7 +471,7 @@ namespace JMS.DVB.EPG
         /// <param name="removeSpecial">Set to remove control characters instead
         /// of replacing it by blanks.</param>
         /// <returns>The corresponding <see cref="string"/>.</returns>
-        public string ReadEncodedString( int offset, int bytes, bool removeSpecial )
+        public string ReadEncodedString(int offset, int bytes, bool removeSpecial)
         {
             // No data
             if (bytes < 1)
@@ -493,14 +495,14 @@ namespace JMS.DVB.EPG
             int delta = (cpid < m_Encodings.Length) ? 1 : 0;
 
             // Forward
-            return ReadEncodedString( enc, offset + delta, bytes - delta, removeSpecial );
+            return ReadEncodedString(enc, offset + delta, bytes - delta, removeSpecial);
         }
 
         /// <summary>
-        /// Erzeugt eine vollständige SI Tabelle, die in eine TS Datei einflissen kann. Das
+        /// Erzeugt eine vollstï¿½ndige SI Tabelle, die in eine TS Datei einflissen kann. Das
         /// erste Byte ist immer 0 und beschreibt den Offset.
         /// </summary>
-        /// <returns>Datenfeld zur SI Tabelle oder <i>null</i>, wenn diese Instanz ungültig ist.</returns>
+        /// <returns>Datenfeld zur SI Tabelle oder <i>null</i>, wenn diese Instanz ungï¿½ltig ist.</returns>
         public byte[] CreateSITable()
         {
             // Not possible
@@ -510,24 +512,24 @@ namespace JMS.DVB.EPG
             byte[] table = new byte[1 + 3 + m_RawData.Length];
 
             // Stuff in data
-            m_RawData.CopyTo( table, 1 + 3 );
+            m_RawData.CopyTo(table, 1 + 3);
 
             // Update the size
             table[1] = TableIdentifier;
-            table[2] = (byte) (m_Flags | (m_RawData.Length >> 8));
-            table[3] = (byte) (m_RawData.Length & 0xff);
+            table[2] = (byte)(m_Flags | (m_RawData.Length >> 8));
+            table[3] = (byte)(m_RawData.Length & 0xff);
 
             // Recalculate CRC
-            uint crc32 = CRC32.GetCRC( table, 1, table.Length - 5 );
+            uint crc32 = CRC32.GetCRC(table, 1, table.Length - 5);
 
             // At the very end
             int crcIndex = table.Length;
 
             // Fill in
-            table[--crcIndex] = (byte) (crc32 & 0xff);
-            table[--crcIndex] = (byte) ((crc32 >> 8) & 0xff);
-            table[--crcIndex] = (byte) ((crc32 >> 16) & 0xff);
-            table[--crcIndex] = (byte) (crc32 >> 24);
+            table[--crcIndex] = (byte)(crc32 & 0xff);
+            table[--crcIndex] = (byte)((crc32 >> 8) & 0xff);
+            table[--crcIndex] = (byte)((crc32 >> 16) & 0xff);
+            table[--crcIndex] = (byte)(crc32 >> 24);
 
             // Report
             return table;

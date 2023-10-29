@@ -1,4 +1,6 @@
-﻿using JMS.DVB.TS;
+﻿using JMS.DVB.DeviceAccess.Interfaces;
+using JMS.DVB.TS;
+using JMS.TechnoTrend;
 using System.Collections;
 using System.Diagnostics;
 using System.Net.Sockets;
@@ -6,25 +8,23 @@ using System.Runtime.InteropServices;
 
 namespace JMS.DVB.Provider.Ubuntu
 {
-    public class DeviceProvider
+    public class DeviceProvider : ILegacyDevice
     {
         private readonly string m_server;
 
         private readonly int m_port;
 
-        private TcpClient m_connection;
+        private TcpClient? m_connection;
 
-        private readonly object m_lock = new object();
-
-        private TSParser m_parser = new TSParser(true);
+        private TSParser m_parser = new(true);
 
         public DeviceProvider(Hashtable args)
         {
-            m_server = (string)args["Adapter.Server"];
-            m_port = ArgumentToNumber(args["Adapter.Port"], 29713);
+            m_server = (string)args["Adapter.Server"]!;
+            m_port = ArgumentToNumber(args["Adapter.Port"]!, 29713);
         }
 
-        private static int ArgumentToNumber(object arg, int fallback = 0)
+        private static int ArgumentToNumber(object arg, int fallback)
         {
             if (int.TryParse((string)arg, out int number))
                 return number;
@@ -43,7 +43,7 @@ namespace JMS.DVB.Provider.Ubuntu
             try
             {
                 Marshal.WriteInt32(bufptr.AddrOfPinnedObject() + 0, (Int32)type);
-                Marshal.StructureToPtr(data, bufptr.AddrOfPinnedObject() + 4, true);
+                Marshal.StructureToPtr(data!, bufptr.AddrOfPinnedObject() + 4, true);
             }
             finally
             {
@@ -57,7 +57,7 @@ namespace JMS.DVB.Provider.Ubuntu
         {
             try
             {
-                m_connection.GetStream().Write(buf, 0, buf.Length);
+                m_connection!.GetStream().Write(buf, 0, buf.Length);
             }
             catch (Exception e)
             {
@@ -106,22 +106,20 @@ namespace JMS.DVB.Provider.Ubuntu
 
 
 
-        private void StartReader(object state)
+        private void StartReader(object? state)
         {
             var buffer = new byte[180000];
 
             try
             {
-                var stream = m_connection.GetStream();
+                var stream = m_connection!.GetStream();
 
                 for (; ; )
                 {
                     var read = stream.Read(buffer, 0, buffer.Length);
 
                     if (read <= 0)
-                    {
                         return;
-                    }
 
                     m_parser.AddPayload(buffer, 0, read);
                 }
@@ -158,16 +156,13 @@ namespace JMS.DVB.Provider.Ubuntu
         private void Close()
         {
             using (m_parser)
-            {
                 m_parser = new TSParser(true);
-            }
 
 
             if (m_connection == null)
                 return;
 
             using (m_connection)
-            {
                 try
                 {
                     m_connection.Close();
@@ -176,15 +171,12 @@ namespace JMS.DVB.Provider.Ubuntu
                 {
                     m_connection = null;
                 }
-            }
         }
 
         public void StopFilters()
         {
             using (m_parser)
-            {
                 m_parser = new TSParser(true);
-            }
 
             if (m_connection != null)
                 SendRequest(FrontendRequestType.del_all_filters);
@@ -192,96 +184,66 @@ namespace JMS.DVB.Provider.Ubuntu
 
         private static DiSEqCModes ConvertDiSEqC(DiSEqCLocations location)
         {
-            switch (location)
+            return location switch
             {
-                case DiSEqCLocations.BurstOff:
-                    return DiSEqCModes.burst_off;
-                case DiSEqCLocations.BurstOn:
-                    return DiSEqCModes.burst_on;
-                case DiSEqCLocations.DiSEqC1:
-                    return DiSEqCModes.diseqc1;
-                case DiSEqCLocations.DiSEqC2:
-                    return DiSEqCModes.diseqc2;
-                case DiSEqCLocations.DiSEqC3:
-                    return DiSEqCModes.diseqc3;
-                case DiSEqCLocations.DiSEqC4:
-                    return DiSEqCModes.diseqc4;
-                default:
-                    return DiSEqCModes.none;
-            }
+                DiSEqCLocations.BurstOff => DiSEqCModes.burst_off,
+                DiSEqCLocations.BurstOn => DiSEqCModes.burst_on,
+                DiSEqCLocations.DiSEqC1 => DiSEqCModes.diseqc1,
+                DiSEqCLocations.DiSEqC2 => DiSEqCModes.diseqc2,
+                DiSEqCLocations.DiSEqC3 => DiSEqCModes.diseqc3,
+                DiSEqCLocations.DiSEqC4 => DiSEqCModes.diseqc4,
+                _ => DiSEqCModes.none,
+            };
         }
 
         private static FeModulation ConvertModulation(SatelliteModulations modulation)
         {
-            switch (modulation)
+            return modulation switch
             {
-                case SatelliteModulations.Auto:
-                    return FeModulation.QAM_AUTO;
-                case SatelliteModulations.PSK8:
-                    return FeModulation.PSK_8;
-                case SatelliteModulations.QAM16:
-                    return FeModulation.QAM_16;
-                default:
-                    return FeModulation.QPSK;
-            }
+                SatelliteModulations.Auto => FeModulation.QAM_AUTO,
+                SatelliteModulations.PSK8 => FeModulation.PSK_8,
+                SatelliteModulations.QAM16 => FeModulation.QAM_16,
+                _ => FeModulation.QPSK,
+            };
         }
 
         private static FeCodeRate ConvertCodeRate(InnerForwardErrorCorrectionModes modulation)
         {
-            switch (modulation)
+            return modulation switch
             {
-                case InnerForwardErrorCorrectionModes.Conv1_2:
-                    return FeCodeRate.FEC_1_2;
-                case InnerForwardErrorCorrectionModes.Conv2_3:
-                    return FeCodeRate.FEC_2_3;
-                case InnerForwardErrorCorrectionModes.Conv3_4:
-                    return FeCodeRate.FEC_3_4;
-                case InnerForwardErrorCorrectionModes.Conv3_5:
-                    return FeCodeRate.FEC_3_5;
-                case InnerForwardErrorCorrectionModes.Conv4_5:
-                    return FeCodeRate.FEC_4_5;
-                case InnerForwardErrorCorrectionModes.Conv5_6:
-                    return FeCodeRate.FEC_5_6;
-                case InnerForwardErrorCorrectionModes.Conv7_8:
-                    return FeCodeRate.FEC_7_8;
-                case InnerForwardErrorCorrectionModes.Conv8_9:
-                    return FeCodeRate.FEC_8_9;
-                case InnerForwardErrorCorrectionModes.Conv9_10:
-                    return FeCodeRate.FEC_9_10;
-                case InnerForwardErrorCorrectionModes.NoConv:
-                    return FeCodeRate.FEC_NONE;
-                default:
-                    return FeCodeRate.FEC_AUTO;
-            }
+                InnerForwardErrorCorrectionModes.Conv1_2 => FeCodeRate.FEC_1_2,
+                InnerForwardErrorCorrectionModes.Conv2_3 => FeCodeRate.FEC_2_3,
+                InnerForwardErrorCorrectionModes.Conv3_4 => FeCodeRate.FEC_3_4,
+                InnerForwardErrorCorrectionModes.Conv3_5 => FeCodeRate.FEC_3_5,
+                InnerForwardErrorCorrectionModes.Conv4_5 => FeCodeRate.FEC_4_5,
+                InnerForwardErrorCorrectionModes.Conv5_6 => FeCodeRate.FEC_5_6,
+                InnerForwardErrorCorrectionModes.Conv7_8 => FeCodeRate.FEC_7_8,
+                InnerForwardErrorCorrectionModes.Conv8_9 => FeCodeRate.FEC_8_9,
+                InnerForwardErrorCorrectionModes.Conv9_10 => FeCodeRate.FEC_9_10,
+                InnerForwardErrorCorrectionModes.NoConv => FeCodeRate.FEC_NONE,
+                _ => FeCodeRate.FEC_AUTO,
+            };
         }
 
         private static FeRolloff ConvertRolloff(S2RollOffs modulation)
         {
-            switch (modulation)
+            return modulation switch
             {
-                case S2RollOffs.Alpha20:
-                    return FeRolloff.ROLLOFF_20;
-                case S2RollOffs.Alpha25:
-                    return FeRolloff.ROLLOFF_25;
-                case S2RollOffs.Alpha35:
-                    return FeRolloff.ROLLOFF_35;
-                default:
-                    return FeRolloff.ROLLOFF_AUTO;
-            }
+                S2RollOffs.Alpha20 => FeRolloff.ROLLOFF_20,
+                S2RollOffs.Alpha25 => FeRolloff.ROLLOFF_25,
+                S2RollOffs.Alpha35 => FeRolloff.ROLLOFF_35,
+                _ => FeRolloff.ROLLOFF_AUTO,
+            };
         }
 
         public void Tune(SourceGroup group, GroupLocation location)
         {
             StopFilters();
 
-            var satGroup = group as SatelliteGroup;
-
-            if (satGroup == null)
+            if (group is not SatelliteGroup satGroup)
                 return;
 
-            var satLocation = location as SatelliteLocation;
-
-            if (satLocation == null)
+            if (location is not SatelliteLocation satLocation)
                 return;
 
             var tune = new SatelliteTune
@@ -303,10 +265,7 @@ namespace JMS.DVB.Provider.Ubuntu
             SendRequest(FrontendRequestType.tune, tune);
         }
 
-        public void SetVideoAudio(ushort videoPID, ushort audioPID)
-        {
-            Open();
-        }
+        public void SetVideoAudio(ushort videoPID, ushort audioPID) => Open();
 
         public void StartSectionFilter(ushort pid, Action<byte[]> callback, byte[] filterData, byte[] filterMask)
         {
@@ -338,10 +297,7 @@ namespace JMS.DVB.Provider.Ubuntu
         {
         }
 
-        public override string ToString()
-        {
-            return string.Format("Ubuntu DVB Proxy to {0}:{1}", m_server, m_port);
-        }
+        public override string ToString() => string.Format("Ubuntu DVB Proxy to {0}:{1}", m_server, m_port);
 
         public void WakeUp()
         {
@@ -353,6 +309,7 @@ namespace JMS.DVB.Provider.Ubuntu
 
             Close();
         }
-    }
 
+        public SignalStatus SignalStatus { get; private set; } = new SignalStatus(true, 0, 0);
+    }
 }
