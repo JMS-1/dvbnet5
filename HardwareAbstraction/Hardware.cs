@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using JMS.DVB.SI;
 
-
 namespace JMS.DVB
 {
     /// <summary>

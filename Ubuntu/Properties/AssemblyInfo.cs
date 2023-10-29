@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 
 //
@@ -6,12 +6,12 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("DVB.NET TS Library")]
-[assembly: AssemblyDescription("Transport Stream Generator for DVB.NET")]
+[assembly: AssemblyTitle("DVB.NET Provider for Ubuntu DVB Proxy")]
+[assembly: AssemblyDescription("TCP/IP Connector to Ubuntu DVB.NET DVB-S Proxy Server")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("JMS")]
 [assembly: AssemblyProduct("DVB.NET")]
-[assembly: AssemblyCopyright("Copyright � 2003-15")]
+[assembly: AssemblyCopyright("Copyright © 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

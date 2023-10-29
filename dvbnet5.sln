@@ -17,6 +17,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVB.NET.SITables", "SITable
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVB.NET.TS", "TS\DVB.NET.TS.csproj", "{59319DBB-D75B-444F-BA3B-4165B2759EC6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVB.NET.Ubuntu", "Ubuntu\DVB.NET.Ubuntu.csproj", "{1258A466-54ED-44E8-A88B-A099592800D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVB.NET.DVBNETLegacy", "DVBNETLegacy\DVB.NET.DVBNETLegacy.csproj", "{3C4033A6-516C-47E9-8DDE-11087387CA5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVB.NET.DeviceAccess", "DeviceAccess\DVB.NET.DeviceAccess.csproj", "{997D3824-D63A-45A5-8F1E-27695A04735B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +57,18 @@ Global
 		{59319DBB-D75B-444F-BA3B-4165B2759EC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59319DBB-D75B-444F-BA3B-4165B2759EC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59319DBB-D75B-444F-BA3B-4165B2759EC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1258A466-54ED-44E8-A88B-A099592800D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1258A466-54ED-44E8-A88B-A099592800D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1258A466-54ED-44E8-A88B-A099592800D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1258A466-54ED-44E8-A88B-A099592800D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C4033A6-516C-47E9-8DDE-11087387CA5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C4033A6-516C-47E9-8DDE-11087387CA5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C4033A6-516C-47E9-8DDE-11087387CA5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C4033A6-516C-47E9-8DDE-11087387CA5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{997D3824-D63A-45A5-8F1E-27695A04735B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{997D3824-D63A-45A5-8F1E-27695A04735B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{997D3824-D63A-45A5-8F1E-27695A04735B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{997D3824-D63A-45A5-8F1E-27695A04735B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

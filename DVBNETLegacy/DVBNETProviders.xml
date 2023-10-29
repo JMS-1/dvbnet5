@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<DVBNETProviders SchemaVersion="3.9">
+  <DVBNETProvider id="Ubuntu Proxy">
+    <CardNames>
+      <CardName>Ubuntu DVB-S2</CardName>
+    </CardNames>
+    <Driver>JMS.DVB.Provider.Ubuntu.DeviceProvider, JMS.DVB.Provider.Ubuntu</Driver>
+    <FilterLimit>200</FilterLimit>
+    <VideoDisplay>
+      <AsChild>true</AsChild>
+    </VideoDisplay>
+    <Decryption />
+    <Parameters>
+      <Adapter.Server editor="JMS.DVB.DeviceAccess.Editors.FreeText, JMS.DVB.DeviceAccess"></Adapter.Server>
+      <Adapter.Port editor="JMS.DVB.DeviceAccess.Editors.DeviceIndex, JMS.DVB.DeviceAccess">29713</Adapter.Port>
+      <Adapter.WakeupMAC editor="JMS.DVB.DeviceAccess.Editors.FreeText, JMS.DVB.DeviceAccess"></Adapter.WakeupMAC>
+      <Adapter.WakeupSubnet editor="JMS.DVB.DeviceAccess.Editors.FreeText, JMS.DVB.DeviceAccess"></Adapter.WakeupSubnet>
+    </Parameters>
+  </DVBNETProvider>
+</DVBNETProviders>
