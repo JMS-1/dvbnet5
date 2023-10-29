@@ -167,10 +167,8 @@ namespace JMS.DVB
         /// freigegeben werden muss.</returns>
         public Hardware CreateHardware()
         {
-            throw new NotImplementedException("CreateHardware");
-
             // Forward
-            //return Hardware.Create(this, false);
+            return Hardware.Create(this, false);
         }
 
         /// <summary>

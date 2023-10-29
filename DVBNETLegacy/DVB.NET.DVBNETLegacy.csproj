@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HardwareAbstraction\DVB.NET.HardwareAbstraction.csproj" />
-    <ProjectReference Include="..\DeviceAccess\DVB.NET.DeviceAccess.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
