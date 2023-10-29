@@ -8,40 +8,69 @@ using System.Runtime.InteropServices;
 
 namespace JMS.DVB.Provider.Ubuntu
 {
+    /// <summary>
+    /// Device provider using the DVB.NET Linux proxy TCP protocol.
+    /// </summary>
     public class DeviceProvider : ILegacyDevice
     {
+        /// <summary>
+        /// Name of IP of the server to 
+        /// </summary>
         private readonly string m_server;
 
+        /// <summary>
+        /// TCP port to connect to.
+        /// </summary>
         private readonly int m_port;
 
+        /// <summary>
+        /// The active connection to the proxy.
+        /// </summary>
         private TcpClient? m_connection;
 
+        /// <summary>
+        /// The transport stream analyser for the connection.
+        /// </summary>
         private TSParser m_parser = new(true);
 
+        /// <summary>
+        /// Initialize a new provider instance.
+        /// </summary>
+        /// <param name="args">Configuration of the connection.</param>
         public DeviceProvider(Hashtable args)
         {
             m_server = (string)args["Adapter.Server"]!;
             m_port = ArgumentToNumber(args["Adapter.Port"]!, 29713);
         }
 
-        private static int ArgumentToNumber(object arg, int fallback)
-        {
-            if (int.TryParse((string)arg, out int number))
-                return number;
+        /// <summary>
+        /// Take a configuration parameter and try to make it a number.
+        /// </summary>
+        /// <param name="arg">Value if applicable - may be null.</param>
+        /// <param name="fallback">Default number to use.</param>
+        /// <returns>The number from the configuration or the default.</returns>
+        private static int ArgumentToNumber(object arg, int fallback) =>
+           int.TryParse((string)arg, out int number) ? number : fallback;
 
-            return fallback;
-        }
-
+        /// <summary>
+        /// Send a request with a opaque data block.
+        /// </summary>
+        /// <typeparam name="TData">Type of the data.</typeparam>
+        /// <param name="type">Command to send.</param>
+        /// <param name="data">Data for the command.</param>
         private void SendRequest<TData>(FrontendRequestType type, TData data)
         {
+            /* Must be connected. */
             Open();
 
+            /* Allocate a buffer for command and data. */
             var size = 4 + Marshal.SizeOf(data);
             var buf = new byte[size];
             var bufptr = GCHandle.Alloc(buf, GCHandleType.Pinned);
 
             try
             {
+                /* Pack it into memory. */
                 Marshal.WriteInt32(bufptr.AddrOfPinnedObject() + 0, (Int32)type);
                 Marshal.StructureToPtr(data!, bufptr.AddrOfPinnedObject() + 4, true);
             }
@@ -50,9 +79,14 @@ namespace JMS.DVB.Provider.Ubuntu
                 bufptr.Free();
             }
 
+            /* Send packed byte data. */
             SafeWrite(buf);
         }
 
+        /// <summary>
+        /// Send a byte block of data to the device.
+        /// </summary>
+        /// <param name="buf">The data to send.</param>
         private void SafeWrite(byte[] buf)
         {
             try
@@ -61,19 +95,28 @@ namespace JMS.DVB.Provider.Ubuntu
             }
             catch (Exception e)
             {
+                /* Currently errors are ignored. */
                 Debug.WriteLine("Failed to send request: {0}", e);
             }
         }
 
-        private void SendRequest(FrontendRequestType type, UInt16 data)
+        /// <summary>
+        /// Send a number to the device.
+        /// </summary>
+        /// <param name="type">Command to send to the device.</param>
+        /// <param name="data">Number to send - typically a stream identifier.</param>
+        private void SendRequest(FrontendRequestType type, ushort data)
         {
+            /* Must be connected. */
             Open();
 
+            /* Allocate a buffer with command and number. */
             var buf = new byte[6];
             var bufptr = GCHandle.Alloc(buf, GCHandleType.Pinned);
 
             try
             {
+                /* Pack the data. */
                 Marshal.WriteInt32(bufptr.AddrOfPinnedObject() + 0, (Int32)type);
                 Marshal.WriteInt16(bufptr.AddrOfPinnedObject() + 4, (Int16)data);
             }
@@ -82,13 +125,20 @@ namespace JMS.DVB.Provider.Ubuntu
                 bufptr.Free();
             }
 
+            /* Send the packed data to the device. */
             SafeWrite(buf);
         }
 
+        /// <summary>
+        /// Send a command to the device.
+        /// </summary>
+        /// <param name="type">Command to send.</param>
         private void SendRequest(FrontendRequestType type)
         {
+            /* Must be connected. */
             Open();
 
+            /* Pack the command into memory. */
             var buf = new byte[4];
             var bufptr = GCHandle.Alloc(buf, GCHandleType.Pinned);
 
@@ -101,67 +151,88 @@ namespace JMS.DVB.Provider.Ubuntu
                 bufptr.Free();
             }
 
+            /* Send the packed data to the device. */
             SafeWrite(buf);
         }
 
-
-
+        /// <summary>
+        /// Process data from the device.
+        /// </summary>
+        /// <param name="state">Will be ignored.</param>
         private void StartReader(object? state)
         {
             var buffer = new byte[180000];
 
             try
             {
+                /* Attach to the incoming data stream. */
                 var stream = m_connection!.GetStream();
 
                 for (; ; )
                 {
+                    /* Read the next chunk. */
                     var read = stream.Read(buffer, 0, buffer.Length);
 
                     if (read <= 0)
                         return;
 
+                    /* Let the transport stream parser inspect the raw data, */
                     m_parser.AddPayload(buffer, 0, read);
                 }
             }
             catch (Exception)
             {
+                /* In case of error abort reading from the connection. */
                 return;
             }
         }
 
+        /// <summary>
+        /// Open a connection to the device.
+        /// </summary>
         private void Open()
         {
+            /* Must be done only once. */
             if (m_connection != null)
                 return;
 
+            /* Create the raw TCP connection. */
             m_connection = new TcpClient { ReceiveBufferSize = 10 * 1024 * 1024 };
 
             try
             {
+                /* Connect to the device. */
                 m_connection.Connect(m_server, m_port);
 
+                /* Start the stream analyser process. */
                 ThreadPool.QueueUserWorkItem(StartReader);
 
+                /* Reserve the next free hardware. */
                 SendRequest(FrontendRequestType.connect_adapter);
             }
             catch (Exception)
             {
+                /* Disconnect in case of any error. */
                 Close();
 
                 throw;
             }
         }
 
+        /// <summary>
+        /// Disconnection from the device.
+        /// </summary>
         private void Close()
         {
+            /* Create a new parser. */
             using (m_parser)
                 m_parser = new TSParser(true);
 
-
+            /* Already closed. */
             if (m_connection == null)
                 return;
 
+            /* Get rid of the physical TCP connection. */
             using (m_connection)
                 try
                 {
@@ -173,15 +244,25 @@ namespace JMS.DVB.Provider.Ubuntu
                 }
         }
 
+        /// <summary>
+        /// Stop all filters.
+        /// </summary>
         public void StopFilters()
         {
+            /* Reset the parser. */
             using (m_parser)
                 m_parser = new TSParser(true);
 
+            /* Let the device stop all filters. */
             if (m_connection != null)
                 SendRequest(FrontendRequestType.del_all_filters);
         }
 
+        /// <summary>
+        /// Get the DiSEqC mode in protocol representation.
+        /// </summary>
+        /// <param name="location">DiSEqC mode in DVB.NET representation.</param>
+        /// <returns>DiSEqC mode in protocol representation.</returns>
         private static DiSEqCModes ConvertDiSEqC(DiSEqCLocations location)
         {
             return location switch
@@ -196,6 +277,11 @@ namespace JMS.DVB.Provider.Ubuntu
             };
         }
 
+        /// <summary>
+        /// Get the error correction in protocol representation.
+        /// </summary>
+        /// <param name="location">Error correction in DVB.NET representation.</param>
+        /// <returns>Error correction in protocol representation.</returns>
         private static FeModulation ConvertModulation(SatelliteModulations modulation)
         {
             return modulation switch
@@ -207,6 +293,11 @@ namespace JMS.DVB.Provider.Ubuntu
             };
         }
 
+        /// <summary>
+        /// Get the code rate in protocol representation.
+        /// </summary>
+        /// <param name="location">Code rate in DVB.NET representation.</param>
+        /// <returns>Code rate in protocol representation.</returns>
         private static FeCodeRate ConvertCodeRate(InnerForwardErrorCorrectionModes modulation)
         {
             return modulation switch
@@ -225,6 +316,11 @@ namespace JMS.DVB.Provider.Ubuntu
             };
         }
 
+        /// <summary>
+        /// Get the roll off in protocol representation.
+        /// </summary>
+        /// <param name="location">Roll off in DVB.NET representation.</param>
+        /// <returns>Roll off in protocol representation.</returns>
         private static FeRolloff ConvertRolloff(S2RollOffs modulation)
         {
             return modulation switch
@@ -236,16 +332,24 @@ namespace JMS.DVB.Provider.Ubuntu
             };
         }
 
+        /// <summary>
+        /// Tune the device.
+        /// </summary>
+        /// <param name="group">Transponder to use.</param>
+        /// <param name="location">Dish to use.</param>
         public void Tune(SourceGroup group, GroupLocation location)
         {
+            /* Stop all current filters. */
             StopFilters();
 
+            /* Currently proxy only supports DVB-S2 devices. */
             if (group is not SatelliteGroup satGroup)
                 return;
 
             if (location is not SatelliteLocation satLocation)
                 return;
 
+            /* Send a tune request to the proxy. */
             var tune = new SatelliteTune
             {
                 frequency = satGroup.Frequency,
@@ -265,51 +369,103 @@ namespace JMS.DVB.Provider.Ubuntu
             SendRequest(FrontendRequestType.tune, tune);
         }
 
+        /// <summary>
+        /// Enable video and audio reception.
+        /// </summary>
+        /// <param name="videoPID">Video stream identifier, will be ignored.</param>
+        /// <param name="audioPID">Audi stream identifier, will be ignored.</param>
         public void SetVideoAudio(ushort videoPID, ushort audioPID) => Open();
 
+        /// <summary>
+        /// Create a section filter.
+        /// </summary>
+        /// <param name="pid">Stream identifier of the section.</param>
+        /// <param name="callback">Will be called when section data is received.</param>
+        /// <param name="filterData">Section filter.</param>
+        /// <param name="filterMask">Section filter mask.</param>
         public void StartSectionFilter(ushort pid, Action<byte[]> callback, byte[] filterData, byte[] filterMask)
         {
+            /* Remember filter. */
             m_parser.SetFilter(pid, true, callback);
 
+            /* Activate filter on device. */
             SendRequest(FrontendRequestType.add_filter, pid);
         }
 
+        /// <summary>
+        /// Register a stream filter.
+        /// </summary>
+        /// <param name="pid">The stream identifier.</param>
+        /// <param name="video">Set for video streams - will be ignored.</param>
+        /// <param name="smallBuffer">Set to use small buffers - will be ignored.</param>
+        /// <param name="callback">Call whenever data is available.</param>
         public void RegisterPipingFilter(ushort pid, bool video, bool smallBuffer, Action<byte[]> callback)
         {
+            /* Remember filter. */
             m_parser.SetFilter(pid, false, callback);
 
+            /* Activate filter on device. */
             SendRequest(FrontendRequestType.add_filter, pid);
         }
 
+        /// <summary>
+        /// Start filter - will do nothing, filters are always active.
+        /// </summary>
+        /// <param name="pid">Stream identifier.</param>
         public void StartFilter(ushort pid)
         {
         }
 
+        /// <summary>
+        /// Terminate a filter.
+        /// </summary>
+        /// <param name="pid">Stream identifier.</param>
         public void StopFilter(ushort pid)
         {
+            /* Unregister from parser. */
             m_parser.RemoveFilter(pid);
 
+            /* Tell the device that the stream is no longer needed. */
             if (m_connection != null)
                 SendRequest(FrontendRequestType.del_filter, pid);
         }
 
+        /// <summary>
+        /// Decrypt a station - not supported.
+        /// </summary>
+        /// <param name="station">Station identifier.</param>
         public void Decrypt(ushort? station)
         {
         }
 
+        /// <summary>
+        /// Create a string represenation for this instance.
+        /// </summary>
+        /// <returns>The server and port used to connect to the device.</returns>
         public override string ToString() => string.Format("Ubuntu DVB Proxy to {0}:{1}", m_server, m_port);
 
+        /// <summary>
+        /// Wakeup the device after resume - does nothing.
+        /// </summary>
         public void WakeUp()
         {
         }
 
+        /// <summary>
+        /// Terminate the use of this instance.
+        /// </summary>
         public virtual void Dispose()
         {
+            /* Stop all filters. */
             StopFilters();
 
+            /* Terminate the TCP connection. */
             Close();
         }
 
+        /// <summary>
+        /// Report the signal status - not implemented.
+        /// </summary>
         public SignalStatus SignalStatus { get; private set; } = new SignalStatus(true, 0, 0);
     }
 }
