@@ -2,6 +2,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CardServerCore\JMS.DVB.NET.CardServerCore.csproj" />
+    <ProjectReference Include="..\Ubuntu\JMS.DVB.NET.Ubuntu.csproj" />
+    <ProjectReference Include="..\DVBNETLegacy\JMS.DVB.NET.DVBNETLegacy.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

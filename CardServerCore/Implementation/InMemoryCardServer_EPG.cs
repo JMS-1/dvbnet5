@@ -1,17 +1,11 @@
 ﻿extern alias oldVersion;
 
-using System;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Configuration;
-using System.Collections.Generic;
 
 using JMS.DVB.SI;
 using JMS.DVB.SI.ProgramGuide;
 
-using legacy = oldVersion.JMS.DVB.EPG;
-
+using legacyEPG = oldVersion.JMS.DVB.EPG;
 
 namespace JMS.DVB.CardServer
 {
@@ -20,7 +14,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Ein leeres Feld von Zeichenketten.
         /// </summary>
-        private static readonly string[] EmptyStringArray = { };
+        private static readonly string[] EmptyStringArray = Array.Empty<string>();
 
         /// <summary>
         /// Wird gesetzt, während die Programmzeitschrift aktualisiert wird.
@@ -36,12 +30,12 @@ namespace JMS.DVB.CardServer
         /// Alle Quellgruppen (Transponder), die bei der Aktualisierung der Programmzeitschrift anzusteuern
         /// sind.
         /// </summary>
-        private Dictionary<GroupKey, bool> m_EPGGroups = new Dictionary<GroupKey, bool>();
+        private readonly Dictionary<GroupKey, bool> m_EPGGroups = new();
 
         /// <summary>
         /// Alle Quellen, zu denen Daten in die Programmzeitschrift aufgenommen werden sollen. 
         /// </summary>
-        private Dictionary<SourceIdentifier, SourceSelection> m_EPGSources = new Dictionary<SourceIdentifier, SourceSelection>();
+        private readonly Dictionary<SourceIdentifier, SourceSelection> m_EPGSources = new();
 
         /// <summary>
         /// Die Liste der zu bearbeitenden Quellgruppen (Transponder) für die Aktualisierung der
@@ -58,7 +52,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Alle bisher ermittelten Daten zur Programmzeitschrift.
         /// </summary>
-        private static Dictionary<SourceIdentifier, Dictionary<DateTime, ProgramGuideItem>> m_EPGItems = new Dictionary<SourceIdentifier, Dictionary<DateTime, ProgramGuideItem>>();
+        private static readonly Dictionary<SourceIdentifier, Dictionary<DateTime, ProgramGuideItem>> m_EPGItems = new();
 
         /// <summary>
         /// Die Anzahl der bisher ermittelten Einträge für die Programmzeitschrift.
@@ -120,7 +114,7 @@ namespace JMS.DVB.CardServer
             RemoveAll();
 
             // Prepare
-            m_EPGPending = new List<GroupKey>(m_EPGGroups.Keys);
+            m_EPGPending = new(m_EPGGroups.Keys);
             m_EPGLastItemCheck = DateTime.MaxValue;
             m_EPGLastTune = DateTime.MinValue;
             m_EPGLastItemCount = -1;
@@ -145,14 +139,14 @@ namespace JMS.DVB.CardServer
             try
             {
                 // Attach to source
-                SourceIdentifier source = epg.Source;
+                var source = epg.Source;
 
                 // See if we are interested
                 if (!m_EPGSources.ContainsKey(source))
                     return;
 
                 // Process all events
-                foreach (legacy.EventEntry epgEntry in epg.Table.Entries)
+                foreach (var epgEntry in epg.Table.Entries)
                     AddGuideItem(source, epgEntry.EventIdentifier, epgEntry.StartTime, epgEntry.Duration, epgEntry.Descriptors);
             }
             catch
@@ -171,18 +165,22 @@ namespace JMS.DVB.CardServer
             try
             {
                 // Start processing the data
-                foreach (legacy.Descriptor descriptor in epg.Table.Descriptors)
+                foreach (var descriptor in epg.Table.Descriptors)
                 {
                     // Check for schedule information
-                    legacy.Descriptors.ContentTransmissionPremiere schedule = descriptor as legacy.Descriptors.ContentTransmissionPremiere;
-                    if (null == schedule)
+                    if (descriptor is not legacyEPG.Descriptors.ContentTransmissionPremiere schedule)
                         continue;
 
                     // Create identifier
-                    SourceIdentifier source = new SourceIdentifier { Network = schedule.OriginalNetworkIdentifier, TransportStream = schedule.TransportStreamIdentifier, Service = schedule.ServiceIdentifier };
+                    SourceIdentifier source = new()
+                    {
+                        Network = schedule.OriginalNetworkIdentifier,
+                        TransportStream = schedule.TransportStreamIdentifier,
+                        Service = schedule.ServiceIdentifier
+                    };
 
                     // Process all start times
-                    foreach (DateTime start in schedule.StartTimes)
+                    foreach (var start in schedule.StartTimes)
                         AddGuideItem(source, epg.Table.Identifier, start, epg.Table.Duration, epg.Table.Descriptors);
                 }
             }
@@ -203,10 +201,10 @@ namespace JMS.DVB.CardServer
         /// <param name="duration">Dauer der zugehörigen Sendung.</param>
         /// <param name="descriptors">Ergänzende Beschreibungen zur Sendung.</param>
         /// <returns>Die neu erzeugte Beschreibungsinstanz.</returns>
-        private void AddGuideItem(SourceIdentifier source, uint identifier, DateTime startTime, TimeSpan duration, legacy.Descriptor[] descriptors)
+        private void AddGuideItem(SourceIdentifier source, uint identifier, DateTime startTime, TimeSpan duration, legacyEPG.Descriptor[] descriptors)
         {
             // First create it
-            ProgramGuideItem info = CreateGuideItem(source, identifier, startTime, duration, descriptors);
+            var info = CreateGuideItem(source, identifier, startTime, duration, descriptors);
             if (null == info)
                 return;
 
@@ -214,11 +212,10 @@ namespace JMS.DVB.CardServer
             lock (m_EPGItems)
             {
                 // Attach to the source list
-                Dictionary<DateTime, ProgramGuideItem> list;
-                if (!m_EPGItems.TryGetValue(source, out list))
+                if (!m_EPGItems.TryGetValue(source, out var list))
                 {
                     // Create new
-                    list = new Dictionary<DateTime, ProgramGuideItem>();
+                    list = new();
 
                     // Add it
                     m_EPGItems[source] = list;
@@ -231,7 +228,7 @@ namespace JMS.DVB.CardServer
                 list[startTime] = info;
 
                 // New count
-                m_EPGItemCount += (list.Count - before);
+                m_EPGItemCount += list.Count - before;
             }
         }
 
@@ -246,16 +243,15 @@ namespace JMS.DVB.CardServer
         /// <param name="duration">Dauer der zugehörigen Sendung.</param>
         /// <param name="descriptors">Ergänzende Beschreibungen zur Sendung.</param>
         /// <returns>Die neu erzeugte Beschreibungsinstanz.</returns>
-        private ProgramGuideItem CreateGuideItem(SourceIdentifier source, uint identifier, DateTime startTime, TimeSpan duration, legacy.Descriptor[] descriptors)
+        private static ProgramGuideItem? CreateGuideItem(SourceIdentifier source, uint identifier, DateTime startTime, TimeSpan duration, legacyEPG.Descriptor[] descriptors)
         {
             // Descriptors we can have
-            legacy.Descriptors.ParentalRating rating = null;
-            legacy.Descriptors.ShortEvent shortEvent = null;
-            //
+            legacyEPG.Descriptors.ParentalRating? rating = null;
+            legacyEPG.Descriptors.ShortEvent? shortEvent = null;
 
             // Collector
-            var exEvents = new List<legacy.Descriptors.ExtendedEvent>();
-            var categories = new HashSet<ContentCategory>();
+            List<legacyEPG.Descriptors.ExtendedEvent> exEvents = new();
+            HashSet<ContentCategory> categories = new();
 
             // Check all descriptors
             foreach (var descr in descriptors)
@@ -265,7 +261,7 @@ namespace JMS.DVB.CardServer
                     if (shortEvent == null)
                     {
                         // Read
-                        shortEvent = descr as legacy.Descriptors.ShortEvent;
+                        shortEvent = descr as legacyEPG.Descriptors.ShortEvent;
 
                         // Done for now
                         if (null != shortEvent)
@@ -274,7 +270,7 @@ namespace JMS.DVB.CardServer
                     if (rating == null)
                     {
                         // Read
-                        rating = descr as legacy.Descriptors.ParentalRating;
+                        rating = descr as legacyEPG.Descriptors.ParentalRating;
 
                         // Done for now
                         if (null != rating)
@@ -282,8 +278,7 @@ namespace JMS.DVB.CardServer
                     }
 
                     // Event
-                    var exEvent = descr as legacy.Descriptors.ExtendedEvent;
-                    if (exEvent != null)
+                    if (descr is legacyEPG.Descriptors.ExtendedEvent exEvent)
                     {
                         // Remember
                         exEvents.Add(exEvent);
@@ -293,8 +288,7 @@ namespace JMS.DVB.CardServer
                     }
 
                     // Check for content information
-                    var content = descr as legacy.Descriptors.Content;
-                    if (content != null)
+                    if (descr is legacyEPG.Descriptors.Content content)
                     {
                         // Process
                         if (content.Categories != null)
@@ -307,16 +301,16 @@ namespace JMS.DVB.CardServer
                 }
 
             // Data
-            string name = null, description = null, language = null, shortDescription = null;
+            string? name = null, description = null, language = null, shortDescription = null;
 
             // Take the best we got
             if (exEvents.Count > 0)
             {
                 // Text builder
-                StringBuilder text = new StringBuilder();
+                StringBuilder text = new();
 
                 // Process all
-                foreach (legacy.Descriptors.ExtendedEvent exEvent in exEvents)
+                foreach (var exEvent in exEvents)
                 {
                     // Normal
                     if (null == name)
@@ -404,7 +398,7 @@ namespace JMS.DVB.CardServer
 
 
                 // Time since we last checked the item count
-                TimeSpan countDelta = DateTime.UtcNow - m_EPGLastItemCheck;
+                var countDelta = DateTime.UtcNow - m_EPGLastItemCheck;
 
                 // Must recheck
                 if (countDelta.TotalSeconds >= EPGItemCountCheckInterval.Value)
@@ -421,7 +415,7 @@ namespace JMS.DVB.CardServer
                     }
 
                 // Read the interval since the last tune
-                TimeSpan delta = DateTime.UtcNow - m_EPGLastTune;
+                var delta = DateTime.UtcNow - m_EPGLastTune;
 
                 // Check for change interval
                 if (delta.TotalSeconds < 60)
@@ -431,7 +425,7 @@ namespace JMS.DVB.CardServer
                 device.SelectGroup(null, null);
 
                 // Get the current state
-                int total = m_EPGGroups.Count, left = m_EPGPending.Count;
+                int total = m_EPGGroups.Count, left = m_EPGPending!.Count;
 
                 // Set the progress value
                 if (total < 1)
@@ -444,7 +438,7 @@ namespace JMS.DVB.CardServer
                     return;
 
                 // Load next
-                GroupKey next = m_EPGPending[0];
+                var next = m_EPGPending[0];
 
                 // Remove from list
                 m_EPGPending.RemoveAt(0);
@@ -467,7 +461,7 @@ namespace JMS.DVB.CardServer
 
                 // Check PREMIERE Direct
                 if (0 != (m_EPGExtensions & EPGExtensions.PREMIEREDirect))
-                    foreach (SourceSelection selection in Profile.FindSource(DirectCIT.TriggerSource))
+                    foreach (SourceSelection selection in Profile!.FindSource(DirectCIT.TriggerSource))
                         if (Equals(selection.Location, device.CurrentLocation))
                             if (Equals(selection.Group, device.CurrentGroup))
                             {
@@ -480,7 +474,7 @@ namespace JMS.DVB.CardServer
 
                 // Check PREMIERE Sport
                 if (0 != (m_EPGExtensions & EPGExtensions.PREMIERESport))
-                    foreach (SourceSelection selection in Profile.FindSource(SportCIT.TriggerSource))
+                    foreach (SourceSelection selection in Profile!.FindSource(SportCIT.TriggerSource))
                         if (Equals(selection.Location, device.CurrentLocation))
                             if (Equals(selection.Group, device.CurrentGroup))
                             {
@@ -493,7 +487,7 @@ namespace JMS.DVB.CardServer
 
                 // Check FreeSat UK
                 if (0 != (m_EPGExtensions & EPGExtensions.FreeSatUK))
-                    foreach (SourceSelection selection in Profile.FindSource(EIT.FreeSatEPGTriggerSource))
+                    foreach (SourceSelection selection in Profile!.FindSource(EIT.FreeSatEPGTriggerSource))
                         if (Equals(selection.Location, device.CurrentLocation))
                             if (Equals(selection.Group, device.CurrentGroup))
                             {
@@ -525,7 +519,7 @@ namespace JMS.DVB.CardServer
         private void AddEPGSource(SourceIdentifier source)
         {
             // Process
-            foreach (SourceSelection selection in AddEPGGroup(source))
+            foreach (var selection in AddEPGGroup(source))
             {
                 // First only
                 m_EPGSources[source] = selection;
@@ -544,10 +538,10 @@ namespace JMS.DVB.CardServer
         private SourceSelection[] AddEPGGroup(SourceIdentifier source)
         {
             // Resolve
-            SourceSelection[] selections = Profile.FindSource(source);
+            var selections = Profile!.FindSource(source);
 
             // Process
-            foreach (SourceSelection selection in selections)
+            foreach (var selection in selections)
                 m_EPGGroups[new GroupKey(selection)] = true;
 
             // Report
@@ -560,11 +554,7 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="sources">Die zu berücksichtigenden Quellen.</param>
         /// <param name="extensions">Spezielle Zusatzfunktionalitäten der Sammlung.</param>
-        protected override void OnStartEPGCollection(SourceIdentifier[] sources, EPGExtensions extensions)
-        {
-            // Process
-            Start(device => { StartEPGCollection(device, sources, extensions); });
-        }
+        protected override void OnStartEPGCollection(SourceIdentifier[] sources, EPGExtensions extensions) => Start(device => { StartEPGCollection(device, sources, extensions); });
 
         /// <summary>
         /// Meldet alle gesammelten Informationen der Programmzeitschrift.
@@ -572,28 +562,28 @@ namespace JMS.DVB.CardServer
         private ProgramGuideItem[] CreateGuideItems()
         {
             // Result
-            List<ProgramGuideItem> schedules = new List<ProgramGuideItem>();
+            List<ProgramGuideItem> schedules = new();
 
             // Lock out - actually this should not be necessary
             lock (m_EPGItems)
             {
                 // Loop over all we found
-                foreach (Dictionary<DateTime, ProgramGuideItem> list in m_EPGItems.Values)
+                foreach (var list in m_EPGItems.Values)
                 {
                     // Get all dates for one source
-                    List<DateTime> dates = new List<DateTime>(list.Keys);
+                    List<DateTime> dates = new(list.Keys);
 
                     // Sort ascending
                     dates.Sort();
 
                     // Next allowed date
-                    DateTime allowed = DateTime.MinValue;
+                    var allowed = DateTime.MinValue;
 
                     // Process all dates
-                    foreach (DateTime start in dates)
+                    foreach (var start in dates)
                     {
                         // Attach to the item
-                        ProgramGuideItem info = list[start];
+                        var info = list[start];
 
                         // Start is hidden
                         if (start < allowed)
@@ -628,9 +618,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Beendet die Aktualisierung der Programmzeitschrift.
         /// </summary>
-        protected override void OnEndEPGCollection()
-        {
-            // Process
+        protected override void OnEndEPGCollection() =>
             Start(device =>
             {
                 // Check mode
@@ -641,7 +629,7 @@ namespace JMS.DVB.CardServer
                 device.SelectGroup(null, null);
 
                 // Preserve some memory
-                m_EPGPending.Clear();
+                m_EPGPending!.Clear();
                 m_EPGSources.Clear();
                 m_EPGGroups.Clear();
 
@@ -651,6 +639,5 @@ namespace JMS.DVB.CardServer
                 // Process result - will reset the list
                 return CreateGuideItems();
             });
-        }
     }
 }

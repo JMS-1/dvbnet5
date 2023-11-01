@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Ergänzt die Schnittstelle <see cref="IAsyncResult"/> um den Zugriff
@@ -32,7 +27,7 @@ namespace JMS.DVB.CardServer
             /// <summary>
             /// Die zu steuernde Einheit.
             /// </summary>
-            private ServerImplementation m_Server;
+            private readonly ServerImplementation m_Server;
 
             /// <summary>
             /// Wird gesetzt, sobald die Operation als abgeschlossen bekannt ist.
@@ -46,12 +41,8 @@ namespace JMS.DVB.CardServer
             /// <exception cref="ArgumentNullException">Es wurde keine Steuerinstanz angegeben.</exception>
             public _AsyncControl(ServerImplementation server)
             {
-                // Validate
-                if (server == null)
-                    throw new ArgumentNullException("server");
-
                 // Remember
-                m_Server = server;
+                m_Server = server ?? throw new ArgumentNullException("server");
             }
 
             /// <summary>
@@ -60,52 +51,24 @@ namespace JMS.DVB.CardServer
             /// <typeparam name="T">Die Art des Rückgabewertes.</typeparam>
             /// <param name="server">Die aktuelle Implementierung.</param>
             /// <returns>Die gewünschte Steuerinstanz.</returns>
-            public static IAsyncResult Create<T>(ServerImplementation server)
-            {
-                // Check mode
-                if (typeof(T) == typeof(object))
-                    return new _AsyncControl(server);
-                else
-                    return new _AsyncControl<T>(server);
-            }
+            public static IAsyncResult Create<T>(ServerImplementation server) => (typeof(T) == typeof(object)) ? new _AsyncControl(server) : new _AsyncControl<T>(server);
 
             #region IAsyncResult Members
 
             /// <summary>
             /// Meldet den Kontext dieser asynchronen Ausführung.
             /// </summary>
-            object IAsyncResult.AsyncState
-            {
-                get
-                {
-                    // Report server
-                    return m_Server;
-                }
-            }
+            object IAsyncResult.AsyncState => m_Server;
 
             /// <summary>
             /// Meldet ein Synchronisationsobjekt für die Ausführung dieses Aufrufs.
             /// </summary>
-            WaitHandle IAsyncResult.AsyncWaitHandle
-            {
-                get
-                {
-                    // Report
-                    return m_Server.m_Done;
-                }
-            }
+            WaitHandle IAsyncResult.AsyncWaitHandle => m_Server.m_Done;
 
             /// <summary>
             /// Meldet, ob die Aufgabe synchron abgeschlossen werden konnte.
             /// </summary>
-            bool IAsyncResult.CompletedSynchronously
-            {
-                get
-                {
-                    // Never
-                    return false;
-                }
-            }
+            bool IAsyncResult.CompletedSynchronously => false;
 
             /// <summary>
             /// Meldet, ob die Bearbeitung abgeschlossen wurde.
@@ -146,14 +109,7 @@ namespace JMS.DVB.CardServer
             /// <summary>
             /// Wartet auf das Ende der Ausführung und meldet einen Rückgabewert.
             /// </summary>
-            public T Result
-            {
-                get
-                {
-                    // Report
-                    return ServerImplementation.EndRequest<T>(this);
-                }
-            }
+            public T Result => ServerImplementation.EndRequest<T>(this);
         }
 
         /// <summary>
@@ -345,11 +301,7 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="source">Die betroffene Quelle.</param>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
-        public IAsyncResult BeginRemoveSource(SourceIdentifier source)
-        {
-            // Forward
-            return BeginRemoveSource(source, Guid.Empty);
-        }
+        public IAsyncResult BeginRemoveSource(SourceIdentifier source) => BeginRemoveSource(source, Guid.Empty);
 
         /// <summary>
         /// Stellt den Empfang für eine Quelle ein.
@@ -443,11 +395,7 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <returns>Steuereinheit für diesen Aufruf. Als Ergebnis werden alle Einträge
         /// für die Programmzeitschrift gemeldet, die bisher ermittelt wurden.</returns>
-        public IAsyncResult<ProgramGuideItem[]> BeginEndEPGCollection()
-        {
-            // Forward
-            return (IAsyncResult<ProgramGuideItem[]>)Start<ProgramGuideItem[]>(OnEndEPGCollection);
-        }
+        public IAsyncResult<ProgramGuideItem[]> BeginEndEPGCollection() => (IAsyncResult<ProgramGuideItem[]>)Start<ProgramGuideItem[]>(OnEndEPGCollection);
 
         /// <summary>
         /// Verändert den Netzwerkversand für eine aktive Quelle.
@@ -465,11 +413,7 @@ namespace JMS.DVB.CardServer
         /// <param name="target">Die Daten zum Netzwerkversand.</param>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
-        public IAsyncResult BeginSetStreamTarget(SourceIdentifier source, string target)
-        {
-            // Forward
-            return BeginSetStreamTarget(source, Guid.Empty, target);
-        }
+        public IAsyncResult BeginSetStreamTarget(SourceIdentifier source, string target) => BeginSetStreamTarget(source, Guid.Empty, target);
 
         /// <summary>
         /// Verändert den Netzwerkversand für eine aktive Quelle.
@@ -498,11 +442,7 @@ namespace JMS.DVB.CardServer
         /// Stellt den Empfang für alle Quellen ein.
         /// </summary>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
-        public IAsyncResult BeginRemoveAllSources()
-        {
-            // Start action
-            return Start<object>(OnRemoveAllSources);
-        }
+        public IAsyncResult BeginRemoveAllSources() => Start<object>(OnRemoveAllSources);
 
         /// <summary>
         /// Aktiviert die Nutzung eines DVB.NET Geräteprofils.
@@ -553,11 +493,7 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <returns>Steuereinheit für diesen Aufruf. Als Ergebnis wird eine Beschreibung des
         /// Zustands gemeldet.</returns>
-        public IAsyncResult<ServerInformation> BeginGetState()
-        {
-            // Start action
-            return (IAsyncResult<ServerInformation>)Start<ServerInformation>(OnGetState);
-        }
+        public IAsyncResult<ServerInformation> BeginGetState() => (IAsyncResult<ServerInformation>)Start<ServerInformation>(OnGetState);
 
         /// <summary>
         /// Beginnt einen Sendersuchlauf auf dem aktuellen Geräteprofil.
@@ -568,11 +504,7 @@ namespace JMS.DVB.CardServer
         /// Beginnt einen Sendersuchlauf auf dem aktuellen Geräteprofil.
         /// </summary>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
-        public IAsyncResult BeginStartScan()
-        {
-            // Start action
-            return Start<object>(OnStartScan);
-        }
+        public IAsyncResult BeginStartScan() => Start<object>(OnStartScan);
 
         /// <summary>
         /// Beendet einen Sendersuchlauf auf dem aktuellen Geräteprofil.
@@ -585,11 +517,7 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="updateProfile">Gesetzt, wenn das Geräteprofil aktualisiert werden soll.</param>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
-        public IAsyncResult BeginEndScan(bool? updateProfile)
-        {
-            // Start action
-            return Start<object>(() => { OnEndScan(updateProfile); });
-        }
+        public IAsyncResult BeginEndScan(bool? updateProfile) => Start<object>(() => { OnEndScan(updateProfile); });
 
         /// <summary>
         /// Beginnt mit der Ausführung einer Aufgabe.
@@ -597,11 +525,7 @@ namespace JMS.DVB.CardServer
         /// <typeparam name="T">Die Art dces Rückgabewertes.</typeparam>
         /// <param name="action">Die auszuführende Aktion.</param>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
-        private IAsyncResult Start<T>(Action action)
-        {
-            // Forward
-            return Start<T>(action, null);
-        }
+        private IAsyncResult Start<T>(Action action) => Start<T>(action, null);
 
         /// <summary>
         /// Beginnt mit der Ausführung einer Aufgabe.
@@ -711,24 +635,13 @@ namespace JMS.DVB.CardServer
         /// Meldet, ob dieser <i>Card Server</i> noch mit der Ausführung einer Anfrage 
         /// beschäftigt ist.
         /// </summary>
-        private bool IsBusy
-        {
-            get
-            {
-                // Report
-                return !m_Done.WaitOne(0, false);
-            }
-        }
+        private bool IsBusy => !m_Done.WaitOne(0, false);
 
         /// <summary>
         /// Wartet das Ende eines asynchronen Aufrufs ab.
         /// </summary>
         /// <param name="request">Die Steuereinheit zum Aufruf.</param>
-        public static void EndRequest(IAsyncResult request)
-        {
-            // Forward
-            EndRequest<object>(request);
-        }
+        public static void EndRequest(IAsyncResult request) => EndRequest<object>(request);
 
         /// <summary>
         /// Wartet das Ende eines asynchronen Aufrufs ab.
@@ -736,11 +649,7 @@ namespace JMS.DVB.CardServer
         /// <typeparam name="TResult">Die Art des Ergebnisses.</typeparam>
         /// <param name="request">Die Steuereinheit zum Aufruf.</param>
         /// <returns>Das Ergebnis der Operation.</returns>
-        public static TResult EndRequest<TResult>(IAsyncResult<TResult> request)
-        {
-            // Forward
-            return EndRequest<TResult>((IAsyncResult)request);
-        }
+        public static TResult EndRequest<TResult>(IAsyncResult<TResult> request) => EndRequest<TResult>((IAsyncResult)request);
 
         /// <summary>
         /// Ermittelt das Ergebnis eines asynchronen Aufrufs.
@@ -756,8 +665,7 @@ namespace JMS.DVB.CardServer
                 throw new ArgumentNullException("request");
 
             // Change type
-            var myRequest = request as _AsyncControl;
-            if (myRequest == null)
+            if (request is not _AsyncControl)
                 throw new ArgumentException(request.GetType().FullName, "request");
 
             // Wait until it finishes

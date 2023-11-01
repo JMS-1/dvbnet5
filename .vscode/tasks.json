@@ -1,0 +1,36 @@
+{
+  "tasks": [
+    {
+      "args": [
+        "build",
+        "${workspaceFolder}/dvbnet5.sln",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "command": "dotnet",
+      "label": "build",
+      "problemMatcher": "$msCompile",
+      "type": "process"
+    },
+    {
+      "args": [
+        "publish",
+        "${workspaceFolder}/dvbnet5.sln",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "command": "dotnet",
+      "label": "publish",
+      "problemMatcher": "$msCompile",
+      "type": "process"
+    },
+    {
+      "args": ["watch", "--project", "${workspaceFolder}/TestApp"],
+      "command": "dotnet",
+      "label": "watch",
+      "problemMatcher": "$msCompile",
+      "type": "process"
+    }
+  ],
+  "version": "2.0.0"
+}
