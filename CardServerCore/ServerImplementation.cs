@@ -192,21 +192,13 @@ namespace JMS.DVB.CardServer
         /// Erzeugt eine Implementierung, die in diesem Prozess arbeitet.
         /// </summary>
         /// <returns>Die gewünschte Implementierung.</returns>
-        public static ServerImplementation CreateInMemory()
-        {
-            // Forward
-            return new InMemoryCardServer();
-        }
+        public static ServerImplementation CreateInMemory() => new InMemoryCardServer();
 
         /// <summary>
         /// Erzeugt eine Implementierung, die in einem separaten Prozess arbeitet.
         /// </summary>
         /// <returns>Die gewünschte Implementierung.</returns>
-        public static ServerImplementation CreateOutOfProcess()
-        {
-            // Forward
-            return new OutOfProcessCardServer();
-        }
+        public static ServerImplementation CreateOutOfProcess() => new OutOfProcessCardServer();
 
         /// <summary>
         /// Wählt eine bestimmte Quellgruppe (Transponder) an.

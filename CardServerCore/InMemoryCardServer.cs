@@ -14,7 +14,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Wird als Rückgabewert verwendet, wenn eine Operation verzögert ausgeführt werden soll.
         /// </summary>
-        private static readonly object DelayedOperationTag = new object();
+        private static readonly object DelayedOperationTag = new();
 
         /// <summary>
         /// Das gerade verwendete Geräteprofil.
@@ -54,7 +54,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Wird ausgelöst, wenn ein neuer Auftrag bearbeitet werden soll.
         /// </summary>
-        private AutoResetEvent m_Trigger = new AutoResetEvent(false);
+        private readonly AutoResetEvent m_Trigger = new(false);
 
         /// <summary>
         /// Verwaltet alle aktiven Quellen.
@@ -64,17 +64,17 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Wird gesetzt, wenn <see cref="m_IdleThread"/> beendet werden soll.
         /// </summary>
-        private ManualResetEvent m_IdleDone = new ManualResetEvent(false);
+        private readonly ManualResetEvent m_IdleDone = new(false);
 
         /// <summary>
         /// Die auszuführende Operation.
         /// </summary>
-        private volatile Func<Hardware, object> m_Operation;
+        private volatile Func<Hardware, object>? m_Operation;
 
         /// <summary>
         /// Ermittelt Daten zu den NVOD Diensten.
         /// </summary>
-        private ServiceParser m_ServiceParser;
+        private ServiceParser? m_ServiceParser;
 
         /// <summary>
         /// Meldet oder legt fest, wann das letzte Mal Daten zur aktuellen Quellegruppe
@@ -90,7 +90,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Wird aufgerufen, wenn die Leerlauffunktion aktiviert wurde.
         /// </summary>
-        public event Action<InMemoryCardServer, Hardware> OnAfterIdleProcessing;
+        public event Action<InMemoryCardServer, Hardware>? OnAfterIdleProcessing;
 
         /// <summary>
         /// Erzeugt eine neue Implementierung.
@@ -113,16 +113,16 @@ namespace JMS.DVB.CardServer
             using (HardwareManager.Open())
             {
                 // Device to use
-                Hardware device;
+                Hardware? device;
 
                 // Try to attach profile
                 try
                 {
                     // Open it
-                    device = HardwareManager.OpenHardware(Profile);
+                    device = HardwareManager.OpenHardware(Profile!)!;
 
                     // Should reset
-                    if ((bool)reset)
+                    if ((bool?)reset == true)
                         device.ResetWakeupDevice();
 
                     // Report success
@@ -168,7 +168,7 @@ namespace JMS.DVB.CardServer
                                         try
                                         {
                                             // Create
-                                            m_ServiceParser = new ServiceParser(Profile, withGuide.Manager.Source);
+                                            m_ServiceParser = new ServiceParser(Profile!, withGuide.Manager.Source);
                                         }
                                         catch
                                         {
@@ -342,11 +342,10 @@ namespace JMS.DVB.CardServer
         private void ReadRecordingParameter(string name, ref TimeSpan interval, TimeSpan zeroMapping)
         {
             // Load the setting
-            var setting = Profile.GetParameter(name);
+            var setting = Profile!.GetParameter(name);
 
             // Read the value
-            uint seconds;
-            if (!uint.TryParse(setting, out seconds))
+            if (!uint.TryParse(setting, out var seconds))
                 return;
 
             // Load
@@ -421,31 +420,13 @@ namespace JMS.DVB.CardServer
         /// Bereitet eine Anfrage zur Ausführung vor.
         /// </summary>
         /// <param name="operation">Die gewünschte Aktion.</param>
-        private void Start(Action<Hardware> operation)
-        {
-            // Forward
-            Start(device => { operation(device); return null; });
-        }
+        private void Start(Action<Hardware> operation) => Start(device => { operation(device); return null!; });
 
         /// <summary>
         /// Bereitet eine Anfrage zur Ausführung vor.
         /// </summary>
         /// <param name="operation">Die gewünschte Aktion.</param>
-        private void Start(Func<object> operation)
-        {
-            // Forward
-            Start(device => { return operation(); });
-        }
-
-        /// <summary>
-        /// Bereitet eine Anfrage zur Ausführung vor.
-        /// </summary>
-        /// <param name="operation">Die gewünschte Aktion.</param>
-        private void Start(Action operation)
-        {
-            // Forward
-            Start(device => { operation(); return null; });
-        }
+        private void Start(Action operation) => Start(device => { operation(); return null!; });
 
         /// <summary>
         /// Wählt eine Quellgruppe an.
@@ -477,11 +458,7 @@ namespace JMS.DVB.CardServer
         /// <param name="selection">Die Beschreibung einer Quelle, deren Gruppe aktiviert werden soll.</param>
         /// <exception cref="ArgumentNullException">Es wurde keine Quellgruppe angegeben.</exception>
         /// <exception cref="CardServerException">Es wird bereits eine Anfrage ausgeführt.</exception>
-        protected override void OnSelect(SourceSelection selection)
-        {
-            // Prepare operation            
-            Start(device => { SelectGroup(device, selection); });
-        }
+        protected override void OnSelect(SourceSelection selection) => Start(device => { SelectGroup(device, selection); });
 
         /// <summary>
         /// Ermittelt den aktuellen Zustand des Servers.
@@ -497,7 +474,7 @@ namespace JMS.DVB.CardServer
                     Location = device.CurrentLocation,
                     Source = new SourceIdentifier(),
                     Group = device.CurrentGroup,
-                    ProfileName = Profile.Name
+                    ProfileName = Profile!.Name
                 };
 
             // Create the full monty
@@ -542,20 +519,14 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Ermittelt den aktuellen Zustand des <i>Card Servers</i>.
         /// </summary>
-        protected override void OnGetState()
-        {
-            // Process
-            Start(device => CreateState(device));
-        }
+        protected override void OnGetState() => Start(CreateState);
 
         /// <summary>
         /// Aktiviert eine einzelne Quelle für den <i>Zapping Modus</i>.
         /// </summary>
         /// <param name="source">Die gewünschte Quelle.</param>
         /// <param name="target">Die Netzwerkadresse, an die alle Daten versendet werden sollen.</param>
-        protected override void OnSetZappingSource(SourceSelection source, string target)
-        {
-            // Prepare operation            
+        protected override void OnSetZappingSource(SourceSelection source, string target) =>
             Start(device =>
                 {
                     // The next stream identifier to use
@@ -585,7 +556,7 @@ namespace JMS.DVB.CardServer
                     optimizer.Optimize();
 
                     // Create
-                    var stream = new ActiveStream(Guid.Empty, source.Open(optimizer.GetStreams(0)), streams, null);
+                    var stream = new ActiveStream(Guid.Empty, source.Open(optimizer.GetStreams(0)), streams, null!);
                     try
                     {
                         // Configure streaming target
@@ -616,7 +587,7 @@ namespace JMS.DVB.CardServer
                     // Report state
                     return CreateState(device);
                 });
-        }
+
 
         /// <summary>
         /// Ermittelt eine aktive Quelle.
@@ -624,24 +595,14 @@ namespace JMS.DVB.CardServer
         /// <param name="source">Die eindeutige Kennung der Quelle.</param>
         /// <returns>Der 0-basierte laufende Index der Quelle oder <i>-1</i>, 
         /// wenn diese nicht in Benutzung ist.</returns>
-        public ActiveStream FindSource(SourceIdenfierWithKey source)
-        {
-            // Find the source
-            ActiveStream stream;
-            if (Streams.TryGetValue(source, out stream))
-                return stream;
-            else
-                return null;
-        }
+        public ActiveStream? FindSource(SourceIdenfierWithKey source) => Streams.TryGetValue(source, out var stream) ? stream : null;
 
         /// <summary>
         /// Stellt den Empfang für eine Quelle ein.
         /// </summary>
         /// <param name="source">Die betroffene Quelle.</param>
         /// <param name="uniqueIdentifier">Der eindeutige Name der Quelle.</param>
-        protected override void OnRemoveSource(SourceIdentifier source, Guid uniqueIdentifier)
-        {
-            // Prepare operation
+        protected override void OnRemoveSource(SourceIdentifier source, Guid uniqueIdentifier) =>
             Start(() =>
                 {
                     // Find the source
@@ -651,9 +612,8 @@ namespace JMS.DVB.CardServer
 
                     // Stop all activity on the source
                     using (stream)
-                        Streams.Remove(stream.SourceKey);
+                        Streams.Remove(stream!.SourceKey);
                 });
-        }
 
         /// <summary>
         /// Verändert den Netzwerkversand für eine aktive Quelle.
@@ -662,9 +622,7 @@ namespace JMS.DVB.CardServer
         /// <param name="uniqueIdentifier">Der eindeutige Name der Quelle.</param>
         /// <param name="target">Die Daten zum Netzwerkversand.</param>
         /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
-        protected override void OnSetStreamTarget(SourceIdentifier source, Guid uniqueIdentifier, string target)
-        {
-            // Prepare operation
+        protected override void OnSetStreamTarget(SourceIdentifier source, Guid uniqueIdentifier, string target) =>
             Start(() =>
             {
                 // Find the source
@@ -673,16 +631,13 @@ namespace JMS.DVB.CardServer
                     CardServerException.Throw(new NoSourceFault(source));
 
                 // Process
-                stream.Manager.StreamingTarget = target;
+                stream!.Manager.StreamingTarget = target;
             });
-        }
 
         /// <summary>
         /// Stellt den Empfang für alle Quellen ein.
         /// </summary>
-        protected override void OnRemoveAllSources()
-        {
-            // Dispatch
+        protected override void OnRemoveAllSources() =>
             Start(() =>
                 {
                     // Check mode
@@ -694,7 +649,7 @@ namespace JMS.DVB.CardServer
                     // Forward
                     RemoveAll();
                 });
-        }
+
 
         /// <summary>
         /// Lädt eine Bibliothek mit Erweiterungen.
@@ -711,14 +666,7 @@ namespace JMS.DVB.CardServer
             Request.AddTypes(assembly);
 
             // Attach loader
-            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
-                {
-                    // Check names
-                    if (Equals(args.Name, assembly.FullName))
-                        return assembly;
-                    else
-                        return null;
-                };
+            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => Equals(args.Name, assembly.FullName) ? assembly : null; ;
 
             // Report success
             ActionDone(null, null);
@@ -729,9 +677,7 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="actionType">Die Klasse, von der aus die Erweiterungsmethode abgerufen werden kann.</param>
         /// <param name="parameters">Optionale Parameter zur Ausführung.</param>
-        protected override void OnCustomAction<TInput, TOutput>(string actionType, TInput parameters)
-        {
-            // Process
+        protected override void OnCustomAction<TInput, TOutput>(string actionType, TInput parameters) =>
             Start(device =>
                 {
                     // Resolve the type
@@ -740,22 +686,19 @@ namespace JMS.DVB.CardServer
                         CardServerException.Throw(new NoSuchActionFault(actionType));
 
                     // Create the instance of the type
-                    var customAction = Activator.CreateInstance(type, new object[] { this }) as CustomAction<TInput, TOutput>;
+                    var customAction = Activator.CreateInstance(type!, new object[] { this }) as CustomAction<TInput, TOutput>;
                     if (customAction == null)
                         CardServerException.Throw(new NoSuchActionFault(actionType));
 
                     // Process
-                    return customAction.Execute(device, parameters);
+                    return customAction!.Execute(device, parameters!);
                 });
-        }
 
         /// <summary>
         /// Aktiviert den Empfang einer Quelle.
         /// </summary>
         /// <param name="sources">Informationen zu den zu aktivierenden Quellen.</param>
-        protected override void OnAddSources(ReceiveInformation[] sources)
-        {
-            // Prepare operation
+        protected override void OnAddSources(ReceiveInformation[] sources) =>
             Start(device =>
                 {
                     // Check mode
@@ -844,7 +787,6 @@ namespace JMS.DVB.CardServer
                         newStreams.ForEach(stream => stream.Dispose());
                     }
                 });
-        }
 
         /// <summary>
         /// Beendet den Empfang auf allen Quellen.

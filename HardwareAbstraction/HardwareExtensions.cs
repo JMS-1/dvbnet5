@@ -18,18 +18,18 @@ namespace JMS.DVB
         /// <param name="hardware">Die Hardware, die für den Empfang zu verwenden ist.</param>
         /// <exception cref="ArgumentNullException">Es wurden keine Informationen zur
         /// Quelle angegeben.</exception>
-        public static void SelectGroup( this SourceSelection selection, Hardware hardware )
+        public static void SelectGroup(this SourceSelection selection, Hardware hardware)
         {
             // Validate
             if (null == selection)
-                throw new ArgumentNullException( "selection" );
+                throw new ArgumentNullException("selection");
 
             // Nothing to do
             if (null == hardware)
                 return;
 
             // Forward
-            hardware.SelectGroup( selection );
+            hardware.SelectGroup(selection);
         }
 
         /// <summary>
@@ -38,15 +38,15 @@ namespace JMS.DVB
         /// <param name="selection">Die gewünschte Quellinformation.</param>
         /// <exception cref="ArgumentNullException">Es wurden keine Informationen zur
         /// Quelle angegeben.</exception>
-        public static void SelectGroup( this SourceSelection selection )
+        public static void SelectGroup(this SourceSelection selection)
         {
             // Validate
             if (null == selection)
-                throw new ArgumentNullException( "selection" );
+                throw new ArgumentNullException("selection");
 
             // Forward
             using (HardwareManager.Open())
-                selection.SelectGroup( selection.GetHardware() );
+                selection.SelectGroup(selection.GetHardware());
         }
 
         /// <summary>
@@ -55,15 +55,15 @@ namespace JMS.DVB
         /// <param name="selection">Die betroffene Quellinformation.</param>
         /// <returns>Die zugehörige Geräteabstraktion.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Quellinformation angegeben.</exception>
-        public static Hardware GetHardware( this SourceSelection selection )
+        public static Hardware GetHardware(this SourceSelection selection)
         {
             // Validate
             if (null == selection)
-                throw new ArgumentNullException( "selection" );
+                throw new ArgumentNullException("selection");
 
             // Forward
             using (HardwareManager.Open())
-                return HardwareManager.OpenHardware( selection.ProfileName );
+                return HardwareManager.OpenHardware(selection.ProfileName);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace JMS.DVB
         /// <returns>Das zugehörige Profil mit der Senderliste, das durchaus von <see cref="GetProfile"/>
         /// abweichen kann.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Quellinformation angegeben.</exception>
-        public static Profile GetLeafProfile( this SourceSelection selection )
+        public static Profile GetLeafProfile(this SourceSelection selection)
         {
             // Forward
             Profile profile = selection.GetProfile();
@@ -91,17 +91,17 @@ namespace JMS.DVB
         /// <param name="selection">Die betroffene Quellinformation.</param>
         /// <returns>Das zugehörige Profil.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Quellinformation angegeben.</exception>
-        public static Profile GetProfile( this SourceSelection selection )
+        public static Profile GetProfile(this SourceSelection selection)
         {
             // Validate
             if (null == selection)
-                throw new ArgumentNullException( "selection" );
+                throw new ArgumentNullException("selection");
 
             // Forward
-            if (string.IsNullOrEmpty( selection.ProfileName ))
+            if (string.IsNullOrEmpty(selection.ProfileName))
                 return null;
             else
-                return ProfileManager.FindProfile( selection.ProfileName );
+                return ProfileManager.FindProfile(selection.ProfileName);
         }
 
         /// <summary>
@@ -113,10 +113,10 @@ namespace JMS.DVB
         /// <param name="streams">Die gewünschten Aufzeichnungsparameter.</param>
         /// <returns>Eine Kontrollinstanz für die Aufzeichnung. Diese muss mittels <see cref="IDisposable.Dispose"/>
         /// freigegeben werden.</returns>
-        public static SourceStreamsManager Open( this SourceIdentifier source, Hardware hardware, Profile profile, StreamSelection streams )
+        public static SourceStreamsManager Open(this SourceIdentifier source, Hardware hardware, Profile profile, StreamSelection streams)
         {
             // Forward
-            return new SourceStreamsManager( hardware, profile, source, streams );
+            return new SourceStreamsManager(hardware, profile, source, streams);
         }
 
         /// <summary>
@@ -126,13 +126,13 @@ namespace JMS.DVB
         /// <param name="streams">Die gewünschten Aufzeichnungsparameter.</param>
         /// <returns>Eine Kontrollinstanz für die Aufzeichnung. Diese muss mittels <see cref="IDisposable.Dispose"/>
         /// freigegeben werden.</returns>
-        public static SourceStreamsManager Open( this SourceSelection selection, StreamSelection streams )
+        public static SourceStreamsManager Open(this SourceSelection selection, StreamSelection streams)
         {
             // Validate
             if (selection == null)
-                throw new ArgumentNullException( "selection" );
+                throw new ArgumentNullException("selection");
             else
-                return selection.Source.Open( selection.GetHardware(), selection.GetLeafProfile(), streams );
+                return selection.Source.Open(selection.GetHardware(), selection.GetLeafProfile(), streams);
         }
 
         /// <summary>
@@ -142,13 +142,13 @@ namespace JMS.DVB
         /// <param name="name">Der Name des Parameters.</param>
         /// <returns>Die gewünschten Informationen.</returns>
         /// <exception cref="ArgumentNullException">Ein Parameter wurde nicht angegeben.</exception>
-        public static string GetDeviceAspect( this Profile profile, string name )
+        public static string GetDeviceAspect(this Profile profile, string name)
         {
             // Validate
             if (profile == null)
-                throw new ArgumentNullException( "profile" );
+                throw new ArgumentNullException("profile");
             else
-                return profile.DeviceAspects.GetDeviceAspect( name );
+                return profile.DeviceAspects.GetDeviceAspect(name);
         }
 
         /// <summary>
@@ -158,13 +158,13 @@ namespace JMS.DVB
         /// <param name="name">Der Name des Parameters.</param>
         /// <returns>Die gewünschten Informationen.</returns>
         /// <exception cref="ArgumentNullException">Der Name wurde nicht angegeben.</exception>
-        public static string GetDeviceAspect( this IEnumerable<DeviceAspect> aspects, string name )
+        public static string GetDeviceAspect(this IEnumerable<DeviceAspect> aspects, string name)
         {
             // Find
             if (aspects == null)
                 return null;
             else
-                return aspects.Where( a => string.Equals( name, a.Aspekt ) ).Select( a => a.Value ).FirstOrDefault();
+                return aspects.Where(a => string.Equals(name, a.Aspekt)).Select(a => a.Value).FirstOrDefault();
         }
 
         /// <summary>
@@ -174,16 +174,16 @@ namespace JMS.DVB
         /// <param name="name">Der Name des Parameters.</param>
         /// <returns>Die gewünschten Informationen.</returns>
         /// <exception cref="ArgumentNullException">Ein Parameter wurde nicht angegeben.</exception>
-        public static string GetParameter( this Profile profile, string name )
+        public static string GetParameter(this Profile profile, string name)
         {
             // Validate
             if (profile == null)
-                throw new ArgumentNullException( "profile" );
-            if (string.IsNullOrEmpty( name ))
-                throw new ArgumentNullException( "name" );
+                throw new ArgumentNullException("profile");
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException("name");
 
             // Find
-            return profile.Parameters.GetParameter( name );
+            return profile.Parameters.GetParameter(name);
         }
 
         /// <summary>
@@ -193,17 +193,17 @@ namespace JMS.DVB
         /// <param name="name">Der Name des Parameters.</param>
         /// <returns>Die gewünschten Informationen.</returns>
         /// <exception cref="ArgumentNullException">Ein Parameter wurde nicht angegeben.</exception>
-        public static string GetParameter( this IEnumerable<ProfileParameter> parameters, string name )
+        public static string GetParameter(this IEnumerable<ProfileParameter> parameters, string name)
         {
             // Validate
-            if (string.IsNullOrEmpty( name ))
-                throw new ArgumentNullException( "name" );
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException("name");
 
             // Find
             if (parameters == null)
                 return null;
             else
-                return parameters.Where( p => name.Equals( p.Name ) ).Select( p => p.Value ).FirstOrDefault();
+                return parameters.Where(p => name.Equals(p.Name)).Select(p => p.Value).FirstOrDefault();
         }
 
         /// <summary>
@@ -214,13 +214,13 @@ namespace JMS.DVB
         /// <param name="name">Der Name des Parameters.</param>
         /// <returns>Die gewünschten Informationen.</returns>
         /// <exception cref="ArgumentNullException">Ein Parameter wurde nicht angegeben.</exception>
-        public static string GetParameter( this IEnumerable<ProfileParameter> parameters, PipelineTypes type, string name )
+        public static string GetParameter(this IEnumerable<ProfileParameter> parameters, PipelineTypes type, string name)
         {
             // Forward
-            if (string.IsNullOrEmpty( name ))
-                throw new ArgumentNullException( "name" );
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException("name");
             else
-                return parameters.GetParameter( string.Format( "{0}{1}", ProfileParameter.GetPrefixForExtensionParameter( type ), name ) );
+                return parameters.GetParameter(string.Format("{0}{1}", ProfileParameter.GetPrefixForExtensionParameter(type), name));
         }
 
         /// <summary>
@@ -230,19 +230,19 @@ namespace JMS.DVB
         /// <param name="source">Die gewünschte Quelle.</param>
         /// <returns>Die vorzunehmenden Modifikationen.</returns>
         /// <exception cref="ArgumentNullException">Ein Parameter wurde nicht angegeben.</exception>
-        public static SourceModifier GetFilter( this Profile profile, SourceIdentifier source )
+        public static SourceModifier GetFilter(this Profile profile, SourceIdentifier source)
         {
             // Validate
             if (null == profile)
-                throw new ArgumentNullException( "profile" );
+                throw new ArgumentNullException("profile");
             if (null == source)
-                throw new ArgumentNullException( "source" );
+                throw new ArgumentNullException("source");
 
             // Process
             if (null == profile.ScanConfiguration)
                 return new SourceModifier { Network = source.Network, TransportStream = source.TransportStream, Service = source.Service };
             else
-                return profile.ScanConfiguration.GetFilter( source );
+                return profile.ScanConfiguration.GetFilter(source);
         }
 
         /// <summary>
@@ -252,19 +252,19 @@ namespace JMS.DVB
         /// <param name="group">Die gewünschte Quellgruppe.</param>
         /// <returns>Informationen zur Quellgruppe.</returns>
         /// <exception cref="ArgumentNullException">Ein Parameter wurde nicht angegeben.</exception>
-        public static SourceGroupFilter GetFilter( this Profile profile, SourceGroup group )
+        public static SourceGroupFilter GetFilter(this Profile profile, SourceGroup group)
         {
             // Validate
             if (null == profile)
-                throw new ArgumentNullException( "profile" );
+                throw new ArgumentNullException("profile");
             if (null == group)
-                throw new ArgumentNullException( "group" );
+                throw new ArgumentNullException("group");
 
             // Forward to helper
             if (null == profile.ScanConfiguration)
                 return new SourceGroupFilter();
             else
-                return profile.ScanConfiguration.GetFilter( group );
+                return profile.ScanConfiguration.GetFilter(group);
         }
 
         /// <summary>
@@ -272,13 +272,13 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="group">Die ursprüngliche Quellgruppe, wobei <i>null</i> erlaubt ist.</param>
         /// <returns>Eine Kopie der Quellgruppe oder <i>null</i>.</returns>
-        public static T CloneGroup<T>( this T group ) where T : SourceGroup
+        public static T? CloneGroup<T>(this T? group) where T : SourceGroup
         {
             // Create it
             if (group == null)
                 return null;
             else
-                return SourceGroup.FromString<T>( group.ToString() );
+                return SourceGroup.FromString<T>(group.ToString()!);
         }
 
         /// <summary>
@@ -286,13 +286,13 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="location">Der ursprüngliche Ursprung, wobei <i>null</i> erlaubt ist.</param>
         /// <returns>Eine Kopie des Ursprungs oder <i>null</i>.</returns>
-        public static T CloneLocation<T>( this T location ) where T : GroupLocation
+        public static T? CloneLocation<T>(this T? location) where T : GroupLocation
         {
             // Create it
             if (location == null)
                 return null;
             else
-                return GroupLocation.FromString<T>( location.ToString() );
+                return GroupLocation.FromString<T>(location.ToString()!);
         }
     }
 }

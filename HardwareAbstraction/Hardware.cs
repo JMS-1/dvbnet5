@@ -518,7 +518,7 @@ namespace JMS.DVB
         /// gleichzeitig erfolgen.</remarks>
         /// <param name="location">Der gewünschte Ursprung.</param>
         /// <param name="group">Die gewünschte Quellgruppe.</param>
-        public void SelectGroup(GroupLocation location, SourceGroup group)
+        public void SelectGroup(GroupLocation? location, SourceGroup? group)
         {
             // Always use clones
             location = location.CloneLocation();

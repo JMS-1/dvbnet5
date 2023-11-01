@@ -47,7 +47,7 @@ namespace JMS.DVB.CardServer
         /// Die Liste der zu bearbeitenden Quellgruppen (Transponder) für die Aktualisierung der
         /// Programmzeitschrift.
         /// </summary>
-        private List<GroupKey> m_EPGPending;
+        private List<GroupKey>? m_EPGPending;
 
         /// <summary>
         /// Der Zeitpunkt, an dem bei der Aktualisierung der Programmzeitschrift letztmalig die Quellgruppe

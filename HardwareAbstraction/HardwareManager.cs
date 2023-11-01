@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-using System.Collections.Generic;
-
-namespace JMS.DVB
+﻿namespace JMS.DVB
 {
     /// <summary>
     /// Hilfsklasse zur Verwaltung aktiver Geräteabstraktionen.
@@ -47,23 +41,19 @@ namespace JMS.DVB
         /// <summary>
         /// Zählt die aktiven Registrierungen.
         /// </summary>
-        private static Int32 m_ReferenceCounter = 0;
+        private static int m_ReferenceCounter = 0;
 
         /// <summary>
         /// Verwaltet die aktiven Geräte.
         /// </summary>
-        private static Dictionary<string, Hardware> m_ActiveHardware = new Dictionary<string, Hardware>();
+        private static readonly Dictionary<string, Hardware> m_ActiveHardware = new();
 
         /// <summary>
         /// Meldet einen Client für die Verwendung der Geräteverwaltung an.
         /// </summary>
         /// <returns>Eine Steuerinstanz die mittels <see cref="IDisposable.Dispose"/>
         /// freigegeben wird, wenn die Geräteverwaltung nicht weiter benötigt wird.</returns>
-        public static IDisposable Open()
-        {
-            // Report
-            return new _Counter();
-        }
+        public static IDisposable Open() => new _Counter();
 
         /// <summary>
         /// Aktiviert eine bestimmte Geräteabstraktion.
@@ -72,19 +62,19 @@ namespace JMS.DVB
         /// <returns>Die gewünschte Hardware oder <i>null</i>, wenn die Geräteverwaltung
         /// nicht aktiv ist.</returns>
         /// <exception cref="ArgumentException">Es wurde kein Geräteprofil angegeben.</exception>
-        public static Hardware OpenHardware( string profileName )
+        public static Hardware? OpenHardware(string profileName)
         {
             // Validate
-            if (string.IsNullOrEmpty( profileName ))
-                throw new ArgumentException( profileName, "profileName" );
+            if (string.IsNullOrEmpty(profileName))
+                throw new ArgumentException(profileName, "profileName");
 
             // Load the profile
-            Profile profile = ProfileManager.FindProfile( profileName );
+            Profile profile = ProfileManager.FindProfile(profileName);
             if (null == profile)
-                throw new ArgumentException( profileName, "profileName" );
+                throw new ArgumentException(profileName, "profileName");
 
             // Forward
-            return OpenHardware( profile );
+            return OpenHardware(profile);
         }
 
         /// <summary>
@@ -94,13 +84,13 @@ namespace JMS.DVB
         /// <returns>Die gewünschte Hardware oder <i>null</i>, wenn die Geräteverwaltung
         /// nicht aktiv ist.</returns>
         /// <exception cref="ArgumentException">Es wurde kein Geräteprofil angegeben.</exception>
-        public static Hardware OpenHardware( Profile profile )
+        public static Hardware? OpenHardware(Profile profile)
         {
             // Validate
             if (null == profile)
-                throw new ArgumentNullException( "profile" );
-            if (string.IsNullOrEmpty( profile.Name ))
-                throw new ArgumentNullException( "profile.Name" );
+                throw new ArgumentNullException("profile");
+            if (string.IsNullOrEmpty(profile.Name))
+                throw new ArgumentNullException("profile.Name");
 
             // Be safe
             lock (m_ActiveHardware)
@@ -110,8 +100,7 @@ namespace JMS.DVB
                     return null;
 
                 // Already active
-                Hardware hardware;
-                if (m_ActiveHardware.TryGetValue( profile.Name, out hardware ))
+                if (m_ActiveHardware.TryGetValue(profile.Name, out var hardware))
                     return hardware;
 
                 // Ask profile
@@ -135,7 +124,7 @@ namespace JMS.DVB
                 try
                 {
                     // Forward to all
-                    foreach (Hardware hardware in m_ActiveHardware.Values)
+                    foreach (var hardware in m_ActiveHardware.Values)
                         try
                         {
                             // Forward
