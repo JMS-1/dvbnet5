@@ -13,16 +13,16 @@
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\DVB.NET.Common.csproj" />
-    <ProjectReference Include="..\SourceManagement\DVB.NET.SourceManagement.csproj" />
-    <ProjectReference Include="..\TS\DVB.NET.TS.csproj" />
-    <ProjectReference Include="..\SITables\DVB.NET.SITables.csproj" />
-    <ProjectReference Include="..\EPG\DVB.NET.EPG.csproj" />
-    <ProjectReference Include="..\HardwareAbstraction\DVB.NET.HardwareAbstraction.csproj" />
-    <ProjectReference Include="..\Ubuntu\DVB.NET.Ubuntu.csproj" />
-    <ProjectReference Include="..\DVBNETLegacy\DVB.NET.DVBNETLegacy.csproj" />
-    <ProjectReference Include="..\CardServerCore\DVB.NET.CardServerCore.csproj" />
-    <ProjectReference Include="..\Algorithms\DVB.NET.Algorithms.csproj" />
+    <ProjectReference Include="..\Common\JMS.DVB.NET.Common.csproj" />
+    <ProjectReference Include="..\SourceManagement\JMS.DVB.NET.SourceManagement.csproj" />
+    <ProjectReference Include="..\TS\JMS.DVB.NET.TS.csproj" />
+    <ProjectReference Include="..\SITables\JMS.DVB.NET.SITables.csproj" />
+    <ProjectReference Include="..\EPG\JMS.DVB.NET.EPG.csproj" />
+    <ProjectReference Include="..\HardwareAbstraction\JMS.DVB.NET.HardwareAbstraction.csproj" />
+    <ProjectReference Include="..\Ubuntu\JMS.DVB.NET.Ubuntu.csproj" />
+    <ProjectReference Include="..\DVBNETLegacy\JMS.DVB.NET.DVBNETLegacy.csproj" />
+    <ProjectReference Include="..\CardServerCore\JMS.DVB.NET.CardServerCore.csproj" />
+    <ProjectReference Include="..\Algorithms\JMS.DVB.NET.Algorithms.csproj" />
   </ItemGroup>
   <Target Name="CopyDefaultScanLocations" AfterTargets="AfterBuild">
     <Copy SourceFiles="../SourceManagement/ScanLocations/BuiltIn.dss" DestinationFolder="$(OutDir)" />

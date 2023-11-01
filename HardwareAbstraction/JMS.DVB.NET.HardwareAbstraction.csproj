@@ -1,14 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
-    <ProjectReference Include="..\Common\DVB.NET.Common.csproj" />
+    <ProjectReference Include="..\SITables\JMS.DVB.NET.SITables.csproj" />
+    <ProjectReference Include="..\TS\JMS.DVB.NET.TS.csproj" />
   </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-
 </Project>

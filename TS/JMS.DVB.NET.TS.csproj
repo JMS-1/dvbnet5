@@ -1,15 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
-    <ProjectReference Include="..\SourceManagement\DVB.NET.SourceManagement.csproj" />
-    <ProjectReference Include="..\HardwareAbstraction\DVB.NET.HardwareAbstraction.csproj" />
+    <ProjectReference Include="..\SITables\JMS.DVB.NET.SITables.csproj" />
   </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-
 </Project>

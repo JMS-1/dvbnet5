@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("JMS")]
 [assembly: AssemblyProduct("DVB.NET")]
-[assembly: AssemblyCopyright("Copyright ÔøΩ 2003-15")]
+[assembly: AssemblyCopyright("Copyright ù 2003-15")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

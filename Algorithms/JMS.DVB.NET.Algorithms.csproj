@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\HardwareAbstraction\DVB.NET.HardwareAbstraction.csproj" />
+    <ProjectReference Include="..\SourceManagement\JMS.DVB.NET.SourceManagement.csproj" />
+    <ProjectReference Include="..\HardwareAbstraction\JMS.DVB.NET.HardwareAbstraction.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

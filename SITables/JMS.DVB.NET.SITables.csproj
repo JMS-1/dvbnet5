@@ -1,12 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\SourceManagement\DVB.NET.SourceManagement.csproj" />
-    <ProjectReference Include="..\HardwareAbstraction\DVB.NET.HardwareAbstraction.csproj" />
-    <ProjectReference Include="..\EPG\DVB.NET.EPG.csproj">
+    <ProjectReference Include="..\SourceManagement\JMS.DVB.NET.SourceManagement.csproj" />
+    <ProjectReference Include="..\EPG\JMS.DVB.NET.EPG.csproj">
       <Aliases>oldVersion</Aliases>
     </ProjectReference>
-    <ProjectReference Include="..\Algorithms\DVB.NET.Algorithms.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
