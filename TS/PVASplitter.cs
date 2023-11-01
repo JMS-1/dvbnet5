@@ -7,7 +7,7 @@ namespace JMS.DVB.TS
 {
 	/// <summary>
 	/// Diese Klasse nimmt PVA Pakete entgegen und zerteilt den gesamten PVA
-	/// Datenstrom in Bild- und Tonströme. Das Ergebnis wird in einen
+	/// Datenstrom in Bild- und Tonstrï¿½me. Das Ergebnis wird in einen
 	/// <i>Transport Stream</i> eingemischt.
 	/// <seealso cref="Manager"/>
 	/// </summary>
@@ -24,7 +24,7 @@ namespace JMS.DVB.TS
 		private const long PTSOffset = ((long)1) << 32;
 
 		/// <summary>
-		/// Interne Zustände während der Analyse der PVA Daten.
+		/// Interne Zustï¿½nde wï¿½hrend der Analyse der PVA Daten.
 		/// </summary>
 		private enum SyncStates
 		{
@@ -49,7 +49,7 @@ namespace JMS.DVB.TS
 			PTS,
 
 			/// <summary>
-			/// Nutzdaten werden übertragen.
+			/// Nutzdaten werden ï¿½bertragen.
 			/// </summary>
 			PayLoad
 		};
@@ -80,12 +80,12 @@ namespace JMS.DVB.TS
 		private byte[] m_PTS = new byte[4];
 
 		/// <summary>
-		/// Wird gesetzt, sobald der PES Kopf für den Videostrom rekonstruiert wurde.
+		/// Wird gesetzt, sobald der PES Kopf fï¿½r den Videostrom rekonstruiert wurde.
 		/// </summary>
 		private bool m_PESCreated = false;
 
 		/// <summary>
-		/// Zählt, wie oft eine Anpassung des Audio PTS nicht möglich war.
+		/// Zï¿½hlt, wie oft eine Anpassung des Audio PTS nicht mï¿½glich war.
 		/// </summary>
 		private long m_BadAudioPES = 0;
 
@@ -106,12 +106,12 @@ namespace JMS.DVB.TS
 		private int m_VideoAlign = 0;
 
 		/// <summary>
-		/// Zählt, wie oft im PVA Kontrollwort nach einem A kein V kam.
+		/// Zï¿½hlt, wie oft im PVA Kontrollwort nach einem A kein V kam.
 		/// </summary>
 		private long m_Restarted = 0;
 
 		/// <summary>
-		/// Zähler zum Füllen diverser Hilfsstrukturen.
+		/// Zï¿½hler zum Fï¿½llen diverser Hilfsstrukturen.
 		/// </summary>
 		private int m_BytesLeft = 0;
 
@@ -131,7 +131,7 @@ namespace JMS.DVB.TS
 		private int m_PacketPos = 0;
 
 		/// <summary>
-		/// Zählt, wieviele Bytes überprungen werden mußten, um das
+		/// Zï¿½hlt, wieviele Bytes ï¿½berprungen werden muï¿½ten, um das
 		/// erste Zeichen (A) des Kontrollwortes zu finden.
 		/// </summary>
 		private long m_Skipped = 0;
@@ -157,7 +157,7 @@ namespace JMS.DVB.TS
 		/// </summary>
 		/// <param name="tsFile">Der <i>Transport Stream</i>, zu dem noch keine
 		/// <param name="audioName">Der ISO Name der Sprache.</param>
-		/// Datenströme hinzugefügt wurden.</param>
+		/// Datenstrï¿½me hinzugefï¿½gt wurden.</param>
 		public PVASplitter(Manager tsFile, string audioName)
 		{
 			// Remember
@@ -173,16 +173,13 @@ namespace JMS.DVB.TS
 			// Create reader
 			m_Worker = new Thread(new ThreadStart(Worker));
 
-			// Configure
-			m_Worker.SetApartmentState(ApartmentState.MTA);
-
 			// Run it
 			m_Worker.Start();
 		}
 
 		/// <summary>
 		/// Hier wird vom Gesamtstrom die Zeitbasis eines beliebigen Teilstroms
-		/// übertragen.
+		/// ï¿½bertragen.
 		/// <seealso cref="CorrectByGuide"/>
 		/// </summary>
 		public long GuidePTS
@@ -198,7 +195,7 @@ namespace JMS.DVB.TS
 		/// Bearbeitet einen Auszug aus dem PVA Datenstrom.
 		/// </summary>
 		/// <param name="buffer">Bytes aus dem PVA Datenstrom. Dieser wird
-		/// intern verwendet und darf nach dem Aufruf nicht verändert werden.</param>
+		/// intern verwendet und darf nach dem Aufruf nicht verï¿½ndert werden.</param>
 		public void AddPayload(byte[] buffer)
 		{
 			// Not active
@@ -512,7 +509,7 @@ namespace JMS.DVB.TS
 		/// Verarbeitet Nutzdaten des Videostroms.
 		/// </summary>
 		/// <remarks>
-		/// Je nach Situation muß ein PES Kopf aus den PVA Daten rekonstruiert werden.
+		/// Je nach Situation muï¿½ ein PES Kopf aus den PVA Daten rekonstruiert werden.
 		/// </remarks>
 		/// <param name="buffer">Paketdaten.</param>
 		/// <param name="start">Erstes Byte der Nutzdaten.</param>
@@ -595,7 +592,7 @@ namespace JMS.DVB.TS
 		}
 
 		/// <summary>
-		/// Korrigiert bei Bedarf den PVA 32-Bit PTS im Audiostrom gemäß
+		/// Korrigiert bei Bedarf den PVA 32-Bit PTS im Audiostrom gemï¿½ï¿½
 		/// der Zeitbasis der Gesamtdatei.
 		/// </summary>
 		/// <param name="buffer">Paketdaten.</param>
@@ -701,14 +698,14 @@ namespace JMS.DVB.TS
 		/// einer Gesamtdatei an.
 		/// </summary>
 		/// <remarks>
-		/// Der Gesamtstrom trägt über <see cref="GuidePTS"/> den vollen PTS eines
-		/// Datenstroms ein - <i>-1</i>, wenn keine weiteren Datenströme vorhanden
-		/// sind. Die Methode übernimmt das 33te Bit in die PTS Werte des PVA Stroms
-		/// und prüft dann die Abweichung dieses korrigierten Wertes gegen den
-		/// <see cref="GuidePTS"/>. Ist diese größer als ein Schwellwert (es wurde
-		/// willkürlich 2 Minuten gewählt), so wird das 33te Bit invertiert. So sollte
-		/// für alle praktische Fälle erreicht werden, dass sich die rekonstruierte PTS
-		/// homogen in den Gesamtstrom einfügt.
+		/// Der Gesamtstrom trï¿½gt ï¿½ber <see cref="GuidePTS"/> den vollen PTS eines
+		/// Datenstroms ein - <i>-1</i>, wenn keine weiteren Datenstrï¿½me vorhanden
+		/// sind. Die Methode ï¿½bernimmt das 33te Bit in die PTS Werte des PVA Stroms
+		/// und prï¿½ft dann die Abweichung dieses korrigierten Wertes gegen den
+		/// <see cref="GuidePTS"/>. Ist diese grï¿½ï¿½er als ein Schwellwert (es wurde
+		/// willkï¿½rlich 2 Minuten gewï¿½hlt), so wird das 33te Bit invertiert. So sollte
+		/// fï¿½r alle praktische Fï¿½lle erreicht werden, dass sich die rekonstruierte PTS
+		/// homogen in den Gesamtstrom einfï¿½gt.
 		/// </remarks>
 		/// <param name="pts">32-Bit PVA PTS.</param>
 		/// <returns>33-Bit PTS passend zum Gesamtstrom.</returns>

@@ -21,6 +21,8 @@
     <ProjectReference Include="..\HardwareAbstraction\DVB.NET.HardwareAbstraction.csproj" />
     <ProjectReference Include="..\Ubuntu\DVB.NET.Ubuntu.csproj" />
     <ProjectReference Include="..\DVBNETLegacy\DVB.NET.DVBNETLegacy.csproj" />
+    <ProjectReference Include="..\CardServerCore\DVB.NET.CardServerCore.csproj" />
+    <ProjectReference Include="..\Algorithms\DVB.NET.Algorithms.csproj" />
   </ItemGroup>
   <Target Name="CopyDefaultScanLocations" AfterTargets="AfterBuild">
     <Copy SourceFiles="../SourceManagement/ScanLocations/BuiltIn.dss" DestinationFolder="$(OutDir)" />
