@@ -44,11 +44,11 @@ namespace JMS.DVB.CardServer
             /// </summary>
             /// <param name="server">Die zu steuernde Einheit.</param>
             /// <exception cref="ArgumentNullException">Es wurde keine Steuerinstanz angegeben.</exception>
-            public _AsyncControl( ServerImplementation server )
+            public _AsyncControl(ServerImplementation server)
             {
                 // Validate
                 if (server == null)
-                    throw new ArgumentNullException( "server" );
+                    throw new ArgumentNullException("server");
 
                 // Remember
                 m_Server = server;
@@ -60,13 +60,13 @@ namespace JMS.DVB.CardServer
             /// <typeparam name="T">Die Art des Rückgabewertes.</typeparam>
             /// <param name="server">Die aktuelle Implementierung.</param>
             /// <returns>Die gewünschte Steuerinstanz.</returns>
-            public static IAsyncResult Create<T>( ServerImplementation server )
+            public static IAsyncResult Create<T>(ServerImplementation server)
             {
                 // Check mode
-                if (typeof( T ) == typeof( object ))
-                    return new _AsyncControl( server );
+                if (typeof(T) == typeof(object))
+                    return new _AsyncControl(server);
                 else
-                    return new _AsyncControl<T>( server );
+                    return new _AsyncControl<T>(server);
             }
 
             #region IAsyncResult Members
@@ -138,8 +138,8 @@ namespace JMS.DVB.CardServer
             /// Erzeugt eine neue Steuerinstanz.
             /// </summary>
             /// <param name="server">Die zu verwaltenden Implementierung.</param>
-            public _AsyncControl( ServerImplementation server )
-                : base( server )
+            public _AsyncControl(ServerImplementation server)
+                : base(server)
             {
             }
 
@@ -151,7 +151,7 @@ namespace JMS.DVB.CardServer
                 get
                 {
                     // Report
-                    return ServerImplementation.EndRequest<T>( this );
+                    return ServerImplementation.EndRequest<T>(this);
                 }
             }
         }
@@ -159,27 +159,27 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Der Name des aktuell zugeordneten DVB.NET Geräteprofils.
         /// </summary>
-        private string m_Profile;
+        private string? m_Profile;
 
         /// <summary>
         /// Die aktuelle, noch nicht abgeschlossene Aufgabe.
         /// </summary>
-        private volatile Action<object> m_Pending;
+        private volatile Action<object>? m_Pending;
 
         /// <summary>
         /// Enthält das Ergebnis der letzten Ausführung einer Aufgabe.
         /// </summary>
-        private CardServerException m_LastError;
+        private CardServerException? m_LastError;
 
         /// <summary>
         /// Der Rückgabewert der letzten Aufgabe.
         /// </summary>
-        private object m_Result;
+        private object? m_Result;
 
         /// <summary>
         /// Signalisiert den Abschluss einer Aufgabe.
         /// </summary>
-        private ManualResetEvent m_Done = new ManualResetEvent( true );
+        private readonly ManualResetEvent m_Done = new(true);
 
         /// <summary>
         /// Initialisiert die Basisklasse.
@@ -214,7 +214,7 @@ namespace JMS.DVB.CardServer
         /// <param name="selection">Die Beschreibung einer Quelle, deren Gruppe aktiviert werden soll.</param>
         /// <exception cref="ArgumentNullException">Es wurde keine Quellgruppe angegeben.</exception>
         /// <exception cref="CardServerException">Es wird bereits eine Anfrage ausgeführt.</exception>
-        protected abstract void OnSelect( SourceSelection selection );
+        protected abstract void OnSelect(SourceSelection selection);
 
         /// <summary>
         /// Wählt eine bestimmte Quellgruppe (Transponder) an.
@@ -223,21 +223,21 @@ namespace JMS.DVB.CardServer
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Quellgruppe angegeben.</exception>
         /// <exception cref="CardServerException">Es wird bereits eine Anfrage ausgeführt.</exception>
-        public IAsyncResult BeginSelect( string selectionKey )
+        public IAsyncResult BeginSelect(string selectionKey)
         {
             // Validate
             if (selectionKey == null)
-                throw new ArgumentNullException( "selectionKey" );
+                throw new ArgumentNullException("selectionKey");
 
             // Reconstruct
             var selection = new SourceSelection { SelectionKey = selectionKey };
 
             // Check for profile match
-            if (string.IsNullOrEmpty( m_Profile ) || !string.Equals( m_Profile, selection.ProfileName, StringComparison.InvariantCultureIgnoreCase ))
-                CardServerException.Throw( new ProfileMismatchFault( m_Profile, selection.ProfileName ) );
+            if (string.IsNullOrEmpty(m_Profile) || !string.Equals(m_Profile, selection.ProfileName, StringComparison.InvariantCultureIgnoreCase))
+                CardServerException.Throw(new ProfileMismatchFault(m_Profile!, selection.ProfileName));
 
             // Start action
-            return Start<object>( () => { OnSelect( selection ); } );
+            return Start<object>(() => { OnSelect(selection); });
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="actionType">Die Klasse, von der aus die Erweiterungsmethode abgerufen werden kann.</param>
         /// <param name="parameters">Optionale Parameter zur Ausführung.</param>
-        protected abstract void OnCustomAction<TInput, TOutput>( string actionType, TInput parameters );
+        protected abstract void OnCustomAction<TInput, TOutput>(string actionType, TInput parameters);
 
         /// <summary>
         /// Führt eine Erweiterungsoperation aus.
@@ -256,14 +256,14 @@ namespace JMS.DVB.CardServer
         /// <param name="parameters">Optionale Parameter zur Ausführung.</param>
         /// <returns>Steuereinheit zur Ausführung der Operation.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Erweiterung angegeben.</exception>
-        public IAsyncResult<TOutput> BeginCustomAction<TInput, TOutput>( string actionType, TInput parameters )
+        public IAsyncResult<TOutput> BeginCustomAction<TInput, TOutput>(string actionType, TInput parameters)
         {
             // Validate
-            if (string.IsNullOrEmpty( actionType ))
-                throw new ArgumentNullException( "actionType" );
+            if (string.IsNullOrEmpty(actionType))
+                throw new ArgumentNullException("actionType");
 
             // Start action
-            return (IAsyncResult<TOutput>) Start<TOutput>( () => { OnCustomAction<TInput, TOutput>( actionType, parameters ); } );
+            return (IAsyncResult<TOutput>)Start<TOutput>(() => { OnCustomAction<TInput, TOutput>(actionType, parameters); });
         }
 
         /// <summary>
@@ -272,7 +272,7 @@ namespace JMS.DVB.CardServer
         /// <param name="actionAssembly">Der Binärcode der Bibliothek.</param>
         /// <param name="symbols">Informationen zum Debuggen der Erweiterung.</param>
         /// <returns>Steuereinheit zur Synchronisation des Aufrufs.</returns>
-        protected abstract void OnLoadExtensions( byte[] actionAssembly, byte[] symbols );
+        protected abstract void OnLoadExtensions(byte[] actionAssembly, byte[] symbols);
 
         /// <summary>
         /// Lädt eine Bibliothek mit Erweiterungen.
@@ -280,21 +280,21 @@ namespace JMS.DVB.CardServer
         /// <param name="actionAssembly">Der Binärcode der Bibliothek.</param>
         /// <param name="symbols">Informationen zum Debuggen der Erweiterung.</param>
         /// <returns>Steuereinheit zur Synchronisation des Aufrufs.</returns>
-        public IAsyncResult BeginLoadExtensions( byte[] actionAssembly, byte[] symbols )
+        public IAsyncResult BeginLoadExtensions(byte[] actionAssembly, byte[] symbols)
         {
             // Validate
             if (actionAssembly == null)
-                throw new ArgumentNullException( "actionAssembly" );
+                throw new ArgumentNullException("actionAssembly");
 
             // Start action
-            return Start<object>( () => { OnLoadExtensions( actionAssembly, symbols ); } );
+            return Start<object>(() => { OnLoadExtensions(actionAssembly, symbols); });
         }
 
         /// <summary>
         /// Aktiviert den Empfang einer Quelle.
         /// </summary>
         /// <param name="sources">Informationen zu den zu aktivierenden Quellen.</param>
-        protected abstract void OnAddSources( ReceiveInformation[] sources );
+        protected abstract void OnAddSources(ReceiveInformation[] sources);
 
         /// <summary>
         /// Aktiviert den Empfang einer Quelle.
@@ -303,11 +303,11 @@ namespace JMS.DVB.CardServer
         /// <returns>Steuereinheit für diesen Aufruf. Der Ergebniswert enthält alle Quellen, die erfolgreich
         /// aktiviert wurden - eventuell mit reduzierten Detailaspekten.</returns>
         /// <exception cref="ArgumentNullException">Mindestens eine Quelle ist nicht gesetzt.</exception>
-        public IAsyncResult<StreamInformation[]> BeginAddSources( ReceiveInformation[] sources )
+        public IAsyncResult<StreamInformation[]> BeginAddSources(ReceiveInformation[] sources)
         {
             // Validate
             if (sources == null)
-                throw new ArgumentNullException( "sources" );
+                throw new ArgumentNullException("sources");
 
             // Create helper
             var clones = new List<ReceiveInformation>();
@@ -318,27 +318,27 @@ namespace JMS.DVB.CardServer
                 // Load the one
                 var source = sources[i];
                 if (null == source)
-                    throw new ArgumentNullException( string.Format( "sources[{0}]", i ) );
+                    throw new ArgumentNullException(string.Format("sources[{0}]", i));
 
                 // Clone it
                 source = source.Clone();
 
                 // More tests
                 if (source.SelectionKey == null)
-                    throw new ArgumentNullException( string.Format( "sources[{0}].SelectionKey", i ) );
+                    throw new ArgumentNullException(string.Format("sources[{0}].SelectionKey", i));
                 if (source.Streams == null)
-                    throw new ArgumentNullException( string.Format( "sources[{0}].Streams", i ) );
+                    throw new ArgumentNullException(string.Format("sources[{0}].Streams", i));
 
                 // Check for profile match
-                if (string.IsNullOrEmpty( m_Profile ) || !string.Equals( m_Profile, source.Selection.ProfileName, StringComparison.InvariantCultureIgnoreCase ))
-                    CardServerException.Throw( new ProfileMismatchFault( m_Profile, source.Selection.ProfileName ) );
+                if (string.IsNullOrEmpty(m_Profile) || !string.Equals(m_Profile, source.Selection.ProfileName, StringComparison.InvariantCultureIgnoreCase))
+                    CardServerException.Throw(new ProfileMismatchFault(m_Profile!, source.Selection.ProfileName));
 
                 // Merge
-                clones.Add( source );
+                clones.Add(source);
             }
 
             // Start action
-            return (IAsyncResult<StreamInformation[]>) Start<StreamInformation[]>( () => { OnAddSources( clones.ToArray() ); } );
+            return (IAsyncResult<StreamInformation[]>)Start<StreamInformation[]>(() => { OnAddSources(clones.ToArray()); });
         }
 
         /// <summary>
@@ -346,17 +346,17 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="source">Die betroffene Quelle.</param>
         /// <param name="uniqueIdentifier">Der eindeutige Name der Quelle.</param>
-        protected abstract void OnRemoveSource( SourceIdentifier source, Guid uniqueIdentifier );
+        protected abstract void OnRemoveSource(SourceIdentifier source, Guid uniqueIdentifier);
 
         /// <summary>
         /// Stellt den Empfang für eine Quelle ein.
         /// </summary>
         /// <param name="source">Die betroffene Quelle.</param>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
-        public IAsyncResult BeginRemoveSource( SourceIdentifier source )
+        public IAsyncResult BeginRemoveSource(SourceIdentifier source)
         {
             // Forward
-            return BeginRemoveSource( source, Guid.Empty );
+            return BeginRemoveSource(source, Guid.Empty);
         }
 
         /// <summary>
@@ -365,14 +365,14 @@ namespace JMS.DVB.CardServer
         /// <param name="source">Die betroffene Quelle.</param>
         /// <param name="uniqueIdentifier">Der eindeutige Name der Quelle.</param>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
-        public IAsyncResult BeginRemoveSource( SourceIdentifier source, Guid uniqueIdentifier )
+        public IAsyncResult BeginRemoveSource(SourceIdentifier source, Guid uniqueIdentifier)
         {
             // Validate
             if (source == null)
-                throw new ArgumentNullException( "source" );
+                throw new ArgumentNullException("source");
 
             // Start action
-            return Start<object>( () => { OnRemoveSource( source, uniqueIdentifier ); } );
+            return Start<object>(() => { OnRemoveSource(source, uniqueIdentifier); });
         }
 
         /// <summary>
@@ -380,7 +380,7 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="source">Die gewünschte Quelle.</param>
         /// <param name="target">Die Netzwerkadresse, an die alle Daten versendet werden sollen.</param>
-        protected abstract void OnSetZappingSource( SourceSelection source, string target );
+        protected abstract void OnSetZappingSource(SourceSelection source, string target);
 
         /// <summary>
         /// Aktiviert eine einzelne Quelle für den <i>Zapping Modus</i>.
@@ -389,23 +389,23 @@ namespace JMS.DVB.CardServer
         /// <param name="target">Die Netzwerkadresse, an die alle Daten versendet werden sollen.</param>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
         /// <exception cref="ArgumentNullException">Ein Parameter wurde nicht angegeben.</exception>
-        public IAsyncResult<ServerInformation> BeginSetZappingSource( string selectionKey, string target )
+        public IAsyncResult<ServerInformation> BeginSetZappingSource(string selectionKey, string target)
         {
             // Validate
-            if (string.IsNullOrEmpty( selectionKey ))
-                throw new ArgumentNullException( "selectionKey" );
-            if (string.IsNullOrEmpty( target ))
-                throw new ArgumentNullException( "target" );
+            if (string.IsNullOrEmpty(selectionKey))
+                throw new ArgumentNullException("selectionKey");
+            if (string.IsNullOrEmpty(target))
+                throw new ArgumentNullException("target");
 
             // Create the selection
             var source = new SourceSelection { SelectionKey = selectionKey };
 
             // Check for profile match
-            if (string.IsNullOrEmpty( m_Profile ) || !string.Equals( m_Profile, source.ProfileName, StringComparison.InvariantCultureIgnoreCase ))
-                CardServerException.Throw( new ProfileMismatchFault( m_Profile, source.ProfileName ) );
+            if (string.IsNullOrEmpty(m_Profile) || !string.Equals(m_Profile, source.ProfileName, StringComparison.InvariantCultureIgnoreCase))
+                CardServerException.Throw(new ProfileMismatchFault(m_Profile!, source.ProfileName));
 
             // Start action
-            return (IAsyncResult<ServerInformation>) Start<ServerInformation>( () => { OnSetZappingSource( source, target ); } );
+            return (IAsyncResult<ServerInformation>)Start<ServerInformation>(() => { OnSetZappingSource(source, target); });
         }
 
         /// <summary>
@@ -414,7 +414,7 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="sources">Die zu berücksichtigenden Quellen.</param>
         /// <param name="extensions">Spezielle Zusatzfunktionalitäten der Sammlung.</param>
-        protected abstract void OnStartEPGCollection( SourceIdentifier[] sources, EPGExtensions extensions );
+        protected abstract void OnStartEPGCollection(SourceIdentifier[] sources, EPGExtensions extensions);
 
         /// <summary>
         /// Beginnt mit der Sammlung der Daten für die elektronische Programmzeitschrift
@@ -423,22 +423,22 @@ namespace JMS.DVB.CardServer
         /// <param name="sources">Die zu berücksichtigenden Quellen.</param>
         /// <param name="extensions">Spezielle Zusatzfunktionalitäten der Sammlung.</param>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
-        public IAsyncResult BeginStartEPGCollection( SourceIdentifier[] sources, EPGExtensions extensions )
+        public IAsyncResult BeginStartEPGCollection(SourceIdentifier[] sources, EPGExtensions extensions)
         {
             // Remap
             if (sources != null)
             {
                 // Create clone
-                sources = (SourceIdentifier[]) sources.Clone();
+                sources = (SourceIdentifier[])sources.Clone();
 
                 // Create real identifiers
-                for (int i = sources.Length; i-- > 0; )
+                for (int i = sources.Length; i-- > 0;)
                     if (sources[i] != null)
-                        sources[i] = new SourceIdentifier( sources[i] );
+                        sources[i] = new SourceIdentifier(sources[i]);
             }
 
             // Forward
-            return Start<object>( () => { OnStartEPGCollection( sources, extensions ); } );
+            return Start<object>(() => { OnStartEPGCollection(sources!, extensions); });
         }
 
         /// <summary>
@@ -454,7 +454,7 @@ namespace JMS.DVB.CardServer
         public IAsyncResult<ProgramGuideItem[]> BeginEndEPGCollection()
         {
             // Forward
-            return (IAsyncResult<ProgramGuideItem[]>) Start<ProgramGuideItem[]>( OnEndEPGCollection );
+            return (IAsyncResult<ProgramGuideItem[]>)Start<ProgramGuideItem[]>(OnEndEPGCollection);
         }
 
         /// <summary>
@@ -464,7 +464,7 @@ namespace JMS.DVB.CardServer
         /// <param name="uniqueIdentifier">Der eindeutige Name der Quelle.</param>
         /// <param name="target">Die Daten zum Netzwerkversand.</param>
         /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
-        protected abstract void OnSetStreamTarget( SourceIdentifier source, Guid uniqueIdentifier, string target );
+        protected abstract void OnSetStreamTarget(SourceIdentifier source, Guid uniqueIdentifier, string target);
 
         /// <summary>
         /// Verändert den Netzwerkversand für eine aktive Quelle.
@@ -473,10 +473,10 @@ namespace JMS.DVB.CardServer
         /// <param name="target">Die Daten zum Netzwerkversand.</param>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
-        public IAsyncResult BeginSetStreamTarget( SourceIdentifier source, string target )
+        public IAsyncResult BeginSetStreamTarget(SourceIdentifier source, string target)
         {
             // Forward
-            return BeginSetStreamTarget( source, Guid.Empty, target );
+            return BeginSetStreamTarget(source, Guid.Empty, target);
         }
 
         /// <summary>
@@ -487,14 +487,14 @@ namespace JMS.DVB.CardServer
         /// <param name="target">Die Daten zum Netzwerkversand.</param>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
-        public IAsyncResult BeginSetStreamTarget( SourceIdentifier source, Guid uniqueIdentifier, string target )
+        public IAsyncResult BeginSetStreamTarget(SourceIdentifier source, Guid uniqueIdentifier, string target)
         {
             // Validate
             if (source == null)
-                throw new ArgumentNullException( "source" );
+                throw new ArgumentNullException("source");
 
             // Start action
-            return Start<object>( () => { OnSetStreamTarget( new SourceIdentifier( source ), uniqueIdentifier, target ); } );
+            return Start<object>(() => { OnSetStreamTarget(new SourceIdentifier(source), uniqueIdentifier, target); });
         }
 
         /// <summary>
@@ -509,7 +509,7 @@ namespace JMS.DVB.CardServer
         public IAsyncResult BeginRemoveAllSources()
         {
             // Start action
-            return Start<object>( OnRemoveAllSources );
+            return Start<object>(OnRemoveAllSources);
         }
 
         /// <summary>
@@ -523,7 +523,7 @@ namespace JMS.DVB.CardServer
         /// dem MPEG2 Bildsignal ermittelt wird, da dieser Mechanismus hochgradig unsicher ist.</param>
         /// <exception cref="CardServerException">Es existiert kein Geräteprofil mit dem
         /// angegebenen Namen.</exception>
-        protected abstract void OnAttachProfile( string profileName, bool reset, bool disablePCRFromH264, bool disablePCRFromMPEG2 );
+        protected abstract void OnAttachProfile(string profileName, bool reset, bool disablePCRFromH264, bool disablePCRFromMPEG2);
 
         /// <summary>
         /// Setzt das aktuell zugeordnete DVB.NET Geräteprofil.
@@ -537,18 +537,18 @@ namespace JMS.DVB.CardServer
         /// <returns>Steuerinstanz zur asynchronen Ausführung.</returns>
         /// <exception cref="ArgumentNullException">Es wurde kein Geräteprofil angegeben.</exception>
         /// <exception cref="CardServerException">Es wurde bereits ein Geräteprofil aktiviert.</exception>
-        public IAsyncResult BeginSetProfile( string profileName, bool reset, bool disablePCRFromH264, bool disablePCRFromMPEG2 )
+        public IAsyncResult BeginSetProfile(string profileName, bool reset, bool disablePCRFromH264, bool disablePCRFromMPEG2)
         {
             // Validate
-            if (string.IsNullOrEmpty( profileName ))
-                throw new ArgumentNullException( "value" );
+            if (string.IsNullOrEmpty(profileName))
+                throw new ArgumentNullException("value");
 
             // We are in use
-            if (!string.IsNullOrEmpty( m_Profile ))
-                CardServerException.Throw( new ProfileAlreadyAttachedFault( m_Profile ) );
+            if (!string.IsNullOrEmpty(m_Profile))
+                CardServerException.Throw(new ProfileAlreadyAttachedFault(m_Profile));
 
             // Set the closing action
-            return Start<object>( () => { OnAttachProfile( profileName, reset, disablePCRFromH264, disablePCRFromMPEG2 ); }, r => { m_Profile = profileName; } );
+            return Start<object>(() => { OnAttachProfile(profileName, reset, disablePCRFromH264, disablePCRFromMPEG2); }, r => { m_Profile = profileName; });
         }
 
         /// <summary>
@@ -564,7 +564,7 @@ namespace JMS.DVB.CardServer
         public IAsyncResult<ServerInformation> BeginGetState()
         {
             // Start action
-            return (IAsyncResult<ServerInformation>) Start<ServerInformation>( OnGetState );
+            return (IAsyncResult<ServerInformation>)Start<ServerInformation>(OnGetState);
         }
 
         /// <summary>
@@ -579,24 +579,24 @@ namespace JMS.DVB.CardServer
         public IAsyncResult BeginStartScan()
         {
             // Start action
-            return Start<object>( OnStartScan );
+            return Start<object>(OnStartScan);
         }
 
         /// <summary>
         /// Beendet einen Sendersuchlauf auf dem aktuellen Geräteprofil.
         /// </summary>
         /// <param name="updateProfile">Gesetzt, wenn das Geräteprofil aktualisiert werden soll.</param>
-        protected abstract void OnEndScan( bool? updateProfile );
+        protected abstract void OnEndScan(bool? updateProfile);
 
         /// <summary>
         /// Beendet einen Sendersuchlauf auf dem aktuellen Geräteprofil.
         /// </summary>
         /// <param name="updateProfile">Gesetzt, wenn das Geräteprofil aktualisiert werden soll.</param>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
-        public IAsyncResult BeginEndScan( bool? updateProfile )
+        public IAsyncResult BeginEndScan(bool? updateProfile)
         {
             // Start action
-            return Start<object>( () => { OnEndScan( updateProfile ); } );
+            return Start<object>(() => { OnEndScan(updateProfile); });
         }
 
         /// <summary>
@@ -605,10 +605,10 @@ namespace JMS.DVB.CardServer
         /// <typeparam name="T">Die Art dces Rückgabewertes.</typeparam>
         /// <param name="action">Die auszuführende Aktion.</param>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
-        private IAsyncResult Start<T>( Action action )
+        private IAsyncResult Start<T>(Action action)
         {
             // Forward
-            return Start<T>( action, null );
+            return Start<T>(action, null);
         }
 
         /// <summary>
@@ -618,11 +618,11 @@ namespace JMS.DVB.CardServer
         /// <param name="action">Die auszuführende Aktion.</param>
         /// <param name="finalizer"></param>
         /// <returns>Steuereinheit für diesen Aufruf.</returns>
-        private IAsyncResult Start<TResult>( Action action, Action<object> finalizer )
+        private IAsyncResult Start<TResult>(Action action, Action<object>? finalizer)
         {
             // We are Processing
             if (IsBusy)
-                CardServerException.Throw( new ServerBusyFault() );
+                CardServerException.Throw(new ServerBusyFault());
 
             // Set the closing action
             m_Pending = finalizer;
@@ -641,15 +641,15 @@ namespace JMS.DVB.CardServer
                 action();
 
                 // Report control element
-                return _AsyncControl.Create<TResult>( this );
+                return _AsyncControl.Create<TResult>(this);
             }
             catch (Exception e)
             {
                 // Synchronous error
-                ActionDone( e, null );
+                ActionDone(e, null);
 
                 // Forward
-                throw e;
+                throw;
             }
         }
 
@@ -662,7 +662,7 @@ namespace JMS.DVB.CardServer
         {
             // Still running
             if (IsBusy)
-                CardServerException.Throw( new ServerBusyFault() );
+                CardServerException.Throw(new ServerBusyFault());
 
             // Result
             var e = m_LastError;
@@ -675,7 +675,7 @@ namespace JMS.DVB.CardServer
                 throw e;
 
             // Report result
-            return (T) m_Result;
+            return (T)m_Result!;
         }
 
         /// <summary>
@@ -684,7 +684,7 @@ namespace JMS.DVB.CardServer
         /// <param name="e">Die zugehörige Ausnahme oder <i>null</i>, wenn bei der Ausführung
         /// kein Fehler aufgetreten ist.</param>
         /// <param name="result">Das Ergebnis der ausgeführten Aktion</param>
-        protected void ActionDone( Exception e, object result )
+        protected void ActionDone(Exception? e, object? result)
         {
             // Remember
             m_Result = result;
@@ -693,9 +693,9 @@ namespace JMS.DVB.CardServer
             if (e == null)
                 m_LastError = null;
             else if (e is CardServerException)
-                m_LastError = (CardServerException) e;
+                m_LastError = (CardServerException)e;
             else
-                m_LastError = new CardServerException( new CardServerFault( e.Message ) );
+                m_LastError = new CardServerException(new CardServerFault(e.Message));
 
             // Finish
             if (m_Pending != null)
@@ -703,7 +703,7 @@ namespace JMS.DVB.CardServer
                 {
                     // Process if there was no error
                     if (m_LastError == null)
-                        m_Pending( m_Result );
+                        m_Pending(m_Result!);
                 }
                 finally
                 {
@@ -724,7 +724,7 @@ namespace JMS.DVB.CardServer
             get
             {
                 // Report
-                return !m_Done.WaitOne( 0, false );
+                return !m_Done.WaitOne(0, false);
             }
         }
 
@@ -732,10 +732,10 @@ namespace JMS.DVB.CardServer
         /// Wartet das Ende eines asynchronen Aufrufs ab.
         /// </summary>
         /// <param name="request">Die Steuereinheit zum Aufruf.</param>
-        public static void EndRequest( IAsyncResult request )
+        public static void EndRequest(IAsyncResult request)
         {
             // Forward
-            EndRequest<object>( request );
+            EndRequest<object>(request);
         }
 
         /// <summary>
@@ -744,10 +744,10 @@ namespace JMS.DVB.CardServer
         /// <typeparam name="TResult">Die Art des Ergebnisses.</typeparam>
         /// <param name="request">Die Steuereinheit zum Aufruf.</param>
         /// <returns>Das Ergebnis der Operation.</returns>
-        public static TResult EndRequest<TResult>( IAsyncResult<TResult> request )
+        public static TResult EndRequest<TResult>(IAsyncResult<TResult> request)
         {
             // Forward
-            return EndRequest<TResult>( (IAsyncResult) request );
+            return EndRequest<TResult>((IAsyncResult)request);
         }
 
         /// <summary>
@@ -757,22 +757,22 @@ namespace JMS.DVB.CardServer
         /// <param name="request">Die Steuereinheit zum Aufruf.</param>
         /// <returns>Das Ergebnis des Aufrufs oder <i>null</i>, wenn es sich nicht um
         /// eine Funktion handelte.</returns>
-        public static T EndRequest<T>( IAsyncResult request )
+        public static T EndRequest<T>(IAsyncResult request)
         {
             // Validate
             if (request == null)
-                throw new ArgumentNullException( "request" );
+                throw new ArgumentNullException("request");
 
             // Change type
             var myRequest = request as _AsyncControl;
             if (myRequest == null)
-                throw new ArgumentException( request.GetType().FullName, "request" );
+                throw new ArgumentException(request.GetType().FullName, "request");
 
             // Wait until it finishes
             request.AsyncWaitHandle.WaitOne();
 
             // Get the server
-            var server = (ServerImplementation) request.AsyncState;
+            var server = (ServerImplementation)request.AsyncState!;
 
             // Report the result
             return server.GetResult<T>();
@@ -782,7 +782,7 @@ namespace JMS.DVB.CardServer
         /// Hilfsmethode zum einfachen Einspielen von Erweiterungsbibliotheken.
         /// </summary>
         /// <param name="extensionType">Eine beliebige Erweiterung.</param>
-        public virtual void LoadExtension( Type extensionType )
+        public virtual void LoadExtension(Type extensionType)
         {
         }
 
@@ -854,16 +854,16 @@ namespace JMS.DVB.CardServer
         /// <exception cref="NullReferenceException">Es wurde keine Implementierung angegeben.</exception>
         /// <exception cref="ArgumentNullException">Es wurde keine Quellgruppe angegeben.</exception>
         /// <exception cref="CardServerException">Es wird bereits eine Anfrage ausgeführt.</exception>
-        public static IAsyncResult BeginSelect( this ServerImplementation server, SourceSelection selection )
+        public static IAsyncResult BeginSelect(this ServerImplementation server, SourceSelection selection)
         {
             // Validate
             if (server == null)
-                throw new NullReferenceException( "server" );
+                throw new NullReferenceException("server");
             if (selection == null)
-                throw new ArgumentNullException( "selection" );
+                throw new ArgumentNullException("selection");
 
             // Forward
-            return server.BeginSelect( selection.SelectionKey );
+            return server.BeginSelect(selection.SelectionKey);
         }
     }
 }

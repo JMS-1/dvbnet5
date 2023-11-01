@@ -19,7 +19,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Das gerade verwendete Geräteprofil.
         /// </summary>
-        public Profile Profile { get; private set; }
+        public Profile? Profile { get; private set; }
 
         /// <summary>
         /// Die Wartezeit zwischen zwei Prüfungen auf den Gesamtdatenstrom.
@@ -39,12 +39,12 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Der <see cref="Thread"/>, auf dem die Augaben ausgeführt werden.
         /// </summary>
-        private Thread m_Thread;
+        private Thread? m_Thread;
 
         /// <summary>
         /// Ein <see cref="Thread"/>, der eine periodische Aktivierung auslöst.
         /// </summary>
-        private Thread m_IdleThread;
+        private Thread? m_IdleThread;
 
         /// <summary>
         /// Gesetzt, so lange die Bearbeitung aktiv ist.
@@ -104,7 +104,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Führt die eintreffenden Aufträge aus.
         /// </summary>
-        private void WorkerThread(object reset)
+        private void WorkerThread(object? reset)
         {
             // Always use the configured language
             UserProfile.ApplyLanguage();

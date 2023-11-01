@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using JMS.DVB.Algorithms;
-using System.Collections.Generic;
+﻿using JMS.DVB.Algorithms;
 
 namespace JMS.DVB.CardServer
 {
@@ -17,24 +12,17 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Meldet den aktuellen Fortschritt bei einem Sendersuchlauf.
         /// </summary>
-        public int ScanProgress
-        {
-            get
-            {
-                // Report
-                return m_ScanProgress;
-            }
-        }
+        public int ScanProgress => m_ScanProgress;
 
         /// <summary>
         /// Die Steuerung des Sendersuchlaufs.
         /// </summary>
-        private TransponderScanner m_Scanner;
+        private TransponderScanner? m_Scanner;
 
         /// <summary>
         /// Gesetzt, wenn der Suchlauf abgebrochen werden soll.
         /// </summary>
-        private volatile Action m_ScanAbort;
+        private volatile Action? m_ScanAbort;
 
         /// <summary>
         /// Die bisher gefundenen Quellen.
@@ -47,7 +35,7 @@ namespace JMS.DVB.CardServer
         private void CheckScanAbort()
         {
             // See if scan is aborting
-            Action abort = m_ScanAbort;
+            var abort = m_ScanAbort;
 
             // Not pending
             if (null == abort)
@@ -69,7 +57,7 @@ namespace JMS.DVB.CardServer
             catch (Exception e)
             {
                 // Terminate
-                ActionDone( e, null );
+                ActionDone(e, null);
             }
         }
 
@@ -79,25 +67,25 @@ namespace JMS.DVB.CardServer
         protected override void OnStartScan()
         {
             // Process
-            Start( device =>
+            Start(device =>
                 {
                     // Check mode
                     if (EPGProgress.HasValue)
-                        CardServerException.Throw( new EPGActiveFault() );
+                        CardServerException.Throw(new EPGActiveFault());
                     if (m_ScanProgress >= 0)
-                        CardServerException.Throw( new SourceUpdateActiveFault() );
-                    if (!string.IsNullOrEmpty( Profile.UseSourcesFrom ))
-                        CardServerException.Throw( new NoSourceListFault( Profile.Name ) );
+                        CardServerException.Throw(new SourceUpdateActiveFault());
+                    if (!string.IsNullOrEmpty(Profile!.UseSourcesFrom))
+                        CardServerException.Throw(new NoSourceListFault(Profile.Name));
 
                     // Stop all
                     RemoveAll();
 
                     // Create scanner
-                    m_Scanner = new TransponderScanner( Profile );
+                    m_Scanner = new TransponderScanner(Profile!);
 
                     // Configure
-                    m_Scanner.OnDoneLocation += ( l, s ) => OnUpdateScan();
-                    m_Scanner.OnDoneGroup += ( l, g, s ) => OnUpdateScan();
+                    m_Scanner.OnDoneLocation += (l, s) => OnUpdateScan();
+                    m_Scanner.OnDoneGroup += (l, g, s) => OnUpdateScan();
 
                     // Mark as started
                     m_ScanProgress = 0;
@@ -105,7 +93,7 @@ namespace JMS.DVB.CardServer
 
                     // Start it
                     m_Scanner.Scan();
-                } );
+                });
         }
 
         /// <summary>
@@ -115,7 +103,7 @@ namespace JMS.DVB.CardServer
         private bool OnUpdateScan()
         {
             // Attach to the scanner
-            TransponderScanner scanner = m_Scanner;
+            var scanner = m_Scanner;
 
             // Already done?
             if (null == scanner)
@@ -157,7 +145,7 @@ namespace JMS.DVB.CardServer
             }
 
             // Store
-            m_ScanProgress = (int) newProgress;
+            m_ScanProgress = (int)newProgress;
 
             // See if we are aborting
             return (null == m_ScanAbort);
@@ -167,22 +155,22 @@ namespace JMS.DVB.CardServer
         /// Beendet einen Sendersuchlauf auf dem aktuellen Geräteprofil.
         /// </summary>
         /// <param name="updateProfile">Gesetzt, wenn das Geräteprofil aktualisiert werden soll.</param>
-        protected override void OnEndScan( bool? updateProfile )
+        protected override void OnEndScan(bool? updateProfile)
         {
             // Process
-            Start( device =>
+            Start(device =>
                 {
                     // Check mode
                     if (m_ScanProgress < 0)
-                        CardServerException.Throw( new SourceUpdateNotActiveFault() );
+                        CardServerException.Throw(new SourceUpdateNotActiveFault());
                     if (null != m_ScanAbort)
-                        CardServerException.Throw( new SourceUpdateNotActiveFault() );
+                        CardServerException.Throw(new SourceUpdateNotActiveFault());
 
                     // Install action
                     m_ScanAbort = () =>
                         {
                             // With cleanup
-                            using (TransponderScanner scanner = m_Scanner)
+                            using (var scanner = m_Scanner)
                             {
                                 // Mark as done
                                 m_ScanProgress = -1;
@@ -193,10 +181,10 @@ namespace JMS.DVB.CardServer
                                 {
                                     // Do NOT merge
                                     if (!updateProfile.Value)
-                                        scanner.Profile.Locations.Clear();
+                                        scanner!.Profile.Locations.Clear();
 
                                     // Process
-                                    scanner.UpdateProfile();
+                                    scanner!.UpdateProfile();
 
                                     // Save it
                                     scanner.Profile.Save();
@@ -204,12 +192,12 @@ namespace JMS.DVB.CardServer
                             }
 
                             // Report
-                            ActionDone( null, null );
+                            ActionDone(null, null);
                         };
 
                     // Done
                     return DelayedOperationTag;
-                } );
+                });
         }
     }
 }
