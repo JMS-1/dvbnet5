@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JMS.DVB.NET.CardServerCore"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JMS.DVB.NET.Algorithms", "Algorithms\JMS.DVB.NET.Algorithms.csproj", "{EC933B2D-1BDB-4A53-86E6-EB358F088DCC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{D6CE4945-A698-4EF5-AB82-7DAEEC66FFBB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{EC933B2D-1BDB-4A53-86E6-EB358F088DCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC933B2D-1BDB-4A53-86E6-EB358F088DCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC933B2D-1BDB-4A53-86E6-EB358F088DCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6CE4945-A698-4EF5-AB82-7DAEEC66FFBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6CE4945-A698-4EF5-AB82-7DAEEC66FFBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6CE4945-A698-4EF5-AB82-7DAEEC66FFBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6CE4945-A698-4EF5-AB82-7DAEEC66FFBB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
