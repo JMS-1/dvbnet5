@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using JMS.DVB;
-using JMS.DVB.Algorithms.Scheduler;
-using JMS.DVBVCR.RecordingService.Persistence;
-using JMS.DVBVCR.RecordingService.Planning;
-using JMS.DVBVCR.RecordingService.Requests;
-using JMS.DVBVCR.RecordingService.Win32Tools;
-
+﻿using JMS.DVB.Algorithms.Scheduler;
+using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.Planning;
+using JMS.DVB.NET.Recording.Requests;
 
 namespace JMS.DVB.NET.Recording
 {
@@ -42,7 +34,7 @@ namespace JMS.DVB.NET.Recording
             var nameReport = string.Join(", ", profileNames);
 
             // Log
-            VCRServer.Log(LoggingLevel.Full, Properties.Resources.LoadProfiles, nameReport);
+            VCRServer.Log(LoggingLevel.Full, "Die Geräteprofile werden geladen: {0}", nameReport);
 
             // Report
             Tools.ExtendedLogging("Loading Profile Collection: {0}", nameReport);
@@ -53,9 +45,6 @@ namespace JMS.DVB.NET.Recording
             // Now we can create the planner
             m_planner = RecordingPlanner.Create(this);
             m_planThread = new Thread(PlanThread) { Name = "Recording Planner", IsBackground = true };
-
-            // Configure timer
-            m_timer.OnTimerExpired += BeginNewPlan;
 
             // Start planner
             m_planThread.Start();
@@ -184,13 +173,6 @@ namespace JMS.DVB.NET.Recording
             if (planThread != null)
                 planThread.Join();
 
-            // Release hibernation lock
-            AllowHibernation();
-
-            // Forget timer
-            using (m_timer)
-                m_timer = null;
-
             // Forget planner
             using (m_planner)
                 m_planner = null;
@@ -272,11 +254,6 @@ namespace JMS.DVB.NET.Recording
         private bool m_plannerActive = true;
 
         /// <summary>
-        /// Erstellt einen neuen Wartezähler.
-        /// </summary>
-        private WaitableTimer m_timer = new WaitableTimer();
-
-        /// <summary>
         /// Die aktuell ausstehende Operation.
         /// </summary>
         private IScheduleInformation m_pendingSchedule;
@@ -285,11 +262,6 @@ namespace JMS.DVB.NET.Recording
         /// Gesetzt, wenn auf das Starten einer Aufzeichnung gewartet wird.
         /// </summary>
         private bool m_pendingStart;
-
-        /// <summary>
-        /// Verhindert den Übergang in den Schlafzustand.
-        /// </summary>
-        private IDisposable m_hibernationBlocker;
 
         /// <summary>
         /// Aktualisiert ständig die Planung.
@@ -341,64 +313,51 @@ namespace JMS.DVB.NET.Recording
                     break;
 
                 // Just take a look what to do next
-                using (PowerManager.StartForbidHibernation())
-                    try
+                try
+                {
+                    // Reset start actions
+                    m_pendingActions = null;
+
+                    // Protect planning.
+                    lock (planner)
                     {
-                        // Reset start actions
-                        m_pendingActions = null;
+                        // Report
+                        Tools.ExtendedLogging("Woke up for Plan Calculation at {0}", DateTime.Now);
 
-                        // Protect planning.
-                        lock (planner)
+                        // Retest
+                        if (m_planThread == null)
+                            break;
+
+                        // See if we are allowed to take the next step in plan - we schedule only one activity at a time
+                        if (m_pendingSchedule == null)
                         {
-                            // Report
-                            Tools.ExtendedLogging("Woke up for Plan Calculation at {0}", DateTime.Now);
+                            // Analyse plan
+                            planner.DispatchNextActivity(DateTime.UtcNow);
 
-                            // Retest
-                            if (m_planThread == null)
-                                break;
-
-                            // See if we are allowed to take the next step in plan - we schedule only one activity at a time
-                            if (m_pendingSchedule == null)
+                            // If we are shutting down better forget anything we did in the previous step - only timer setting matters!
+                            if (!m_plannerActive)
                             {
-                                // Release our lock
-                                AllowHibernation();
+                                // Reset to initial state
+                                m_pendingSchedule = null;
+                                m_pendingActions = null;
+                                m_pendingStart = false;
 
-                                // Reset timer
-                                if (PowerManager.IsSuspended && VCRConfiguration.Current.SuppressDelayAfterForcedHibernation)
-                                    Tools.ExtendedLogging("VCR.NET is suspending - not updating Timer");
-                                else
-                                    m_timer.SecondsToWait = 0;
-
-                                // Analyse plan
-                                planner.DispatchNextActivity(DateTime.UtcNow);
-
-                                // If we are shutting down better forget anything we did in the previous step - only timer setting matters!
-                                if (!m_plannerActive)
-                                {
-                                    // Reset to initial state
-                                    m_pendingSchedule = null;
-                                    m_pendingActions = null;
-                                    m_pendingStart = false;
-
-                                    // And forget all allocations
-                                    planner.Reset();
-
-                                    // Just in case allow hibernation again
-                                    AllowHibernation();
-                                }
+                                // And forget all allocations
+                                planner.Reset();
                             }
                         }
+                    }
 
-                        // Run start and stop actions outside the planning lock (to avoid deadlocks) but inside the hibernation protection (to forbid hibernation)
-                        var toStart = m_pendingActions;
-                        if (toStart != null)
-                            toStart();
-                    }
-                    catch (Exception e)
-                    {
-                        // Report and ignore - we do not expect any error to occur
-                        VCRServer.Log(e);
-                    }
+                    // Run start and stop actions outside the planning lock (to avoid deadlocks) but inside the hibernation protection (to forbid hibernation)
+                    var toStart = m_pendingActions;
+                    if (toStart != null)
+                        toStart();
+                }
+                catch (Exception e)
+                {
+                    // Report and ignore - we do not expect any error to occur
+                    VCRServer.Log(e);
+                }
 
                 // New plan is now available - beside termination this will do nothing at all but briefly aquiring an idle lock
                 lock (m_planAvailableSync)
@@ -461,26 +420,6 @@ namespace JMS.DVB.NET.Recording
                     // Wait
                     Monitor.Wait(m_planAvailableSync);
                 }
-        }
-
-        /// <summary>
-        /// Verbietet den Übergang in den Schlafzustand. Der Aufruf hält bereits eine geeignete Sperre.
-        /// </summary>
-        private void ForbidHibernation()
-        {
-            // Forbid hibernation
-            using (m_hibernationBlocker)
-                m_hibernationBlocker = PowerManager.StartForbidHibernation();
-        }
-
-        /// <summary>
-        /// Erlaubt den Übergang in den Schlafzustand. Der Aufruf hält bereits eine geeignete Sperre.
-        /// </summary>
-        private void AllowHibernation()
-        {
-            // Allow hibernation if it has been forbidden
-            using (m_hibernationBlocker)
-                m_hibernationBlocker = null;
         }
 
         /// <summary>
@@ -555,11 +494,6 @@ namespace JMS.DVB.NET.Recording
             // See what to do next
             BeginNewPlan();
         }
-
-        /// <summary>
-        /// Ermittelt den Zeitpunkt, an dem zum nächsten Mal eine Aufzeichnung stattfinden soll.
-        /// </summary>
-        public DateTime? NextRecordingStart { get { return m_timer.NextEventTime; } }
 
         #endregion
 
@@ -646,38 +580,6 @@ namespace JMS.DVB.NET.Recording
         /// <param name="until">Zu diesem Zeitpunkt soll die nächste Prüfung stattfinden.</param>
         void IRecordingPlannerSite.Idle(DateTime until)
         {
-            // Get the wait time
-            var secondsToWait = Math.Max((until - DateTime.UtcNow).TotalSeconds, 0.0);
-
-            // Want to respect the hibernation delay - in case we stay online nothing much happens but one additional plan check
-            var startupDelay = VCRConfiguration.Current.HibernationDelay;
-            if (secondsToWait > startupDelay)
-                secondsToWait -= startupDelay;
-
-            // If we are activated inside the grace period try to forbid hibernation - in case we are suspending we are not allowed to wake up early!
-            var minimumSleep = VCRConfiguration.Current.DelayAfterForcedHibernation.TotalSeconds;
-            var suspending = PowerManager.IsSuspended;
-            if (secondsToWait <= minimumSleep)
-                if (suspending)
-                    if (VCRConfiguration.Current.SuppressDelayAfterForcedHibernation)
-                        Tools.ExtendedLogging("Forced Hibernation Delay is disabled");
-                    else
-                        secondsToWait = minimumSleep;
-                else
-                    ForbidHibernation();
-
-            // Activate timer
-            if (suspending && VCRConfiguration.Current.SuppressDelayAfterForcedHibernation)
-                Tools.ExtendedLogging("VCR.NET is suspending - Timer will not be changed");
-            else
-                m_timer.SecondsToWait = secondsToWait + 1.0;
-
-            // Report
-            var waitEnd = m_timer.NextEventTime;
-            if (waitEnd.HasValue)
-                Tools.ExtendedLogging("Do nothing until {0}", waitEnd.Value.ToLocalTime());
-            else
-                Tools.ExtendedLogging("Quite unexpected but it seems as if we are fully idle");
         }
 
         /// <summary>
@@ -725,12 +627,6 @@ namespace JMS.DVB.NET.Recording
             {
                 // Make planner believe we did it
                 planner.Start(item);
-
-                // Make sure that we wake up after the grace period
-                if (PowerManager.IsSuspended && VCRConfiguration.Current.SuppressDelayAfterForcedHibernation)
-                    Tools.ExtendedLogging("Hibernation Delay is disabled and can not be enforced");
-                else
-                    m_timer.SecondsToWait = VCRConfiguration.Current.DelayAfterForcedHibernation.TotalSeconds;
 
                 // Done
                 return;
