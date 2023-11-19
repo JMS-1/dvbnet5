@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-/ home / jochenmanns / Software / jms / DVB.NET-- - VCR.NET / VCR.NET / ServiceCore / SettingNames.cs
+
 namespace JMS.DVB.NET.Recording
 {
     /// <summary>
