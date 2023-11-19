@@ -1,12 +1,8 @@
-﻿using System;
-using System.Threading;
-using JMS.DVB;
-using JMS.DVB.CardServer;
-using JMS.DVBVCR.RecordingService.Persistence;
-using JMS.DVBVCR.RecordingService.ProgramGuide;
-using JMS.DVBVCR.RecordingService.Requests;
-using JMS.DVBVCR.RecordingService.Status;
-
+﻿using JMS.DVB.CardServer;
+using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.ProgramGuide;
+using JMS.DVB.NET.Recording.Requests;
+using JMS.DVB.NET.Recording.Status;
 
 namespace JMS.DVB.NET.Recording
 {

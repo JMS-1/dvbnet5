@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using JMS.DVBVCR.RecordingService.Win32Tools;
-
+﻿using System.Diagnostics;
 
 namespace JMS.DVB.NET.Recording
 {
@@ -68,7 +63,7 @@ namespace JMS.DVB.NET.Recording
             lock (m_activeProcesses)
                 if (m_activeProcesses.Count > 0)
                     if (m_forbidHibernation == null)
-                        m_forbidHibernation = PowerManager.StartForbidHibernation();
+                        m_forbidHibernation = null!; // PowerManager.StartForbidHibernation();
         }
 
         /// <summary>
@@ -135,7 +130,7 @@ namespace JMS.DVB.NET.Recording
                         m_forbidHibernation = null;
                 else if (m_forbidHibernation == null)
                     if (!m_isSuspended)
-                        m_forbidHibernation = PowerManager.StartForbidHibernation();
+                        m_forbidHibernation = null!; // PowerManager.StartForbidHibernation();
             }
         }
     }
