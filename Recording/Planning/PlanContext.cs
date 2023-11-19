@@ -1,5 +1,5 @@
 ﻿using JMS.DVB.Algorithms.Scheduler;
-using JMS.DVBVCR.RecordingService.Persistence;
+using JMS.DVB.NET.Recording.Persistence;
 using System.Collections;
 
 namespace JMS.DVB.NET.Recording.Planning

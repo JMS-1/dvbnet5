@@ -1,5 +1,4 @@
-﻿using JMS.DVB;
-using JMS.DVB.Algorithms.Scheduler;
+﻿using JMS.DVB.Algorithms.Scheduler;
 
 namespace JMS.DVB.NET.Recording.Planning
 {

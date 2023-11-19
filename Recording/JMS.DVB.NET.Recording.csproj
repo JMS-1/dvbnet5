@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\HardwareAbstraction\JMS.DVB.NET.HardwareAbstraction.csproj" />
     <ProjectReference Include="..\Algorithms\JMS.DVB.NET.Algorithms.csproj" />
+    <ProjectReference Include="..\CardServerCore\JMS.DVB.NET.CardServerCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -173,29 +173,29 @@ namespace JMS.DVB.NET.Recording.Persistence
         {
             // Identifier
             if (!UniqueID.HasValue)
-                throw new InvalidJobDataException(Properties.Resources.BadUniqueID);
+                throw new InvalidJobDataException("Die eindeutige Kennung ist ungültig");
 
             // Name
             if (!Name.IsValidName())
-                throw new InvalidJobDataException(Properties.Resources.BadName);
+                throw new InvalidJobDataException("Der Name enthält ungültige Zeichen");
 
             // Test the station
             if (HasSource)
             {
                 // Source
                 if (!Source.Validate())
-                    throw new InvalidJobDataException(Properties.Resources.BadTVStation);
+                    throw new InvalidJobDataException("Eine Quelle ist ungültig");
 
                 // Streams
                 if (!Streams.Validate())
-                    throw new InvalidJobDataException(Properties.Resources.BadStreams);
+                    throw new InvalidJobDataException("Die Aufzeichnungsoptionen sind ungültig");
             }
             else if (Streams != null)
-                throw new InvalidJobDataException(Properties.Resources.BadStreams);
+                throw new InvalidJobDataException("Die Aufzeichnungsoptionen sind ungültig");
 
             // List of schedules
             if (Schedules.Count < 1)
-                throw new InvalidJobDataException(Properties.Resources.NoSchedules);
+                throw new InvalidJobDataException("Keine Aufzeichnungen vorhanden");
 
             // Only validate the schedule we updated
             if (scheduleIdentifier.HasValue)
