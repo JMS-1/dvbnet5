@@ -1,17 +1,12 @@
-﻿using JMS.DVB;
-using JMS.DVBVCR.RecordingService.WebServer;
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Web.Http;
-
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Erlaubt den Zugriff auf den Aufzeichnungsplan.
     /// </summary>
-    public class PlanController : ApiController
+    public class PlanController : ControllerBase
     {
         /// <summary>
         /// Meldet den aktuellen Aufzeichnungsplan.

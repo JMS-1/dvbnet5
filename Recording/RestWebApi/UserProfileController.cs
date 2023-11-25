@@ -1,13 +1,11 @@
-﻿using JMS.DVBVCR.RecordingService.WebServer;
-using System.Web.Http;
-
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Pflegt die Benutzerkonfiguration.
     /// </summary>
-    public class UserProfileController : ApiController
+    public class UserProfileController : ControllerBase
     {
         /// <summary>
         /// Meldet die aktuelle Benutzerkonfiguration.

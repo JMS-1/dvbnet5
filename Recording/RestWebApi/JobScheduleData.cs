@@ -1,8 +1,6 @@
-﻿using JMS.DVBVCR.RecordingService.Persistence;
-using JMS.DVBVCR.RecordingService.ProgramGuide;
-using System;
-using System.Runtime.Serialization;
-
+﻿using System.Runtime.Serialization;
+using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.ProgramGuide;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {

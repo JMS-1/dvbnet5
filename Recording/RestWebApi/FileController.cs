@@ -1,20 +1,14 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
-using System.Threading;
-using System.Web.Http;
 using JMS.DVB.TS;
-using JMS.DVBVCR.RecordingService.WebServer;
-
+using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Versendet Dateien.
     /// </summary>
-    public class FileController : ApiController
+    public class FileController : ControllerBase
     {
         /// <summary>
         /// Fordert ein Stück einer Datei an.

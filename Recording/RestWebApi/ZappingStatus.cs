@@ -1,9 +1,5 @@
-﻿using JMS.DVB;
-using JMS.DVB.CardServer;
-using System;
-using System.Linq;
+﻿using JMS.DVB.CardServer;
 using System.Runtime.Serialization;
-
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {

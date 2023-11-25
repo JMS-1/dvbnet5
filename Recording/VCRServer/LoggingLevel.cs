@@ -1,5 +1,3 @@
-
-
 namespace JMS.DVB.NET.Recording
 {
     /// <summary>

@@ -1,13 +1,9 @@
-﻿using JMS.DVB;
-using JMS.DVB.Algorithms.Scheduler;
-using JMS.DVBVCR.RecordingService.Persistence;
-using JMS.DVBVCR.RecordingService.Planning;
-using JMS.DVBVCR.RecordingService.WebServer;
-using System;
-using System.Collections.Generic;
+﻿using JMS.DVB.Algorithms.Scheduler;
+using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.Planning;
+using JMS.DVB.NET.Recording.RestWebApi;
 using System.Globalization;
 using System.Runtime.Serialization;
-
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {

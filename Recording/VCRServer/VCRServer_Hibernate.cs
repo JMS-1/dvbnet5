@@ -1,11 +1,3 @@
-using JMS.DVBVCR.RecordingService.Win32Tools;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-
-
 namespace JMS.DVB.NET.Recording
 {
     partial class VCRServer
@@ -32,9 +24,6 @@ namespace JMS.DVB.NET.Recording
         {
             // Forward
             Profiles.Resume();
-
-            // Allow recordings again
-            PowerManager.IsSuspended = false;
 
             // Forward to extension manager
             ExtensionProcessManager.Resume();

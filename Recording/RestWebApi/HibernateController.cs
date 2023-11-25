@@ -1,13 +1,11 @@
-﻿using JMS.DVBVCR.RecordingService.WebServer;
-using System.Web.Http;
-
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Verwaltet den Schlafzustand.
     /// </summary>
-    public class HibernateController : ApiController
+    public class HibernateController : ControllerBase
     {
         /// <summary>
         /// Vergißt, dass ein Übergang in den Schlafzustand nicht ausgeführt wurde.

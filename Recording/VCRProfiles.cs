@@ -1,6 +1,4 @@
-﻿using JMS.DVB;
-
-namespace JMS.DVB.NET.Recording
+﻿namespace JMS.DVB.NET.Recording
 {
     /// <summary>
     /// Verwaltet die Geräteprofile des VCR.NET Recording Service.

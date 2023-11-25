@@ -1,15 +1,12 @@
-﻿using JMS.DVBVCR.RecordingService.WebServer;
-using System;
-using System.Globalization;
-using System.Web.Http;
-
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Dieser Webdienst erlaubt den Zugriff auf Protokolldaten.
     /// </summary>
-    public class ProtocolController : ApiController
+    public class ProtocolController : ControllerBase
     {
         /// <summary>
         /// Ermittelt einen Auszug aus dem Protokoll eines Gerätes.

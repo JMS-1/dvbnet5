@@ -3,7 +3,7 @@ using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVBVCR.RecordingService.Persistence;
 using JMS.DVBVCR.RecordingService.Planning;
 using JMS.DVBVCR.RecordingService.Status;
-using JMS.DVBVCR.RecordingService.WebServer;
+using JMS.DVB.NET.Recording.RestWebApi;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

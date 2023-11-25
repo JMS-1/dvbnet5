@@ -1,13 +1,8 @@
-using JMS.DVB;
 using JMS.DVB.Algorithms.Scheduler;
-using JMS.DVBVCR.RecordingService.Persistence;
-using JMS.DVBVCR.RecordingService.Planning;
-using JMS.DVBVCR.RecordingService.ProgramGuide;
-using JMS.DVBVCR.RecordingService.Status;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
+using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.Planning;
+using JMS.DVB.NET.Recording.ProgramGuide;
+using JMS.DVB.NET.Recording.Status;
 
 namespace JMS.DVB.NET.Recording
 {

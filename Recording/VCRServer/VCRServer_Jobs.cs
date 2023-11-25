@@ -1,6 +1,4 @@
-using JMS.DVBVCR.RecordingService.Persistence;
-using System;
-
+using JMS.DVB.NET.Recording.Persistence;
 
 namespace JMS.DVB.NET.Recording
 {

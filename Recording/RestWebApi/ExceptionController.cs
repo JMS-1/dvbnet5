@@ -1,14 +1,11 @@
-﻿using System;
-using System.Web.Http;
-using JMS.DVBVCR.RecordingService.WebServer;
-
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Ändert Ausnahmeregelungen.
     /// </summary>
-    public class ExceptionController : ApiController
+    public class ExceptionController : ControllerBase
     {
         /// <summary>
         /// Verändert eine Ausnahme.

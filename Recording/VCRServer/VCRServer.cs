@@ -1,5 +1,4 @@
 using System.Text;
-using JMS.DVB;
 using JMS.DVB.Algorithms.Scheduler;
 using Microsoft.Win32;
 
@@ -68,9 +67,6 @@ namespace JMS.DVB.NET.Recording
 
             // Create profile state manager and start it up
             Profiles = new ProfileStateCollection(this);
-
-            // Register with power manager
-            PowerManager.OnPowerUp += BeginNewPlan;
         }
 
         /// <summary>

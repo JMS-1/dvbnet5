@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
-using JMS.DVB;
 using Microsoft.Win32;
 
 namespace JMS.DVB.NET.Recording
@@ -20,11 +19,6 @@ namespace JMS.DVB.NET.Recording
         /// Umrechnungsfaktor f�r Zeitangaben.
         /// </summary>
         public static int UnixTimeFactor = 10000;
-
-        /// <summary>
-        /// Die Methode, mit der ein Schlafzustand ausgel�st werden soll.
-        /// </summary>
-        public static Func<bool, bool> SendSystemToSleep = useSuspend => Application.SetSuspendState(useSuspend ? PowerState.Suspend : PowerState.Hibernate, false, false);
 
         /// <summary>
         /// Der Pfad zur Anwendung.
@@ -315,7 +309,7 @@ namespace JMS.DVB.NET.Recording
                         info.EnvironmentVariables.Add(env.Key.Substring(1, env.Key.Length - 2), env.Value);
 
                 // Log
-                VCRServer.Log(LoggingLevel.Full, Properties.Resources.RunExtension, extension.FullName);
+                VCRServer.Log(LoggingLevel.Full, "Start der Erweiterung {0}", extension.FullName);
 
                 // Start the process
                 return Process.Start(info);

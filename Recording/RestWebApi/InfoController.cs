@@ -1,20 +1,13 @@
-﻿using JMS.DVBVCR.RecordingService.WebServer;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Management;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
-using System.Web.Http;
-
+using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Web Service für allgemeine Informationen.
     /// </summary>
-    public class InfoController : ApiController
+    public class InfoController : ControllerBase
     {
         /// <summary>
         /// Ermittelt zu einer Komponente das Produkt.

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Runtime.Serialization;
-using JMS.DVB;
-using JMS.DVBVCR.RecordingService.ProgramGuide;
-
+using JMS.DVB.NET.Recording.ProgramGuide;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {

@@ -1,7 +1,4 @@
-﻿using JMS.DVB;
-using JMS.DVBVCR.RecordingService.WebServer;
-using System.Web.Http;
-
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
@@ -9,7 +6,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// Vermittelt den Zugriff auf die im <i>VCR.NET Recording Service</i> verwalteten
     /// Geräte zur Fernnutzung.
     /// </summary>
-    public class ZappingController : ApiController
+    public class ZappingController : ControllerBase
     {
         /// <summary>
         /// Ermittelt den aktuellen Zustand.

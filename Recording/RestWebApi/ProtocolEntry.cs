@@ -1,10 +1,6 @@
-﻿using JMS.DVBVCR.RecordingService.Persistence;
-using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
+﻿using System.Globalization;
 using System.Runtime.Serialization;
-
+using JMS.DVB.NET.Recording.Persistence;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {

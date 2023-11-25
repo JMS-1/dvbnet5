@@ -1,20 +1,15 @@
 ﻿using JMS.DVB;
-using JMS.DVBVCR.RecordingService.WebServer;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
-using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Web.Http;
-
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Erlaubt den administrativen Zugriff auf den <i>VCR.NET Recording Service</i>.
     /// </summary>
-    public class ConfigurationController : ApiController
+    public class ConfigurationController : ControllerBase
     {
         /// <summary>
         /// Die Einstellungen der Sicherheit.

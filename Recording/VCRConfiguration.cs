@@ -2,6 +2,37 @@
 
 namespace JMS.DVB.NET.Recording
 {
+    public class Setting
+    {
+        public string Value { get; set; } = null!;
+    }
+
+
+    public class Settings
+    {
+        public Setting? this[string key] => throw new NotImplementedException("Configuration");
+
+        public void Add(string key, string value) => throw new NotImplementedException("Configuration");
+    }
+
+
+    public class AppSettings
+    {
+        public readonly Settings Settings = new();
+    }
+
+    public class Configuration
+    {
+        public readonly AppSettings AppSettings = new();
+
+        public void SaveAs(string path) => throw new NotImplementedException("Configuration");
+    }
+
+    public static class ConfigurationManager
+    {
+        public static Configuration OpenExeConfiguration(string path) => throw new NotImplementedException("ConfigurationManager");
+    }
+
     /// <summary>
     /// Verwaltet die Konfiguration des VCR.NET Recording Service.
     /// </summary>

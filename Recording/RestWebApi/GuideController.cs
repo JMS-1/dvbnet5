@@ -1,14 +1,11 @@
-﻿using JMS.DVB;
-using JMS.DVBVCR.RecordingService.WebServer;
-using System;
-using System.Web.Http;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Erlaubt den Zugriff auf die Programmzeitschrift.
     /// </summary>
-    public class GuideController : ApiController
+    public class GuideController : ControllerBase
     {
         /// <summary>
         /// Ermittelt einen einzelnen Eintrag der Programmzeitschrift.
