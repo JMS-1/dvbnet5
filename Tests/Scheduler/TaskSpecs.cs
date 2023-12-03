@@ -158,9 +158,9 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias, Task).Take(100).ToArray();
 
             // Validate
-            Assert.AreEqual(100, schedules.Length, "Schedules");
-            Assert.AreEqual(TimeBias, schedules[0].Time.Start, "Start 0");
-            Assert.AreEqual(TimeBias.ToLocalTime().Date.AddDays(49).AddHours(20).ToUniversalTime(), schedules[99].Time.Start, "Start 99");
+            Assert.That(schedules.Length, Is.EqualTo(100), "Schedules");
+            Assert.That(schedules[0].Time.Start, Is.EqualTo(TimeBias), "Start 0");
+            Assert.That(schedules[99].Time.Start, Is.EqualTo(TimeBias.ToLocalTime().Date.AddDays(49).AddHours(20).ToUniversalTime()), "Start 99");
         }
 
         /// <summary>
@@ -180,19 +180,19 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias, Task).Take(5).ToArray();
 
             // Validate
-            Assert.AreEqual(5, schedules.Length, "Schedules");
-            Assert.AreSame(plan1, schedules[0].Definition, "Definition 1");
-            Assert.IsFalse(schedules[0].StartsLate, "Late 1");
-            Assert.AreSame(Task, schedules[1].Definition, "Definition 2");
-            Assert.IsTrue(schedules[1].StartsLate, "Late 2");
-            Assert.AreSame(Task, schedules[2].Definition, "Definition 3");
-            Assert.IsFalse(schedules[2].StartsLate, "Late 3");
-            Assert.AreEqual(TimeBias.ToLocalTime().Date.AddHours(20).ToUniversalTime(), schedules[2].Time.Start, "Start 3");
-            Assert.AreSame(plan2, schedules[3].Definition, "Definition 4");
-            Assert.IsFalse(schedules[3].StartsLate, "Late 4");
-            Assert.AreSame(Task, schedules[4].Definition, "Definition 5");
-            Assert.IsFalse(schedules[4].StartsLate, "Late 5");
-            Assert.AreEqual(TimeBias.ToLocalTime().Date.AddDays(1).AddHours(10).ToUniversalTime(), schedules[4].Time.Start, "Start 5");
+            Assert.That(schedules.Length, Is.EqualTo(5), "Schedules");
+            Assert.That(schedules[0].Definition, Is.SameAs(plan1), "Definition 1");
+            Assert.That(schedules[0].StartsLate, Is.False, "Late 1");
+            Assert.That(schedules[1].Definition, Is.SameAs(Task), "Definition 2");
+            Assert.That(schedules[1].StartsLate, Is.True, "Late 2");
+            Assert.That(schedules[2].Definition, Is.SameAs(Task), "Definition 3");
+            Assert.That(schedules[2].StartsLate, Is.False, "Late 3");
+            Assert.That(schedules[2].Time.Start, Is.EqualTo(TimeBias.ToLocalTime().Date.AddHours(20).ToUniversalTime()), "Start 3");
+            Assert.That(schedules[3].Definition, Is.SameAs(plan2), "Definition 4");
+            Assert.That(schedules[3].StartsLate, Is.False, "Late 4");
+            Assert.That(schedules[4].Definition, Is.SameAs(Task), "Definition 5");
+            Assert.That(schedules[4].StartsLate, Is.False, "Late 5");
+            Assert.That(schedules[4].Time.Start, Is.EqualTo(TimeBias.ToLocalTime().Date.AddDays(1).AddHours(10).ToUniversalTime()), "Start 5");
         }
     }
 }

@@ -76,16 +76,16 @@ namespace JMS.DVB.SchedulerTests
             var componentUnderTest = RecordingDefinition.Create(false, "test", Guid.NewGuid(), null, source, start, duration);
 
             // Validate
-            Assert.IsNotNull(componentUnderTest, "Create");
-            Assert.AreSame(source, componentUnderTest.Source, "Source");
+            Assert.That(componentUnderTest, Is.Not.Null, "Create");
+            Assert.That(componentUnderTest.Source, Is.SameAs(source), "Source");
 
             // Load plan
             var times = componentUnderTest.GetTimes(DateTime.MinValue).Select(s => s.Planned).ToArray();
 
             // Validate
-            Assert.AreEqual(1, times.Length, "Times");
-            Assert.AreEqual(start, times[0].Start, "Start");
-            Assert.AreEqual(duration, times[0].Duration, "Duration");
+            Assert.That(times.Length, Is.EqualTo(1), "Times");
+            Assert.That(times[0].Start, Is.EqualTo(start), "Start");
+            Assert.That(times[0].Duration, Is.EqualTo(duration), "Duration");
         }
 
         /// <summary>
@@ -237,15 +237,15 @@ namespace JMS.DVB.SchedulerTests
                     localStart = localStart.AddDays(1);
 
                 // Test it
-                Assert.AreEqual(localStart, time.LocalStart);
-                Assert.AreEqual(TimeSpan.FromMinutes(10), time.Duration);
+                Assert.That(time.LocalStart, Is.EqualTo(localStart));
+                Assert.That(time.Duration, Is.EqualTo(TimeSpan.FromMinutes(10)));
 
                 // Next day
                 localStart = localStart.AddDays(1);
             }
 
             // Check end
-            Assert.AreEqual(localEnd + localStart.TimeOfDay, localStart);
+            Assert.That(localStart, Is.EqualTo(localEnd + localStart.TimeOfDay));
         }
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace JMS.DVB.SchedulerTests
             var schedule = cut.GetSchedules(DateTime.UtcNow.AddYears(-1)).Single();
 
             // Validate
-            Assert.IsNull(schedule.Resource, "Resource");
+            Assert.That(schedule.Resource, Is.Null, "Resource");
         }
 
         /// <summary>
@@ -312,8 +312,8 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(refTime.AddHours(-1)).Take(500).ToArray();
 
             // Validate
-            Assert.AreEqual(500, schedules.Length, "#count");
-            Assert.IsFalse(schedules.Any(schedule => schedule.StartsLate), "late!");
+            Assert.That(schedules.Length, Is.EqualTo(500), "#count");
+            Assert.That(schedules.Any(schedule => schedule.StartsLate), Is.False, "late!");
 
             // Dump plan
             foreach (var schedule in schedules)

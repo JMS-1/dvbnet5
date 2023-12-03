@@ -34,11 +34,11 @@ namespace JMS.DVB.SchedulerTests
             var schedules = componentUnderTest.GetSchedules(DateTime.UtcNow).ToArray();
 
             // Validate
-            Assert.AreEqual(1, schedules.Length, "Schedules");
-            Assert.AreSame(best, schedules[0].Resource, "Resource");
-            Assert.AreSame(plan, schedules[0].Definition, "Plan");
-            Assert.AreEqual(times.Single(), schedules[0].Time, "Time");
-            Assert.IsFalse(schedules[0].StartsLate, "Late");
+            Assert.That(schedules.Length, Is.EqualTo(1), "Schedules");
+            Assert.That(schedules[0].Resource, Is.SameAs(best), "Resource");
+            Assert.That(schedules[0].Definition, Is.SameAs(plan), "Plan");
+            Assert.That(schedules[0].Time, Is.EqualTo(times.Single()), "Time");
+            Assert.That(schedules[0].StartsLate, Is.False, "Late");
         }
 
         /// <summary>
@@ -75,10 +75,10 @@ namespace JMS.DVB.SchedulerTests
             var schedules = componentUnderTest.GetSchedules(refTime).ToArray();
 
             // Validate
-            Assert.AreEqual(3, schedules.Length, "#schedule");
-            Assert.AreSame(res1, schedules[0].Resource, "resource 0");
-            Assert.AreSame(res1, schedules[1].Resource, "resource 1");
-            Assert.AreSame(res2, schedules[2].Resource, "resource 2");
+            Assert.That(schedules.Length, Is.EqualTo(3), "#schedule");
+            Assert.That(schedules[0].Resource, Is.SameAs(res1), "resource 0");
+            Assert.That(schedules[1].Resource, Is.SameAs(res1), "resource 1");
+            Assert.That(schedules[2].Resource, Is.SameAs(res2), "resource 2");
         }
 
         /// <summary>
@@ -111,15 +111,15 @@ namespace JMS.DVB.SchedulerTests
             var schedules = componentUnderTest.GetSchedules(DateTime.UtcNow).ToArray();
 
             // Validate
-            Assert.AreEqual(2, schedules.Length, "Schedules");
-            Assert.AreSame(best, schedules[0].Resource, "Resource 0");
-            Assert.AreSame(best, schedules[1].Resource, "Resource 1");
-            Assert.AreSame(plan1, schedules[0].Definition, "Plan 0");
-            Assert.AreSame(plan2, schedules[1].Definition, "Plan 1");
-            Assert.AreEqual(times1, schedules[0].Time, "Time 0");
-            Assert.AreEqual(times2, schedules[1].Time, "Time 1");
-            Assert.IsFalse(schedules[0].StartsLate, "Late 0");
-            Assert.IsFalse(schedules[1].StartsLate, "Late 1");
+            Assert.That(schedules.Length, Is.EqualTo(2), "Schedules");
+            Assert.That(schedules[0].Resource, Is.SameAs(best), "Resource 0");
+            Assert.That(schedules[1].Resource, Is.SameAs(best), "Resource 1");
+            Assert.That(schedules[0].Definition, Is.SameAs(plan1), "Plan 0");
+            Assert.That(schedules[1].Definition, Is.SameAs(plan2), "Plan 1");
+            Assert.That(schedules[0].Time, Is.EqualTo(times1), "Time 0");
+            Assert.That(schedules[1].Time, Is.EqualTo(times2), "Time 1");
+            Assert.That(schedules[0].StartsLate, Is.False, "Late 0");
+            Assert.That(schedules[1].StartsLate, Is.False, "Late 1");
         }
 
         /// <summary>
@@ -154,13 +154,13 @@ namespace JMS.DVB.SchedulerTests
             var schedules = componentUnderTest.GetSchedules(refTime).ToArray();
 
             // Validate
-            Assert.AreEqual(3, schedules.Length, "#schedules");
-            Assert.AreSame(plan1, schedules[0].Definition, "plan 1");
-            Assert.AreSame(plan2, schedules[1].Definition, "plan 2");
-            Assert.AreSame(plan3, schedules[2].Definition, "plan 3");
-            Assert.AreSame(res1, schedules[0].Resource, "resource 1");
-            Assert.AreSame(res2, schedules[1].Resource, "resource 2");
-            Assert.AreSame(res2, schedules[2].Resource, "resource 3");
+            Assert.That(schedules.Length, Is.EqualTo(3), "#schedules");
+            Assert.That(schedules[0].Definition, Is.SameAs(plan1), "plan 1");
+            Assert.That(schedules[1].Definition, Is.SameAs(plan2), "plan 2");
+            Assert.That(schedules[2].Definition, Is.SameAs(plan3), "plan 3");
+            Assert.That(schedules[0].Resource, Is.SameAs(res1), "resource 1");
+            Assert.That(schedules[1].Resource, Is.SameAs(res2), "resource 2");
+            Assert.That(schedules[2].Resource, Is.SameAs(res2), "resource 3");
         }
 
         /// <summary>
@@ -192,11 +192,11 @@ namespace JMS.DVB.SchedulerTests
             var schedules = componentUnderTest.GetSchedules(refTime).ToArray();
 
             // Validate
-            Assert.AreEqual(2, schedules.Length, "#schedules");
-            Assert.AreSame(plan1, schedules[0].Definition, "plan 1");
-            Assert.AreSame(plan2, schedules[1].Definition, "plan 2");
-            Assert.AreSame(res1, schedules[0].Resource, "resource 1");
-            Assert.AreSame(res2, schedules[1].Resource, "resource 2");
+            Assert.That(schedules.Length, Is.EqualTo(2), "#schedules");
+            Assert.That(schedules[0].Definition, Is.SameAs(plan1), "plan 1");
+            Assert.That(schedules[1].Definition, Is.SameAs(plan2), "plan 2");
+            Assert.That(schedules[0].Resource, Is.SameAs(res1), "resource 1");
+            Assert.That(schedules[1].Resource, Is.SameAs(res2), "resource 2");
         }
 
         /// <summary>
@@ -235,15 +235,15 @@ namespace JMS.DVB.SchedulerTests
             var schedules = componentUnderTest.GetSchedules(refTime).ToArray();
 
             // Validate
-            Assert.AreEqual(4, schedules.Length, "#schedule");
+            Assert.That(schedules.Length, Is.EqualTo(4), "#schedule");
             var exec1 = schedules.Single(s => s.Definition.UniqueIdentifier == plan1.UniqueIdentifier);
             var exec2 = schedules.Single(s => s.Definition.UniqueIdentifier == plan2.UniqueIdentifier);
             var exec3 = schedules.Single(s => s.Definition.UniqueIdentifier == plan3.UniqueIdentifier);
             var exec4 = schedules.Single(s => s.Definition.UniqueIdentifier == plan4.UniqueIdentifier);
-            Assert.AreSame(res1, exec1.Resource, "A1");
-            Assert.AreSame(res2, exec2.Resource, "A2");
-            Assert.AreSame(res3, exec3.Resource, "A3");
-            Assert.AreSame(res2, exec4.Resource, "A4");
+            Assert.That(exec1.Resource, Is.SameAs(res1), "A1");
+            Assert.That(exec2.Resource, Is.SameAs(res2), "A2");
+            Assert.That(exec3.Resource, Is.SameAs(res3), "A3");
+            Assert.That(exec4.Resource, Is.SameAs(res2), "A4");
         }
     }
 }

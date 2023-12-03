@@ -47,10 +47,10 @@ namespace JMS.DVB.SchedulerTests
             var ranges = cut.ToArray();
 
             // Validate
-            Assert.AreEqual(1, ranges.Length, "#ranges");
-            Assert.AreEqual(now, ranges[0].Start, "start");
-            Assert.AreEqual(now.AddMinutes(120), ranges[0].End, "end");
-            Assert.AreEqual(0, ranges[0].Data, "data");
+            Assert.That(ranges.Length, Is.EqualTo(1), "#ranges");
+            Assert.That(ranges[0].Start, Is.EqualTo(now), "start");
+            Assert.That(ranges[0].End, Is.EqualTo(now.AddMinutes(120)), "end");
+            Assert.That(ranges[0].Data, Is.EqualTo(0), "data");
         }
 
         /// <summary>
@@ -74,10 +74,10 @@ namespace JMS.DVB.SchedulerTests
             var ranges = cut.ToArray();
 
             // Validate
-            Assert.AreEqual(1, ranges.Length, "#ranges");
-            Assert.AreEqual(now, ranges[0].Start, "start");
-            Assert.AreEqual(now.AddMinutes(120), ranges[0].End, "end");
-            Assert.AreEqual(0, ranges[0].Data, "data");
+            Assert.That(ranges.Length, Is.EqualTo(1), "#ranges");
+            Assert.That(ranges[0].Start, Is.EqualTo(now), "start");
+            Assert.That(ranges[0].End, Is.EqualTo(now.AddMinutes(120)), "end");
+            Assert.That(ranges[0].Data, Is.EqualTo(0), "data");
         }
 
         /// <summary>
@@ -103,13 +103,13 @@ namespace JMS.DVB.SchedulerTests
             var ranges = cut.ToArray();
 
             // Validate
-            Assert.AreEqual(2, ranges.Length, "#ranges");
-            Assert.AreEqual(now.AddMinutes(-120), ranges[0].Start, "start 0");
-            Assert.AreEqual(now, ranges[0].End, "end 0");
-            Assert.AreEqual(2, ranges[0].Data, "data 0");
-            Assert.AreEqual(now, ranges[1].Start, "start 1");
-            Assert.AreEqual(now.AddMinutes(120), ranges[1].End, "end 1");
-            Assert.AreEqual(1, ranges[1].Data, "data 1");
+            Assert.That(ranges.Length, Is.EqualTo(2), "#ranges");
+            Assert.That(ranges[0].Start, Is.EqualTo(now.AddMinutes(-120)), "start 0");
+            Assert.That(ranges[0].End, Is.EqualTo(now), "end 0");
+            Assert.That(ranges[0].Data, Is.EqualTo(2), "data 0");
+            Assert.That(ranges[1].Start, Is.EqualTo(now), "start 1");
+            Assert.That(ranges[1].End, Is.EqualTo(now.AddMinutes(120)), "end 1");
+            Assert.That(ranges[1].Data, Is.EqualTo(1), "data 1");
         }
 
         /// <summary>
@@ -137,16 +137,16 @@ namespace JMS.DVB.SchedulerTests
             var ranges = cut.ToArray();
 
             // Validate
-            Assert.AreEqual(3, ranges.Length, "#ranges");
-            Assert.AreEqual(now.AddMinutes(-240), ranges[0].Start, "start 0");
-            Assert.AreEqual(now.AddMinutes(-120), ranges[0].End, "end 0");
-            Assert.AreEqual(2, ranges[0].Data, "data 0");
-            Assert.AreEqual(now.AddMinutes(-120), ranges[1].Start, "start 1");
-            Assert.AreEqual(now, ranges[1].End, "end 1");
-            Assert.AreEqual(4, ranges[1].Data, "data 1");
-            Assert.AreEqual(now, ranges[2].Start, "start 2");
-            Assert.AreEqual(now.AddMinutes(120), ranges[2].End, "end 2");
-            Assert.AreEqual(1, ranges[2].Data, "data 2");
+            Assert.That(ranges.Length, Is.EqualTo(3), "#ranges");
+            Assert.That(ranges[0].Start, Is.EqualTo(now.AddMinutes(-240)), "start 0");
+            Assert.That(ranges[0].End, Is.EqualTo(now.AddMinutes(-120)), "end 0");
+            Assert.That(ranges[0].Data, Is.EqualTo(2), "data 0");
+            Assert.That(ranges[1].Start, Is.EqualTo(now.AddMinutes(-120)), "start 1");
+            Assert.That(ranges[1].End, Is.EqualTo(now), "end 1");
+            Assert.That(ranges[1].Data, Is.EqualTo(4), "data 1");
+            Assert.That(ranges[2].Start, Is.EqualTo(now), "start 2");
+            Assert.That(ranges[2].End, Is.EqualTo(now.AddMinutes(120)), "end 2");
+            Assert.That(ranges[2].Data, Is.EqualTo(1), "data 2");
         }
 
         /// <summary>
@@ -172,16 +172,16 @@ namespace JMS.DVB.SchedulerTests
             var ranges = cut.ToArray();
 
             // Validate
-            Assert.AreEqual(3, ranges.Length, "#ranges");
-            Assert.AreEqual(now.AddMinutes(-60), ranges[0].Start, "start 0");
-            Assert.AreEqual(now, ranges[0].End, "end 0");
-            Assert.AreEqual(2, ranges[0].Data, "data 0");
-            Assert.AreEqual(now, ranges[1].Start, "start 1");
-            Assert.AreEqual(now.AddMinutes(60), ranges[1].End, "end 1");
-            Assert.AreEqual(3, ranges[1].Data, "data 1");
-            Assert.AreEqual(now.AddMinutes(60), ranges[2].Start, "start 2");
-            Assert.AreEqual(now.AddMinutes(120), ranges[2].End, "end 2");
-            Assert.AreEqual(1, ranges[2].Data, "data 2");
+            Assert.That(ranges.Length, Is.EqualTo(3), "#ranges");
+            Assert.That(ranges[0].Start, Is.EqualTo(now.AddMinutes(-60)), "start 0");
+            Assert.That(ranges[0].End, Is.EqualTo(now), "end 0");
+            Assert.That(ranges[0].Data, Is.EqualTo(2), "data 0");
+            Assert.That(ranges[1].Start, Is.EqualTo(now), "start 1");
+            Assert.That(ranges[1].End, Is.EqualTo(now.AddMinutes(60)), "end 1");
+            Assert.That(ranges[1].Data, Is.EqualTo(3), "data 1");
+            Assert.That(ranges[2].Start, Is.EqualTo(now.AddMinutes(60)), "start 2");
+            Assert.That(ranges[2].End, Is.EqualTo(now.AddMinutes(120)), "end 2");
+            Assert.That(ranges[2].Data, Is.EqualTo(1), "data 2");
         }
 
         /// <summary>
@@ -209,22 +209,22 @@ namespace JMS.DVB.SchedulerTests
             var ranges = cut.ToArray();
 
             // Validate
-            Assert.AreEqual(5, ranges.Length, "#ranges");
-            Assert.AreEqual(now.AddMinutes(-60), ranges[0].Start, "start 0");
-            Assert.AreEqual(now, ranges[0].End, "end 0");
-            Assert.AreEqual(1, ranges[0].Data, "data 0");
-            Assert.AreEqual(now, ranges[1].Start, "start 1");
-            Assert.AreEqual(now.AddMinutes(60), ranges[1].End, "end 1");
-            Assert.AreEqual(5, ranges[1].Data, "data 1");
-            Assert.AreEqual(now.AddMinutes(60), ranges[2].Start, "start 2");
-            Assert.AreEqual(now.AddMinutes(120), ranges[2].End, "end 2");
-            Assert.AreEqual(4, ranges[2].Data, "data 2");
-            Assert.AreEqual(now.AddMinutes(120), ranges[3].Start, "start 3");
-            Assert.AreEqual(now.AddMinutes(180), ranges[3].End, "end 3");
-            Assert.AreEqual(6, ranges[3].Data, "data 3");
-            Assert.AreEqual(now.AddMinutes(180), ranges[4].Start, "start 4");
-            Assert.AreEqual(now.AddMinutes(240), ranges[4].End, "end 4");
-            Assert.AreEqual(2, ranges[4].Data, "data 4");
+            Assert.That(ranges.Length, Is.EqualTo(5), "#ranges");
+            Assert.That(ranges[0].Start, Is.EqualTo(now.AddMinutes(-60)), "start 0");
+            Assert.That(ranges[0].End, Is.EqualTo(now), "end 0");
+            Assert.That(ranges[0].Data, Is.EqualTo(1), "data 0");
+            Assert.That(ranges[1].Start, Is.EqualTo(now), "start 1");
+            Assert.That(ranges[1].End, Is.EqualTo(now.AddMinutes(60)), "end 1");
+            Assert.That(ranges[1].Data, Is.EqualTo(5), "data 1");
+            Assert.That(ranges[2].Start, Is.EqualTo(now.AddMinutes(60)), "start 2");
+            Assert.That(ranges[2].End, Is.EqualTo(now.AddMinutes(120)), "end 2");
+            Assert.That(ranges[2].Data, Is.EqualTo(4), "data 2");
+            Assert.That(ranges[3].Start, Is.EqualTo(now.AddMinutes(120)), "start 3");
+            Assert.That(ranges[3].End, Is.EqualTo(now.AddMinutes(180)), "end 3");
+            Assert.That(ranges[3].Data, Is.EqualTo(6), "data 3");
+            Assert.That(ranges[4].Start, Is.EqualTo(now.AddMinutes(180)), "start 4");
+            Assert.That(ranges[4].End, Is.EqualTo(now.AddMinutes(240)), "end 4");
+            Assert.That(ranges[4].Data, Is.EqualTo(2), "data 4");
         }
 
         /// <summary>
@@ -250,13 +250,13 @@ namespace JMS.DVB.SchedulerTests
             var ranges = cut.ToArray();
 
             // Validate
-            Assert.AreEqual(2, ranges.Length, "#ranges");
-            Assert.AreEqual(now, ranges[0].Start, "start 0");
-            Assert.AreEqual(now.AddMinutes(60), ranges[0].End, "end 0");
-            Assert.AreEqual(3, ranges[0].Data, "data 0");
-            Assert.AreEqual(now.AddMinutes(60), ranges[1].Start, "start 1");
-            Assert.AreEqual(now.AddMinutes(120), ranges[1].End, "end 1");
-            Assert.AreEqual(2, ranges[1].Data, "data 1");
+            Assert.That(ranges.Length, Is.EqualTo(2), "#ranges");
+            Assert.That(ranges[0].Start, Is.EqualTo(now), "start 0");
+            Assert.That(ranges[0].End, Is.EqualTo(now.AddMinutes(60)), "end 0");
+            Assert.That(ranges[0].Data, Is.EqualTo(3), "data 0");
+            Assert.That(ranges[1].Start, Is.EqualTo(now.AddMinutes(60)), "start 1");
+            Assert.That(ranges[1].End, Is.EqualTo(now.AddMinutes(120)), "end 1");
+            Assert.That(ranges[1].Data, Is.EqualTo(2), "data 1");
         }
 
         /// <summary>
@@ -282,13 +282,13 @@ namespace JMS.DVB.SchedulerTests
             var ranges = cut.ToArray();
 
             // Validate
-            Assert.AreEqual(2, ranges.Length, "#ranges");
-            Assert.AreEqual(now.AddMinutes(-60), ranges[0].Start, "start 0");
-            Assert.AreEqual(now, ranges[0].End, "end 0");
-            Assert.AreEqual(2, ranges[0].Data, "data 0");
-            Assert.AreEqual(now, ranges[1].Start, "start 1");
-            Assert.AreEqual(now.AddMinutes(60), ranges[1].End, "end 1");
-            Assert.AreEqual(3, ranges[1].Data, "data 1");
+            Assert.That(ranges.Length, Is.EqualTo(2), "#ranges");
+            Assert.That(ranges[0].Start, Is.EqualTo(now.AddMinutes(-60)), "start 0");
+            Assert.That(ranges[0].End, Is.EqualTo(now), "end 0");
+            Assert.That(ranges[0].Data, Is.EqualTo(2), "data 0");
+            Assert.That(ranges[1].Start, Is.EqualTo(now), "start 1");
+            Assert.That(ranges[1].End, Is.EqualTo(now.AddMinutes(60)), "end 1");
+            Assert.That(ranges[1].Data, Is.EqualTo(3), "data 1");
         }
 
         /// <summary>
@@ -330,8 +330,8 @@ namespace JMS.DVB.SchedulerTests
             foreach (var range in cut)
             {
                 // Validate
-                Assert.IsTrue(range.Start >= lastEnd, "start {0}", range);
-                Assert.IsTrue(range.End > range.Start, "duration {0}", range);
+                Assert.That(range.Start >= lastEnd, Is.True, "start {0}", range);
+                Assert.That(range.End > range.Start, Is.True, "duration {0}", range);
 
                 // Get index
                 var startIndex = (int)(range.Start - now).TotalMinutes;
@@ -349,8 +349,8 @@ namespace JMS.DVB.SchedulerTests
             CollectionAssert.AreEqual(cnt, cmp);
 
             // See if we checked the good stuff
-            Assert.IsTrue(cnt.Min() == 0, "min");
-            Assert.IsTrue(cnt.Max() >= 4, "max");
+            Assert.That(cnt.Min() == 0, Is.True, "min");
+            Assert.That(cnt.Max() >= 4, Is.True, "max");
         }
     }
 }

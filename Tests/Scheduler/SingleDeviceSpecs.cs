@@ -40,9 +40,9 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias).ToArray();
 
             // Validate
-            Assert.AreEqual(2, schedules.Length, "Schedule");
-            Assert.IsNull(schedules[0].Resource, "Resource 1");
-            Assert.AreSame(FreeTVDevice, schedules[1].Resource, "Resource 2");
+            Assert.That(schedules.Length, Is.EqualTo(2), "Schedule");
+            Assert.That(schedules[0].Resource, Is.Null, "Resource 1");
+            Assert.That(schedules[1].Resource, Is.SameAs(FreeTVDevice), "Resource 2");
         }
 
         /// <summary>
@@ -63,10 +63,10 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias).ToArray();
 
             // Validate
-            Assert.AreEqual(3, schedules.Length, "Schedule");
-            Assert.AreSame(PayTVDevice, schedules[0].Resource, "Resource 1");
-            Assert.AreSame(PayTVDevice, schedules[1].Resource, "Resource 2");
-            Assert.AreSame(PayTVDevice, schedules[2].Resource, "Resource 3");
+            Assert.That(schedules.Length, Is.EqualTo(3), "Schedule");
+            Assert.That(schedules[0].Resource, Is.SameAs(PayTVDevice), "Resource 1");
+            Assert.That(schedules[1].Resource, Is.SameAs(PayTVDevice), "Resource 2");
+            Assert.That(schedules[2].Resource, Is.SameAs(PayTVDevice), "Resource 3");
         }
 
         /// <summary>
@@ -93,13 +93,13 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias).ToArray();
 
             // Validate
-            Assert.AreEqual(2, schedules.Length, "Schedules");
-            Assert.AreSame(FreeTVDevice, schedules[0].Resource, "Resource 1");
-            Assert.AreSame(FreeTVDevice, schedules[1].Resource, "Resource 2");
-            Assert.AreSame(plan1, schedules[0].Definition, "Plan 1");
-            Assert.AreSame(plan2, schedules[1].Definition, "Plan 2");
-            Assert.IsFalse(schedules[0].StartsLate, "Late 1");
-            Assert.IsFalse(schedules[1].StartsLate, "Late 2");
+            Assert.That(schedules.Length, Is.EqualTo(2), "Schedules");
+            Assert.That(schedules[0].Resource, Is.SameAs(FreeTVDevice), "Resource 1");
+            Assert.That(schedules[1].Resource, Is.SameAs(FreeTVDevice), "Resource 2");
+            Assert.That(schedules[0].Definition, Is.SameAs(plan1), "Plan 1");
+            Assert.That(schedules[1].Definition, Is.SameAs(plan2), "Plan 2");
+            Assert.That(schedules[0].StartsLate, Is.False, "Late 1");
+            Assert.That(schedules[1].StartsLate, Is.False, "Late 2");
         }
 
         /// <summary>
@@ -121,10 +121,10 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias).ToArray();
 
             // Validate
-            Assert.AreEqual(3, schedules.Length, "Schedules");
-            Assert.IsFalse(schedules[0].StartsLate, "Late 1");
-            Assert.IsFalse(schedules[1].StartsLate, "Late 2");
-            Assert.IsFalse(schedules[2].StartsLate, "Late 3");
+            Assert.That(schedules.Length, Is.EqualTo(3), "Schedules");
+            Assert.That(schedules[0].StartsLate, Is.False, "Late 1");
+            Assert.That(schedules[1].StartsLate, Is.False, "Late 2");
+            Assert.That(schedules[2].StartsLate, Is.False, "Late 3");
         }
 
         /// <summary>
@@ -151,10 +151,10 @@ namespace JMS.DVB.SchedulerTests
                 var schedules = cut.GetSchedules(TimeBias).ToArray();
 
                 // Validate
-                Assert.AreEqual(3, schedules.Length, "Schedules");
-                Assert.IsFalse(schedules[0].StartsLate, "Late 1");
-                Assert.IsFalse(schedules[1].StartsLate, "Late 2");
-                Assert.IsTrue(schedules[2].StartsLate, "Late 3");
+                Assert.That(schedules.Length, Is.EqualTo(3), "Schedules");
+                Assert.That(schedules[0].StartsLate, Is.False, "Late 1");
+                Assert.That(schedules[1].StartsLate, Is.False, "Late 2");
+                Assert.That(schedules[2].StartsLate, Is.True, "Late 3");
             }
             finally
             {
@@ -187,13 +187,13 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias).ToArray();
 
             // Validate
-            Assert.AreEqual(2, schedules.Length, "Schedules");
-            Assert.AreSame(FreeTVDevice, schedules[0].Resource, "Resource 1");
-            Assert.AreSame(FreeTVDevice, schedules[1].Resource, "Resource 2");
-            Assert.AreSame(plan1, schedules[0].Definition, "Plan 1");
-            Assert.AreSame(plan2, schedules[1].Definition, "Plan 2");
-            Assert.IsFalse(schedules[0].StartsLate, "Late 1");
-            Assert.IsFalse(schedules[1].StartsLate, "Late 2");
+            Assert.That(schedules.Length, Is.EqualTo(2), "Schedules");
+            Assert.That(schedules[0].Resource, Is.SameAs(FreeTVDevice), "Resource 1");
+            Assert.That(schedules[1].Resource, Is.SameAs(FreeTVDevice), "Resource 2");
+            Assert.That(schedules[0].Definition, Is.SameAs(plan1), "Plan 1");
+            Assert.That(schedules[1].Definition, Is.SameAs(plan2), "Plan 2");
+            Assert.That(schedules[0].StartsLate, Is.False, "Late 1");
+            Assert.That(schedules[1].StartsLate, Is.False, "Late 2");
         }
 
         /// <summary>
@@ -220,11 +220,11 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias).ToArray();
 
             // Validate
-            Assert.AreEqual(2, schedules.Length, "Schedules");
-            Assert.AreSame(plan1, schedules[0].Definition, "Plan 1");
-            Assert.AreSame(plan2, schedules[1].Definition, "Plan 2");
-            Assert.IsFalse(schedules[0].StartsLate, "Late 1");
-            Assert.IsFalse(schedules[1].StartsLate, "Late 2");
+            Assert.That(schedules.Length, Is.EqualTo(2), "Schedules");
+            Assert.That(schedules[0].Definition, Is.SameAs(plan1), "Plan 1");
+            Assert.That(schedules[1].Definition, Is.SameAs(plan2), "Plan 2");
+            Assert.That(schedules[0].StartsLate, Is.False, "Late 1");
+            Assert.That(schedules[1].StartsLate, Is.False, "Late 2");
         }
 
         /// <summary>
@@ -250,10 +250,10 @@ namespace JMS.DVB.SchedulerTests
                 var schedules = cut.GetSchedules(TimeBias).ToArray();
 
                 // Validate
-                Assert.AreEqual(3, schedules.Length, "Schedules");
-                Assert.IsFalse(schedules[0].StartsLate, "Late 1");
-                Assert.IsFalse(schedules[1].StartsLate, "Late 2");
-                Assert.IsFalse(schedules[2].StartsLate, "Late 3");
+                Assert.That(schedules.Length, Is.EqualTo(3), "Schedules");
+                Assert.That(schedules[0].StartsLate, Is.False, "Late 1");
+                Assert.That(schedules[1].StartsLate, Is.False, "Late 2");
+                Assert.That(schedules[2].StartsLate, Is.False, "Late 3");
             }
             finally
             {
@@ -286,14 +286,14 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias).ToArray();
 
             // Validate
-            Assert.AreEqual(2, schedules.Length, "Schedules");
-            Assert.AreSame(FreeTVDevice, schedules[0].Resource, "Resource 1");
-            Assert.AreSame(FreeTVDevice, schedules[1].Resource, "Resource 2");
-            Assert.AreSame(plan1, schedules[0].Definition, "Plan 1");
-            Assert.AreSame(plan2, schedules[1].Definition, "Plan 2");
-            Assert.IsFalse(schedules[0].StartsLate, "Late 1");
-            Assert.IsTrue(schedules[1].StartsLate, "Late 2");
-            Assert.AreEqual(schedules[1].Time.Start, TimeBias.AddHours(2.5), "Start");
+            Assert.That(schedules.Length, Is.EqualTo(2), "Schedules");
+            Assert.That(schedules[0].Resource, Is.SameAs(FreeTVDevice), "Resource 1");
+            Assert.That(schedules[1].Resource, Is.SameAs(FreeTVDevice), "Resource 2");
+            Assert.That(schedules[0].Definition, Is.SameAs(plan1), "Plan 1");
+            Assert.That(schedules[1].Definition, Is.SameAs(plan2), "Plan 2");
+            Assert.That(schedules[0].StartsLate, Is.False, "Late 1");
+            Assert.That(schedules[1].StartsLate, Is.True, "Late 2");
+            Assert.That(TimeBias.AddHours(2.5), Is.EqualTo(schedules[1].Time.Start), "Start");
         }
 
         /// <summary>
@@ -320,13 +320,13 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias).ToArray();
 
             // Validate
-            Assert.AreEqual(2, schedules.Length, "Schedules");
-            Assert.IsNull(schedules[0].Resource, "Resource 1");
-            Assert.AreSame(FreeTVDevice, schedules[1].Resource, "Resource 2");
-            Assert.AreSame(plan2, schedules[0].Definition, "Plan 1");
-            Assert.AreSame(plan1, schedules[1].Definition, "Plan 2");
-            Assert.IsFalse(schedules[0].StartsLate, "Late 1");
-            Assert.IsFalse(schedules[1].StartsLate, "Late 2");
+            Assert.That(schedules.Length, Is.EqualTo(2), "Schedules");
+            Assert.That(schedules[0].Resource, Is.Null, "Resource 1");
+            Assert.That(schedules[1].Resource, Is.SameAs(FreeTVDevice), "Resource 2");
+            Assert.That(schedules[0].Definition, Is.SameAs(plan2), "Plan 1");
+            Assert.That(schedules[1].Definition, Is.SameAs(plan1), "Plan 2");
+            Assert.That(schedules[0].StartsLate, Is.False, "Late 1");
+            Assert.That(schedules[1].StartsLate, Is.False, "Late 2");
         }
 
         /// <summary>
@@ -350,9 +350,9 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias).ToArray();
 
             // Validate
-            Assert.AreEqual(1, schedules.Length, "Schedules");
-            Assert.AreSame(null, schedules[0].Resource, "Resource");
-            Assert.AreSame(plan, schedules[0].Definition, "Plan");
+            Assert.That(schedules.Length, Is.EqualTo(1), "Schedules");
+            Assert.That(schedules[0].Resource, Is.SameAs(null), "Resource");
+            Assert.That(schedules[0].Definition, Is.SameAs(plan), "Plan");
         }
 
         /// <summary>
@@ -379,7 +379,7 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias).ToArray();
 
             // Validate
-            Assert.AreEqual(RecordingScheduler.MaximumRecordingsInPlan + 1, (uint)schedules.Length, "Schedules");
+            Assert.That((uint)schedules.Length, Is.EqualTo(RecordingScheduler.MaximumRecordingsInPlan + 1), "Schedules");
 
             // Check all
             for (int i = 0; i < RecordingScheduler.MaximumRecordingsInPlan; i++)
@@ -388,20 +388,20 @@ namespace JMS.DVB.SchedulerTests
                 var schedule = schedules[i];
 
                 // Validate
-                Assert.AreSame(FreeTVDevice, schedule.Resource, "Resource {0}", i);
-                Assert.AreEqual(TimeBias.AddHours(i), schedule.Time.Start, "Start {0}", i);
-                Assert.AreEqual(TimeSpan.FromMinutes(90), schedule.Time.Duration, "Duration {0}", i);
-                Assert.IsFalse(schedule.StartsLate, "Late {0}", i);
+                Assert.That(schedule.Resource, Is.SameAs(FreeTVDevice), "Resource {0}", i);
+                Assert.That(schedule.Time.Start, Is.EqualTo(TimeBias.AddHours(i)), "Start {0}", i);
+                Assert.That(schedule.Time.Duration, Is.EqualTo(TimeSpan.FromMinutes(90)), "Duration {0}", i);
+                Assert.That(schedule.StartsLate, Is.False, "Late {0}", i);
             }
 
             // Load the last
             var last = schedules[RecordingScheduler.MaximumRecordingsInPlan];
 
             // Validate - internal planning is not touched
-            Assert.AreSame(FreeTVDevice, last.Resource, "Resource");
-            Assert.AreEqual(TimeBias.AddHours(RecordingScheduler.MaximumRecordingsInPlan), last.Time.Start, "Start");
-            Assert.AreEqual(TimeSpan.FromMinutes(90), last.Time.Duration, "Duration");
-            Assert.IsFalse(last.StartsLate, "Late");
+            Assert.That(last.Resource, Is.SameAs(FreeTVDevice), "Resource");
+            Assert.That(last.Time.Start, Is.EqualTo(TimeBias.AddHours(RecordingScheduler.MaximumRecordingsInPlan)), "Start");
+            Assert.That(last.Time.Duration, Is.EqualTo(TimeSpan.FromMinutes(90)), "Duration");
+            Assert.That(last.StartsLate, Is.False, "Late");
         }
 
         /// <summary>
@@ -423,18 +423,18 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias).Take(3).ToArray();
 
             // Validate
-            Assert.AreEqual(3, schedules.Length, "Schedules");
-            Assert.AreSame(plan1, schedules[0].Definition, "Plan 1");
-            Assert.AreSame(FreeTVDevice, schedules[0].Resource, "Resource 1");
-            Assert.AreSame(plan2, schedules[1].Definition, "Plan 2");
-            Assert.AreSame(FreeTVDevice, schedules[1].Resource, "Resource 2");
-            Assert.AreEqual(repeatStart.AddDays(7).AddMinutes(-10), schedules[1].Time.Start, "Start 2");
-            Assert.AreEqual(TimeSpan.FromMinutes(60), schedules[1].Time.Duration, "Duration 2");
-            Assert.AreSame(plan1, schedules[2].Definition, "Plan 3");
-            Assert.AreSame(FreeTVDevice, schedules[2].Resource, "Resource 3");
-            Assert.IsTrue(schedules[2].StartsLate, "Late");
-            Assert.AreEqual(repeatStart.AddDays(7).AddMinutes(50), schedules[2].Time.Start, "Start 3");
-            Assert.AreEqual(TimeSpan.FromMinutes(40), schedules[2].Time.Duration, "Duration 3");
+            Assert.That(schedules.Length, Is.EqualTo(3), "Schedules");
+            Assert.That(schedules[0].Definition, Is.SameAs(plan1), "Plan 1");
+            Assert.That(schedules[0].Resource, Is.SameAs(FreeTVDevice), "Resource 1");
+            Assert.That(schedules[1].Definition, Is.SameAs(plan2), "Plan 2");
+            Assert.That(schedules[1].Resource, Is.SameAs(FreeTVDevice), "Resource 2");
+            Assert.That(schedules[1].Time.Start, Is.EqualTo(repeatStart.AddDays(7).AddMinutes(-10)), "Start 2");
+            Assert.That(schedules[1].Time.Duration, Is.EqualTo(TimeSpan.FromMinutes(60)), "Duration 2");
+            Assert.That(schedules[2].Definition, Is.SameAs(plan1), "Plan 3");
+            Assert.That(schedules[2].Resource, Is.SameAs(FreeTVDevice), "Resource 3");
+            Assert.That(schedules[2].StartsLate, Is.True, "Late");
+            Assert.That(schedules[2].Time.Start, Is.EqualTo(repeatStart.AddDays(7).AddMinutes(50)), "Start 3");
+            Assert.That(schedules[2].Time.Duration, Is.EqualTo(TimeSpan.FromMinutes(40)), "Duration 3");
         }
 
         /// <summary>
@@ -495,14 +495,14 @@ namespace JMS.DVB.SchedulerTests
                 if (i == 12)
                 {
                     // Validate
-                    Assert.AreEqual(schedules[i].Time.Start, repeatStart.AddDays(i).AddMinutes(10), "Start {0}", i);
-                    Assert.AreEqual(schedules[i].Time.Duration, TimeSpan.FromMinutes(80), "Duration {0}", i);
+                    Assert.That(repeatStart.AddDays(i).AddMinutes(10), Is.EqualTo(schedules[i].Time.Start), "Start {0}", i);
+                    Assert.That(TimeSpan.FromMinutes(80), Is.EqualTo(schedules[i].Time.Duration), "Duration {0}", i);
                 }
                 else if (i == 22)
                 {
                     // Validate
-                    Assert.AreEqual(schedules[i].Time.Start, repeatStart.AddDays(i), "Start {0}", i);
-                    Assert.AreEqual(schedules[i].Time.Duration, TimeSpan.FromMinutes(100), "Duration {0}", i);
+                    Assert.That(repeatStart.AddDays(i), Is.EqualTo(schedules[i].Time.Start), "Start {0}", i);
+                    Assert.That(TimeSpan.FromMinutes(100), Is.EqualTo(schedules[i].Time.Duration), "Duration {0}", i);
                 }
                 else
                 {
@@ -510,8 +510,8 @@ namespace JMS.DVB.SchedulerTests
                     var day = (i < 24) ? i : i + 1;
 
                     // Validate
-                    Assert.AreEqual(schedules[i].Time.Start, repeatStart.AddDays(day), "Start {0}", i);
-                    Assert.AreEqual(schedules[i].Time.Duration, TimeSpan.FromMinutes(90), "Duration {0}", i);
+                    Assert.That(repeatStart.AddDays(day), Is.EqualTo(schedules[i].Time.Start), "Start {0}", i);
+                    Assert.That(TimeSpan.FromMinutes(90), Is.EqualTo(schedules[i].Time.Duration), "Duration {0}", i);
                 }
         }
 
@@ -533,16 +533,16 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias).ToArray();
 
             // Validate
-            Assert.AreEqual(3, schedules.Length, "Schedules");
-            Assert.AreEqual("testA", schedules[0].Definition.Name, "Name 1");
-            Assert.AreEqual("testB", schedules[1].Definition.Name, "Name 2");
-            Assert.AreEqual("testC", schedules[2].Definition.Name, "Name 3");
-            Assert.AreSame(FreeTVDevice, schedules[0].Resource, "Resource 1");
-            Assert.AreSame(FreeTVDevice, schedules[1].Resource, "Resource 2");
-            Assert.AreSame(FreeTVDevice, schedules[2].Resource, "Resource 3");
-            Assert.IsFalse(schedules[0].StartsLate, "Late 1");
-            Assert.IsTrue(schedules[1].StartsLate, "Late 2");
-            Assert.IsTrue(schedules[2].StartsLate, "Late 3");
+            Assert.That(schedules.Length, Is.EqualTo(3), "Schedules");
+            Assert.That(schedules[0].Definition.Name, Is.EqualTo("testA"), "Name 1");
+            Assert.That(schedules[1].Definition.Name, Is.EqualTo("testB"), "Name 2");
+            Assert.That(schedules[2].Definition.Name, Is.EqualTo("testC"), "Name 3");
+            Assert.That(schedules[0].Resource, Is.SameAs(FreeTVDevice), "Resource 1");
+            Assert.That(schedules[1].Resource, Is.SameAs(FreeTVDevice), "Resource 2");
+            Assert.That(schedules[2].Resource, Is.SameAs(FreeTVDevice), "Resource 3");
+            Assert.That(schedules[0].StartsLate, Is.False, "Late 1");
+            Assert.That(schedules[1].StartsLate, Is.True, "Late 2");
+            Assert.That(schedules[2].StartsLate, Is.True, "Late 3");
         }
     }
 }

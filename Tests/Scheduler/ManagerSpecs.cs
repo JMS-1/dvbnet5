@@ -133,7 +133,7 @@ namespace JMS.DVB.SchedulerTests
                 cut.Add(ResourceMock.Device1);
 
                 // Try it
-                Assert.IsFalse(cut.Start(ResourceMock.Device1, SourceMock.Source5Group1Pay, Guid.NewGuid(), "test", DateTime.UtcNow, DateTime.UtcNow.AddHours(1)));
+                Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source5Group1Pay, Guid.NewGuid(), "test", DateTime.UtcNow, DateTime.UtcNow.AddHours(1)), Is.False);
             }
         }
 
@@ -156,7 +156,7 @@ namespace JMS.DVB.SchedulerTests
                 var id = Guid.NewGuid();
 
                 // Try it
-                Assert.IsTrue(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id, "test1", start, end));
+                Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id, "test1", start, end), Is.True);
 
                 // Read out
                 var allocations = cut.CurrentAllocations;
@@ -164,13 +164,13 @@ namespace JMS.DVB.SchedulerTests
 
                 // Validate
                 CollectionAssert.AreEquivalent(new[] { ResourceMock.Device1, ResourceMock.Device2 }, resources, "Resources");
-                Assert.AreEqual(1, allocations.Length, "Allocations");
-                Assert.AreSame(ResourceMock.Device1, allocations[0].Resources.Single(), "Resource");
-                Assert.AreEqual("test1", allocations[0].Name, "Name");
-                Assert.AreSame(SourceMock.Source1Group1Free, allocations[0].Source, "Source");
-                Assert.AreEqual(id, allocations[0].UniqueIdentifier, "UniqueIdentifier");
-                Assert.AreEqual(start, allocations[0].Time.Start, "Start");
-                Assert.AreEqual(end, allocations[0].Time.End, "End");
+                Assert.That(allocations.Length, Is.EqualTo(1), "Allocations");
+                Assert.That(allocations[0].Resources.Single(), Is.SameAs(ResourceMock.Device1), "Resource");
+                Assert.That(allocations[0].Name, Is.EqualTo("test1"), "Name");
+                Assert.That(allocations[0].Source, Is.SameAs(SourceMock.Source1Group1Free), "Source");
+                Assert.That(allocations[0].UniqueIdentifier, Is.EqualTo(id), "UniqueIdentifier");
+                Assert.That(allocations[0].Time.Start, Is.EqualTo(start), "Start");
+                Assert.That(allocations[0].Time.End, Is.EqualTo(end), "End");
             }
         }
 
@@ -197,26 +197,26 @@ namespace JMS.DVB.SchedulerTests
                 var id2 = Guid.NewGuid();
 
                 // Try it
-                Assert.IsTrue(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id1, "test1", start1, end1));
-                Assert.IsTrue(cut.Start(ResourceMock.Device1, SourceMock.Source2Group1Free, id2, "test2", start2, end2));
+                Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id1, "test1", start1, end1), Is.True);
+                Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source2Group1Free, id2, "test2", start2, end2), Is.True);
 
                 // Read out
                 var allocations = cut.CurrentAllocations;
 
                 // Validate
-                Assert.AreEqual(2, allocations.Length, "Allocations");
-                Assert.AreSame(ResourceMock.Device1, allocations[0].Resources.Single(), "Resource 1");
-                Assert.AreEqual("test1", allocations[0].Name, "Name 1");
-                Assert.AreSame(SourceMock.Source1Group1Free, allocations[0].Source, "Source 1");
-                Assert.AreEqual(id1, allocations[0].UniqueIdentifier, "UniqueIdentifier 1");
-                Assert.AreEqual(start1, allocations[0].Time.Start, "Start");
-                Assert.AreEqual(end1, allocations[0].Time.End, "End");
-                Assert.AreSame(ResourceMock.Device1, allocations[1].Resources.Single(), "Resource 2");
-                Assert.AreEqual("test2", allocations[1].Name, "Name 2");
-                Assert.AreSame(SourceMock.Source2Group1Free, allocations[1].Source, "Source 2");
-                Assert.AreEqual(id2, allocations[1].UniqueIdentifier, "UniqueIdentifier 2");
-                Assert.AreEqual(start2, allocations[1].Time.Start, "Start");
-                Assert.AreEqual(end2, allocations[1].Time.End, "End");
+                Assert.That(allocations.Length, Is.EqualTo(2), "Allocations");
+                Assert.That(allocations[0].Resources.Single(), Is.SameAs(ResourceMock.Device1), "Resource 1");
+                Assert.That(allocations[0].Name, Is.EqualTo("test1"), "Name 1");
+                Assert.That(allocations[0].Source, Is.SameAs(SourceMock.Source1Group1Free), "Source 1");
+                Assert.That(allocations[0].UniqueIdentifier, Is.EqualTo(id1), "UniqueIdentifier 1");
+                Assert.That(allocations[0].Time.Start, Is.EqualTo(start1), "Start");
+                Assert.That(allocations[0].Time.End, Is.EqualTo(end1), "End");
+                Assert.That(allocations[1].Resources.Single(), Is.SameAs(ResourceMock.Device1), "Resource 2");
+                Assert.That(allocations[1].Name, Is.EqualTo("test2"), "Name 2");
+                Assert.That(allocations[1].Source, Is.SameAs(SourceMock.Source2Group1Free), "Source 2");
+                Assert.That(allocations[1].UniqueIdentifier, Is.EqualTo(id2), "UniqueIdentifier 2");
+                Assert.That(allocations[1].Time.Start, Is.EqualTo(start2), "Start");
+                Assert.That(allocations[1].Time.End, Is.EqualTo(end2), "End");
             }
         }
 
@@ -242,20 +242,20 @@ namespace JMS.DVB.SchedulerTests
                 var id2 = Guid.NewGuid();
 
                 // Try it
-                Assert.IsTrue(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id1, "test1", start1, end1));
-                Assert.IsFalse(cut.Start(ResourceMock.Device1, SourceMock.Source1Group2Free, id2, "test2", start2, end2));
+                Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id1, "test1", start1, end1), Is.True);
+                Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source1Group2Free, id2, "test2", start2, end2), Is.False);
 
                 // Read out
                 var allocations = cut.CurrentAllocations;
 
                 // Validate
-                Assert.AreEqual(1, allocations.Length, "Allocations");
-                Assert.AreSame(ResourceMock.Device1, allocations[0].Resources.Single(), "Resource 1");
-                Assert.AreEqual("test1", allocations[0].Name, "Name 1");
-                Assert.AreSame(SourceMock.Source1Group1Free, allocations[0].Source, "Source 1");
-                Assert.AreEqual(id1, allocations[0].UniqueIdentifier, "UniqueIdentifier 1");
-                Assert.AreEqual(start1, allocations[0].Time.Start, "Start");
-                Assert.AreEqual(end1, allocations[0].Time.End, "End");
+                Assert.That(allocations.Length, Is.EqualTo(1), "Allocations");
+                Assert.That(allocations[0].Resources.Single(), Is.SameAs(ResourceMock.Device1), "Resource 1");
+                Assert.That(allocations[0].Name, Is.EqualTo("test1"), "Name 1");
+                Assert.That(allocations[0].Source, Is.SameAs(SourceMock.Source1Group1Free), "Source 1");
+                Assert.That(allocations[0].UniqueIdentifier, Is.EqualTo(id1), "UniqueIdentifier 1");
+                Assert.That(allocations[0].Time.Start, Is.EqualTo(start1), "Start");
+                Assert.That(allocations[0].Time.End, Is.EqualTo(end1), "End");
             }
         }
 
@@ -281,20 +281,20 @@ namespace JMS.DVB.SchedulerTests
                 var id2 = Guid.NewGuid();
 
                 // Try it
-                Assert.IsTrue(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id1, "test1", start1, end1));
-                Assert.IsFalse(cut.Start(ResourceMock.Device1, null, id2, "test2", start2, end2));
+                Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id1, "test1", start1, end1), Is.True);
+                Assert.That(cut.Start(ResourceMock.Device1, null, id2, "test2", start2, end2), Is.False);
 
                 // Read out
                 var allocations = cut.CurrentAllocations;
 
                 // Validate
-                Assert.AreEqual(1, allocations.Length, "Allocations");
-                Assert.AreSame(ResourceMock.Device1, allocations[0].Resources.Single(), "Resource 1");
-                Assert.AreEqual("test1", allocations[0].Name, "Name 1");
-                Assert.AreSame(SourceMock.Source1Group1Free, allocations[0].Source, "Source 1");
-                Assert.AreEqual(id1, allocations[0].UniqueIdentifier, "UniqueIdentifier 1");
-                Assert.AreEqual(start1, allocations[0].Time.Start, "Start");
-                Assert.AreEqual(end1, allocations[0].Time.End, "End");
+                Assert.That(allocations.Length, Is.EqualTo(1), "Allocations");
+                Assert.That(allocations[0].Resources.Single(), Is.SameAs(ResourceMock.Device1), "Resource 1");
+                Assert.That(allocations[0].Name, Is.EqualTo("test1"), "Name 1");
+                Assert.That(allocations[0].Source, Is.SameAs(SourceMock.Source1Group1Free), "Source 1");
+                Assert.That(allocations[0].UniqueIdentifier, Is.EqualTo(id1), "UniqueIdentifier 1");
+                Assert.That(allocations[0].Time.Start, Is.EqualTo(start1), "Start");
+                Assert.That(allocations[0].Time.End, Is.EqualTo(end1), "End");
             }
         }
 
@@ -319,7 +319,7 @@ namespace JMS.DVB.SchedulerTests
                     var id = Guid.NewGuid();
 
                     // Try it
-                    Assert.IsTrue(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id, "test", start, end));
+                    Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id, "test", start, end), Is.True);
 
                     // Fail it
                     cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id, "test", start, end);
@@ -349,20 +349,20 @@ namespace JMS.DVB.SchedulerTests
                 var id2 = Guid.NewGuid();
 
                 // Try it
-                Assert.IsTrue(cut.Start(ResourceMock.Device1, null, id2, "test2", start2, end2));
-                Assert.IsFalse(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id1, "test1", start1, end1));
+                Assert.That(cut.Start(ResourceMock.Device1, null, id2, "test2", start2, end2), Is.True);
+                Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id1, "test1", start1, end1), Is.False);
 
                 // Read out
                 var allocations = cut.CurrentAllocations;
 
                 // Validate
-                Assert.AreEqual(1, allocations.Length, "Allocations");
-                Assert.AreSame(ResourceMock.Device1, allocations[0].Resources.Single(), "Resource 1");
-                Assert.AreEqual("test2", allocations[0].Name, "Name 1");
-                Assert.IsNull(allocations[0].Source, "Source 1");
-                Assert.AreEqual(id2, allocations[0].UniqueIdentifier, "UniqueIdentifier 1");
-                Assert.AreEqual(start2, allocations[0].Time.Start, "Start");
-                Assert.AreEqual(end2, allocations[0].Time.End, "End");
+                Assert.That(allocations.Length, Is.EqualTo(1), "Allocations");
+                Assert.That(allocations[0].Resources.Single(), Is.SameAs(ResourceMock.Device1), "Resource 1");
+                Assert.That(allocations[0].Name, Is.EqualTo("test2"), "Name 1");
+                Assert.That(allocations[0].Source, Is.Null, "Source 1");
+                Assert.That(allocations[0].UniqueIdentifier, Is.EqualTo(id2), "UniqueIdentifier 1");
+                Assert.That(allocations[0].Time.Start, Is.EqualTo(start2), "Start");
+                Assert.That(allocations[0].Time.End, Is.EqualTo(end2), "End");
             }
         }
 
@@ -388,20 +388,20 @@ namespace JMS.DVB.SchedulerTests
                 var id2 = Guid.NewGuid();
 
                 // Try it
-                Assert.IsTrue(cut.Start(ResourceMock.Device1, null, id2, "test2", start2, end2));
-                Assert.IsFalse(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id1, "test1", start1, end1));
+                Assert.That(cut.Start(ResourceMock.Device1, null, id2, "test2", start2, end2), Is.True);
+                Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id1, "test1", start1, end1), Is.False);
 
                 // Read out
                 var allocations = cut.CurrentAllocations;
 
                 // Validate
-                Assert.AreEqual(1, allocations.Length, "Allocations");
-                Assert.AreSame(ResourceMock.Device1, allocations[0].Resources.Single(), "Resource 1");
-                Assert.AreEqual("test2", allocations[0].Name, "Name 1");
-                Assert.IsNull(allocations[0].Source, "Source 1");
-                Assert.AreEqual(id2, allocations[0].UniqueIdentifier, "UniqueIdentifier 1");
-                Assert.AreEqual(start2, allocations[0].Time.Start, "Start");
-                Assert.AreEqual(end2, allocations[0].Time.End, "End");
+                Assert.That(allocations.Length, Is.EqualTo(1), "Allocations");
+                Assert.That(allocations[0].Resources.Single(), Is.SameAs(ResourceMock.Device1), "Resource 1");
+                Assert.That(allocations[0].Name, Is.EqualTo("test2"), "Name 1");
+                Assert.That(allocations[0].Source, Is.Null, "Source 1");
+                Assert.That(allocations[0].UniqueIdentifier, Is.EqualTo(id2), "UniqueIdentifier 1");
+                Assert.That(allocations[0].Time.Start, Is.EqualTo(start2), "Start");
+                Assert.That(allocations[0].Time.End, Is.EqualTo(end2), "End");
             }
         }
 
@@ -427,20 +427,20 @@ namespace JMS.DVB.SchedulerTests
                 var id2 = Guid.NewGuid();
 
                 // Try it
-                Assert.IsTrue(cut.Start(ResourceMock.Device1, null, id2, "test2", start2, end2));
-                Assert.IsFalse(cut.Start(ResourceMock.Device1, null, id1, "test1", start1, end1));
+                Assert.That(cut.Start(ResourceMock.Device1, null, id2, "test2", start2, end2), Is.True);
+                Assert.That(cut.Start(ResourceMock.Device1, null, id1, "test1", start1, end1), Is.False);
 
                 // Read out
                 var allocations = cut.CurrentAllocations;
 
                 // Validate
-                Assert.AreEqual(1, allocations.Length, "Allocations");
-                Assert.AreSame(ResourceMock.Device1, allocations[0].Resources.Single(), "Resource 1");
-                Assert.AreEqual("test2", allocations[0].Name, "Name 1");
-                Assert.IsNull(allocations[0].Source, "Source 1");
-                Assert.AreEqual(id2, allocations[0].UniqueIdentifier, "UniqueIdentifier 1");
-                Assert.AreEqual(start2, allocations[0].Time.Start, "Start");
-                Assert.AreEqual(end2, allocations[0].Time.End, "End");
+                Assert.That(allocations.Length, Is.EqualTo(1), "Allocations");
+                Assert.That(allocations[0].Resources.Single(), Is.SameAs(ResourceMock.Device1), "Resource 1");
+                Assert.That(allocations[0].Name, Is.EqualTo("test2"), "Name 1");
+                Assert.That(allocations[0].Source, Is.Null, "Source 1");
+                Assert.That(allocations[0].UniqueIdentifier, Is.EqualTo(id2), "UniqueIdentifier 1");
+                Assert.That(allocations[0].Time.Start, Is.EqualTo(start2), "Start");
+                Assert.That(allocations[0].Time.End, Is.EqualTo(end2), "End");
             }
         }
 
@@ -466,8 +466,8 @@ namespace JMS.DVB.SchedulerTests
                 var id2 = Guid.NewGuid();
 
                 // Try it
-                Assert.IsTrue(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id1, "test1", start1, end1));
-                Assert.IsTrue(cut.Start(ResourceMock.Device1, SourceMock.Source2Group1Free, id2, "test2", start2, end2));
+                Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id1, "test1", start1, end1), Is.True);
+                Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source2Group1Free, id2, "test2", start2, end2), Is.True);
 
                 // Remove one
                 cut.Stop(id1);
@@ -476,13 +476,13 @@ namespace JMS.DVB.SchedulerTests
                 var allocations = cut.CurrentAllocations;
 
                 // Validate
-                Assert.AreEqual(1, allocations.Length, "Allocations");
-                Assert.AreSame(ResourceMock.Device1, allocations[0].Resources.Single(), "Resource");
-                Assert.AreEqual("test2", allocations[0].Name, "Name");
-                Assert.AreSame(SourceMock.Source2Group1Free, allocations[0].Source, "Source");
-                Assert.AreEqual(id2, allocations[0].UniqueIdentifier, "UniqueIdentifier");
-                Assert.AreEqual(start2, allocations[0].Time.Start, "Start");
-                Assert.AreEqual(end2, allocations[0].Time.End, "End");
+                Assert.That(allocations.Length, Is.EqualTo(1), "Allocations");
+                Assert.That(allocations[0].Resources.Single(), Is.SameAs(ResourceMock.Device1), "Resource");
+                Assert.That(allocations[0].Name, Is.EqualTo("test2"), "Name");
+                Assert.That(allocations[0].Source, Is.SameAs(SourceMock.Source2Group1Free), "Source");
+                Assert.That(allocations[0].UniqueIdentifier, Is.EqualTo(id2), "UniqueIdentifier");
+                Assert.That(allocations[0].Time.Start, Is.EqualTo(start2), "Start");
+                Assert.That(allocations[0].Time.End, Is.EqualTo(end2), "End");
             }
         }
 
@@ -534,20 +534,20 @@ namespace JMS.DVB.SchedulerTests
                 var id = Guid.NewGuid();
 
                 // Try it
-                Assert.IsTrue(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id, "test1", start, end1));
-                Assert.IsTrue(cut.Modify(id, end2));
+                Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id, "test1", start, end1), Is.True);
+                Assert.That(cut.Modify(id, end2), Is.True);
 
                 // Read out
                 var allocations = cut.CurrentAllocations;
 
                 // Validate
-                Assert.AreEqual(1, allocations.Length, "Allocations");
-                Assert.AreSame(ResourceMock.Device1, allocations[0].Resources.Single(), "Resource");
-                Assert.AreEqual("test1", allocations[0].Name, "Name");
-                Assert.AreSame(SourceMock.Source1Group1Free, allocations[0].Source, "Source");
-                Assert.AreEqual(id, allocations[0].UniqueIdentifier, "UniqueIdentifier");
-                Assert.AreEqual(start, allocations[0].Time.Start, "Start");
-                Assert.AreEqual(end2, allocations[0].Time.End, "End");
+                Assert.That(allocations.Length, Is.EqualTo(1), "Allocations");
+                Assert.That(allocations[0].Resources.Single(), Is.SameAs(ResourceMock.Device1), "Resource");
+                Assert.That(allocations[0].Name, Is.EqualTo("test1"), "Name");
+                Assert.That(allocations[0].Source, Is.SameAs(SourceMock.Source1Group1Free), "Source");
+                Assert.That(allocations[0].UniqueIdentifier, Is.EqualTo(id), "UniqueIdentifier");
+                Assert.That(allocations[0].Time.Start, Is.EqualTo(start), "Start");
+                Assert.That(allocations[0].Time.End, Is.EqualTo(end2), "End");
             }
         }
 
@@ -572,7 +572,7 @@ namespace JMS.DVB.SchedulerTests
                     var id = Guid.NewGuid();
 
                     // Try it
-                    Assert.IsTrue(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id, "test1", start, end));
+                    Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id, "test1", start, end), Is.True);
 
                     // Will fail
                     cut.Modify(id, start);
@@ -601,29 +601,29 @@ namespace JMS.DVB.SchedulerTests
                 var id2 = Guid.NewGuid();
 
                 // Create non overlapping recordings allowing the device to add both
-                Assert.IsTrue(cut.Start(ResourceMock.Device2, SourceMock.Source1Group1Pay, id1, "test1", start1, end1), "Start 1");
-                Assert.IsTrue(cut.Start(ResourceMock.Device2, SourceMock.Source4Group1Pay, id2, "test2", start2, end2), "Start 2");
+                Assert.That(cut.Start(ResourceMock.Device2, SourceMock.Source1Group1Pay, id1, "test1", start1, end1), Is.True, "Start 1");
+                Assert.That(cut.Start(ResourceMock.Device2, SourceMock.Source4Group1Pay, id2, "test2", start2, end2), Is.True, "Start 2");
 
                 // Now extend the first recording just a tiny bit
-                Assert.IsFalse(cut.Modify(id1, start2.AddTicks(1)), "Modify 1");
+                Assert.That(cut.Modify(id1, start2.AddTicks(1)), Is.False, "Modify 1");
 
                 // Read out
                 var allocations = cut.CurrentAllocations;
 
                 // Validate
-                Assert.AreEqual(2, allocations.Length, "Allocations");
-                Assert.AreSame(ResourceMock.Device2, allocations[0].Resources.Single(), "Resource 1");
-                Assert.AreEqual("test1", allocations[0].Name, "Name 1");
-                Assert.AreSame(SourceMock.Source1Group1Pay, allocations[0].Source, "Source 1");
-                Assert.AreEqual(id1, allocations[0].UniqueIdentifier, "UniqueIdentifier 1");
-                Assert.AreEqual(start1, allocations[0].Time.Start, "Start");
-                Assert.AreEqual(end1, allocations[0].Time.End, "End");
-                Assert.AreSame(ResourceMock.Device2, allocations[1].Resources.Single(), "Resource 2");
-                Assert.AreEqual("test2", allocations[1].Name, "Name 2");
-                Assert.AreSame(SourceMock.Source4Group1Pay, allocations[1].Source, "Source 2");
-                Assert.AreEqual(id2, allocations[1].UniqueIdentifier, "UniqueIdentifier 2");
-                Assert.AreEqual(start2, allocations[1].Time.Start, "Start");
-                Assert.AreEqual(end2, allocations[1].Time.End, "End");
+                Assert.That(allocations.Length, Is.EqualTo(2), "Allocations");
+                Assert.That(allocations[0].Resources.Single(), Is.SameAs(ResourceMock.Device2), "Resource 1");
+                Assert.That(allocations[0].Name, Is.EqualTo("test1"), "Name 1");
+                Assert.That(allocations[0].Source, Is.SameAs(SourceMock.Source1Group1Pay), "Source 1");
+                Assert.That(allocations[0].UniqueIdentifier, Is.EqualTo(id1), "UniqueIdentifier 1");
+                Assert.That(allocations[0].Time.Start, Is.EqualTo(start1), "Start");
+                Assert.That(allocations[0].Time.End, Is.EqualTo(end1), "End");
+                Assert.That(allocations[1].Resources.Single(), Is.SameAs(ResourceMock.Device2), "Resource 2");
+                Assert.That(allocations[1].Name, Is.EqualTo("test2"), "Name 2");
+                Assert.That(allocations[1].Source, Is.SameAs(SourceMock.Source4Group1Pay), "Source 2");
+                Assert.That(allocations[1].UniqueIdentifier, Is.EqualTo(id2), "UniqueIdentifier 2");
+                Assert.That(allocations[1].Time.Start, Is.EqualTo(start2), "Start");
+                Assert.That(allocations[1].Time.End, Is.EqualTo(end2), "End");
             }
         }
 
@@ -660,7 +660,7 @@ namespace JMS.DVB.SchedulerTests
                 var next = cut.GetNextActivity(now, callback);
 
                 // Test
-                Assert.IsInstanceOf<WaitActivity>(next);
+                Assert.That(next, Is.InstanceOf<WaitActivity>());
 
                 // Advance
                 now = ((WaitActivity)next).RetestTime;
@@ -669,43 +669,43 @@ namespace JMS.DVB.SchedulerTests
                 next = cut.GetNextActivity(now, callback);
 
                 // Test
-                Assert.IsInstanceOf<StartActivity>(next);
+                Assert.That(next, Is.InstanceOf<StartActivity>());
 
                 // Get all 
                 var plan = ((StartActivity)next).Recording;
 
                 // Validate
-                Assert.AreEqual(now, plan.Time.Start, "Initial Start");
-                Assert.IsNull(cut.GetEndOfAllocation(), "Initial Allocation");
+                Assert.That(plan.Time.Start, Is.EqualTo(now), "Initial Start");
+                Assert.That(cut.GetEndOfAllocation(), Is.Null, "Initial Allocation");
 
                 // Mark as started
-                Assert.IsTrue(cut.Start(plan), "Start");
-                Assert.AreEqual(plan.Time.End, cut.GetEndOfAllocation(), "End");
+                Assert.That(cut.Start(plan), Is.True, "Start");
+                Assert.That(cut.GetEndOfAllocation(), Is.EqualTo(plan.Time.End), "End");
 
                 // Check action - should now wait until recording ends
                 next = cut.GetNextActivity(now, callback);
 
                 // Test
-                Assert.IsInstanceOf<WaitActivity>(next);
+                Assert.That(next, Is.InstanceOf<WaitActivity>());
 
                 // Advance
                 now = ((WaitActivity)next).RetestTime;
 
                 // Test
-                Assert.AreEqual(plan.Time.End, now);
+                Assert.That(now, Is.EqualTo(plan.Time.End));
 
                 // Check action - recording is done and can be terminated
                 next = cut.GetNextActivity(now, callback);
 
                 // Test
-                Assert.IsInstanceOf<StopActivity>(next);
-                Assert.AreEqual(play1.UniqueIdentifier, ((StopActivity)next).UniqueIdentifier);
+                Assert.That(next, Is.InstanceOf<StopActivity>());
+                Assert.That(((StopActivity)next).UniqueIdentifier, Is.EqualTo(play1.UniqueIdentifier));
 
                 // Do it
                 cut.Stop(play1.UniqueIdentifier);
 
                 // Retest - nothing more to do
-                Assert.IsNull(cut.GetNextActivity(now, callback));
+                Assert.That(cut.GetNextActivity(now, callback), Is.Null);
             }
         }
 
@@ -737,12 +737,12 @@ namespace JMS.DVB.SchedulerTests
                 var plan = scheduler.GetSchedules(now).Take(100).ToArray();
 
                 // Validate
-                Assert.AreEqual(100, plan.Length, "Initial Count");
-                Assert.AreEqual(DayOfWeek.Monday, plan[0].Time.LocalStart.DayOfWeek, "Initial Start");
-                Assert.IsNull(cut.GetEndOfAllocation(), "Initial Allocation");
+                Assert.That(plan.Length, Is.EqualTo(100), "Initial Count");
+                Assert.That(plan[0].Time.LocalStart.DayOfWeek, Is.EqualTo(DayOfWeek.Monday), "Initial Start");
+                Assert.That(cut.GetEndOfAllocation(), Is.Null, "Initial Allocation");
 
                 // Mark as started
-                Assert.IsTrue(cut.Start(plan[0]), "Start");
+                Assert.That(cut.Start(plan[0]), Is.True, "Start");
 
                 // Get the schedule
                 scheduler = cut.CreateScheduler();
@@ -751,8 +751,8 @@ namespace JMS.DVB.SchedulerTests
                 scheduler.Add(play1);
 
                 // Test
-                Assert.IsFalse(scheduler.GetSchedules(now).Any(), "Ignore Recording");
-                Assert.AreEqual(plan[0].Time.End, cut.GetEndOfAllocation(), "End");
+                Assert.That(scheduler.GetSchedules(now).Any(), Is.False, "Ignore Recording");
+                Assert.That(cut.GetEndOfAllocation(), Is.EqualTo(plan[0].Time.End), "End");
             }
         }
 
@@ -789,13 +789,13 @@ namespace JMS.DVB.SchedulerTests
                 var initial = cut.GetSchedules(now, loader).Take(2).ToArray();
 
                 // Start the first one
-                Assert.IsTrue(cut.Start(initial[0]));
+                Assert.That(cut.Start(initial[0]), Is.True);
 
                 // Recheck the list
                 var follower = cut.GetSchedules(now, loader).First();
 
                 // Make sure that first is skipped
-                Assert.AreEqual(initial[1].Time.Start, follower.Time.Start);
+                Assert.That(follower.Time.Start, Is.EqualTo(initial[1].Time.Start));
             }
         }
 
@@ -832,16 +832,16 @@ namespace JMS.DVB.SchedulerTests
                 var initial = cut.GetSchedules(now, loader).Take(2).ToArray();
 
                 // Start the first one
-                Assert.IsTrue(cut.Start(initial[0]));
+                Assert.That(cut.Start(initial[0]), Is.True);
 
                 // Move it
-                Assert.IsTrue(cut.Modify(initial[0].Definition.UniqueIdentifier, initial[0].Time.End.AddMinutes(20)));
+                Assert.That(cut.Modify(initial[0].Definition.UniqueIdentifier, initial[0].Time.End.AddMinutes(20)), Is.True);
 
                 // Recheck the list
                 var follower = cut.GetSchedules(now, loader).First();
 
                 // Make sure that first is skipped
-                Assert.AreEqual(initial[1].Time.Start, follower.Time.Start);
+                Assert.That(follower.Time.Start, Is.EqualTo(initial[1].Time.Start));
             }
         }
 
@@ -878,16 +878,16 @@ namespace JMS.DVB.SchedulerTests
                 var initial = cut.GetSchedules(now, loader).Take(2).ToArray();
 
                 // Start the first one
-                Assert.IsTrue(cut.Start(initial[0]));
+                Assert.That(cut.Start(initial[0]), Is.True);
 
                 // Move it
-                Assert.IsTrue(cut.Modify(initial[0].Definition.UniqueIdentifier, initial[0].Time.End.AddMinutes(-20)));
+                Assert.That(cut.Modify(initial[0].Definition.UniqueIdentifier, initial[0].Time.End.AddMinutes(-20)), Is.True);
 
                 // Recheck the list
                 var follower = cut.GetSchedules(now, loader).First();
 
                 // Make sure that first is skipped
-                Assert.AreEqual(initial[1].Time.Start, follower.Time.Start);
+                Assert.That(follower.Time.Start, Is.EqualTo(initial[1].Time.Start));
             }
         }
 
@@ -908,7 +908,7 @@ namespace JMS.DVB.SchedulerTests
                 var now = new DateTime(2013, 12, 3, 17, 0, 0, DateTimeKind.Utc);
 
                 // Start a task
-                Assert.IsTrue(cut.Start(ResourceMock.Device1, null, Guid.NewGuid(), "EPG", now, now.AddMinutes(20)), "epg");
+                Assert.That(cut.Start(ResourceMock.Device1, null, Guid.NewGuid(), "EPG", now, now.AddMinutes(20)), Is.True, "epg");
 
                 // Create the recording
                 var plan1 = RecordingDefinition.Create(false, "testA", Guid.NewGuid(), null, SourceMock.Source1Group1Free, now.AddMinutes(1), TimeSpan.FromMinutes(120));
@@ -932,7 +932,7 @@ namespace JMS.DVB.SchedulerTests
                 var schedules = cut.GetSchedules(now, loader).ToArray();
 
                 // Validate
-                Assert.AreEqual(3, schedules.Count(s => s.Resource != null), "#");
+                Assert.That(schedules.Count(s => s.Resource != null), Is.EqualTo(3), "#");
             }
         }
     }

@@ -42,11 +42,11 @@ namespace JMS.DVB.SchedulerTests
             var schedules = cut.GetSchedules(TimeBias).ToArray();
 
             // Validate
-            Assert.AreEqual(4, schedules.Length, "Schedule");
+            Assert.That(schedules.Length, Is.EqualTo(4), "Schedule");
 
             // Process all
             foreach (var schedule in schedules)
-                Assert.AreEqual(ReferenceEquals(schedule.Definition, plan3), schedule.StartsLate, "Late {0}", schedule.Definition.Name);
+                Assert.That(schedule.StartsLate, Is.EqualTo(ReferenceEquals(schedule.Definition, plan3)), "Late {0}", schedule.Definition.Name);
         }
     }
 }

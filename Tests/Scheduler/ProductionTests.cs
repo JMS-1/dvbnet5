@@ -97,7 +97,7 @@ namespace JMS.DVB.SchedulerTests
                 profileNamespaces.AddNamespace("dvbnet", "http://psimarron.net/DVBNET/Profiles");
 
                 // Validate
-                Assert.IsTrue(autoSelect, "Auto Select");
+                Assert.That(autoSelect, Is.True, "Auto Select");
 
                 // Process all schedules
                 foreach (XmlElement schedule in job.SelectNodes("VCRJob/Schedule"))
@@ -171,7 +171,7 @@ namespace JMS.DVB.SchedulerTests
             Console.WriteLine("{0:N3}ms", elapsed.TotalMilliseconds);
 
             // Validate
-            Assert.AreEqual(1000, all.Length, "#jobs");
+            Assert.That(all.Length, Is.EqualTo(1000), "#jobs");
         }
     }
 }
