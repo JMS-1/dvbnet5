@@ -46,7 +46,7 @@ namespace JMS.DVB.SchedulerTests
 
             // Process all
             foreach (var schedule in schedules)
-                Assert.That(schedule.StartsLate, Is.EqualTo(ReferenceEquals(schedule.Definition, plan3)), "Late {0}", schedule.Definition.Name);
+                Assert.That(schedule.StartsLate, Is.EqualTo(ReferenceEquals(schedule.Definition, plan3)), $"Late {schedule.Definition.Name}");
         }
     }
 }

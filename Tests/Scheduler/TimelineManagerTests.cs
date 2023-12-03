@@ -1,4 +1,5 @@
 ﻿using JMS.DVB.Algorithms.Scheduler;
+using NUnit.Framework.Legacy;
 
 namespace JMS.DVB.SchedulerTests
 {
@@ -330,8 +331,8 @@ namespace JMS.DVB.SchedulerTests
             foreach (var range in cut)
             {
                 // Validate
-                Assert.That(range.Start >= lastEnd, Is.True, "start {0}", range);
-                Assert.That(range.End > range.Start, Is.True, "duration {0}", range);
+                Assert.That(range.Start >= lastEnd, Is.True, $"start {range}");
+                Assert.That(range.End > range.Start, Is.True, $"duration {range}");
 
                 // Get index
                 var startIndex = (int)(range.Start - now).TotalMinutes;
@@ -346,7 +347,7 @@ namespace JMS.DVB.SchedulerTests
             }
 
             // Validate
-            CollectionAssert.AreEqual(cnt, cmp);
+            Assert.That(cmp, Is.EqualTo(cnt).AsCollection);
 
             // See if we checked the good stuff
             Assert.That(cnt.Min() == 0, Is.True, "min");

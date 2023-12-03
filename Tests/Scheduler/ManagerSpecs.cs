@@ -1,4 +1,5 @@
 ﻿using JMS.DVB.Algorithms.Scheduler;
+using NUnit.Framework.Legacy;
 
 namespace JMS.DVB.SchedulerTests
 {
@@ -163,7 +164,7 @@ namespace JMS.DVB.SchedulerTests
                 var resources = cut.Resources;
 
                 // Validate
-                CollectionAssert.AreEquivalent(new[] { ResourceMock.Device1, ResourceMock.Device2 }, resources, "Resources");
+                Assert.That(resources, Is.EquivalentTo(new[] { ResourceMock.Device1, ResourceMock.Device2 }), "Resources");
                 Assert.That(allocations.Length, Is.EqualTo(1), "Allocations");
                 Assert.That(allocations[0].Resources.Single(), Is.SameAs(ResourceMock.Device1), "Resource");
                 Assert.That(allocations[0].Name, Is.EqualTo("test1"), "Name");

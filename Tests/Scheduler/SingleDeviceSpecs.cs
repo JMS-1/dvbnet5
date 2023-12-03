@@ -388,10 +388,10 @@ namespace JMS.DVB.SchedulerTests
                 var schedule = schedules[i];
 
                 // Validate
-                Assert.That(schedule.Resource, Is.SameAs(FreeTVDevice), "Resource {0}", i);
-                Assert.That(schedule.Time.Start, Is.EqualTo(TimeBias.AddHours(i)), "Start {0}", i);
-                Assert.That(schedule.Time.Duration, Is.EqualTo(TimeSpan.FromMinutes(90)), "Duration {0}", i);
-                Assert.That(schedule.StartsLate, Is.False, "Late {0}", i);
+                Assert.That(schedule.Resource, Is.SameAs(FreeTVDevice), $"Resource {i}");
+                Assert.That(schedule.Time.Start, Is.EqualTo(TimeBias.AddHours(i)), $"Start {i}");
+                Assert.That(schedule.Time.Duration, Is.EqualTo(TimeSpan.FromMinutes(90)), $"Duration {i}");
+                Assert.That(schedule.StartsLate, Is.False, $"Late {i}");
             }
 
             // Load the last
@@ -495,14 +495,14 @@ namespace JMS.DVB.SchedulerTests
                 if (i == 12)
                 {
                     // Validate
-                    Assert.That(repeatStart.AddDays(i).AddMinutes(10), Is.EqualTo(schedules[i].Time.Start), "Start {0}", i);
-                    Assert.That(TimeSpan.FromMinutes(80), Is.EqualTo(schedules[i].Time.Duration), "Duration {0}", i);
+                    Assert.That(repeatStart.AddDays(i).AddMinutes(10), Is.EqualTo(schedules[i].Time.Start), $"Start {i}");
+                    Assert.That(TimeSpan.FromMinutes(80), Is.EqualTo(schedules[i].Time.Duration), $"Duration {i}");
                 }
                 else if (i == 22)
                 {
                     // Validate
-                    Assert.That(repeatStart.AddDays(i), Is.EqualTo(schedules[i].Time.Start), "Start {0}", i);
-                    Assert.That(TimeSpan.FromMinutes(100), Is.EqualTo(schedules[i].Time.Duration), "Duration {0}", i);
+                    Assert.That(repeatStart.AddDays(i), Is.EqualTo(schedules[i].Time.Start), $"Start {i}");
+                    Assert.That(TimeSpan.FromMinutes(100), Is.EqualTo(schedules[i].Time.Duration), $"Duration {i}");
                 }
                 else
                 {
@@ -510,8 +510,8 @@ namespace JMS.DVB.SchedulerTests
                     var day = (i < 24) ? i : i + 1;
 
                     // Validate
-                    Assert.That(repeatStart.AddDays(day), Is.EqualTo(schedules[i].Time.Start), "Start {0}", i);
-                    Assert.That(TimeSpan.FromMinutes(90), Is.EqualTo(schedules[i].Time.Duration), "Duration {0}", i);
+                    Assert.That(repeatStart.AddDays(day), Is.EqualTo(schedules[i].Time.Start), $"Start {i}");
+                    Assert.That(TimeSpan.FromMinutes(90), Is.EqualTo(schedules[i].Time.Duration), $"Duration {i}");
                 }
         }
 
