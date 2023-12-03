@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.ProgramGuide;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
@@ -21,7 +23,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
             // See if we can use it
             if (!schedule.IsActive)
-                throw new ArgumentException(Properties.Resources.ScheduleInPast);
+                throw new ArgumentException("Die Aufzeichnung liegt in der Vergangenheit");
 
             // Connect
             job.Schedules.Add(schedule);
@@ -100,7 +102,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
             // See if we can use it
             if (!newSchedule.IsActive)
-                throw new ArgumentException(Properties.Resources.ScheduleInPast);
+                throw new ArgumentException("Die Aufzeichnung liegt in der Vergangenheit");
 
             // Copy all schedules expect the one wie founr
             newJob.Schedules.AddRange(job.Schedules.Where(oldSchedule => !ReferenceEquals(oldSchedule, schedule)));
@@ -162,7 +164,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
             // See if we can use it
             if (!newSchedule.IsActive)
-                throw new ArgumentException(Properties.Resources.ScheduleInPast);
+                throw new ArgumentException("Die Aufzeichnung liegt in der Vergangenheit");
 
             // Add all existing
             newJob.Schedules.AddRange(job.Schedules);

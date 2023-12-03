@@ -1,5 +1,4 @@
-﻿using JMS.DVBVCR.RecordingService.Persistence;
-using System;
+﻿using JMS.DVB.NET.Recording.Persistence;
 using System.Globalization;
 using System.Runtime.Serialization;
 

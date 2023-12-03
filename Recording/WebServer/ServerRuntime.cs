@@ -1,4 +1,5 @@
 
+using System.Diagnostics;
 using JMS.DVB.NET.Recording.Persistence;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -25,21 +26,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public void Test()
         {
         }
-
-        /// <summary>
-        /// Beginnt mit der Ausf�hrung einer Anfrage.
-        /// </summary>
-        /// <param name="context">Die Anfrage.</param>
-        public void ProcessRequest(ContextAccessor context) => HttpRuntime.ProcessRequest(new Request(context));
-
-        /// <summary>
-        /// Beendet die ASP.NET Laufzeitumgebung.
-        /// </summary>
-        /// <remarks>
-        /// Der Aufruf kehrt erst wieder zur�ck, wenn alle ausstehenden Anfragen bearbeitet
-        /// wurden. Neue Anfragen werden nicht angenommen.
-        /// </remarks>
-        public virtual void Stop() => HttpRuntime.Close();
     }
 
     /// <summary>
@@ -63,12 +49,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static void WebStartup()
         {
-            // Register REST helper module
-            DynamicModuleUtility.RegisterModule(typeof(StarterModule));
-
-            // Register profile manager
-            System.Web.Profile.ProfileManager.Providers.Clear();
-            System.Web.Profile.ProfileManager.Providers.Add(new UserProfileManager());
         }
 
         /// <summary>
@@ -107,13 +87,10 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der Aufruf kehrt erst wieder zur�ck, wenn alle ausstehenden Anfragen bearbeitet
         /// wurden. Neue Anfragen werden nicht angenommen.
         /// </remarks>
-        public override void Stop()
+        public void Stop()
         {
             // Reset
             _VCRServer = null;
-
-            // Forward
-            base.Stop();
         }
 
         /// <summary>
@@ -123,107 +100,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             get
             {
-                // Make sure that user is allowed to access the server
-                TestWebAccess();
-
                 // Report
                 return _VCRServer;
-            }
-        }
-
-        /// <summary>
-        /// Pr�ft, ob ein Anwender Zugriff auf die Webanwendung hat.
-        /// </summary>
-        /// <returns>Gesetzt, wenn es sich sogar um einen Administrator handelt.</returns>
-        public static bool TestWebAccess() => TestWebAccess(true);
-
-        /// <summary>
-        /// Pr�ft, ob ein Anwender Zugriff auf den VCR.NET Recording Service hat.
-        /// </summary>
-        /// <param name="endOnFail">Gesetzt, wenn ein HTTP Zugriffsfehler ausgel�st werden
-        /// soll, wenn der Zugriff nicht gestattet ist.</param>
-        /// <returns>Gesetzt, wenn der Zugriff gestattet ist.</returns>
-        public static bool TestWebAccess(bool endOnFail)
-        {
-            // Administrators can do everything
-            if (IsAdmin)
-                return true;
-
-            // Attach to the current context
-            var request = HttpContext.Current;
-
-            // Attach to user
-            var user = request.User;
-
-            // See if user is provided
-            if (user != null)
-            {
-                // Get the user role
-                var userRole = VCRConfiguration.Current.UserRole;
-                if (string.IsNullOrEmpty(userRole))
-                    return true;
-
-                // Full test
-                if (user.IsInRole(userRole))
-                    return true;
-            }
-
-            // Terminate
-            if (endOnFail)
-            {
-                // Reject
-                request.Response.StatusCode = 401;
-                request.Response.End();
-            }
-
-            // Done
-            return false;
-        }
-
-        /// <summary>
-        /// Pr�ft, ob der aktuelle Anwender administrativen Zugriff auf den VCR.NET Recording
-        /// Service besitzt. Ist das nicht der Fall, wird ein HTTP Fehler ausgel�st.
-        /// </summary>
-        public static void TestAdminAccess()
-        {
-            // Execute
-            if (IsAdmin)
-                return;
-
-            // Attach to the current context
-            var request = HttpContext.Current;
-
-            // Reject
-            request.Response.StatusCode = 401;
-            request.Response.End();
-        }
-
-        /// <summary>
-        /// Meldet, ob der aktuelle Anwender ein VCR.NET Administrator ist,
-        /// </summary>
-        public static bool IsAdmin
-        {
-            get
-            {
-                // Attach to the current context
-                var request = HttpContext.Current;
-
-                // Attach to user
-                var user = request.User;
-
-                // Load role
-                var adminRole = VCRConfiguration.Current.AdminRole;
-
-                // See if user is provided
-                if (user == null)
-                    return false;
-
-                // No restriction
-                if (string.IsNullOrEmpty(adminRole))
-                    return true;
-
-                // Full test
-                return user.IsInRole(adminRole);
             }
         }
 
@@ -313,9 +191,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <returns>Meldet, ob ein Neustart erforderlich ist.</returns>
         public static bool? UpdateSchedulerRules(string newRules)
         {
-            // Must be admin
-            TestAdminAccess();
-
             // Check state
             if (VCRServer.IsActive)
                 return null;
@@ -342,9 +217,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <returns>Gesetzt, wenn ein Neustart erforderlich ist.</returns>
         public static bool? Update(IEnumerable<VCRConfiguration.SettingDescription> settings, bool forceRestart = false)
         {
-            // Must be admin
-            TestAdminAccess();
-
             // Check state
             if (VCRServer.IsActive)
                 return null;

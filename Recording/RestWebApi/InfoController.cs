@@ -101,13 +101,10 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                     HasPendingExtensions = ServerRuntime.VCRServer.ExtensionProcessManager.HasActiveProcesses,
                     SourceScanEnabled = (VCRConfiguration.Current.SourceListUpdateInterval != 0),
                     GuideUpdateEnabled = VCRConfiguration.Current.ProgramGuideUpdateEnabled,
-                    MinimumHibernationDelay = settings.MinimumHibernationDelay,
-                    HasPendingHibernation = settings.HasPendingHibernation,
                     IsRunning = ServerRuntime.VCRServer.IsActive,
-                    ProfilesNames = settings.Profiles.ToArray(),
+                    //ProfilesNames = settings.Profiles.ToArray(),
                     InstalledVersion = InstalledVersion,
                     Version = VCRServer.CurrentVersion,
-                    IsAdmin = ServerRuntime.IsAdmin,
                 };
         }
 
@@ -134,30 +131,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                     .GetJobs(InfoJob.Create)
                     .OrderBy(job => job.Name ?? string.Empty, StringComparer.InvariantCulture)
                     .ToArray();
-        }
-
-        /// <summary>
-        /// Meldet alle Benutzergruppen des Rechners, auf dem der <i>VCR.NET Recording Service läuft.</i>
-        /// </summary>
-        /// <param name="groups">Wird zur Unterscheidung der Methoden verwendet.</param>
-        /// <returns>Die gewünschte Liste.</returns>
-        [HttpGet]
-        public string[] GetUserGroups(string groups)
-        {
-            // Resulting groups
-            var result = new List<string>();
-
-            // Load list box
-            using (var query = new ManagementObjectSearcher("SELECT Name FROM Win32_Group WHERE LocalAccount = TRUE"))
-                foreach (var group in query.Get())
-                    using (group)
-                        result.Add((string)group["Name"]);
-
-            // Sort
-            result.Sort(StringComparer.InvariantCultureIgnoreCase);
-
-            // Report
-            return result.ToArray();
         }
 
         /// <summary>

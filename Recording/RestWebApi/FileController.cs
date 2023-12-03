@@ -22,9 +22,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [HttpGet]
         public long SendPartOfFile(string path, long offset, int length, string target, ushort port)
         {
-            // Make sure that user is allowed to access the server
-            ServerRuntime.TestWebAccess();
-
             // Validate path
             if (string.IsNullOrEmpty(path))
                 throw new ArgumentNullException("path");

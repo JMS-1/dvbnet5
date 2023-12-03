@@ -37,7 +37,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public void UpdateGuideFavorites(string favorites)
         {
             // Just store body as data
-            UserProfileSettings.GuideFavorites = ControllerContext.Request.Content.ReadAsStringAsync().Result ?? string.Empty;
+            UserProfileSettings.GuideFavorites = null!;//ControllerContext.Request.Content.ReadAsStringAsync().Result ?? string.Empty;
 
             // And update
             UserProfileSettings.Update();

@@ -262,9 +262,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [HttpGet]
         public string[] Browse(string browse, bool toParent = false, string root = null)
         {
-            // Validate
-            ServerRuntime.TestAdminAccess();
-
             // See if we can move up
             if (!string.IsNullOrEmpty(root))
                 if (toParent)
@@ -296,9 +293,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [HttpGet]
         public bool Validate(string validate, string directory)
         {
-            // Validate
-            ServerRuntime.TestAdminAccess();
-
             // Be safe
             try
             {
@@ -337,9 +331,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [HttpGet]
         public ProfileSettings ReadProfiles(string devices)
         {
-            // Validate
-            ServerRuntime.TestAdminAccess();
-
             // Helper
 
             // Create response
@@ -370,9 +361,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [HttpPut]
         public bool? WriteProfiles(string devices, [FromBody] ProfileSettings settings)
         {
-            // Validate
-            ServerRuntime.TestAdminAccess();
-
             // List of profiles to use
             var profiles = settings.SystemProfiles.Where(profile => profile.UsedForRecording).Select(profile => profile.Name).ToList();
 
@@ -403,9 +391,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [HttpGet]
         public DirectorySettings ReadDirectory(string directory)
         {
-            // Validate
-            ServerRuntime.TestAdminAccess();
-
             // Report
             return
                 new DirectorySettings
@@ -444,9 +429,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [HttpGet]
         public SourceScanSettings ReadSoureScan(string scan)
         {
-            // Validate
-            ServerRuntime.TestAdminAccess();
-
             // Load
             var interval = VCRConfiguration.Current.SourceListUpdateInterval;
             var join = VCRConfiguration.Current.SourceListJoinThreshold;
@@ -522,9 +504,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [HttpGet]
         public GuideSettings ReadGuide(string guide)
         {
-            // Validate
-            ServerRuntime.TestAdminAccess();
-
             // Load
             var interval = VCRConfiguration.Current.ProgramGuideUpdateInterval;
             var join = VCRConfiguration.Current.ProgramGuideJoinThreshold;
@@ -587,9 +566,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [HttpGet]
         public SecuritySettings ReadSecurity(string security)
         {
-            // Validate
-            ServerRuntime.TestAdminAccess();
-
             // Report
             return
                 new SecuritySettings
@@ -627,9 +603,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [HttpGet]
         public OtherSettings ReadOtherSettings(string other)
         {
-            // Validate
-            ServerRuntime.TestAdminAccess();
-
             // Create response
             return
                 new OtherSettings

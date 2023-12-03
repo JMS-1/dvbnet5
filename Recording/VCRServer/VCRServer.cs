@@ -95,14 +95,10 @@ namespace JMS.DVB.NET.Recording
                 var result =
                     new Settings
                     {
-                        MinimumHibernationDelay = VCRConfiguration.Current.RawDelayAfterForcedHibernation,
-                        UseStandByForHibernation = VCRConfiguration.Current.UseS3ForHibernate,
-                        MayHibernateSystem = VCRConfiguration.Current.MayHibernateSystem,
-                        HasPendingHibernation = m_PendingHibernation,
                     };
 
                 // Load profile names
-                result.Profiles.AddRange(VCRProfiles.ProfileNames);
+                //result.Profiles.AddRange(VCRProfiles.ProfileNames);
 
                 // Report
                 return result;
@@ -124,7 +120,7 @@ namespace JMS.DVB.NET.Recording
             // Forward
             var state = Profiles[profileName];
             if (state == null)
-                LogError(Properties.Resources.NoProfile, profileName);
+                LogError("Es gibt kein Geräteprofil '{0}'", profileName);
 
             // Report
             return state;
@@ -261,9 +257,6 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         public void Dispose()
         {
-            // Register with power manager
-            PowerManager.OnPowerUp -= BeginNewPlan;
-
             // Shutdown profiles
             using (Profiles)
                 Profiles = null;

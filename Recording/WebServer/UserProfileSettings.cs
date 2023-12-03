@@ -2,6 +2,17 @@ using System.Collections.Specialized;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
+    public abstract class ProfileBase
+    {
+        public object this[string key]
+        {
+            get => throw new NotImplementedException("ProfileBase");
+            set => throw new NotImplementedException("ProfileBase");
+        }
+
+        public void Save() => throw new NotImplementedException("ProfileBase");
+    }
+
     /// <summary>
     /// Kapselt die benutzerspezifischen Einstellungen.
     /// </summary>
@@ -24,7 +35,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Meldet das aktuelle Benutzerprofil.
         /// </summary>
-        private static ProfileBase Profile => HttpContext.Current.Profile;
+        private static ProfileBase Profile => null!;
 
         /// <summary>
         /// Begrenzt die Anzahl der zuletzt verwendeten Quellen auf die H�chstgrenze.

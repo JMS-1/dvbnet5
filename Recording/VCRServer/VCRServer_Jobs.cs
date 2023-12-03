@@ -23,9 +23,6 @@ namespace JMS.DVB.NET.Recording
         /// <param name="scheduleIdentifier">Die eindeutige Kennung der ver�nderten Aufzeichnung.</param>
         public void UpdateJob(VCRJob job, Guid? scheduleIdentifier)
         {
-            // Client is talking to us - do not hibernate after update
-            m_PendingHibernation = false;
-
             // Cleanup
             if (scheduleIdentifier.HasValue)
                 foreach (var schedule in job.Schedules)
@@ -46,9 +43,6 @@ namespace JMS.DVB.NET.Recording
         /// <param name="job">Der betroffene Auftrag.</param>
         public void DeleteJob(VCRJob job)
         {
-            // Client is talking to us - do not hibernate after change
-            m_PendingHibernation = false;
-
             // Remove from job manager
             JobManager.Delete(job);
 
