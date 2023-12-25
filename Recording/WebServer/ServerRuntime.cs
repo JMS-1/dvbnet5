@@ -36,15 +36,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     public class ServerRuntime : ApplicationRuntime
     {
         /// <summary>
-        /// Erm�glicht das dynamische Laden der DVB.NET Bibliotheken.
-        /// </summary>
-        static ServerRuntime()
-        {
-            // Start dynamic loading
-            RunTimeLoader.Startup();
-        }
-
-        /// <summary>
         /// Startet die Laufzeitumgebung.
         /// </summary>
         public static void WebStartup()

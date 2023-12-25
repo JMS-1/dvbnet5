@@ -28,7 +28,7 @@ namespace JMS.DVB.NET.Recording
         /// VCR.NET Recording Service zu finden. Er kann in Testprogrammen
         /// ver�ndert werden.
         /// </remarks>
-        public static string ExecutablePath { get { return RunTimeLoader.ExecutablePath.FullName; } }
+        public static string ExecutablePath { get { return RunTimeLoader.GetDirectory("VCR.NET").FullName; } }
 
         /// <summary>
         /// Die Konfiguration zur aktuellen Anwendung.
@@ -223,7 +223,7 @@ namespace JMS.DVB.NET.Recording
         /// Recording Service liegt.
         /// <seealso cref="ExecutablePath"/>
         /// </summary>
-        public static DirectoryInfo ApplicationDirectory { get { return RunTimeLoader.ExecutablePath.Directory; } }
+        public static DirectoryInfo ApplicationDirectory { get { return RunTimeLoader.GetDirectory("VCR.NET"); } }
 
         /// <summary>
         /// Ermittelt einen Zeitwert aus der Windows Registrierung.
