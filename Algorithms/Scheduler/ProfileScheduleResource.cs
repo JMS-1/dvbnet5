@@ -41,15 +41,6 @@ namespace JMS.DVB.Algorithms.Scheduler
         public const int DefaultSchedulePriority = 100;
 
         /// <summary>
-        /// Führt statische Initialisierungen aus.
-        /// </summary>
-        static ProfileScheduleResource()
-        {
-            // Allow dynamic loading of the DVB.NET run-time.
-            RunTimeLoader.Startup();
-        }
-
-        /// <summary>
         /// Repräsentiert eine Quelle.
         /// </summary>
         private class _Source : IScheduleSource

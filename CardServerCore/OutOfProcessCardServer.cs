@@ -47,7 +47,7 @@ namespace JMS.DVB.CardServer
 
                 // Configure
                 info.Arguments = string.Format("\"{0}\" \"{1}\"", writer.GetClientHandleAsString().Replace("\"", "\"\""), reader.GetClientHandleAsString().Replace("\"", "\"\""));
-                info.FileName = Path.Combine(RunTimeLoader.ServerDirectory.FullName, "JMS.DVB.CardServer.exe");
+                info.FileName = "JMS.DVB.CardServer.exe";
                 info.UseShellExecute = false;
 
                 // With cleanup

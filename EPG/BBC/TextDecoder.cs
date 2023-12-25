@@ -139,7 +139,7 @@ namespace JMS.DVB.EPG.BBC
             List<int> tables = new List<int>();
 
             // Get the directory
-            DirectoryInfo tableDirectory = RunTimeLoader.RunTimePath;
+            DirectoryInfo tableDirectory = RunTimeLoader.GetDirectory("Huffman Tables");
 
             // Check files
             for (int i = 0; i++ < CodePages.Length;)
