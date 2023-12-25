@@ -1,7 +1,4 @@
-﻿using System;
-using System.Xml.Serialization;
-
-namespace JMS.DVB
+﻿namespace JMS.DVB
 {
     /// <summary>
     /// Beschreibt eine Gruppe von Quellen, die über Satellit empfangen werden.
@@ -42,7 +39,7 @@ namespace JMS.DVB
         /// <summary>
         /// Die Orbitalposition des Satelliten in der Notation mit vier Zeichen (0192 für 19.2°).
         /// </summary>
-        public string OrbitalPosition { get; set; }
+        public string OrbitalPosition { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn <see cref="OrbitalPosition"/> eine westliche Position angibt.
@@ -120,16 +117,16 @@ namespace JMS.DVB
         /// <param name="group">Die andere Quellgruppe.</param>
         /// <param name="legacy">Gesetzt, wenn ein partieller Vergleich erfolgen soll.</param>
         /// <returns>Gesetzt, wenn die Gruppen identisch sind.</returns>
-        protected override bool OnCompare( SourceGroup group, bool legacy )
+        protected override bool OnCompare(SourceGroup group, bool legacy)
         {
             // Change type
-            SatelliteGroup other = (SatelliteGroup) group;
+            SatelliteGroup other = (SatelliteGroup)group;
 
             // Most groups can be uniquely identified by the frequency
             if (legacy)
             {
                 // Allow shift by 5 MHz
-                if (Math.Abs( (long) Frequency - (long) other.Frequency ) > 5000)
+                if (Math.Abs((long)Frequency - (long)other.Frequency) > 5000)
                     return false;
             }
             else
@@ -149,7 +146,7 @@ namespace JMS.DVB
                 // All of it
                 if (IsWestPosition != other.IsWestPosition)
                     return false;
-                if (!Equals( (null == OrbitalPosition) ? string.Empty : OrbitalPosition, (null == other.OrbitalPosition) ? string.Empty : other.OrbitalPosition ))
+                if (!Equals((null == OrbitalPosition) ? string.Empty : OrbitalPosition, (null == other.OrbitalPosition) ? string.Empty : other.OrbitalPosition))
                     return false;
             }
 
@@ -181,19 +178,19 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="obj">Die andere Gruppe.</param>
         /// <returns>Gesetzt, wenn die Konfiguration der Gruppen identisch ist.</returns>
-        public override bool Equals( object obj )
+        public override bool Equals(object? obj)
         {
             // Change type
             var other = obj as SatelliteGroup;
 
             // By identity
-            if (ReferenceEquals( other, null ))
+            if (other is null)
                 return false;
-            if (ReferenceEquals( other, this ))
+            if (ReferenceEquals(other, this))
                 return true;
 
             // Forward
-            return OnCompare( other, false );
+            return OnCompare(other, false);
         }
 
         /// <summary>
@@ -204,25 +201,23 @@ namespace JMS.DVB
         public string GetOrbitalPosition()
         {
             // Get the orbital position
-            string pos;
+            string? pos;
+
             if ((null != OrbitalPosition) && (4 == OrbitalPosition.Length))
-                pos = string.Format( "{0}.{1}°", OrbitalPosition.Substring( 0, 3 ).TrimStart( '0' ), OrbitalPosition[3] );
+                pos = string.Format("{0}.{1}°", OrbitalPosition.Substring(0, 3).TrimStart('0'), OrbitalPosition[3]);
             else
                 pos = OrbitalPosition;
 
             // Merge
-            return string.Format( "{0}{1}", pos, IsWestPosition ? "W" : "E" );
+            return string.Format("{0}{1}", pos, IsWestPosition ? "W" : "E");
         }
 
         /// <summary>
         /// Erstellt einen Anzeigenamen für diese Gruppe.
         /// </summary>
         /// <returns>Der zugehörige Anzeigename.</returns>
-        public override string ToString()
-        {
-            // Create
-            return string.Format( "DVB-S{3},{7},{0},{2},{1},{4},{6},{5}", Frequency, SymbolRate, Polarization, UsesS2Modulation ? "2" : string.Empty, InnerFEC, RollOff, Modulation, GetOrbitalPosition() );
-        }
+        public override string ToString() =>
+            string.Format("DVB-S{3},{7},{0},{2},{1},{4},{6},{5}", Frequency, SymbolRate, Polarization, UsesS2Modulation ? "2" : string.Empty, InnerFEC, RollOff, Modulation, GetOrbitalPosition());
 
         /// <summary>
         /// Versucht, die Textdarstellung einer Gruppe von Quellen in eine
@@ -232,51 +227,50 @@ namespace JMS.DVB
         /// erzeugt.</param>
         /// <param name="group">Die zugehörige Instanz.</param>
         /// <returns>Gesetzt, wenn eine Umwandlung möglich war.</returns>
-        public static bool TryParse( string text, out SatelliteGroup group )
+        public static bool TryParse(string text, out SatelliteGroup? group)
         {
             // Reset
             group = null;
 
             // None
-            if (string.IsNullOrEmpty( text ))
+            if (string.IsNullOrEmpty(text))
                 return false;
 
             // Split
-            string[] parts = text.Split( ',' );
+            string[] parts = text.Split(',');
             if (8 != parts.Length)
                 return false;
 
             // Modulation type
-            bool standardModulation = parts[0].Trim().Equals( "DVB-S" );
+            bool standardModulation = parts[0].Trim().Equals("DVB-S");
 
             // Validate other
             if (!standardModulation)
-                if (!parts[0].Trim().Equals( "DVB-S2" ))
+                if (!parts[0].Trim().Equals("DVB-S2"))
                     return false;
 
             // Get full
             string orbital = parts[1].Trim();
 
             // Primary orbital position
-            bool west = orbital.EndsWith( "W" );
+            bool west = orbital.EndsWith("W");
 
             // Validate other
             if (!west)
-                if (!orbital.EndsWith( "E" ))
+                if (!orbital.EndsWith("E"))
                     return false;
 
             // Cut off
-            orbital = orbital.Substring( 0, orbital.Length - 1 );
+            orbital = orbital.Substring(0, orbital.Length - 1);
 
             // Test for special notation
             if ((orbital.Length >= 4) && (orbital.Length <= 6))
                 if ('.' == orbital[orbital.Length - 3])
                     if ('°' == orbital[orbital.Length - 1])
-                        orbital = ("00" + orbital.Substring( 0, orbital.Length - 3 ) + orbital.Substring( orbital.Length - 2, 1 )).Substring( orbital.Length - 4, 4 );
+                        orbital = ("00" + orbital.Substring(0, orbital.Length - 3) + orbital.Substring(orbital.Length - 2, 1)).Substring(orbital.Length - 4, 4);
 
             // Read frequency
-            uint frequency;
-            if (!uint.TryParse( parts[2].Trim(), out frequency ))
+            if (!uint.TryParse(parts[2].Trim(), out var frequency))
                 return false;
 
             // Polarization
@@ -284,7 +278,7 @@ namespace JMS.DVB
             try
             {
                 // Load
-                polarisation = (Polarizations) Enum.Parse( typeof( Polarizations ), parts[3].Trim() );
+                polarisation = (Polarizations)Enum.Parse(typeof(Polarizations), parts[3].Trim());
             }
             catch (FormatException)
             {
@@ -293,8 +287,7 @@ namespace JMS.DVB
             }
 
             // Read symbol rate
-            uint symbolrate;
-            if (!uint.TryParse( parts[4].Trim(), out symbolrate ))
+            if (!uint.TryParse(parts[4].Trim(), out var symbolrate))
                 return false;
 
             // Error correction
@@ -302,7 +295,7 @@ namespace JMS.DVB
             try
             {
                 // Load
-                correction = (InnerForwardErrorCorrectionModes) Enum.Parse( typeof( InnerForwardErrorCorrectionModes ), parts[5].Trim() );
+                correction = (InnerForwardErrorCorrectionModes)Enum.Parse(typeof(InnerForwardErrorCorrectionModes), parts[5].Trim());
             }
             catch (FormatException)
             {
@@ -315,7 +308,7 @@ namespace JMS.DVB
             try
             {
                 // Load
-                modulation = (SatelliteModulations) Enum.Parse( typeof( SatelliteModulations ), parts[6].Trim() );
+                modulation = (SatelliteModulations)Enum.Parse(typeof(SatelliteModulations), parts[6].Trim());
             }
             catch (FormatException)
             {
@@ -328,7 +321,7 @@ namespace JMS.DVB
             try
             {
                 // Load
-                rolloff = (S2RollOffs) Enum.Parse( typeof( S2RollOffs ), parts[7].Trim() );
+                rolloff = (S2RollOffs)Enum.Parse(typeof(S2RollOffs), parts[7].Trim());
             }
             catch (FormatException)
             {
@@ -338,17 +331,17 @@ namespace JMS.DVB
 
             // Just create
             group = new SatelliteGroup
-                {
-                    Frequency = frequency,
-                    InnerFEC = correction,
-                    IsWestPosition = west,
-                    Modulation = modulation,
-                    OrbitalPosition = orbital,
-                    Polarization = polarisation,
-                    RollOff = rolloff,
-                    SymbolRate = symbolrate,
-                    UsesS2Modulation = !standardModulation
-                };
+            {
+                Frequency = frequency,
+                InnerFEC = correction,
+                IsWestPosition = west,
+                Modulation = modulation,
+                OrbitalPosition = orbital,
+                Polarization = polarisation,
+                RollOff = rolloff,
+                SymbolRate = symbolrate,
+                UsesS2Modulation = !standardModulation
+            };
 
             // Did it
             return true;
@@ -361,14 +354,11 @@ namespace JMS.DVB
         /// <param name="text">Die Textdarstellung, wie über <see cref="ToString"/>
         /// erzeugt.</param>
         /// <returns>Die rekonstruierte Instanz.</returns>
-        public static SatelliteGroup Parse( string text )
+        public static SatelliteGroup Parse(string text)
         {
-            // Helper
-            SatelliteGroup group;
-
             // Try it
-            if (!TryParse( text, out group ))
-                throw new FormatException( text );
+            if (!TryParse(text, out var group) || group == null)
+                throw new FormatException(text);
 
             // Report
             return group;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace JMS.DVB
 {
@@ -12,31 +11,31 @@ namespace JMS.DVB
         /// <summary>
         /// Der Kurzname des Senders.
         /// </summary>
-        [XmlAttribute( "name" )]
-        public string Name { get; set; }
+        [XmlAttribute("name")]
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Der Name des Dienstanbieters
         /// </summary>
-        [XmlAttribute( "provider" )]
-        public string Provider { get; set; }
+        [XmlAttribute("provider")]
+        public string Provider { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn dieser Sender verschlüsselt ist.
         /// </summary>
-        [XmlAttribute( "scrambled" )]
+        [XmlAttribute("scrambled")]
         public bool IsEncrypted { get; set; }
 
         /// <summary>
         /// Meldet oder legt fest, ob es sich um einen Dienstkanal ist.
         /// </summary>
-        [XmlAttribute( "service" )]
+        [XmlAttribute("service")]
         public bool IsService { get; set; }
 
         /// <summary>
         /// Liest oder setzt die Art der Quelle.
         /// </summary>
-        [XmlAttribute( "type" )]
+        [XmlAttribute("type")]
         public SourceTypes SourceType { get; set; }
 
         /// <summary>
@@ -50,8 +49,8 @@ namespace JMS.DVB
         /// Erzeugt eine exakte Kopie eines Senders.
         /// </summary>
         /// <param name="other">Der zu kopierende Sender.</param>
-        public Station( Station other )
-            : base( other )
+        public Station(Station other)
+            : base(other)
         {
             // Copy over
             IsEncrypted = other.IsEncrypted;
@@ -66,36 +65,20 @@ namespace JMS.DVB
         /// und Name des Dienstanbieters <see cref="Provider"/>.
         /// </summary>
         [XmlIgnore]
-        public string FullName
-        {
-            get
-            {
-                // Create
-                return string.Format( "{0} [{1}]", Name, Provider );
-            }
-        }
+        public string FullName => string.Format("{0} [{1}]", Name, Provider);
 
         /// <summary>
         /// Meldet einen Anzeigenamen für diesen Sender.
         /// </summary>
         /// <returns>Der Anzeigename des Senders.</returns>
-        public override string ToString()
-        {
-            // Create
-            return string.Format( "{2} {0} {1}", FullName, base.ToString(), SourceType );
-        }
+        public override string ToString() =>
+            string.Format("{2} {0} {1}", FullName, base.ToString(), SourceType);
 
         /// <summary>
         /// Meldet eine Kombination aus Anzeigename <see cref="FullName"/> und Dienstbezeichner.
         /// </summary>
         [XmlIgnore]
-        public string QualifiedName
-        {
-            get
-            {
-                // Merge
-                return string.Format( "{0} [{1}] {2}", Name, Provider, ToStringKey() );
-            }
-        }
+        public string QualifiedName =>
+            string.Format("{0} [{1}] {2}", Name, Provider, ToStringKey());
     }
 }

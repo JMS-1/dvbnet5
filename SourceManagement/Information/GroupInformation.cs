@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace JMS.DVB
+﻿namespace JMS.DVB
 {
     /// <summary>
     /// Beschreibt alle Quellen in einer Gruppe <see cref="SourceGroup"/> von Quellen, i.e. 
@@ -14,7 +11,7 @@ namespace JMS.DVB
         /// Alle in dieser Gruppe verfügbaren Quellen, im Allgemeinen jeweils <see cref="Station"/>
         /// Instanzen.
         /// </summary>
-        public readonly List<SourceIdentifier> Sources = new List<SourceIdentifier>();
+        public readonly List<SourceIdentifier> Sources = [];
 
         /// <summary>
         /// Erzeugt eine neue Beschreibung.

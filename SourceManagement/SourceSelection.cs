@@ -1,5 +1,4 @@
-﻿using System;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 using System.Runtime.Serialization;
 
 namespace JMS.DVB
@@ -11,14 +10,14 @@ namespace JMS.DVB
     /// DVB.NET Geräteprofils.
     /// </summary>
     [Serializable]
-    [XmlType( "Selection" )]
+    [XmlType("Selection")]
     public class SourceSelection : ISerializable
     {
         /// <summary>
         /// Ein Anzeigename für diese Auswahl.
         /// </summary>
-        [XmlAttribute( "name" )]
-        public string DisplayName { get; set; }
+        [XmlAttribute("name")]
+        public string DisplayName { get; set; } = null!;
 
         /// <summary>
         /// Der otpional Name des zu verwendenden Geräteprofils.
@@ -30,7 +29,7 @@ namespace JMS.DVB
         /// Der otpional Name des zu verwendenden Geräteprofils.
         /// </summary>
         [NonSerialized]
-        private string m_ProfileName;
+        private string m_ProfileName = null!;
 
         /// <summary>
         /// Die ausgewählte Quelle.
@@ -42,7 +41,7 @@ namespace JMS.DVB
         /// Die ausgewählte Quelle.
         /// </summary>
         [NonSerialized]
-        private SourceIdentifier m_Source;
+        private SourceIdentifier m_Source = null!;
 
         /// <summary>
         /// Optional die Gruppe, in der die Quelle zu finden sein sollte.
@@ -54,14 +53,14 @@ namespace JMS.DVB
         /// Optional die Gruppe, in der die Quelle zu finden sein sollte.
         /// </summary>
         [NonSerialized]
-        private SourceGroup m_Group;
+        private SourceGroup m_Group = null!;
 
         /// <summary>
         /// Optional der Ursprung, in der die Quelle selbst oder die
         /// zugehörige Gruppe zu finden sein sollte.
         /// </summary>
         [XmlIgnore]
-        public GroupLocation Location
+        public GroupLocation? Location
         {
             get
             {
@@ -71,7 +70,7 @@ namespace JMS.DVB
             set
             {
                 // See if this is a null location
-                if ((null != value) && value.Equals( null ))
+                if ((null != value) && value.Equals(null))
                     m_Location = null;
                 else
                     m_Location = value;
@@ -83,7 +82,7 @@ namespace JMS.DVB
         /// zugehörige Gruppe zu finden sein sollte.
         /// </summary>
         [NonSerialized]
-        private GroupLocation m_Location;
+        private GroupLocation? m_Location;
 
         /// <summary>
         /// Erzeugt eine neue Auswahl.
@@ -97,11 +96,11 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="info">Die Informationen aus der Serialisierung.</param>
         /// <param name="context">Die aktuelle Aufrufumgebung.</param>        
-        protected SourceSelection( SerializationInfo info, StreamingContext context )
+        protected SourceSelection(SerializationInfo info, StreamingContext context)
         {
             // Read
-            DisplayName = info.GetString( "NAME" );
-            SelectionKey = info.GetString( "KEY" );
+            DisplayName = info.GetString("NAME")!;
+            SelectionKey = info.GetString("KEY")!;
         }
 
         /// <summary>
@@ -116,31 +115,31 @@ namespace JMS.DVB
             get
             {
                 // Just create
-                return string.Format( "{0}@{1}@{2}@{3}", SourceIdentifier.ToString( Source ), Group, Location, ProfileName );
+                return string.Format("{0}@{1}@{2}@{3}", SourceIdentifier.ToString(Source), Group, Location, ProfileName);
             }
             set
             {
                 // Not set
-                if (string.IsNullOrEmpty( value ))
-                    throw new ArgumentNullException( "value" );
+                if (string.IsNullOrEmpty(value))
+                    throw new ArgumentNullException("value");
 
                 // Split
-                string[] parts = value.Split( '@' );
+                string[] parts = value.Split('@');
                 if (4 != parts.Length)
-                    throw new FormatException( value );
+                    throw new FormatException(value);
 
                 // Load source
-                if (!string.IsNullOrEmpty( parts[0] ))
-                    Source = SourceIdentifier.Parse( parts[0] );
+                if (!string.IsNullOrEmpty(parts[0]))
+                    Source = SourceIdentifier.Parse(parts[0]);
 
                 // Load the rest
                 ProfileName = parts[3];
-                Group = SourceGroup.FromString<SourceGroup>( parts[1] );
-                Location = GroupLocation.FromString<GroupLocation>( parts[2] );
+                Group = SourceGroup.FromString<SourceGroup>(parts[1])!;
+                Location = GroupLocation.FromString<GroupLocation>(parts[2]);
 
                 // Finish
                 if (ProfileName.Length < 1)
-                    ProfileName = null;
+                    ProfileName = null!;
             }
         }
 
@@ -151,23 +150,23 @@ namespace JMS.DVB
         /// <param name="transponderOnly">Gesetzt, wenn die eigentliche Quelle bei der Prüfung
         /// nicht berücksichtigt werden soll</param>
         /// <returns>Gesetzt, wenn beide Auswahlen die selbe Quelle bezeichnen.</returns>
-        public bool CompareTo( SourceSelection other, bool transponderOnly )
+        public bool CompareTo(SourceSelection other, bool transponderOnly)
         {
             // Not possible
             if (null == other)
                 return false;
 
             // Profile
-            if (0 != string.Compare( ProfileName, other.ProfileName, true ))
+            if (0 != string.Compare(ProfileName, other.ProfileName, true))
                 return false;
 
             // Source
             if (!transponderOnly)
-                if (!Equals( Source, other.Source ))
+                if (!Equals(Source, other.Source))
                     return false;
 
             // Use semantic compare
-            if (!Equals( Location, other.Location ))
+            if (!Equals(Location, other.Location))
                 return false;
 
             // Group pre-test
@@ -175,7 +174,7 @@ namespace JMS.DVB
                 return false;
 
             // Group tame test - more or less frequency only
-            return Group.CompareTo( other.Group, true );
+            return Group.CompareTo(other.Group, true);
         }
 
         /// <summary>
@@ -183,27 +182,16 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="other">Die andere Quelle.</param>
         /// <returns>Gesetzt, wenn beide Auswahlen die selbe Quelle bezeichnen.</returns>
-        public bool CompareTo( SourceSelection other )
-        {
-            // Forward
-            return CompareTo( other, false );
-        }
+        public bool CompareTo(SourceSelection other) => CompareTo(other, false);
 
         /// <summary>
         /// Meldet eine Kombination aus Anzeigename und Dienstbezeichner.
         /// </summary>
         [XmlIgnore]
-        public string QualifiedName
-        {
-            get
-            {
-                // Merge
-                if (null == Source)
-                    return string.Format( "{0} {{}}", DisplayName );
-                else
-                    return string.Format( "{0} {1}", DisplayName, Source.ToStringKey() );
-            }
-        }
+        public string QualifiedName =>
+            null == Source
+            ? string.Format("{0} {{}}", DisplayName)
+            : string.Format("{0} {1}", DisplayName, Source.ToStringKey());
 
         #region ISerializable Members
 
@@ -212,11 +200,11 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="info">Die zu befüllenden Informationen.</param>
         /// <param name="context">Die aktuelle Aufrufumgebung.</param>        
-        void ISerializable.GetObjectData( SerializationInfo info, StreamingContext context )
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             // Store
-            info.AddValue( "KEY", SelectionKey );
-            info.AddValue( "NAME", DisplayName );
+            info.AddValue("KEY", SelectionKey);
+            info.AddValue("NAME", DisplayName);
         }
 
         #endregion

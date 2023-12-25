@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace JMS.DVB
+﻿namespace JMS.DVB
 {
     /// <summary>
     /// Enthält alle Laufzeitinformationen zu einer aktiven Quelle.
@@ -12,7 +9,7 @@ namespace JMS.DVB
         /// <summary>
         /// Die zugehörige Quelle, im Allgemeinen eine <see cref="Station"/> Instanz.
         /// </summary>
-        public SourceIdentifier Source { get; set; }
+        public SourceIdentifier Source { get; set; } = null!;
 
         /// <summary>
         /// Meldet oder legt fest, ob die Quelle verschlüsselt sendet.
@@ -42,22 +39,22 @@ namespace JMS.DVB
         /// <summary>
         /// Die Liste aller Tonspuren, die von dieser Quelle angeboten werden.
         /// </summary>
-        public readonly List<AudioInformation> AudioTracks = new List<AudioInformation>();
+        public readonly List<AudioInformation> AudioTracks = [];
 
         /// <summary>
         /// Die Liste aller Untertitelspuren zu dieser Quelle.
         /// </summary>
-        public readonly List<SubtitleInformation> Subtitles = new List<SubtitleInformation>();
+        public readonly List<SubtitleInformation> Subtitles = [];
 
         /// <summary>
         /// Der Name des Dienstanbieters.
         /// </summary>
-        public string Provider { get; set; }
+        public string Provider { get; set; } = null!;
 
         /// <summary>
         /// Der Name dieser Quelle.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Laufzeitinformation.
@@ -69,25 +66,11 @@ namespace JMS.DVB
         /// <summary>
         /// Ermittelt die primäre MP2 Tonspur.
         /// </summary>
-        public AudioInformation PrimaryMP2Audio
-        {
-            get
-            {
-                // Lookup
-                return AudioTracks.Find( a => AudioTypes.MP2 == a.AudioType );
-            }
-        }
+        public AudioInformation? PrimaryMP2Audio => AudioTracks.Find(a => AudioTypes.MP2 == a.AudioType);
 
         /// <summary>
         /// Ermittelt die primäre AC3 Tonspur.
         /// </summary>
-        public AudioInformation PrimaryAC3Audio
-        {
-            get
-            {
-                // Lookup
-                return AudioTracks.Find( a => AudioTypes.AC3 == a.AudioType );
-            }
-        }
+        public AudioInformation? PrimaryAC3Audio => AudioTracks.Find(a => AudioTypes.AC3 == a.AudioType);
     }
 }

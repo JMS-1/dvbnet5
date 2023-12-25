@@ -1,6 +1,4 @@
-﻿using System;
-using System.Xml.Serialization;
-using System.Collections.Generic;
+﻿using System.Xml.Serialization;
 
 namespace JMS.DVB
 {
@@ -20,8 +18,8 @@ namespace JMS.DVB
         /// <summary>
         /// Alle Quellen, die über die Gruppe zur Verfügung stehen.
         /// </summary>        
-        [XmlArray( "Stations" )]
-        [XmlArrayItem( typeof( Station ) )]
+        [XmlArray("Stations")]
+        [XmlArrayItem(typeof(Station))]
         public readonly List<SourceIdentifier> Sources = new List<SourceIdentifier>();
 
         /// <summary>
@@ -37,7 +35,7 @@ namespace JMS.DVB
         /// <param name="group">Die andere Quellgruppe.</param>
         /// <param name="legacy">Gesetzt, wenn ein partieller Vergleich erfolgen soll.</param>
         /// <returns>Gesetzt, wenn die Gruppen identisch sind.</returns>
-        protected abstract bool OnCompare( SourceGroup group, bool legacy );
+        protected abstract bool OnCompare(SourceGroup group, bool legacy);
 
         /// <summary>
         /// Meldet, ob alle benötigten Parameter gesetzt sind.
@@ -49,11 +47,7 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="group">Die andere Quellgruppe.</param>
         /// <returns>Gesetzt, wenn die Gruppen identisch sind.</returns>
-        public bool CompareTo( SourceGroup group )
-        {
-            // Forward
-            return CompareTo( group, false );
-        }
+        public bool CompareTo(SourceGroup group) => CompareTo(group, false);
 
         /// <summary>
         /// Vergleicht diese Quellgruppe (Transponder) mit einer anderen.
@@ -61,12 +55,12 @@ namespace JMS.DVB
         /// <param name="group">Die andere Quellgruppe.</param>
         /// <param name="legacy">Gesetzt, wenn ein partieller Vergleich erfolgen soll.</param>
         /// <returns>Gesetzt, wenn die Gruppen identisch sind.</returns>
-        public bool CompareTo( SourceGroup group, bool legacy )
+        public bool CompareTo(SourceGroup group, bool legacy)
         {
             // By identity
-            if (ReferenceEquals( group, null ))
+            if (group is null)
                 return false;
-            if (ReferenceEquals( group, this ))
+            if (ReferenceEquals(group, this))
                 return true;
 
             // Wrong type
@@ -74,7 +68,7 @@ namespace JMS.DVB
                 return false;
 
             // Forward
-            return OnCompare( group, legacy );
+            return OnCompare(group, legacy);
         }
 
         /// <summary>
@@ -83,28 +77,28 @@ namespace JMS.DVB
         /// </summary>
         /// <returns>Die rekonstruierte Instanz.</returns>
         /// <exception cref="FormatException">Es wurde keine gültige Textdarstellung angegeben.</exception>
-        public static T FromString<T>( string text ) where T : SourceGroup
+        public static T? FromString<T>(string text) where T : SourceGroup
         {
             // None
-            if (string.IsNullOrEmpty( text ))
+            if (string.IsNullOrEmpty(text))
                 return null;
 
             // Helper
-            T group;
+            T? group;
 
             // Dispatch known types
-            if (text.StartsWith( "DVB-C" ))
-                group = CableGroup.Parse( text ) as T;
-            else if (text.StartsWith( "DVB-T" ))
-                group = TerrestrialGroup.Parse( text ) as T;
-            else if (text.StartsWith( "DVB-S" ))
-                group = SatelliteGroup.Parse( text ) as T;
+            if (text.StartsWith("DVB-C"))
+                group = CableGroup.Parse(text) as T;
+            else if (text.StartsWith("DVB-T"))
+                group = TerrestrialGroup.Parse(text) as T;
+            else if (text.StartsWith("DVB-S"))
+                group = SatelliteGroup.Parse(text) as T;
             else
                 group = null;
 
             // Invalid
             if (null == group)
-                throw new FormatException( text );
+                throw new FormatException(text);
 
             // Report
             return group;

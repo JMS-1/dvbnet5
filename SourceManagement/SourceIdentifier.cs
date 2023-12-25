@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
 
@@ -9,25 +8,25 @@ namespace JMS.DVB
     /// Enthält die eindeutige Kennung einer Quelle, i.a. eines Senders.
     /// </summary>
     [Serializable]
-    [XmlType( "Source" )]
+    [XmlType("Source")]
     public class SourceIdentifier
     {
         /// <summary>
         /// Die eindeutige Nummer des Ursprungsnetzwerks.
         /// </summary>
-        [XmlAttribute( "net" )]
+        [XmlAttribute("net")]
         public ushort Network { get; set; }
 
         /// <summary>
         /// Die eindeutige Nummer des Datenstroms.
         /// </summary>
-        [XmlAttribute( "ts" )]
+        [XmlAttribute("ts")]
         public ushort TransportStream { get; set; }
 
         /// <summary>
         /// Die eindeutige Nummer des Dienstes.
         /// </summary>
-        [XmlAttribute( "svc" )]
+        [XmlAttribute("svc")]
         public ushort Service { get; set; }
 
         /// <summary>
@@ -41,8 +40,8 @@ namespace JMS.DVB
         /// Erzeugt eine exakte Kopie einer eindeutigen Kennung.
         /// </summary>
         /// <param name="other">Die Kennung, die kopiert werden soll.</param>
-        public SourceIdentifier( SourceIdentifier other )
-            : this( other.Network, other.TransportStream, other.Service )
+        public SourceIdentifier(SourceIdentifier other)
+            : this(other.Network, other.TransportStream, other.Service)
         {
         }
 
@@ -52,7 +51,7 @@ namespace JMS.DVB
         /// <param name="network">Die Kennung des Netzwerk.</param>
         /// <param name="transportStream">Die laufende Nummer des Datenstroms im Netzwerk.</param>
         /// <param name="service">Die eindeutige Dienstkennung im Datenstrom.</param>
-        public SourceIdentifier( ushort network, ushort transportStream, ushort service )
+        public SourceIdentifier(ushort network, ushort transportStream, ushort service)
         {
             // Remember
             Network = network;
@@ -65,24 +64,20 @@ namespace JMS.DVB
         /// </summary>
         /// <returns>Eine Textdarstellung zu dieser Kennung, zusammengesetzt
         /// aus den einzelnen Fragementen.</returns>
-        public override string ToString()
-        {
-            // Forward
-            return ToString( this );
-        }
+        public override string? ToString() => ToString(this);
 
         /// <summary>
         /// Meldet die textuelle Darstellung einer eindeutigen Kennung.
         /// </summary>
         /// <param name="source">Die gewünschte eindeutige Kennung.</param>
         /// <returns>Eine Textdarstellung, aufgebaut aus den einzelnen Fragmenten.</returns>
-        public static string ToString( SourceIdentifier source )
+        public static string? ToString(SourceIdentifier source)
         {
             // Forward
             if (null == source)
                 return null;
             else
-                return string.Format( "({0}, {1}, {2})", source.Network, source.TransportStream, source.Service );
+                return string.Format("({0}, {1}, {2})", source.Network, source.TransportStream, source.Service);
         }
 
         /// <summary>
@@ -90,11 +85,8 @@ namespace JMS.DVB
         /// </summary>
         /// <returns>Ein Kürzel, zusammengesesetzt aus den einzelnen Fragmenten
         /// der Kennung.</returns>
-        public override int GetHashCode()
-        {
-            // Create
-            return Network.GetHashCode() ^ TransportStream.GetHashCode() ^ Service.GetHashCode();
-        }
+        public override int GetHashCode() =>
+            Network.GetHashCode() ^ TransportStream.GetHashCode() ^ Service.GetHashCode();
 
         /// <summary>
         /// Prüft, ob zwei eindeutige Kennungen semantisch äquivalent sind und
@@ -103,15 +95,15 @@ namespace JMS.DVB
         /// <param name="obj">Eine andere eindeutige Kennung.</param>
         /// <returns>Gesetzt, wenn es sich bei dem Parameter um eine semanantisch
         /// äquivalente Kennung handelt.</returns>
-        public override bool Equals( object obj )
+        public override bool Equals(object? obj)
         {
             // Check type
             var other = obj as SourceIdentifier;
 
             // By identity
-            if (ReferenceEquals( other, null ))
+            if (ReferenceEquals(other, null))
                 return false;
-            if (ReferenceEquals( other, this ))
+            if (ReferenceEquals(other, this))
                 return true;
 
             // Check all of it starting with the most variable part
@@ -125,7 +117,7 @@ namespace JMS.DVB
         /// <param name="text">Die vorliegende Textdarstellung.</param>
         /// <param name="identifier">Die eindeutige Kennung zur Textdarstellung.</param>
         /// <returns>Gesetzt, wenn eine eindeutige Kennung erstellt werden konnte.</returns>
-        public static bool TryParse( string text, out SourceIdentifier identifier )
+        public static bool TryParse(string text, out SourceIdentifier? identifier)
         {
             // Reset
             identifier = null;
@@ -135,19 +127,18 @@ namespace JMS.DVB
                 return false;
 
             // Check it
-            Match match = Regex.Match( text, @"^\(([ 0-9]+),([ 0-9]+),([ 0-9]+)\)$" );
+            Match match = Regex.Match(text, @"^\(([ 0-9]+),([ 0-9]+),([ 0-9]+)\)$");
 
             // No match at all
             if (!match.Success)
                 return false;
 
             // Try to read all parts
-            ushort net, ts, svc;
-            if (!ushort.TryParse( match.Groups[1].Value.Trim(), out net ))
+            if (!ushort.TryParse(match.Groups[1].Value.Trim(), out var net))
                 return false;
-            if (!ushort.TryParse( match.Groups[2].Value.Trim(), out ts ))
+            if (!ushort.TryParse(match.Groups[2].Value.Trim(), out var ts))
                 return false;
-            if (!ushort.TryParse( match.Groups[3].Value.Trim(), out svc ))
+            if (!ushort.TryParse(match.Groups[3].Value.Trim(), out var svc))
                 return false;
 
             // Create
@@ -163,14 +154,11 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="text">Die Textdarstellung der eindeutigen Kennung.</param>
         /// <returns>Die zugehörige eindeutige Kennung.</returns>
-        public static SourceIdentifier Parse( string text )
+        public static SourceIdentifier Parse(string text)
         {
-            // Helper
-            SourceIdentifier identifier;
-
             // Try it
-            if (!TryParse( text, out identifier ))
-                throw new FormatException( text );
+            if (!TryParse(text, out var identifier) || identifier == null)
+                throw new FormatException(text);
 
             // Report
             return identifier;
@@ -189,7 +177,7 @@ namespace JMS.DVB
         public string ToStringKey()
         {
             // Report
-            return string.Format( "{{{0}-{1}-{2}}}", Service, TransportStream, Network );
+            return string.Format("{{{0}-{1}-{2}}}", Service, TransportStream, Network);
         }
     }
 }

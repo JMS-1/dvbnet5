@@ -1,7 +1,4 @@
-﻿using System;
-using System.Xml.Serialization;
-
-namespace JMS.DVB
+﻿namespace JMS.DVB
 {
     /// <summary>
     /// Beschreibt eine Gruppe von Quellen, die über Antenne empfangen werden.
@@ -47,11 +44,8 @@ namespace JMS.DVB
         /// Ermittelt ein Kürzel für diese Gruppe.
         /// </summary>
         /// <returns>Das gewünschte Kürzel.</returns>
-        public override int GetHashCode()
-        {
-            // Merge all
-            return Frequency.GetHashCode() ^ Bandwidth.GetHashCode();
-        }
+        public override int GetHashCode() =>
+            Frequency.GetHashCode() ^ Bandwidth.GetHashCode();
 
         /// <summary>
         /// Vergleicht diese Quellgruppe (Transponder) mit einer anderen.
@@ -59,10 +53,10 @@ namespace JMS.DVB
         /// <param name="group">Die andere Quellgruppe.</param>
         /// <param name="legacy">Gesetzt, wenn ein partieller Vergleich erfolgen soll.</param>
         /// <returns>Gesetzt, wenn die Gruppen identisch sind.</returns>
-        protected override bool OnCompare( SourceGroup group, bool legacy )
+        protected override bool OnCompare(SourceGroup group, bool legacy)
         {
             // Change type
-            var other = (TerrestrialGroup) group;
+            var other = (TerrestrialGroup)group;
 
             // Most groups can be uniquely identified by the frequency
             if (Frequency != other.Frequency)
@@ -85,30 +79,24 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="obj">Die andere Gruppe.</param>
         /// <returns>Gesetzt, wenn die Konfiguration der Gruppen identisch ist.</returns>
-        public override bool Equals( object obj )
+        public override bool Equals(object? obj)
         {
-            // Change type
-            var other = obj as TerrestrialGroup;
-
             // By identity
-            if (ReferenceEquals( other, null ))
+            if (obj is not TerrestrialGroup other)
                 return false;
-            if (ReferenceEquals( other, this ))
+            if (ReferenceEquals(other, this))
                 return true;
 
             // Forward
-            return OnCompare( other, false );
+            return OnCompare(other, false);
         }
 
         /// <summary>
         /// Erstellt einen Anzeigenamen für diese Gruppe.
         /// </summary>
         /// <returns>Der zugehörige Anzeigename.</returns>
-        public override string ToString()
-        {
-            // Create
-            return string.Format( "DVB-T,{0},{1}", Frequency, Bandwidth );
-        }
+        public override string ToString() =>
+            string.Format("DVB-T,{0},{1}", Frequency, Bandwidth);
 
         /// <summary>
         /// Versucht, die Textdarstellung einer Gruppe von Quellen in eine
@@ -118,27 +106,26 @@ namespace JMS.DVB
         /// erzeugt.</param>
         /// <param name="group">Die zugehörige Instanz.</param>
         /// <returns>Gesetzt, wenn eine Umwandlung möglich war.</returns>
-        public static bool TryParse( string text, out TerrestrialGroup group )
+        public static bool TryParse(string text, out TerrestrialGroup? group)
         {
             // Reset
             group = null;
 
             // None
-            if (string.IsNullOrEmpty( text ))
+            if (string.IsNullOrEmpty(text))
                 return false;
 
             // Split
-            string[] parts = text.Split( ',' );
+            string[] parts = text.Split(',');
             if (3 != parts.Length)
                 return false;
 
             // Check type
-            if (!parts[0].Trim().Equals( "DVB-T" ))
+            if (!parts[0].Trim().Equals("DVB-T"))
                 return false;
 
             // Read frequency
-            uint frequency;
-            if (!uint.TryParse( parts[1].Trim(), out frequency ))
+            if (!uint.TryParse(parts[1].Trim(), out var frequency))
                 return false;
 
             // Bandwidth
@@ -146,7 +133,7 @@ namespace JMS.DVB
             try
             {
                 // Load
-                bandwidth = (Bandwidths) Enum.Parse( typeof( Bandwidths ), parts[2].Trim() );
+                bandwidth = (Bandwidths)Enum.Parse(typeof(Bandwidths), parts[2].Trim());
             }
             catch (FormatException)
             {
@@ -156,10 +143,10 @@ namespace JMS.DVB
 
             // Just create
             group = new TerrestrialGroup
-                {
-                    Frequency = frequency,
-                    Bandwidth = bandwidth
-                };
+            {
+                Frequency = frequency,
+                Bandwidth = bandwidth
+            };
 
             // Did it
             return true;
@@ -172,14 +159,11 @@ namespace JMS.DVB
         /// <param name="text">Die Textdarstellung, wie über <see cref="ToString"/>
         /// erzeugt.</param>
         /// <returns>Die rekonstruierte Instanz.</returns>
-        public static TerrestrialGroup Parse( string text )
+        public static TerrestrialGroup Parse(string text)
         {
-            // Helper
-            TerrestrialGroup group;
-
             // Try it
-            if (!TryParse( text, out group ))
-                throw new FormatException( text );
+            if (!TryParse(text, out var group) || group == null)
+                throw new FormatException(text);
 
             // Report
             return group;

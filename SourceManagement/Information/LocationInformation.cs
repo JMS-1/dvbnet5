@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Xml.Serialization;
-using System.Collections.Generic;
 
 namespace JMS.DVB
 {
@@ -35,18 +33,18 @@ namespace JMS.DVB
         /// <summary>
         /// Der zugehörige Ursprung.
         /// </summary>
-        [XmlElement( typeof( SatelliteLocation ) )]
-        [XmlElement( typeof( CableLocation ) )]
-        [XmlElement( typeof( TerrestrialLocation ) )]
-        public GroupLocation<G> Location { get; set; }
+        [XmlElement(typeof(SatelliteLocation))]
+        [XmlElement(typeof(CableLocation))]
+        [XmlElement(typeof(TerrestrialLocation))]
+        public GroupLocation<G> Location { get; set; } = null!;
 
         /// <summary>
         /// Die Liste der Quellgruppen in diesem Ursprung.
         /// </summary>
-        [XmlElement( typeof( SatelliteGroup ) )]
-        [XmlElement( typeof( CableGroup ) )]
-        [XmlElement( typeof( TerrestrialGroup ) )]
-        public readonly List<G> SourceGroups = new List<G>();
+        [XmlElement(typeof(SatelliteGroup))]
+        [XmlElement(typeof(CableGroup))]
+        [XmlElement(typeof(TerrestrialGroup))]
+        public readonly List<G> SourceGroups = [];
 
         /// <summary>
         /// Initialisiert eine neue Informationsinstanz.
@@ -58,14 +56,7 @@ namespace JMS.DVB
         /// <summary>
         /// Meldet alle Quellgruppen zu diesem Ursprung.
         /// </summary>
-        public override IList Groups
-        {
-            get
-            {
-                // Report
-                return SourceGroups;
-            }
-        }
+        public override IList Groups => SourceGroups;
     }
 
     /// <summary>
@@ -84,14 +75,7 @@ namespace JMS.DVB
         /// <summary>
         /// Meldet den zugehörigen Ursprung.
         /// </summary>
-        public new SatelliteLocation Location
-        {
-            get
-            {
-                // Forward
-                return (SatelliteLocation) base.Location;
-            }
-        }
+        public new SatelliteLocation Location => (SatelliteLocation)base.Location;
     }
 
     /// <summary>

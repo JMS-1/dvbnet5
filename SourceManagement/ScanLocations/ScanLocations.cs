@@ -20,7 +20,7 @@ namespace JMS.DVB
         /// <summary>
         /// Schützt den Zugriff auf die Standardkonfiguration.
         /// </summary>
-        private static readonly object m_DefaultLock = new object();
+        private static readonly object m_DefaultLock = new();
 
         /// <summary>
         /// Der XML Namensraum für diese .NET Klasse.
@@ -45,7 +45,7 @@ namespace JMS.DVB
         [XmlArrayItem(typeof(SatelliteScanLocation))]
         [XmlArrayItem(typeof(CableScanLocation))]
         [XmlArrayItem(typeof(TerrestrialScanLocation))]
-        public readonly List<ScanLocation> Locations = new List<ScanLocation>();
+        public readonly List<ScanLocation> Locations = [];
 
         /// <summary>
         /// Erzeugt eine neue Liste.

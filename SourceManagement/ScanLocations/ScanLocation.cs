@@ -1,10 +1,6 @@
-﻿using System;
-using System.IO;
-using System.Xml;
-using System.Text;
+﻿using System.Xml;
 using System.Collections;
 using System.Xml.Serialization;
-using System.Collections.Generic;
 
 namespace JMS.DVB
 {
@@ -17,14 +13,14 @@ namespace JMS.DVB
         /// <summary>
         /// Der Anzeigename für den Anwender zur Auswahl.
         /// </summary>
-        [XmlAttribute( "name" )]
-        public string DisplayName { get; set; }
+        [XmlAttribute("name")]
+        public string DisplayName { get; set; } = null!;
 
         /// <summary>
         /// Meldet oder legt fest, ob dieser Ursprung automatisch generiert oder bereits
         /// für DVB.NET 4.0 manuell nachbearbeitet wurde.
         /// </summary>
-        [XmlAttribute( "generated" )]
+        [XmlAttribute("generated")]
         public bool AutoConvert { get; set; }
 
         /// <summary>
@@ -39,14 +35,7 @@ namespace JMS.DVB
         /// Kontext (DVB-S, DVB-C oder DVB-T).
         /// </summary>
         [XmlIgnore]
-        public virtual string UniqueName
-        {
-            get
-            {
-                // Use unique name
-                return DisplayName;
-            }
-        }
+        public virtual string UniqueName => DisplayName;
 
         /// <summary>
         /// Meldet die Konfiguration dieses Ursprungs.
@@ -66,7 +55,7 @@ namespace JMS.DVB
         /// <summary>
         /// Alle Quellgruppen, die bei der Suche zu berücksichtigen sind.
         /// </summary>
-        public readonly List<T> SourceGroups = new List<T>();
+        public readonly List<T> SourceGroups = [];
 
         /// <summary>
         /// Initialisiert eine neue Beschreibung.
@@ -79,21 +68,14 @@ namespace JMS.DVB
         /// Meldet die Konfiguration dieses Ursprungs.
         /// </summary>
         [XmlIgnore]
-        public override IList Groups
-        {
-            get
-            {
-                // Report
-                return SourceGroups;
-            }
-        }
+        public override IList Groups => SourceGroups;
     }
 
     /// <summary>
     /// Beschreibt einen DVB-S Ursprung für den Sendersuchlauf.
     /// </summary>
     [Serializable]
-    [XmlType( "Satellite" )]
+    [XmlType("Satellite")]
     public class SatelliteScanLocation : ScanLocation<SatelliteGroup>
     {
         /// <summary>
@@ -106,28 +88,16 @@ namespace JMS.DVB
         /// <summary>
         /// Meldet einen eindeutigen Namen dieses DVB-S Ursprungs.
         /// </summary>
-        public override string UniqueName
-        {
-            get
-            {
-                // Check mode
-                if (SourceGroups.Count > 0)
-                    return SourceGroups[0].GetOrbitalPosition();
-                else
-                    return base.UniqueName;
-            }
-        }
+        public override string UniqueName =>
+            SourceGroups.Count > 0 ? SourceGroups[0].GetOrbitalPosition() : base.UniqueName;
 
         /// <summary>
         /// Meldet einen Ursprung mit einem bestimmten eindeutigem Namen.
         /// </summary>
         /// <param name="uniqueName">Der gewünschte Name.</param>
         /// <returns>Der Ursprung oder <i>null</i>, wenn kein socher existiert.</returns>
-        public static SatelliteScanLocation Find( string uniqueName )
-        {
-            // Forward
-            return ScanLocations.Default.Find<SatelliteScanLocation>( uniqueName );
-        }
+        public static SatelliteScanLocation? Find(string uniqueName) =>
+            ScanLocations.Default.Find<SatelliteScanLocation>(uniqueName);
 
         /// <summary>
         /// Ermittelt einen bestimmten Ursprung.
@@ -135,18 +105,15 @@ namespace JMS.DVB
         /// <param name="predicate">Methode zur Auswahl des Ursprungs.</param>
         /// <returns>Der gewünschte Ursprung oder <i>null</i>, wenn kein Ursprung der gewünschten
         /// Art existiert.</returns>
-        public static SatelliteScanLocation Find( Predicate<SatelliteScanLocation> predicate )
-        {
-            // Forward
-            return ScanLocations.Default.Find( predicate );
-        }
+        public static SatelliteScanLocation? Find(Predicate<SatelliteScanLocation> predicate) =>
+            ScanLocations.Default.Find(predicate);
     }
 
     /// <summary>
     /// Beschreibt einen DVB-C Ursprung für den Sendersuchlauf.
     /// </summary>
     [Serializable]
-    [XmlType( "Cable" )]
+    [XmlType("Cable")]
     public class CableScanLocation : ScanLocation<CableGroup>
     {
         /// <summary>
@@ -161,11 +128,8 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="uniqueName">Der gewünschte Name.</param>
         /// <returns>Der Ursprung oder <i>null</i>, wenn kein socher existiert.</returns>
-        public static CableScanLocation Find( string uniqueName )
-        {
-            // Forward
-            return ScanLocations.Default.Find<CableScanLocation>( uniqueName );
-        }
+        public static CableScanLocation? Find(string uniqueName) =>
+            ScanLocations.Default.Find<CableScanLocation>(uniqueName);
 
         /// <summary>
         /// Ermittelt einen bestimmten Ursprung.
@@ -173,18 +137,15 @@ namespace JMS.DVB
         /// <param name="predicate">Methode zur Auswahl des Ursprungs.</param>
         /// <returns>Der gewünschte Ursprung oder <i>null</i>, wenn kein Ursprung der gewünschten
         /// Art existiert.</returns>
-        public static CableScanLocation Find( Predicate<CableScanLocation> predicate )
-        {
-            // Forward
-            return ScanLocations.Default.Find( predicate );
-        }
+        public static CableScanLocation? Find(Predicate<CableScanLocation> predicate) =>
+            ScanLocations.Default.Find(predicate);
     }
 
     /// <summary>
     /// Beschreibt einen DVB-T Ursprung für den Sendersuchlauf.
     /// </summary>
     [Serializable]
-    [XmlType( "Terrestrial" )]
+    [XmlType("Terrestrial")]
     public class TerrestrialScanLocation : ScanLocation<TerrestrialGroup>
     {
         /// <summary>
@@ -199,11 +160,8 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="uniqueName">Der gewünschte Name.</param>
         /// <returns>Der Ursprung oder <i>null</i>, wenn kein socher existiert.</returns>
-        public static TerrestrialScanLocation Find( string uniqueName )
-        {
-            // Forward
-            return ScanLocations.Default.Find<TerrestrialScanLocation>( uniqueName );
-        }
+        public static TerrestrialScanLocation? Find(string uniqueName) =>
+            ScanLocations.Default.Find<TerrestrialScanLocation>(uniqueName);
 
         /// <summary>
         /// Ermittelt einen bestimmten Ursprung.
@@ -211,10 +169,7 @@ namespace JMS.DVB
         /// <param name="predicate">Methode zur Auswahl des Ursprungs.</param>
         /// <returns>Der gewünschte Ursprung oder <i>null</i>, wenn kein Ursprung der gewünschten
         /// Art existiert.</returns>
-        public static TerrestrialScanLocation Find( Predicate<TerrestrialScanLocation> predicate )
-        {
-            // Forward
-            return ScanLocations.Default.Find( predicate );
-        }
+        public static TerrestrialScanLocation? Find(Predicate<TerrestrialScanLocation> predicate) =>
+            ScanLocations.Default.Find(predicate);
     }
 }

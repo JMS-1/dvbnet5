@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace JMS.DVB
+﻿namespace JMS.DVB
 {
     /// <summary>
     /// Beschreibt eine DVB Untertitelspur.
@@ -16,7 +14,7 @@ namespace JMS.DVB
         /// <summary>
         /// Die Sprache, in der diese Untertitel vorliegen.
         /// </summary>
-        public string Language { get; set; }
+        public string Language { get; set; } = null!;
 
         /// <summary>
         /// Die Art der Untertitel.
@@ -44,11 +42,8 @@ namespace JMS.DVB
         /// Erzeugt einen Anzeigetext für diese Untertitelspur.
         /// </summary>
         /// <returns>Ein Anzeigetext gemäß der aktuellen Konfiguration.</returns>
-        public override string ToString()
-        {
-            // Report
-            return string.Format( "{0} [{1}] {2}", Language, SubtitleStream, SubtitleType );
-        }
+        public override string ToString() =>
+            string.Format("{0} [{1}] {2}", Language, SubtitleStream, SubtitleType);
 
         #region ICloneable Members
 
@@ -56,31 +51,20 @@ namespace JMS.DVB
         /// Erzeugt eine exakte Kopie dieser Information.
         /// </summary>
         /// <returns>Die gewünschte Kopie.</returns>
-        public SubtitleInformation Clone()
+        public SubtitleInformation Clone() => new()
         {
-            // Create empty
-            SubtitleInformation clone = new SubtitleInformation();
-
-            // Fill
-            clone.CompositionPage = CompositionPage;
-            clone.SubtitleStream = SubtitleStream;
-            clone.AncillaryPage = AncillaryPage;
-            clone.SubtitleType = SubtitleType;
-            clone.Language = Language;
-
-            // Report
-            return clone;
-        }
+            CompositionPage = CompositionPage,
+            SubtitleStream = SubtitleStream,
+            AncillaryPage = AncillaryPage,
+            SubtitleType = SubtitleType,
+            Language = Language,
+        };
 
         /// <summary>
         /// Erzeugt eine exakte Kopie dieser Information.
         /// </summary>
         /// <returns>Die gewünschte Kopie.</returns>
-        object ICloneable.Clone()
-        {
-            // Forward
-            return Clone();
-        }
+        object ICloneable.Clone() => Clone();
 
         #endregion
     }

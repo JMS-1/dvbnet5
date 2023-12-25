@@ -1,6 +1,4 @@
-﻿using System;
-using System.Xml.Serialization;
-using System.Collections.Generic;
+﻿using System.Xml.Serialization;
 
 namespace JMS.DVB
 {
@@ -36,15 +34,15 @@ namespace JMS.DVB
         /// nicht, so wird <see cref="Languages"/> verwendet, um eine dedizierte Auswahl
         /// zu treffen.
         /// </summary>
-        [XmlAttribute( "mode" )]
+        [XmlAttribute("mode")]
         public LanguageModes LanguageMode { get; set; }
 
         /// <summary>
         /// Liest oder legt fest, welche Sprachvarianten aufgezeichnet werden sollen, wenn
         /// <see cref="LanguageMode"/> nicht alle Varianten bezeichnet.
         /// </summary>
-        [XmlElement( "Language" )]
-        public readonly List<string> Languages = new List<string>();
+        [XmlElement("Language")]
+        public readonly List<string> Languages = [];
 
         /// <summary>
         /// Erzeugt eine neue Beschreibung.
@@ -62,10 +60,10 @@ namespace JMS.DVB
         public LanguageSelection Clone()
         {
             // Create core
-            LanguageSelection clone = new LanguageSelection();
+            LanguageSelection clone = new();
 
             // Fill
-            clone.Languages.AddRange( Languages );
+            clone.Languages.AddRange(Languages);
             clone.LanguageMode = LanguageMode;
 
             // Report
@@ -91,7 +89,7 @@ namespace JMS.DVB
                 return "none";
 
             // Report
-            return string.Format( "({0})", string.Join( ", ", Languages.ToArray() ) );
+            return string.Format("({0})", string.Join(", ", Languages.ToArray()));
         }
 
         /// <summary>
@@ -99,7 +97,7 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="language">Der Name der Sprache.</param>
         /// <returns>Gesetzt, wenn die Sprache berücksichtigt werden soll.</returns>
-        public bool Contains( string language )
+        public bool Contains(string language)
         {
             // Not possible
             if (null == language)
@@ -112,7 +110,7 @@ namespace JMS.DVB
             // Test
             if (LanguageMode == LanguageModes.Selection)
                 foreach (string enabled in Languages)
-                    if (0 == string.Compare( enabled, language, true ))
+                    if (0 == string.Compare(enabled, language, true))
                         return true;
 
             // No, forbidden
@@ -125,11 +123,7 @@ namespace JMS.DVB
         /// Erzeugt eine Kopie diese Auswahlbeschreibung.
         /// </summary>
         /// <returns>Die gewünschte Kopie.</returns>
-        object ICloneable.Clone()
-        {
-            // Forward
-            return Clone();
-        }
+        object ICloneable.Clone() => Clone();
 
         #endregion
     }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace JMS.DVB
+﻿namespace JMS.DVB
 {
     /// <summary>
     /// Beschreibt eine einzelne Tonspur innerhalb der Daten eines Senders.
@@ -21,7 +19,7 @@ namespace JMS.DVB
         /// <summary>
         /// Liest oder setzt den Namen der Sprache der Tonspur.
         /// </summary>
-        public string Language { get; set; }
+        public string Language { get; set; } = null!;
 
         /// <summary>
         /// Liest´oder setzt die AAC Informationen zur Tonspur.
@@ -56,7 +54,7 @@ namespace JMS.DVB
         /// Erzeugt eine exakte Kopie dieser Information.
         /// </summary>
         /// <returns>Die gewünschte Kopie.</returns>
-        public AudioInformation Clone() => new AudioInformation
+        public AudioInformation Clone() => new()
         {
             AAC = AAC,
             AudioStream = AudioStream,
