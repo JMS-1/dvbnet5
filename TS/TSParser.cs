@@ -11,13 +11,13 @@ namespace JMS.DVB.TS
 {
     /// <summary>
     /// Diese Klasse analyisiert einen DVB <i>Transport Stream</i> und zerlegt ihn in
-    /// die individuellen Datenströme.
+    /// die individuellen Datenstrï¿½me.
     /// </summary>
     public class TSParser : IDisposable
     {
         /// <summary>
-        /// Informationen über den Interessenten an einem der Nutzdatenströme. Instanzen dieser
-        /// Klasse werden für die automatische Extraktion von Bild- und Tonsignal verwendet.
+        /// Informationen ï¿½ber den Interessenten an einem der Nutzdatenstrï¿½me. Instanzen dieser
+        /// Klasse werden fï¿½r die automatische Extraktion von Bild- und Tonsignal verwendet.
         /// </summary>
         private class PESInfo : IDisposable
         {
@@ -27,16 +27,16 @@ namespace JMS.DVB.TS
             public readonly ushort PID;
 
             /// <summary>
-            /// Der zugehörige Rekonstruktionskomponente für den Nutzdatenstrom.
+            /// Der zugehï¿½rige Rekonstruktionskomponente fï¿½r den Nutzdatenstrom.
             /// </summary>
             private PESBuilder m_Builder;
 
             /// <summary>
-            /// Erzeugt eine neue Analyseinstanz für einen Nutzdatenstrom.
+            /// Erzeugt eine neue Analyseinstanz fï¿½r einen Nutzdatenstrom.
             /// </summary>
-            /// <param name="parser">Die zugehörige Instanz zum Gesamtdatenstrom.</param>
+            /// <param name="parser">Die zugehï¿½rige Instanz zum Gesamtdatenstrom.</param>
             /// <param name="pid">Die betroffenen Datenstromkennung.</param>
-            /// <param name="callback">Der Empfänger der eigentlichen Nutzdaten.</param>
+            /// <param name="callback">Der Empfï¿½nger der eigentlichen Nutzdaten.</param>
             public PESInfo(TSParser parser, ushort pid, Action<byte[]> callback)
             {
                 // Remember
@@ -58,12 +58,12 @@ namespace JMS.DVB.TS
             /// <summary>
             /// Nimmt ein Rohdatenpaket entgegen.
             /// </summary>
-            /// <param name="packet">Zwischenspeicher für Daten.</param>
-            /// <param name="offset">Index des ersten Bytes für das aktuelle Rohdatenpaket.</param>
+            /// <param name="packet">Zwischenspeicher fï¿½r Daten.</param>
+            /// <param name="offset">Index des ersten Bytes fï¿½r das aktuelle Rohdatenpaket.</param>
             /// <param name="length">Anzahl der Bytes im Rohdatenpaket.</param>
-            /// <param name="noincrement">Gesetzt, wenn der Rohdatenpaketzähler nicht erhöht werden darf.</param>
-            /// <param name="first">Gesetzt, wenn dieses Rohdatenpaket einen PES Kopf enthält.</param>
-            /// <param name="counter">Der Rohdatenpaktzähler zu diesem Paket.</param>
+            /// <param name="noincrement">Gesetzt, wenn der Rohdatenpaketzï¿½hler nicht erhï¿½ht werden darf.</param>
+            /// <param name="first">Gesetzt, wenn dieses Rohdatenpaket einen PES Kopf enthï¿½lt.</param>
+            /// <param name="counter">Der Rohdatenpaktzï¿½hler zu diesem Paket.</param>
             public void AddPacket(byte[] packet, int offset, int length, bool noincrement, bool first, byte counter)
             {
                 // Forward
@@ -88,27 +88,27 @@ namespace JMS.DVB.TS
         private readonly int SyncCount = 100;
 
         /// <summary>
-        /// Verwaltet alle Verbraucher von einzelnen Datenströmen innerhalb des Gesamtdatenstroms.
+        /// Verwaltet alle Verbraucher von einzelnen Datenstrï¿½men innerhalb des Gesamtdatenstroms.
         /// </summary>
         private readonly Dictionary<ushort, TSBuilder> m_Consumers = new Dictionary<ushort, TSBuilder>();
 
         /// <summary>
-        /// Verwaltet alle Verbraucher, die Datenströme aus den Gesamtdaten vollständig abzweigen.
+        /// Verwaltet alle Verbraucher, die Datenstrï¿½me aus den Gesamtdaten vollstï¿½ndig abzweigen.
         /// </summary>
         private readonly Dictionary<ushort, Action<byte[]>> m_Extractors = new Dictionary<ushort, Action<byte[]>>();
 
         /// <summary>
-        /// Enthält eine Statistik über die Anteile der individuellen Datenströme am Gesamtdatenstrom.
+        /// Enthï¿½lt eine Statistik ï¿½ber die Anteile der individuellen Datenstrï¿½me am Gesamtdatenstrom.
         /// </summary>
         private Dictionary<ushort, long> m_PacketStatistics = new Dictionary<ushort, long>();
 
         /// <summary>
-        /// Gesetzt, wenn die Statistik über die Anzeile der einzelnen Datenströme geführt werden soll.
+        /// Gesetzt, wenn die Statistik ï¿½ber die Anzeile der einzelnen Datenstrï¿½me gefï¿½hrt werden soll.
         /// </summary>
         private bool m_FillStatisics = false;
 
         /// <summary>
-        /// Zwischenspeicher zur Synchronisation am Beginn einer Rohdatenübertragung.
+        /// Zwischenspeicher zur Synchronisation am Beginn einer Rohdatenï¿½bertragung.
         /// </summary>
         private byte[] m_SyncBuffer;
 
@@ -123,12 +123,12 @@ namespace JMS.DVB.TS
         private byte[] m_Packet = new byte[Manager.FullSize];
 
         /// <summary>
-        /// Aktueller Füllstand des Rohdatenpaketes.
+        /// Aktueller Fï¿½llstand des Rohdatenpaketes.
         /// </summary>
         private int m_PacketPos = 0;
 
         /// <summary>
-        /// Anzahl der bisher ordnungsgemäß verarbeiteten PATs.
+        /// Anzahl der bisher ordnungsgemï¿½ï¿½ verarbeiteten PATs.
         /// </summary>
         private long m_ValidPATCount = 0;
 
@@ -138,17 +138,17 @@ namespace JMS.DVB.TS
         public long TransmissionErrors { get; private set; }
 
         /// <summary>
-        /// Meldet die Anzahl der Fehler in Nutzdatenströmen.
+        /// Meldet die Anzahl der Fehler in Nutzdatenstrï¿½men.
         /// </summary>
         public long CorruptedStream { get; private set; }
 
         /// <summary>
-        /// Meldet die Anzahl der Fehler in Kontrolldatenströmen.
+        /// Meldet die Anzahl der Fehler in Kontrolldatenstrï¿½men.
         /// </summary>
         public long CorruptedTable { get; private set; }
 
         /// <summary>
-        /// Meldet die Anzahl der empfangenen Rohdatenpaketblöcke.
+        /// Meldet die Anzahl der empfangenen Rohdatenpaketblï¿½cke.
         /// </summary>
         public long Callbacks { get; private set; }
 
@@ -159,7 +159,7 @@ namespace JMS.DVB.TS
 
         /// <summary>
         /// Meldet die Anzahl der notwendigen Synchronisationen des Gesamtdatenstroms nach schweren
-        /// Übertragungsfehlern.
+        /// ï¿½bertragungsfehlern.
         /// </summary>
         public long Resynchronized { get; private set; }
 
@@ -175,7 +175,7 @@ namespace JMS.DVB.TS
         public long BytesSkipped { get; private set; }
 
         /// <summary>
-        /// Meldet die Anzahl der verschlüsselten Rohdatenpakete.
+        /// Meldet die Anzahl der verschlï¿½sselten Rohdatenpakete.
         /// </summary>
         public long Scrambled { get; private set; }
 
@@ -205,35 +205,35 @@ namespace JMS.DVB.TS
         private ushort m_WaitForService;
 
         /// <summary>
-        /// Gesetzt, wenn nach dem Auffinden der gewünschten PMT diese weiter überwacht werden soll.
+        /// Gesetzt, wenn nach dem Auffinden der gewï¿½nschten PMT diese weiter ï¿½berwacht werden soll.
         /// </summary>
         private ushort m_ResetAfterServiceFound;
 
         /// <summary>
-        /// Der aktuelle Datenstrom, dessen SI Tabellen überwacht werden.
+        /// Der aktuelle Datenstrom, dessen SI Tabellen ï¿½berwacht werden.
         /// </summary>
         private ushort m_WaitForPID;
 
         /// <summary>
-        /// Signatur einer Methode, die über eine bestimmte PMT informiert.
+        /// Signatur einer Methode, die ï¿½ber eine bestimmte PMT informiert.
         /// </summary>
-        /// <param name="pmt">Die zugehörige Informationstabelle.</param>
+        /// <param name="pmt">Die zugehï¿½rige Informationstabelle.</param>
         public delegate void PMTFoundHandler(PMT pmt);
 
         /// <summary>
-        /// Wird aktiviert, wenn eine bestimmte PMT zur Verfügung steht.
+        /// Wird aktiviert, wenn eine bestimmte PMT zur Verfï¿½gung steht.
         /// </summary>
         public event PMTFoundHandler PMTFound;
 
         /// <summary>
-        /// Erzeugt eine neue Analyseinstanz für einen <i>Transport Stream</i>.
+        /// Erzeugt eine neue Analyseinstanz fï¿½r einen <i>Transport Stream</i>.
         /// </summary>
         public TSParser() : this(false)
         {
         }
 
         /// <summary>
-        /// Erzeugt eine neue Analyseinstanz für einen <i>Transport Stream</i>.
+        /// Erzeugt eine neue Analyseinstanz fï¿½r einen <i>Transport Stream</i>.
         /// </summary>
         /// <param name="fastSync">Gesetzt, wenn die Synchronisation bereits nach 10 statt
         /// 100 empfangenen Paketen erfolgen soll.</param>
@@ -311,9 +311,9 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Ermittelt die nächste PMT zu einem Sender.
+        /// Ermittelt die nï¿½chste PMT zu einem Sender.
         /// </summary>
-        /// <param name="serviceIdentifier">Der gewünschte Sender.</param>
+        /// <param name="serviceIdentifier">Der gewï¿½nschte Sender.</param>
         public void RequestPMT(ushort serviceIdentifier)
         {
             // Forward
@@ -321,11 +321,11 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Ermittelt die nächste PMT zu einem Sender.
+        /// Ermittelt die nï¿½chste PMT zu einem Sender.
         /// </summary>
-        /// <param name="serviceIdentifier">Der gewünschte Sender.</param>
+        /// <param name="serviceIdentifier">Der gewï¿½nschte Sender.</param>
         /// <param name="resetAfterEvent">Gesetzt, wenn nach dem Melden der Kennung
-        /// weiter überwacht werden soll.</param>
+        /// weiter ï¿½berwacht werden soll.</param>
         public void RequestPMT(ushort serviceIdentifier, bool resetAfterEvent)
         {
             // Activate PMT scanning
@@ -339,7 +339,7 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Überträgte Rohdatenpakete in den Gesamtdatenstrom.
+        /// ï¿½bertrï¿½gte Rohdatenpakete in den Gesamtdatenstrom.
         /// </summary>
         /// <param name="buffer">Ein Speicherblock mit Rohdatenpaketen.</param>
         public void AddPayload(byte[] buffer)
@@ -368,17 +368,17 @@ namespace JMS.DVB.TS
         {
             // Validate
             if (buffer == null)
-                throw new ArgumentNullException("buffer");
+                throw new ArgumentNullException(nameof(buffer));
             if ((index < 0) || (index > buffer.Length))
-                throw new ArgumentException(index.ToString(), "index");
+                throw new ArgumentException(index.ToString(), nameof(index));
             if ((length < 0) || (length > buffer.Length))
-                throw new ArgumentException(length.ToString(), "length");
+                throw new ArgumentException(length.ToString(), nameof(length));
             if ((index + length) > buffer.Length)
-                throw new ArgumentException(length.ToString(), "length");
+                throw new ArgumentException(length.ToString(), nameof(length));
 
             // We may only inject full packages
             if ((length % m_Packet.Length) != 0)
-                throw new ArgumentException(length.ToString(), "length");
+                throw new ArgumentException(length.ToString(), nameof(length));
 
             // Full protect and serialize processing - normally only a single thread will call on us
             lock (m_Consumers)
@@ -440,7 +440,7 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Überträgte Rohdatenpakete in den Gesamtdatenstrom.
+        /// ï¿½bertrï¿½gte Rohdatenpakete in den Gesamtdatenstrom.
         /// </summary>
         /// <param name="buffer">Ein Speicherblock mit Rohdatenpaketen.</param>
         /// <param name="index">Erstes Byte im Speicherblock, das analysiert werden soll.</param>
@@ -449,13 +449,13 @@ namespace JMS.DVB.TS
         {
             // Validate
             if (buffer == null)
-                throw new ArgumentNullException("buffer");
+                throw new ArgumentNullException(nameof(buffer));
             if ((index < 0) || (index > buffer.Length))
-                throw new ArgumentException(index.ToString(), "index");
+                throw new ArgumentException(index.ToString(), nameof(index));
             if ((length < 0) || (length > buffer.Length))
-                throw new ArgumentException(length.ToString(), "length");
+                throw new ArgumentException(length.ToString(), nameof(length));
             if ((index + length) > buffer.Length)
-                throw new ArgumentException(length.ToString(), "length");
+                throw new ArgumentException(length.ToString(), nameof(length));
 
             // Full protect and serialize processing - normally only a single thread will call on us
             lock (m_Consumers)
@@ -691,8 +691,8 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Meldet einen Verbraucher zu einem Teildatenstrom.
         /// </summary>
-        /// <param name="pid">Die gewünschte Datenstromkennung.</param>
-        /// <returns>Der zugehörige Verbraucher oder <i>null</i>.</returns>
+        /// <param name="pid">Die gewï¿½nschte Datenstromkennung.</param>
+        /// <returns>Der zugehï¿½rige Verbraucher oder <i>null</i>.</returns>
         public TSBuilder this[ushort pid]
         {
             get
@@ -711,9 +711,9 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Registriert einen einfacher Verbraucher für einen Datenstrom.
+        /// Registriert einen einfacher Verbraucher fï¿½r einen Datenstrom.
         /// </summary>
-        /// <param name="pid">Die gewünschte Datenstromkennung.</param>
+        /// <param name="pid">Die gewï¿½nschte Datenstromkennung.</param>
         /// <param name="isSITable">Gesetzt, wenn es sich um einen Kontroll- und keinen
         /// Nutzdatenstrom handelt.</param>
         /// <param name="callback"></param>
@@ -721,7 +721,7 @@ namespace JMS.DVB.TS
         {
             // Validate
             if (callback == null)
-                throw new ArgumentNullException("callback");
+                throw new ArgumentNullException(nameof(callback));
 
             // Create
             TSBuilder consumer;
@@ -735,16 +735,16 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Registriert einen Verbraucher für einen Datenstrom.
+        /// Registriert einen Verbraucher fï¿½r einen Datenstrom.
         /// </summary>
-        /// <param name="pid">Die gewünschte Datenstromkennung.</param>
-        /// <param name="consumer">Der Verbrqaucher für die Daten.</param>
+        /// <param name="pid">Die gewï¿½nschte Datenstromkennung.</param>
+        /// <param name="consumer">Der Verbrqaucher fï¿½r die Daten.</param>
         /// <exception cref="ArgumentNullException">Es wurde kein Verbraucher angegeben.</exception>
         public void RegisterCustomFilter(ushort pid, TSBuilder consumer)
         {
             // Validate
             if (consumer == null)
-                throw new ArgumentNullException("consumer");
+                throw new ArgumentNullException(nameof(consumer));
 
             // Remove previous
             RemoveFilter(pid);
@@ -755,15 +755,15 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Definiert einen Verbraucher, der einen Teildatenstrom vollständig abzieht.
+        /// Definiert einen Verbraucher, der einen Teildatenstrom vollstï¿½ndig abzieht.
         /// </summary>
-        /// <param name="pid">Die gewünschte Datenstromkennung.</param>
+        /// <param name="pid">Die gewï¿½nschte Datenstromkennung.</param>
         /// <param name="filter">Der zu verwendende Verbraucher.</param>
         public void RegisterExtractor(ushort pid, Action<byte[]> filter)
         {
             // Validate
             if (filter == null)
-                throw new ArgumentNullException("filter");
+                throw new ArgumentNullException(nameof(filter));
 
             // Remove previous
             RemoveExtractor(pid);
@@ -776,7 +776,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Entfernt einen Extraktionsverbraucher.
         /// </summary>
-        /// <param name="pid">Die gewünschte Datenstromkennung.</param>
+        /// <param name="pid">Die gewï¿½nschte Datenstromkennung.</param>
         public void RemoveExtractor(ushort pid)
         {
             // Do it
@@ -785,9 +785,9 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Entfernt einen Verbraucher für einen Datenstrom.
+        /// Entfernt einen Verbraucher fï¿½r einen Datenstrom.
         /// </summary>
-        /// <param name="pid">Die gewünschte Datenstromkennung.</param>
+        /// <param name="pid">Die gewï¿½nschte Datenstromkennung.</param>
         public void RemoveFilter(ushort pid)
         {
             // Synchronize
@@ -825,7 +825,7 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Meldet, dass ein Kontrolldatenstrom einen Fehler enthält.
+        /// Meldet, dass ein Kontrolldatenstrom einen Fehler enthï¿½lt.
         /// </summary>
         internal void TableCorrupted()
         {
@@ -834,7 +834,7 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Meldet, dass ein Nutzdatenstrom einen Fehler enthält.
+        /// Meldet, dass ein Nutzdatenstrom einen Fehler enthï¿½lt.
         /// </summary>
         internal void StreamCorrupted()
         {
@@ -843,7 +843,7 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Meldet die aktuelle Statistik über die Anteile der Teildatenströme
+        /// Meldet die aktuelle Statistik ï¿½ber die Anteile der Teildatenstrï¿½me
         /// im Gesamtdatenstrom.
         /// </summary>
         /// <exception cref="InvalidOperationException">Die Statistik muss explizit aktiviert werden,
@@ -866,7 +866,7 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Setzt den PAT Zähler zurück.
+        /// Setzt den PAT Zï¿½hler zurï¿½ck.
         /// <seealso cref="ValidPATCount"/>
         /// </summary>
         public void RestartPATCounter()
@@ -888,9 +888,9 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Meldet oder legt fest, ob eine Statistik über die Anteile der Teildateströme
-        /// am Gesamtdatenstrom geführt werden soll. Beim Setzen dieser Eigenschaft werden
-        /// die Zähler des Statistik immer zurückgesetzt.
+        /// Meldet oder legt fest, ob eine Statistik ï¿½ber die Anteile der Teildatestrï¿½me
+        /// am Gesamtdatenstrom gefï¿½hrt werden soll. Beim Setzen dieser Eigenschaft werden
+        /// die Zï¿½hler des Statistik immer zurï¿½ckgesetzt.
         /// </summary>
         public bool FillStatistics
         {
@@ -916,7 +916,7 @@ namespace JMS.DVB.TS
         #region IDisposable Members
 
         /// <summary>
-        /// Beendet die Arbeit dieser Analyseinstanz endgültig.
+        /// Beendet die Arbeit dieser Analyseinstanz endgï¿½ltig.
         /// </summary>
         public void Dispose()
         {

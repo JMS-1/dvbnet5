@@ -113,7 +113,7 @@ namespace JMS.DVB.EPG.BBC
                 try
                 {
                     // Attach to resource
-                    using var stream = me.Assembly.GetManifestResourceStream(string.Format("{0}.CodePage{1}.xht", me.Namespace, i));
+                    using var stream = me.Assembly.GetManifestResourceStream(string.Format("{0}.BBC.CodePage{1}.xht", me.Assembly.ManifestModule.Name[..^4], i));
 
                     LoadTable(i, HuffmanPairTable.Load(stream!));
                 }
