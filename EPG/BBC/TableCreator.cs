@@ -110,15 +110,15 @@
         {
             // Validate
             if (from > 127)
-                throw new ArgumentException(from.ToString(), "from");
+                throw new ArgumentException(from.ToString(), nameof(from));
             if ((to > 127) && (char.MaxValue != to))
-                throw new ArgumentException(to.ToString(), "to");
+                throw new ArgumentException(to.ToString(), nameof(to));
             if ((from < 1) && ('\0' != from))
-                throw new ArgumentException(((int)from).ToString(), "from");
+                throw new ArgumentException(((int)from).ToString(), nameof(from));
             if ((to < 1) && ('\0' != to))
-                throw new ArgumentException(((int)to).ToString(), "to");
+                throw new ArgumentException(((int)to).ToString(), nameof(to));
             if ((bits < 1) || (bits > 32))
-                throw new ArgumentException(bits.ToString(), "bits");
+                throw new ArgumentException(bits.ToString(), nameof(bits));
 
             // Read the current list
             if (!m_Transitions.TryGetValue(from, out var transitions))
@@ -204,11 +204,8 @@
             CharacterNotSupported = (uint)(m_Table.Count - m_Transitions.Count);
 
             // Process all
-            foreach (KeyValuePair<char, List<TransitionInfo>> transitions in m_Transitions)
-            {
-                // Forward
+            foreach (var transitions in m_Transitions)
                 FillTransitions(transitions.Key, transitions.Value);
-            }
 
             // Overflow
             if (m_Table.Count > MaximumIndex)
@@ -263,7 +260,7 @@
 
             // Check for leaf
             if (bitSkip > 0)
-                foreach (TransitionInfo transition in transitions)
+                foreach (var transition in transitions)
                     if (bitSkip == transition.PatternWidth)
                         if (patternValue == transition.Pattern)
                         {
@@ -286,7 +283,7 @@
             int nextWidth = int.MaxValue;
 
             // Find it
-            foreach (TransitionInfo transition in transitions)
+            foreach (var transition in transitions)
                 if (transition.PatternWidth > bitSkip)
                     if (transition.PatternWidth < nextWidth)
                         if (patternValue == (patternMask & transition.Pattern))
@@ -310,7 +307,7 @@
 
             // Check for leaf mismatch
             if (leaf.HasValue)
-                throw new ArgumentException(string.Format("{0} => {1}", from, leaf.Value), "from");
+                throw new ArgumentException(string.Format("{0} => {1}", from, leaf.Value), nameof(from));
 
             // Enter the index
             m_Table[codeIndex] = (ushort)m_Table.Count;

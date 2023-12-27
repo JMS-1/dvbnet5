@@ -24,6 +24,7 @@ namespace JMS.DVB.EPG
         /// </summary>
         public event SectionFoundHandler? SectionFound;
 
+#pragma warning disable CA2211
         /// <summary>
         /// The filter data for EPG filtering.
         /// <seealso cref="FilterMask"/>
@@ -40,6 +41,7 @@ namespace JMS.DVB.EPG
         /// <see cref="Tables.EIT"/> tables.
         /// </remarks>
         static public byte[] FilterMask = [0xc0];
+#pragma warning restore CA2211
 
         /// <summary>
         /// Local buffer.
@@ -96,12 +98,13 @@ namespace JMS.DVB.EPG
         public void Add(byte[] data, int offset, int length)
         {
             // Check parameters
-            if (null == data) throw new ArgumentNullException("data");
-            if (offset < 0) throw new ArgumentOutOfRangeException("offset", offset, "must not be negative");
-            if (offset > data.Length) throw new ArgumentOutOfRangeException("offset", offset, "out of array");
-            if (length < 0) throw new ArgumentOutOfRangeException("length", length, "must not be negative");
-            if (length > data.Length) throw new ArgumentOutOfRangeException("length", length, "out of array");
-            if ((offset + length) > data.Length) throw new ArgumentOutOfRangeException("length", length, "not enough space in source");
+            ArgumentNullException.ThrowIfNull(data, nameof(data));
+
+            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset), offset, "must not be negative");
+            if (offset > data.Length) throw new ArgumentOutOfRangeException(nameof(offset), offset, "out of array");
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length), length, "must not be negative");
+            if (length > data.Length) throw new ArgumentOutOfRangeException(nameof(length), length, "out of array");
+            if ((offset + length) > data.Length) throw new ArgumentOutOfRangeException(nameof(length), length, "not enough space in source");
 
             // Validate
             if (0 == length) return;
@@ -178,7 +181,7 @@ namespace JMS.DVB.EPG
                 var section = Section.Create(m_Buffer, m_BufferPos, m_BufferSize - m_BufferPos, this);
 
                 // Need more data
-                if (null == section) return null!;
+                if (section == null) return section;
 
                 // Advance
                 m_BufferPos += section.Length;
@@ -252,13 +255,13 @@ namespace JMS.DVB.EPG
     }
 
     /// <summary>
-    /// ÔøΩberwacht SI Tabellen einer bestimmten Art.
+    /// ùberwacht SI Tabellen einer bestimmten Art.
     /// </summary>
     /// <typeparam name="T">Die Art der SI Tabelle.</typeparam>
     public class TypedSIParser<T> : Parser where T : Table
     {
         /// <summary>
-        /// Signatur einer Methode zur Information ÔøΩber eine erfolgreich empfangene SI Tabelle.
+        /// Signatur einer Methode zur Information ùber eine erfolgreich empfangene SI Tabelle.
         /// </summary>
         /// <param name="table">Die empfangene Tabelle.</param>
         public delegate void TableFoundHandler(T table);
@@ -282,7 +285,7 @@ namespace JMS.DVB.EPG
         protected override void OnSectionFound(Section section)
         {
             // See if table has the rigth type
-            if ((null != section) && section.IsValid)
+            if ((section != null) && section.IsValid)
                 if ((section.Table is T table) && table.IsValid)
                     TableFound?.Invoke(table);
 

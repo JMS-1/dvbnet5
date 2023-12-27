@@ -47,10 +47,10 @@ namespace JMS.DVB.EPG.BBC
                 if (null == m_Sequence)
                 {
                     // Reset
-                    StringBuilder binDump = new StringBuilder();
+                    StringBuilder binDump = new();
 
                     // Fill
-                    foreach (byte hex in CompressedData)
+                    foreach (var hex in CompressedData)
                         for (int h = 8, r = hex; h-- > 0; r *= 2)
                             binDump.Append((0 == (r & 0x80)) ? '0' : '1');
 
@@ -106,16 +106,16 @@ namespace JMS.DVB.EPG.BBC
             BinaryTables = new ushort[CodePages.Length][];
 
             // Attach to self
-            Type me = typeof(TextDecoder);
+            var me = typeof(TextDecoder);
 
             // Load all
-            for (int i = CodePages.Length; i > 0; --i)
+            for (var i = CodePages.Length; i > 0; --i)
                 try
                 {
                     // Attach to resource
-                    using Stream stream = me.Assembly.GetManifestResourceStream(string.Format("{0}.CodePage{1}.xht", me.Namespace, i))!;
+                    using var stream = me.Assembly.GetManifestResourceStream(string.Format("{0}.CodePage{1}.xht", me.Namespace, i));
 
-                    LoadTable(i, HuffmanPairTable.Load(stream));
+                    LoadTable(i, HuffmanPairTable.Load(stream!));
                 }
                 catch
                 {
@@ -144,7 +144,7 @@ namespace JMS.DVB.EPG.BBC
                 try
                 {
                     // Attach to file
-                    FileInfo table = new FileInfo(Path.Combine(tableDirectory.FullName, string.Format("CodePage{0}.xht", i)));
+                    FileInfo table = new(Path.Combine(tableDirectory.FullName, string.Format("CodePage{0}.xht", i)));
 
                     // Load it
                     if (table.Exists)
@@ -173,7 +173,7 @@ namespace JMS.DVB.EPG.BBC
         public static HuffmanPairTable GetTable(int codepage)
         {
             // Validate
-            if ((codepage < 1) || (codepage > 2)) throw new ArgumentException(codepage.ToString(), "codepage");
+            if ((codepage < 1) || (codepage > 2)) throw new ArgumentException(codepage.ToString(), nameof(codepage));
 
             // Report
             return CodePages[codepage - 1];
@@ -189,11 +189,12 @@ namespace JMS.DVB.EPG.BBC
         public static void LoadTable(int codepage, HuffmanPairTable table)
         {
             // Validate
-            if (null == table) throw new ArgumentNullException(nameof(table));
+            ArgumentNullException.ThrowIfNull(table, nameof(table));
+
             if ((codepage < 1) || (codepage > 2)) throw new ArgumentException(codepage.ToString(), nameof(codepage));
 
             // Try to compile the table
-            ushort[] compiled = table.CreateBinary().GetTable();
+            var compiled = table.CreateBinary().GetTable();
 
             // Remember the full table information
             CodePages[codepage - 1] = table;
@@ -336,19 +337,19 @@ namespace JMS.DVB.EPG.BBC
             int initialIndex = index, initialCount = count;
 
             // Constructor
-            List<byte> builder = new List<byte>();
+            List<byte> builder = [];
 
             // Set current processing index
-            ushort tableIndex = table[0];
+            var tableIndex = table[0];
 
             // Current index shift
-            int indexShift = 0;
+            var indexShift = 0;
 
             // Previous pattern and width
             uint? previous = null;
 
             // Last checkpoint
-            int lastCharPosition = 0;
+            var lastCharPosition = 0;
 
             // Process
             for (; ; )
@@ -357,7 +358,7 @@ namespace JMS.DVB.EPG.BBC
                 if (0 == tableIndex)
                 {
                     // Load the initial check pattern
-                    byte check = (byte)(0xff >> indexShift);
+                    var check = (byte)(0xff >> indexShift);
 
                     // All bytes must be zero
                     for (; count-- > 0; check = 0xff)
@@ -369,7 +370,7 @@ namespace JMS.DVB.EPG.BBC
                         break;
 
                     // Load result
-                    string decompressed = UTF8.GetString(builder.ToArray());
+                    var decompressed = UTF8.GetString(builder.ToArray());
 
                     // Load client
                     var successHandler = OnSuccess;
@@ -378,21 +379,18 @@ namespace JMS.DVB.EPG.BBC
                     if (null != successHandler)
                     {
                         // Create full data
-                        byte[] compressed = new byte[initialCount];
+                        var compressed = new byte[initialCount];
 
                         // Fill it
                         Array.Copy(bytes, initialIndex, compressed, 0, compressed.Length);
 
-                        // Create argument list
-                        DecodingReportArgs args = new()
+                        // Report
+                        successHandler(this, new()
                         {
                             CodePage = (table == BinaryTables[0]) ? 1 : 2,
                             Uncompressed = decompressed,
                             CompressedData = compressed
-                        };
-
-                        // Report
-                        successHandler(this, args);
+                        });
                     }
 
                     // Report
@@ -421,10 +419,10 @@ namespace JMS.DVB.EPG.BBC
                     break;
 
                 // Check for escape mode
-                bool inEscape = tableIndex == TableCreator.EscapeIndicator;
+                var inEscape = tableIndex == TableCreator.EscapeIndicator;
 
                 // Get the number of bits to process
-                ushort bitWidth = inEscape ? (ushort)8 : table[tableIndex++];
+                var bitWidth = inEscape ? (ushort)8 : table[tableIndex++];
 
                 // Check limitation
                 if (bitWidth > 24)
@@ -511,10 +509,10 @@ namespace JMS.DVB.EPG.BBC
                 }
 
                 // Get the first link position
-                ushort linkIndex = table[tableIndex++];
+                var linkIndex = table[tableIndex++];
 
                 // Translate the pattern
-                uint patternIndex = pattern >> (32 - bitWidth);
+                var patternIndex = pattern >> (32 - bitWidth);
 
                 // Check mode
                 if (linkIndex == TableCreator.EndIndicator)
@@ -559,22 +557,19 @@ namespace JMS.DVB.EPG.BBC
             if (null != handler)
             {
                 // Create full data
-                byte[] compressed = new byte[initialCount];
+                var compressed = new byte[initialCount];
 
                 // Fill it
                 Array.Copy(bytes, initialIndex, compressed, 0, compressed.Length);
 
-                // Create argument list
-                DecodingFailureArgs args = new()
+                // Report
+                handler(this, new()
                 {
                     Uncompressed = UTF8.GetString(builder.ToArray()),
                     CodePage = (table == BinaryTables[0]) ? 1 : 2,
                     BitPosition = lastCharPosition,
                     CompressedData = compressed
-                };
-
-                // Report
-                handler(this, args);
+                });
             }
 
             // Report

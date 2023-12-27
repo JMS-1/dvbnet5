@@ -9,9 +9,7 @@ namespace JMS.DVB.EPG.BBC
     /// Huffmann Tabelle. Sie kann als XML Datei gespeichert werden und unterstützt darüber
     /// hinaus die Umwandlung in verschiedene kompaktere Binärformate.
     /// </summary>
-    [
-        Serializable
-    ]
+    [Serializable]
     public class HuffmanPairTable : ICloneable
     {
         /// <summary>
@@ -164,7 +162,7 @@ namespace JMS.DVB.EPG.BBC
         public static HuffmanPairTable Load(string path)
         {
             // Forward
-            using FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using FileStream stream = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 
             return Load(stream);
         }

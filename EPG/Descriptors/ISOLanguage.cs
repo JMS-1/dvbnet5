@@ -38,7 +38,7 @@ namespace JMS.DVB.EPG.Descriptors
             Section section = container.Section;
 
             // Helper
-            List<LanguageItem> items = new List<LanguageItem>();
+            List<LanguageItem> items = [];
 
             // Load
             while (length > 0)
