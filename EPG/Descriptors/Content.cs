@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace JMS.DVB.EPG.Descriptors
 {
     /// <summary>
@@ -26,8 +24,8 @@ namespace JMS.DVB.EPG.Descriptors
         /// <param name="container">The related container instance.</param>
         /// <param name="offset">First byte of the descriptor data - the first byte after the tag.</param>
         /// <param name="length">Number of payload bytes for this descriptor.</param>
-        public Content( IDescriptorContainer container, int offset, int length )
-            : base( container, offset, length )
+        public Content(IDescriptorContainer container, int offset, int length)
+            : base(container, offset, length)
         {
             // Attach to data
             Section section = container.Section;
@@ -43,7 +41,7 @@ namespace JMS.DVB.EPG.Descriptors
                 int user = section[offset++];
 
                 // Remember
-                all.Add( content );
+                all.Add(content);
             }
 
             // Remember
@@ -58,10 +56,10 @@ namespace JMS.DVB.EPG.Descriptors
         /// </summary>
         /// <param name="tag">The tag to test for.</param>
         /// <returns>Set if this class can handle the payload for the given tag.</returns>
-        public static bool IsHandlerFor( byte tag )
+        public static bool IsHandlerFor(byte tag)
         {
             // Check it
-            return (DescriptorTags.Content == (DescriptorTags) tag);
+            return (DescriptorTags.Content == (DescriptorTags)tag);
         }
     }
 }

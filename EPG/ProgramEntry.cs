@@ -1,7 +1,4 @@
-using System;
 using System.Globalization;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace JMS.DVB.EPG
 {
@@ -13,7 +10,7 @@ namespace JMS.DVB.EPG
         /// <summary>
         /// Maps ISO language names to their native representation.
         /// </summary>
-        private static Dictionary<string, CultureInfo> m_CultureMap = new Dictionary<string, CultureInfo>(StringComparer.InvariantCultureIgnoreCase);
+        private static readonly Dictionary<string, CultureInfo> m_CultureMap = new(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
         /// The constructor is private to make this class static.
@@ -64,8 +61,7 @@ namespace JMS.DVB.EPG
                 return;
 
             // Load entry
-            CultureInfo terminologic;
-            if (!m_CultureMap.TryGetValue(terminologyCode, out terminologic))
+            if (!m_CultureMap.TryGetValue(terminologyCode, out var terminologic))
                 return;
 
             // Connect
@@ -79,7 +75,7 @@ namespace JMS.DVB.EPG
         /// Please refer to the original documentation to find out which descriptor
         /// type is allowed in a <see cref="Tables.PMT"/> table.
         /// </remarks>
-        public readonly Descriptor[] Descriptors;
+        public readonly Descriptor[] Descriptors = null!;
 
         /// <summary>
         /// Set if the program entry is consistent.
@@ -148,11 +144,11 @@ namespace JMS.DVB.EPG
         /// follow in the same table.</param>
         /// <returns>A new service instance or <i>null</i> if there are less than
         /// 5 bytes available.</returns>
-        static internal ProgramEntry Create(Table table, int offset, int length)
+        static internal ProgramEntry? Create(Table table, int offset, int length)
         {
             // Validate
             if (length < 5)
-                return null;
+                return null!;
 
             // Create
             return new ProgramEntry(table, offset, length);
@@ -169,10 +165,7 @@ namespace JMS.DVB.EPG
                 foreach (Descriptor descriptor in Descriptors)
                 {
                     // Check type
-                    Descriptors.ISOLanguage language = descriptor as Descriptors.ISOLanguage;
-
-                    // None
-                    if ((null == language) || (language.Languages.Count < 1))
+                    if ((descriptor is not Descriptors.ISOLanguage language) || (language.Languages.Count < 1))
                         continue;
 
                     // Remember the first one set
@@ -190,16 +183,15 @@ namespace JMS.DVB.EPG
         }
 
         /// <summary>
-        /// Ermittelt zu einer ISO Kurzbezeichnung einer Sprache die zugehörige 
+        /// Ermittelt zu einer ISO Kurzbezeichnung einer Sprache die zugehï¿½rige 
         /// Sprache.
         /// </summary>
         /// <param name="language">Eine ISO Kurzbezeichnung.</param>
-        /// <returns>Der Name der Sprache, ausgerückt in der Sprache selbst.</returns>
+        /// <returns>Der Name der Sprache, ausgerï¿½ckt in der Sprache selbst.</returns>
         public static string GetLanguageFromISOLanguage(string language)
         {
             // Find
-            CultureInfo cult;
-            if (m_CultureMap.TryGetValue(language, out cult))
+            if (m_CultureMap.TryGetValue(language, out var cult))
                 return cult.NativeName;
 
             // Report as is

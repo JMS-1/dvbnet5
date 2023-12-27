@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace JMS.DVB.EPG.OpenTV
+﻿namespace JMS.DVB.EPG.OpenTV
 {
     /// <summary>
     /// Hilfsklasse zur simultanen Rekonstuktion von Modulen.
@@ -13,17 +8,17 @@ namespace JMS.DVB.EPG.OpenTV
         /// <summary>
         /// Alle bisher empfangenen Module.
         /// </summary>
-        private Dictionary<ushort, Module> m_Modules = new Dictionary<ushort, Module>();
+        private readonly Dictionary<ushort, Module> m_Modules = new();
 
         /// <summary>
         /// Liste zur Teilweisen Freischaltung des Empfangs.
         /// </summary>
-        private Dictionary<ushort, bool> m_Enabled = new Dictionary<ushort, bool>();
+        private readonly Dictionary<ushort, bool> m_Enabled = new();
 
         /// <summary>
         /// Methode, die bei Komplettierung eines Moduls aufgerufen wird.
         /// </summary>
-        public event Module.CompleteHandler OnModuleComplete;
+        public event Module.CompleteHandler? OnModuleComplete;
 
         /// <summary>
         /// Erzeugt eine neue Rekonstruktionsinstanz.
@@ -56,7 +51,7 @@ namespace JMS.DVB.EPG.OpenTV
                         return;
 
             // The new module
-            Module module;
+            Module? module;
 
             // Check for module manager inside collection
             lock (m_Modules)
@@ -81,13 +76,7 @@ namespace JMS.DVB.EPG.OpenTV
         /// </summary>
         /// <param name="lastTable">Die letzte SI Tabelle des Moduls.</param>
         /// <param name="module">Das fertiggestellte Modul.</param>
-        private void ForwardComplete(Tables.OpenTV lastTable, Module module)
-        {
-            // Check for interested client
-            Module.CompleteHandler callback = OnModuleComplete;
-
-            // Report to client
-            if (null != callback) callback(lastTable, module);
-        }
+        private void ForwardComplete(Tables.OpenTV lastTable, Module module) =>
+            OnModuleComplete?.Invoke(lastTable, module);
     }
 }

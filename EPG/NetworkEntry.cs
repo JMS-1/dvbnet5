@@ -10,7 +10,7 @@ namespace JMS.DVB.EPG
         /// <summary>
         /// Alle Detailbeschreibungen.
         /// </summary>
-        public readonly Descriptor[] Descriptors;
+        public readonly Descriptor[] Descriptors = null!;
 
         /// <summary>
         /// Gesetzt, wenn diese Beschreibung konsistent ist.
@@ -18,7 +18,7 @@ namespace JMS.DVB.EPG
         public readonly bool IsValid = false;
 
         /// <summary>
-        /// Die Größe der Beschreibung.
+        /// Die Grï¿½ï¿½e der Beschreibung.
         /// </summary>
         public readonly int Length;
 
@@ -37,19 +37,19 @@ namespace JMS.DVB.EPG
         /// </summary>
         /// <param name="table">Die gesamte <i>NIT</i>.</param>
         /// <param name="offset">Das erste Byte dieser Beschreibung in den Rohdaten.</param>
-        /// <param name="length">Die Größe der Rohdaten zu dieser Beschreibung.</param>
-        private NetworkEntry( Table table, int offset, int length )
-            : base( table )
+        /// <param name="length">Die Grï¿½ï¿½e der Rohdaten zu dieser Beschreibung.</param>
+        private NetworkEntry(Table table, int offset, int length)
+            : base(table)
         {
             // Access section
             Section section = Section;
 
             // Load
-            TransportStreamIdentifier = (ushort) Tools.MergeBytesToWord( section[offset + 1], section[offset + 0] );
-            OriginalNetworkIdentifier = (ushort) Tools.MergeBytesToWord( section[offset + 3], section[offset + 2] );
+            TransportStreamIdentifier = (ushort)Tools.MergeBytesToWord(section[offset + 1], section[offset + 0]);
+            OriginalNetworkIdentifier = (ushort)Tools.MergeBytesToWord(section[offset + 3], section[offset + 2]);
 
             // Read the length
-            int descrLength = 0xfff & Tools.MergeBytesToWord( section[offset + 5], section[offset + 4] );
+            int descrLength = 0xfff & Tools.MergeBytesToWord(section[offset + 5], section[offset + 4]);
 
             // Caluclate the total length
             Length = 6 + descrLength;
@@ -58,7 +58,7 @@ namespace JMS.DVB.EPG
             if (Length > length) return;
 
             // Try to load descriptors
-            Descriptors = Descriptor.Load( this, offset + 6, descrLength );
+            Descriptors = Descriptor.Load(this, offset + 6, descrLength);
 
             // Can use it
             IsValid = true;
@@ -69,15 +69,15 @@ namespace JMS.DVB.EPG
         /// </summary>
         /// <param name="table">Die gesamte <i>NIT</i>.</param>
         /// <param name="offset">Das erste Byte dieser Beschreibung in den Rohdaten.</param>
-        /// <param name="length">Die Größe der Rohdaten zu dieser Beschreibung.</param>
-        /// <returns>Die gewünschte Beschreibung.</returns>
-        static internal NetworkEntry Create( Table table, int offset, int length )
+        /// <param name="length">Die Grï¿½ï¿½e der Rohdaten zu dieser Beschreibung.</param>
+        /// <returns>Die gewï¿½nschte Beschreibung.</returns>
+        static internal NetworkEntry? Create(Table table, int offset, int length)
         {
             // Validate
-            if (length < 6) return null;
+            if (length < 6) return null!;
 
             // Create
-            return new NetworkEntry( table, offset, length );
+            return new NetworkEntry(table, offset, length);
         }
     }
 }

@@ -1,5 +1,3 @@
-using System;
-
 namespace JMS.DVB.EPG.Tables
 {
 	/// <summary>
@@ -10,7 +8,7 @@ namespace JMS.DVB.EPG.Tables
 	/// Since instances of this <see cref="Type"/> will always report to be invalid
 	/// when <see cref="Table.IsValid"/> is called a client will never see any.
 	/// </remarks>
-	public class Generic: Table
+	public class Generic : Table
 	{
 		/// <summary>
 		/// Create the new instance.

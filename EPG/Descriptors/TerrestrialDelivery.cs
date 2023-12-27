@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace JMS.DVB.EPG.Descriptors
 {
     /// <summary>
@@ -22,10 +19,10 @@ namespace JMS.DVB.EPG.Descriptors
         /// Erzeugt eine neue Beschreibung.
         /// </summary>
         /// <param name="container">Der SI Bereich, in dem diese Beschreibung gefunden wurde.</param>
-        /// <param name="offset">Das erste Byte zu den Rohdaten dieser Beschreibung in dem zugehörigen Bereich.</param>
-        /// <param name="length">Die Anzahl der Bytes für die Rohdaten dieser Beschreibung.</param>
-        public TerrestrialDelivery( IDescriptorContainer container, int offset, int length )
-            : base( container, offset, length )
+        /// <param name="offset">Das erste Byte zu den Rohdaten dieser Beschreibung in dem zugehï¿½rigen Bereich.</param>
+        /// <param name="length">Die Anzahl der Bytes fï¿½r die Rohdaten dieser Beschreibung.</param>
+        public TerrestrialDelivery(IDescriptorContainer container, int offset, int length)
+            : base(container, offset, length)
         {
             // Not possible
             if (11 != length)
@@ -35,35 +32,35 @@ namespace JMS.DVB.EPG.Descriptors
             Section section = container.Section;
 
             // Load direct data
-            Frequency = Tools.MergeBytesToDoubleWord( section[offset + 3], section[offset + 2], section[offset + 1], section[offset + 0] ) / 100;
+            Frequency = Tools.MergeBytesToDoubleWord(section[offset + 3], section[offset + 2], section[offset + 1], section[offset + 0]) / 100;
 
             // Load bandwith
-            Bandwidth = (TerrestrialBandwidths) (section[offset + 4] >> 5);
+            Bandwidth = (TerrestrialBandwidths)(section[offset + 4] >> 5);
 
             // We are valid
             m_Valid = true;
         }
 
         /// <summary>
-        /// Prüft, ob diese Klasse für eine bestimmte Art von SI Beschreibungen zuständig ist.
+        /// Prï¿½ft, ob diese Klasse fï¿½r eine bestimmte Art von SI Beschreibungen zustï¿½ndig ist.
         /// </summary>
         /// <param name="tag">Die eindeutige Kennung einer SI Beschreibung.</param>
-        /// <returns>Gesetzt, wenn diese Klasse für die angegebene Art von Beschreibung zurständig ist.</returns>
-        public static bool IsHandlerFor( byte tag )
+        /// <returns>Gesetzt, wenn diese Klasse fï¿½r die angegebene Art von Beschreibung zurstï¿½ndig ist.</returns>
+        public static bool IsHandlerFor(byte tag)
         {
             // Check it
-            return (DescriptorTags.TerrestrialDeliverySystem == (DescriptorTags) tag);
+            return (DescriptorTags.TerrestrialDeliverySystem == (DescriptorTags)tag);
         }
 
         /// <summary>
         /// Wandelt eine Frequenzangabe aus einer <see cref="FrequencyList"/> in eine echte Frequenz um.
         /// </summary>
         /// <param name="frequency">Die Rohdaten der Frequenz.</param>
-        /// <returns>Die gewünschte Frequenz in Hz.</returns>
-        internal static ulong ConvertFrequency( uint frequency )
+        /// <returns>Die gewï¿½nschte Frequenz in Hz.</returns>
+        internal static ulong ConvertFrequency(uint frequency)
         {
             // Easy
-            return 10 * (ulong) frequency;
+            return 10 * (ulong)frequency;
         }
     }
 }

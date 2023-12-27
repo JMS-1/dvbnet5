@@ -1,5 +1,3 @@
-using System;
-
 namespace JMS.DVB.EPG.Descriptors
 {
 	/// <summary>
@@ -9,7 +7,7 @@ namespace JMS.DVB.EPG.Descriptors
 	/// For details please refer to the original documentation,
 	/// e.g. <i>ETSI EN 300 468 V1.6.1 (2004-06)</i> or alternate versions.
 	/// </remarks>
-	public class Linkage: Descriptor
+	public class Linkage : Descriptor
 	{
 		/// <summary>
 		/// The referenced original network identifier.
@@ -34,7 +32,7 @@ namespace JMS.DVB.EPG.Descriptors
 		/// <summary>
 		/// Some private data.
 		/// </summary>
-		public readonly byte[] PrivateData;
+		public readonly byte[] PrivateData = null!;
 
 		/// <summary>
 		/// The handover type - not always set.
@@ -56,24 +54,24 @@ namespace JMS.DVB.EPG.Descriptors
 		/// </summary>
 		public readonly byte LinkType;
 
-        /// <summary>
-        /// Create a new descriptor instance.
-        /// </summary>
-        /// <remarks>
-        /// <see cref="Descriptor.IsValid"/> will only be set if the payload is 
-        /// consistent.
-        /// </remarks>
-        /// <param name="container">The related container instance.</param>
-        /// <param name="offset">First byte of the descriptor data - the first byte after the tag.</param>
-        /// <param name="length">Number of payload bytes for this descriptor.</param>
-        public Linkage(IDescriptorContainer container, int offset, int length)
-            : base(container, offset, length)
+		/// <summary>
+		/// Create a new descriptor instance.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="Descriptor.IsValid"/> will only be set if the payload is 
+		/// consistent.
+		/// </remarks>
+		/// <param name="container">The related container instance.</param>
+		/// <param name="offset">First byte of the descriptor data - the first byte after the tag.</param>
+		/// <param name="length">Number of payload bytes for this descriptor.</param>
+		public Linkage(IDescriptorContainer container, int offset, int length)
+			: base(container, offset, length)
 		{
 			// Validate size
-			if ( length < 7 ) return;
+			if (length < 7) return;
 
 			// Attach to data
-            Section section = container.Section;
+			Section section = container.Section;
 
 			// Read head
 			TransportStreamIdentifier = Tools.MergeBytesToWord(section[offset + 1], section[offset + 0]);
@@ -88,23 +86,23 @@ namespace JMS.DVB.EPG.Descriptors
 			length -= 7;
 
 			// Depends
-			if ( 8 == LinkType )
+			if (8 == LinkType)
 			{
 				// Check mode
-				if ( length < 1 ) return;
+				if (length < 1) return;
 
 				// Raw read
 				byte temp = section[offset + 0];
 
 				// Decode
-				HandOverType = (byte)(temp>>4);
-				OriginType = (0 != (temp&1));
+				HandOverType = (byte)(temp >> 4);
+				OriginType = (0 != (temp & 1));
 
 				// Special
-				if ( (1 == HandOverType) || (2 == HandOverType) || (3 == HandOverType) )
+				if ((1 == HandOverType) || (2 == HandOverType) || (3 == HandOverType))
 				{
 					// Check mode
-					if ( length < 3 ) return;
+					if (length < 3) return;
 
 					// Read
 					NetworkID = Tools.MergeBytesToWord(section[offset + 2], section[offset + 1]);
@@ -115,10 +113,10 @@ namespace JMS.DVB.EPG.Descriptors
 				}
 
 				// Special
-				if ( !OriginType )
+				if (!OriginType)
 				{
 					// Check mode
-					if ( length < 3 ) return;
+					if (length < 3) return;
 
 					// Read
 					InitialServiceIdentifier = Tools.MergeBytesToWord(section[offset + 2], section[offset + 1]);
@@ -140,12 +138,12 @@ namespace JMS.DVB.EPG.Descriptors
 			m_Valid = true;
 		}
 
-        /// <summary>
-        /// Check if this class is responsible for a given descriptor tag.
-        /// </summary>
-        /// <param name="tag">The tag to test for.</param>
-        /// <returns>Set if this class can handle the payload for the given tag.</returns>
-        public static bool IsHandlerFor(byte tag)
+		/// <summary>
+		/// Check if this class is responsible for a given descriptor tag.
+		/// </summary>
+		/// <param name="tag">The tag to test for.</param>
+		/// <returns>Set if this class can handle the payload for the given tag.</returns>
+		public static bool IsHandlerFor(byte tag)
 		{
 			// Check it
 			return (DescriptorTags.Linkage == (DescriptorTags)tag);

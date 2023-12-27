@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-
-namespace JMS.DVB.EPG
+﻿namespace JMS.DVB.EPG
 {
     /// <summary>
     /// Beschreibt eine DVB-T Zelle.
@@ -54,7 +49,7 @@ namespace JMS.DVB.EPG
         /// <param name="bits">Die Anzahl der Bits im Rohwert.</param>
         /// <param name="angle">Der volle Winkelbereich in Grad.</param>
         /// <returns>Das zugehörige Winkelmaß.</returns>
-        private static double Rescale( int number, int bits, int angle )
+        private static double Rescale(int number, int bits, int angle)
         {
             // Get the center value
             int center = 1 << bits;
@@ -74,7 +69,7 @@ namespace JMS.DVB.EPG
         /// <param name="offset">Der Index des ersten Bytes dieser Information in den Rohdaten des SI Bereichs.</param>
         /// <param name="length">Die Anzahl der Bytes für diese Information.</param>
         /// <returns>Die zugehörige Information oder <i>null</i>, wenn eine Rekonstruktion nicht möglich war.</returns>
-        public static CellInformation Create( Section section, int offset, int length )
+        public static CellInformation? Create(Section section, int offset, int length)
         {
             // Check minimum length
             if (length < 10)
@@ -91,9 +86,9 @@ namespace JMS.DVB.EPG
                 return null;
 
             // Read direct data
-            ushort cellId = Tools.MergeBytesToWord( section[offset + 1], section[offset + 0] );
-            int latitude = Tools.MergeBytesToWord( section[offset + 3], section[offset + 2] );
-            int longitude = Tools.MergeBytesToWord( section[offset + 5], section[offset + 4] );
+            ushort cellId = Tools.MergeBytesToWord(section[offset + 1], section[offset + 0]);
+            int latitude = Tools.MergeBytesToWord(section[offset + 3], section[offset + 2]);
+            int longitude = Tools.MergeBytesToWord(section[offset + 5], section[offset + 4]);
 
             // Read to be merged data
             int ext0 = section[offset + 6];
@@ -105,8 +100,8 @@ namespace JMS.DVB.EPG
             int longitude_ext = ext2 + 256 * (ext1 & 0x0f);
 
             // Create new
-            CellInformation info = new CellInformation 
-            { 
+            CellInformation info = new CellInformation
+            {
                 Length = 10 + extlen,
                 Identifier = cellId,
                 Latitude = Rescale(latitude, 16, 90),

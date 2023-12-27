@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace JMS.DVB.EPG.Tables
+﻿namespace JMS.DVB.EPG.Tables
 {
     /// <summary>
     /// Diese Tabelle beschreibt Sendungen auf Direktkanälen. Es handelt sich um ein 
     /// poperitäres Format des deutschen PayTV Anbieters PREMIERE.
     /// </summary>
 	public class CITPremiere : Table
-	{
+    {
         /// <summary>
         /// Eine eindeutige Kennung zu diesem Eintrag.
         /// </summary>
@@ -22,7 +19,7 @@ namespace JMS.DVB.EPG.Tables
         /// <summary>
         /// Descriptors for this program.
         /// </summary>
-        public readonly Descriptor[] Descriptors;
+        public readonly Descriptor[] Descriptors = null!;
 
         /// <summary>
         /// Meldet, ob es sich bei einer Tabelle um eine <i>PREMIERE Content
@@ -31,10 +28,10 @@ namespace JMS.DVB.EPG.Tables
         /// <param name="tableIdentifier">Die zu prüfende Tabellenkennung.</param>
         /// <returns>Gesetzt, wenn die Tabellenkennung <i>160 (0xA0)</i> ist.</returns>
 		public static bool IsHandlerFor(byte tableIdentifier)
-		{
-			// Check all
-			return (0xa0 == tableIdentifier);
-		}
+        {
+            // Check all
+            return (0xa0 == tableIdentifier);
+        }
 
         /// <summary>
         /// Erzeugt eine neue CIT.
@@ -42,8 +39,8 @@ namespace JMS.DVB.EPG.Tables
         /// <param name="section">Die zugehörige gesamte SI-Tabelle inklusive Kopfdaten und
         /// Prüfsumme.</param>
         public CITPremiere(Section section)
-			: base(section)
-		{
+            : base(section)
+        {
             // Load length
             int length = section.Length - 7;
 
@@ -70,9 +67,9 @@ namespace JMS.DVB.EPG.Tables
 
             // Create my descriptors
             Descriptors = Descriptor.Load(this, 14, infoLength);
-            
+
             // Done
-			m_IsValid = true;
-		}
-	}
+            m_IsValid = true;
+        }
+    }
 }

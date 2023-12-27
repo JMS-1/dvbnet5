@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-
 namespace JMS.DVB.EPG.Descriptors
 {
     /// <summary>
-    /// Enthält eine Liste von DVB-T Zelleninformationen.
+    /// Enthï¿½lt eine Liste von DVB-T Zelleninformationen.
     /// </summary>
     public class CellList : Descriptor
     {
@@ -18,9 +15,9 @@ namespace JMS.DVB.EPG.Descriptors
         /// </summary>
         /// <param name="container">Der SI Bereich, in dem diese Liste gefunden wurde.</param>
         /// <param name="offset">Der Index des ersten Bytes dieser Liste in den Rohdaten des SI Bereichs.</param>
-        /// <param name="length">Die Anzahl der Bytes für diese Liste.</param>
-        public CellList( IDescriptorContainer container, int offset, int length )
-            : base( container, offset, length )
+        /// <param name="length">Die Anzahl der Bytes fï¿½r diese Liste.</param>
+        public CellList(IDescriptorContainer container, int offset, int length)
+            : base(container, offset, length)
         {
             // Check minimum length
             if (length < 0)
@@ -36,14 +33,14 @@ namespace JMS.DVB.EPG.Descriptors
             while (length > 0)
             {
                 // Create
-                CellInformation cell = CellInformation.Create( section, offset, length );
+                var cell = CellInformation.Create(section, offset, length);
 
                 // Done
                 if (null == cell)
                     break;
 
                 // Remember
-                cells.Add( cell );
+                cells.Add(cell);
 
                 // Correct 
                 offset += cell.Length;
@@ -59,14 +56,14 @@ namespace JMS.DVB.EPG.Descriptors
         }
 
         /// <summary>
-        /// Prüft, ob diese Klasse für eine bestimmte Art von SI Beschreibungen zuständig ist.
+        /// Prï¿½ft, ob diese Klasse fï¿½r eine bestimmte Art von SI Beschreibungen zustï¿½ndig ist.
         /// </summary>
         /// <param name="tag">Die eindeutige Kennung einer SI Beschreibung.</param>
-        /// <returns>Gesetzt, wenn diese Klasse für die angegebene Art von Beschreibung zurständig ist.</returns>
-        public static bool IsHandlerFor( byte tag )
+        /// <returns>Gesetzt, wenn diese Klasse fï¿½r die angegebene Art von Beschreibung zurstï¿½ndig ist.</returns>
+        public static bool IsHandlerFor(byte tag)
         {
             // Check it
-            return (DescriptorTags.CellList == (DescriptorTags) tag);
+            return (DescriptorTags.CellList == (DescriptorTags)tag);
         }
     }
 }

@@ -1,5 +1,3 @@
-using System;
-
 namespace JMS.DVB.EPG
 {
     /// <summary>
@@ -14,7 +12,7 @@ namespace JMS.DVB.EPG
         /// Please refer to the original documentation to find out which descriptor
         /// type is allowed in a <see cref="Tables.SDT"/> table.
         /// </remarks>
-        public readonly Descriptor[] Descriptors;
+        public readonly Descriptor[] Descriptors = null!;
 
         /// <summary>
         /// Set if the event data is consistent.
@@ -86,10 +84,10 @@ namespace JMS.DVB.EPG
         /// follow in the same table.</param>
         /// <returns>A new service instance or <i>null</i> if there are less than
         /// 5 bytes available.</returns>
-        static internal ServiceEntry Create(Table table, int offset, int length)
+        static internal ServiceEntry? Create(Table table, int offset, int length)
         {
             // Validate
-            if (length < 5) return null;
+            if (length < 5) return null!;
 
             // Create
             return new ServiceEntry(table, offset, length);

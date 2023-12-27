@@ -1,9 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Text;
 using System.Xml.Serialization;
-using System.IO;
 using System.Xml;
 
 namespace JMS.DVB.EPG.BBC
@@ -21,14 +17,14 @@ namespace JMS.DVB.EPG.BBC
         /// <summary>
         /// Die Abbildungsvorschriften aller Tabellen.
         /// </summary>
-        [XmlElement( "Table" )]
-        public readonly List<HuffmanTable> Tables = new List<HuffmanTable>();
+        [XmlElement("Table")]
+        public readonly List<HuffmanTable> Tables = [];
 
         /// <summary>
         /// Beschreibt den Abdeckungsgrad dieser Tabelle. Eine <i>1</i> bedeutet, dass
         /// jede Bitsequenz erkannt und umgesetzt wird.
         /// </summary>
-        [XmlAttribute( "coverage" )]
+        [XmlAttribute("coverage")]
         public double FillFactor { get; set; }
 
         /// <summary>
@@ -51,20 +47,20 @@ namespace JMS.DVB.EPG.BBC
                 // Validate
                 if ((from < '\x0001') || (from > '\x007f'))
                     if (from != HuffmanItem.StartOrEnd)
-                        throw new ArgumentException( from.ToString(), "from" );
+                        throw new ArgumentException(from.ToString(), "from");
 
                 // Attach to the table
-                HuffmanTable table = Tables.Find( t => t.Source[0] == from );
+                var table = Tables.Find(t => t.Source[0] == from);
 
                 // Found it
                 if (null != table)
                     return table;
 
                 // Create a new table
-                table = new HuffmanTable { Source = new string( new char[] { from } ) };
+                table = new HuffmanTable { Source = new string(new char[] { from }) };
 
                 // Remember it
-                Tables.Add( table );
+                Tables.Add(table);
 
                 // Report
                 return table;
@@ -78,7 +74,7 @@ namespace JMS.DVB.EPG.BBC
         /// <param name="to">Das Zielzeichen des Übergangs.</param>
         /// <exception cref="ArgumentException">Ein Zeichen oder die Sequenz sind ungültig.</exception>
         [XmlIgnore]
-        public string this[char from, char to]
+        public string? this[char from, char to]
         {
             get
             {
@@ -99,46 +95,46 @@ namespace JMS.DVB.EPG.BBC
         public HuffmanPairTable Clone()
         {
             // Lazy stuff
-            using (MemoryStream stream = new MemoryStream())
-            {
-                // Store
-                Save( stream );
+            using MemoryStream stream = new();
 
-                // Reposition
-                stream.Seek( 0, SeekOrigin.Begin );
+            // Store
+            Save(stream);
 
-                // Reload
-                return Load( stream );
-            }
+            // Reposition
+            stream.Seek(0, SeekOrigin.Begin);
+
+            // Reload
+            return Load(stream);
         }
 
         /// <summary>
         /// Speichert die Beschreibung in der XML Repräsentation.
         /// </summary>
         /// <param name="stream">Das Ziel für die Speicherung.</param>
-        public void Save( Stream stream )
+        public void Save(Stream stream)
         {
             // Sort all tables
             foreach (HuffmanTable table in Tables)
                 table.Sort();
 
             // Sort table list
-            Tables.Sort( ( l, r ) => l.Source.CompareTo( r.Source ) );
+            Tables.Sort((l, r) => l.Source.CompareTo(r.Source));
 
             // Create serializer
-            XmlSerializer serializer = new XmlSerializer( GetType(), "http://jochen-manns.de/DVB.NET/Huffman" );
+            XmlSerializer serializer = new(GetType(), "http://jochen-manns.de/DVB.NET/Huffman");
 
             // Create settings
-            XmlWriterSettings settings = new XmlWriterSettings();
-
-            // Configure settings
-            settings.Encoding = Encoding.GetEncoding( 1252 );
-            settings.CheckCharacters = false;
-            settings.Indent = true;
+            XmlWriterSettings settings = new()
+            {
+                Encoding = Encoding.GetEncoding(1252),
+                CheckCharacters = false,
+                Indent = true
+            };
 
             // Create writer and process
-            using (XmlWriter writer = XmlWriter.Create( stream, settings ))
-                serializer.Serialize( writer, this );
+            using XmlWriter writer = XmlWriter.Create(stream, settings);
+
+            serializer.Serialize(writer, this);
         }
 
         /// <summary>
@@ -146,33 +142,31 @@ namespace JMS.DVB.EPG.BBC
         /// </summary>
         /// <param name="path">Der volle Pfad zur Datei.</param>
         /// <param name="mode">Die gewünschte Art zum Anlegen der Datei.</param>
-        public void Save( string path, FileMode mode )
+        public void Save(string path, FileMode mode)
         {
             // Forward
-            using (FileStream stream = new FileStream( path, mode, FileAccess.Write, FileShare.None ))
-                Save( stream );
+            using FileStream stream = new FileStream(path, mode, FileAccess.Write, FileShare.None);
+
+            Save(stream);
         }
 
         /// <summary>
         /// Speichert die Beschreibung in eine XML Datei.
         /// </summary>
         /// <param name="path">Der volle Pfad zur Datei.</param>
-        public void Save( string path )
-        {
-            // Forward
-            Save( path, FileMode.Create );
-        }
+        public void Save(string path) => Save(path, FileMode.Create);
 
         /// <summary>
         /// Lädt eine Beschreibung aus einer XML Datei.
         /// </summary>
         /// <param name="path">Der volle Pfad zu XML Datei.</param>
         /// <returns>Die zur XML Datei gehörende Beschreibung.</returns>
-        public static HuffmanPairTable Load( string path )
+        public static HuffmanPairTable Load(string path)
         {
             // Forward
-            using (FileStream stream = new FileStream( path, FileMode.Open, FileAccess.Read, FileShare.Read ))
-                return Load( stream );
+            using FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+            return Load(stream);
         }
 
         /// <summary>
@@ -180,20 +174,18 @@ namespace JMS.DVB.EPG.BBC
         /// </summary>
         /// <param name="stream">Die Quelle für die XML Repräsenatation.</param>
         /// <returns>Die neu erzeugte zugehörige Beschreibungsinstanz.</returns>
-        public static HuffmanPairTable Load( Stream stream )
+        public static HuffmanPairTable Load(Stream stream)
         {
             // Create deserializer
-            XmlSerializer deserializer = new XmlSerializer( typeof( HuffmanPairTable ), "http://jochen-manns.de/DVB.NET/Huffman" );
+            XmlSerializer deserializer = new(typeof(HuffmanPairTable), "http://jochen-manns.de/DVB.NET/Huffman");
 
             // Create settings
-            XmlReaderSettings settings = new XmlReaderSettings();
-
-            // Configure settings
-            settings.CheckCharacters = false;
+            XmlReaderSettings settings = new() { CheckCharacters = false };
 
             // Process
-            using (XmlReader reader = XmlReader.Create( stream, settings ))
-                return (HuffmanPairTable) deserializer.Deserialize( reader );
+            using XmlReader reader = XmlReader.Create(stream, settings);
+
+            return (HuffmanPairTable)deserializer.Deserialize(reader)!;
         }
 
         /// <summary>
@@ -203,7 +195,7 @@ namespace JMS.DVB.EPG.BBC
         public TableCreator CreateBinary()
         {
             // Create new
-            TableCreator creator = new TableCreator();
+            TableCreator creator = new();
 
             // Process all
             foreach (HuffmanTable table in Tables)
@@ -219,7 +211,7 @@ namespace JMS.DVB.EPG.BBC
 
                     // Register all
                     foreach (string sequence in item.AllSequences)
-                        creator.AddTransition( from, to, HuffmanItem.GetSequencePattern( sequence ), item.Sequence.Length );
+                        creator.AddTransition(from, to, HuffmanItem.GetSequencePattern(sequence), item.Sequence.Length);
                 }
             }
 
@@ -233,11 +225,11 @@ namespace JMS.DVB.EPG.BBC
         /// </summary>
         /// <param name="builder">Die aktuell gesammelte Zeichenkette.</param>
         /// <param name="hex">Das gewünschte neue Zeichen.</param>
-        private static void AppendHex( StringBuilder builder, byte hex )
+        private static void AppendHex(StringBuilder builder, byte hex)
         {
             // Process all
             for (int i = 8; i-- > 0; hex *= 2)
-                builder.Append( (0 == (hex & 0x80)) ? '0' : '1' );
+                builder.Append((0 == (hex & 0x80)) ? '0' : '1');
         }
 
         /// <summary>
@@ -249,10 +241,10 @@ namespace JMS.DVB.EPG.BBC
         /// <param name="good">Meldet die Anzahl der bearbeiteten Zeichen.</param>
         /// <param name="blindEscape">Gesetzt um eine vorhandene Ausnahmesequenz so oft wie möglich zu verwenden.</param>
         /// <returns>Die ermittelte Übergangssequenz.</returns>
-        public string GetSequence( byte[] text, int offset, int length, bool blindEscape, out int good )
+        public string GetSequence(byte[] text, int offset, int length, bool blindEscape, out int good)
         {
             // Result
-            StringBuilder result = new StringBuilder();
+            StringBuilder result = new();
 
             // Previous item
             char? prev = null;
@@ -265,7 +257,7 @@ namespace JMS.DVB.EPG.BBC
             {
                 // Load
                 byte next = text[offset++];
-                char item = (char) next;
+                char item = (char)next;
 
                 // Not allowed
                 if (next < 1)
@@ -279,13 +271,13 @@ namespace JMS.DVB.EPG.BBC
                         break;
 
                     // Check out the escape sequence
-                    string escape = this[prev.Value, HuffmanItem.PassThrough];
-                    if (string.IsNullOrEmpty( escape ))
+                    var escape = this[prev.Value, HuffmanItem.PassThrough];
+                    if (string.IsNullOrEmpty(escape))
                         break;
 
                     // Enter the escape sequence and the current character
-                    result.Append( escape );
-                    AppendHex( result, next );
+                    result.Append(escape);
+                    AppendHex(result, next);
 
                     // Count it
                     ++good;
@@ -295,14 +287,14 @@ namespace JMS.DVB.EPG.BBC
                     {
                         // Load
                         next = text[offset++];
-                        item = (char) next;
+                        item = (char)next;
 
                         // Forbidden
                         if (next < 1)
                             break;
 
                         // Always add
-                        AppendHex( result, next );
+                        AppendHex(result, next);
 
                         // Count it
                         ++good;
@@ -322,10 +314,10 @@ namespace JMS.DVB.EPG.BBC
                     if (prev.HasValue)
                     {
                         // Get the sequence
-                        string sequence = this[prev.Value, item];
+                        var sequence = this[prev.Value, item];
 
                         // Done
-                        if (string.IsNullOrEmpty( sequence ))
+                        if (string.IsNullOrEmpty(sequence))
                         {
                             // See if the current target is a confirmed escape character
                             HuffmanTable table = this[prev.Value];
@@ -338,23 +330,23 @@ namespace JMS.DVB.EPG.BBC
                                     break;
 
                                 // Not an confirmed escape
-                                if (!table.ConfirmedEscapes.Contains( item ))
+                                if (!table.ConfirmedEscapes.Contains(item))
                                     break;
                             }
 
                             // Read the escape sequence
                             sequence = table[HuffmanItem.PassThrough];
-                            if (string.IsNullOrEmpty( sequence ))
+                            if (string.IsNullOrEmpty(sequence))
                                 break;
 
                             // Did it all
                             if (item == HuffmanItem.StartOrEnd)
                             {
                                 // Append escape
-                                result.Append( sequence );
+                                result.Append(sequence);
 
                                 // Append terminator
-                                result.Append( "00000000" );
+                                result.Append("00000000");
 
                                 // Count it
                                 ++good;
@@ -364,17 +356,17 @@ namespace JMS.DVB.EPG.BBC
                             }
 
                             // Create new sequence
-                            StringBuilder escape = new StringBuilder( sequence );
+                            StringBuilder escape = new StringBuilder(sequence);
 
                             // Append the item
-                            AppendHex( escape, (byte) item );
+                            AppendHex(escape, (byte)item);
 
                             // Use it
                             sequence = escape.ToString();
                         }
 
                         // Append
-                        result.Append( sequence );
+                        result.Append(sequence);
                     }
 
                     // Count it
@@ -395,11 +387,7 @@ namespace JMS.DVB.EPG.BBC
         /// Erzeugt eine exakte Kopie dieser Beschreibung.
         /// </summary>
         /// <returns>Die exakte Kopie.</returns>
-        object ICloneable.Clone()
-        {
-            // Forward
-            return Clone();
-        }
+        object ICloneable.Clone() => Clone();
 
         #endregion
     }
@@ -408,35 +396,33 @@ namespace JMS.DVB.EPG.BBC
     /// Mit dieser Klasse wird die Abbildungsvorschrift für ASCII Zeichen (Zeichencodes
     /// 1 bis 127) beschrieben.
     /// </summary>
-    [
-        Serializable
-    ]
+    [Serializable]
     public class HuffmanTable
     {
         /// <summary>
         /// Das Zeichen, für das diese Übergangstabelle gültig ist.
         /// </summary>
-        [XmlAttribute( "from" )]
-        public string Source { get; set; }
+        [XmlAttribute("from")]
+        public string Source { get; set; } = null!;
 
         /// <summary>
         /// Die Übergangssequenzen für diverse Zeichen.
         /// </summary>
-        [XmlElement( "Sequence" )]
-        public readonly List<HuffmanItem> Items = new List<HuffmanItem>();
+        [XmlElement("Sequence")]
+        public readonly List<HuffmanItem> Items = [];
 
         /// <summary>
         /// Beschreibt den Abdeckungsgrad dieser Tabelle. Eine <i>1</i> bedeutet, dass
         /// jede Bitsequenz erkannt und umgesetzt wird.
         /// </summary>
-        [XmlAttribute( "coverage" )]
+        [XmlAttribute("coverage")]
         public double FillFactor { get; set; }
 
         /// <summary>
         /// Bezeichnet alle Zeichen, die in einer Fluchtsequenz verwendet werden dürfen.
         /// </summary>
-        [XmlAttribute( "confirmedEscapes" )]
-        public string ConfirmedEscapes { get; set; }
+        [XmlAttribute("confirmedEscapes")]
+        public string ConfirmedEscapes { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Tabelle.
@@ -452,15 +438,15 @@ namespace JMS.DVB.EPG.BBC
         /// <returns>Die Information zum Übergang oder <i>null</i>, wenn noch
         /// keiner angelegt ist.</returns>
         /// <exception cref="ArgumentException">Die Übergangssequenz ist ungültig.</exception>
-        public HuffmanItem FindItem( char target )
+        public HuffmanItem? FindItem(char target)
         {
             // Validate
             if ((target < '\x0001') || (target > '\x007f'))
                 if ((target != HuffmanItem.StartOrEnd) && (target != HuffmanItem.PassThrough))
-                    throw new ArgumentException( target.ToString(), "target" );
+                    throw new ArgumentException(target.ToString(), "target");
 
             // Find the item
-            return Items.Find( i => i.Target[0] == target );
+            return Items.Find(i => i.Target[0] == target);
         }
 
         /// <summary>
@@ -470,12 +456,12 @@ namespace JMS.DVB.EPG.BBC
         /// <exception cref="ArgumentException">Das Ziel oder die Übergangssequenz
         /// sind ungültig.</exception>
         [XmlIgnore]
-        public string this[char target]
+        public string? this[char target]
         {
             get
             {
                 // Find the item
-                HuffmanItem item = FindItem( target );
+                var item = FindItem(target);
 
                 // Report
                 return (null == item) ? null : item.Sequence;
@@ -485,21 +471,21 @@ namespace JMS.DVB.EPG.BBC
                 // Validate
                 if ((target < '\x0001') || (target > '\x007f'))
                     if ((target != HuffmanItem.StartOrEnd) && (target != HuffmanItem.PassThrough))
-                        throw new ArgumentException( target.ToString(), "target" );
+                        throw new ArgumentException(target.ToString(), nameof(target));
 
                 // Check mode
                 if (null == value)
                 {
                     // Simply remove
-                    Items.RemoveAll( i => i.Target[0] == target );
+                    Items.RemoveAll(i => i.Target[0] == target);
                 }
                 else
                 {
                     // Deep validation
-                    ValidateSequence( value );
+                    ValidateSequence(value);
 
                     // Find the item
-                    HuffmanItem item = Items.Find( i => i.Target[0] == target );
+                    var item = Items.Find(i => i.Target[0] == target);
 
                     // Check mode
                     if (null != item)
@@ -510,7 +496,7 @@ namespace JMS.DVB.EPG.BBC
                     else
                     {
                         // Create new and add to list
-                        Items.Add( new HuffmanItem { Target = new string( new char[] { target } ), Sequence = value } );
+                        Items.Add(new HuffmanItem { Target = new string(new char[] { target }), Sequence = value });
                     }
                 }
             }
@@ -519,36 +505,30 @@ namespace JMS.DVB.EPG.BBC
         /// <summary>
         /// Ordnet die Übergangssequenzen nach aufsteigender Länge an.
         /// </summary>
-        internal void Sort()
-        {
-            // Process
-            Items.Sort( ( l, r ) => l.CompareTo( r ) );
-        }
+        internal void Sort() => Items.Sort((l, r) => l.CompareTo(r));
 
         /// <summary>
         /// Prüft, ob eine Übergangssequenz ein gültiges Format besitzt.
         /// </summary>
         /// <param name="sequence">Die zu prüfende Sequenz.</param>
         /// <exception cref="ArgumentException">Die Sequenz ist ungültig.</exception>
-        public static void ValidateSequence( string sequence )
+        public static void ValidateSequence(string sequence)
         {
             // Validate all
-            if (string.IsNullOrEmpty( sequence ))
-                throw new ArgumentException( sequence, "sequence" );
+            if (string.IsNullOrEmpty(sequence))
+                throw new ArgumentException(sequence, "sequence");
 
             // Validate bits
             foreach (char test in sequence)
                 if ((test != '0') && (test != '1'))
-                    throw new ArgumentException( sequence, "sequence" );
+                    throw new ArgumentException(sequence, "sequence");
         }
     }
 
     /// <summary>
     /// Hier ist die Komprimierungsvorschrift für ein einzelnes Zeichen festgehalten.
     /// </summary>
-    [
-        Serializable
-    ]
+    [Serializable]
     public class HuffmanItem
     {
         /// <summary>
@@ -565,21 +545,21 @@ namespace JMS.DVB.EPG.BBC
         /// Das Zeichen, für das die Huffmann Komprimierungssequenz definiert wird. 
         /// Erlaubt sind die Zeichencodes 1 bis 127.
         /// </summary>
-        [XmlAttribute( "to" )]
-        public string Target { get; set; }
+        [XmlAttribute("to")]
+        public string Target { get; set; } = null!;
 
         /// <summary>
         /// Die Komprimierungssequenz für das betroffene Zeichen. Sie besteht aus
         /// den Ziffern 0 und 1 und hat eine beliebige Länge.
         /// </summary>
         [XmlText]
-        public string Sequence { get; set; }
+        public string Sequence { get; set; } = null!;
 
         /// <summary>
         /// Eine Liste alternativer Komprimierungssequenzen.
         /// </summary>
-        [XmlAttribute( "also" )]
-        public string AlternateSequences { get; set; }
+        [XmlAttribute("also")]
+        public string AlternateSequences { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Vorschrift.
@@ -593,23 +573,23 @@ namespace JMS.DVB.EPG.BBC
         /// </summary>
         /// <param name="other">Die andere Übergangsinstanz.</param>
         /// <returns>Ein Vergleichswert.</returns>
-        internal int CompareTo( HuffmanItem other )
+        internal int CompareTo(HuffmanItem other)
         {
             // Length
-            int cmp = Sequence.Length.CompareTo( other.Sequence.Length );
+            int cmp = Sequence.Length.CompareTo(other.Sequence.Length);
 
             // No match
             if (0 != cmp)
                 return cmp;
 
             // Use sequences themselves
-            int delta = Sequence.CompareTo( other.Sequence );
+            int delta = Sequence.CompareTo(other.Sequence);
 
             // Process
             if (0 != delta)
                 return delta;
             else
-                return string.Compare( AlternateSequences, other.AlternateSequences );
+                return string.Compare(AlternateSequences, other.AlternateSequences);
         }
 
         /// <summary>
@@ -621,12 +601,12 @@ namespace JMS.DVB.EPG.BBC
             get
             {
                 // Main
-                if (!string.IsNullOrEmpty( Sequence ))
+                if (!string.IsNullOrEmpty(Sequence))
                     yield return Sequence;
 
                 // Alternates
-                if (!string.IsNullOrEmpty( AlternateSequences ))
-                    foreach (string sequence in AlternateSequences.Split( ';' ))
+                if (!string.IsNullOrEmpty(AlternateSequences))
+                    foreach (string sequence in AlternateSequences.Split(';'))
                         yield return sequence;
             }
         }
@@ -635,23 +615,23 @@ namespace JMS.DVB.EPG.BBC
         /// Ergänzt eine alternative Auflösungssequenz.
         /// </summary>
         /// <param name="sequence">Die neue Sequenz.</param>
-        public void AddAlternateSequence( string sequence )
+        public void AddAlternateSequence(string sequence)
         {
             // Validate
-            HuffmanTable.ValidateSequence( sequence );
+            HuffmanTable.ValidateSequence(sequence);
 
             // All of it
-            Dictionary<string, string> sequences = new Dictionary<string, string>();
+            Dictionary<string, string> sequences = new();
 
             // Load
-            if (!string.IsNullOrEmpty( AlternateSequences ))
-                sequences = AlternateSequences.Split( ';' ).ToDictionary( s => s );
+            if (!string.IsNullOrEmpty(AlternateSequences))
+                sequences = AlternateSequences.Split(';').ToDictionary(s => s);
 
             // Add the new one
             sequences[sequence] = sequence;
 
             // Push back
-            AlternateSequences = string.Join( ";", sequences.Keys.ToArray() );
+            AlternateSequences = string.Join(";", sequences.Keys.ToArray());
         }
 
         /// <summary>
@@ -659,13 +639,13 @@ namespace JMS.DVB.EPG.BBC
         /// </summary>
         /// <param name="sequence">Der gewünschte Übergang.</param>
         /// <returns>Die zugehörige Binärdarstellung.</returns>
-        public static uint GetSequencePattern( string sequence )
+        public static uint GetSequencePattern(string sequence)
         {
             // Reset
             uint pattern = 0;
 
             // Fill
-            for (int i = sequence.Length; i-- > 0; )
+            for (int i = sequence.Length; i-- > 0;)
             {
                 // Adjust pattern
                 pattern >>= 1;
@@ -683,13 +663,6 @@ namespace JMS.DVB.EPG.BBC
         /// Erzeugt eine binäre Darstellung aus der Übergangssequenz.
         /// </summary>
         [XmlIgnore]
-        public uint SequencePattern
-        {
-            get
-            {
-                // Forward
-                return GetSequencePattern( Sequence );
-            }
-        }
+        public uint SequencePattern => GetSequencePattern(Sequence);
     }
 }

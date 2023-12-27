@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Text;
 
 namespace JMS.DVB.EPG
 {
@@ -450,11 +447,10 @@ namespace JMS.DVB.EPG
         private static void AddCombination(char marker, char item, char result)
         {
             // Load
-            Dictionary<byte, char> map;
-            if (!DiacriticMap.TryGetValue(marker, out map))
+            if (!DiacriticMap.TryGetValue(marker, out var map))
             {
                 // Create
-                map = new Dictionary<byte, char>();
+                map = [];
 
                 // Remember
                 DiacriticMap[marker] = map;
@@ -596,13 +592,11 @@ namespace JMS.DVB.EPG
         private static char ResolveDiacryptic(char symbol, byte item)
         {
             // Read the map
-            Dictionary<byte, char> map;
-            if (!DiacriticMap.TryGetValue(symbol, out map))
+            if (!DiacriticMap.TryGetValue(symbol, out var map))
                 return (char)item;
 
             // Read the char
-            char result;
-            if (map.TryGetValue(item, out result))
+            if (map.TryGetValue(item, out char result))
                 return result;
             else
                 return (char)item;

@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-
-
 namespace JMS.DVB.EPG.Descriptors
 {
     /// <summary>
@@ -9,7 +6,7 @@ namespace JMS.DVB.EPG.Descriptors
     public class ServiceList : Descriptor
     {
         /// <summary>
-        /// Alle Dienste aufgeschlüsselt nach der Art des Dienstes.
+        /// Alle Dienste aufgeschlï¿½sselt nach der Art des Dienstes.
         /// </summary>
         public readonly Dictionary<ushort, ServiceTypes> Services = new Dictionary<ushort, ServiceTypes>();
 
@@ -17,10 +14,10 @@ namespace JMS.DVB.EPG.Descriptors
         /// Erzeugt eine neue Liste.
         /// </summary>
         /// <param name="container">Alle Beschreibungen.</param>
-        /// <param name="offset">Das erste Byte in den Rohdaten, dass zu dieser Beschreibung gehört.</param>
-        /// <param name="length">Die Größe der Rohdaten zu dieser Beschreibung.</param>
-        public ServiceList( IDescriptorContainer container, int offset, int length )
-            : base( container, offset, length )
+        /// <param name="offset">Das erste Byte in den Rohdaten, dass zu dieser Beschreibung gehï¿½rt.</param>
+        /// <param name="length">Die Grï¿½ï¿½e der Rohdaten zu dieser Beschreibung.</param>
+        public ServiceList(IDescriptorContainer container, int offset, int length)
+            : base(container, offset, length)
         {
             // Attach to section
             Section section = container.Section;
@@ -32,10 +29,10 @@ namespace JMS.DVB.EPG.Descriptors
                 if (length < 3) return;
 
                 // Load key
-                ushort serviceIdentifier = Tools.MergeBytesToWord( section[offset + 1], section[offset + 0] );
+                ushort serviceIdentifier = Tools.MergeBytesToWord(section[offset + 1], section[offset + 0]);
 
                 // Remember
-                Services[serviceIdentifier] = (ServiceTypes) section[offset + 2];
+                Services[serviceIdentifier] = (ServiceTypes)section[offset + 2];
 
                 // Advance
                 offset += 3;
@@ -47,14 +44,14 @@ namespace JMS.DVB.EPG.Descriptors
         }
 
         /// <summary>
-        /// Prüft, ob diese Liste zu einer Beschreibungskennung gehört.
+        /// Prï¿½ft, ob diese Liste zu einer Beschreibungskennung gehï¿½rt.
         /// </summary>
         /// <param name="tag">Die beobachtete Kennung.</param>
         /// <returns>Gesetzt, wenn es sich um eine Liste von Diensten handelt.</returns>
-        public static bool IsHandlerFor( byte tag )
+        public static bool IsHandlerFor(byte tag)
         {
             // Check it
-            return (DescriptorTags.SeviceList == (DescriptorTags) tag);
+            return (DescriptorTags.SeviceList == (DescriptorTags)tag);
         }
     }
 }

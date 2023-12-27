@@ -1,18 +1,15 @@
-using System;
-using System.Collections;
-
 namespace JMS.DVB.EPG.Tables
 {
     /// <summary>
     /// Beschreibt eine <i>Time Offset Table</i>, die neben der Uhrzeit im UTC / GMT
-    /// Format auch noch Beschreibungen zur lokalen Zeitzone enthält.
+    /// Format auch noch Beschreibungen zur lokalen Zeitzone enthï¿½lt.
     /// </summary>
     public class TOT : Table
     {
         /// <summary>
         /// Die Beschreiber zu dieser Tabelle.
         /// </summary>
-        public Descriptor[] Descriptors { get; private set; }
+        public Descriptor[] Descriptors { get; private set; } = null!;
 
         /// <summary>
         /// Datum und Uhrzeit zu dieser Tabelle.
@@ -20,11 +17,11 @@ namespace JMS.DVB.EPG.Tables
         public DateTime Time { get; set; }
 
         /// <summary>
-        /// Meldet, für welche Tabellenkennungen diese Klasse zuständig ist.
+        /// Meldet, fï¿½r welche Tabellenkennungen diese Klasse zustï¿½ndig ist.
         /// </summary>
-        /// <param name="tableIdentifier">Eine zu prüfende Tabellenkennung.</param>
+        /// <param name="tableIdentifier">Eine zu prï¿½fende Tabellenkennung.</param>
         /// <returns>Gesetzt, wenn diese Klasse die Tabelle analysieren kann.</returns>
-        public static bool IsHandlerFor( byte tableIdentifier )
+        public static bool IsHandlerFor(byte tableIdentifier)
         {
             // Check all
             return (0x73 == tableIdentifier);
@@ -34,31 +31,31 @@ namespace JMS.DVB.EPG.Tables
         /// Erzeugt eine neue Tabelle.
         /// </summary>
         /// <param name="section">Der Bereich, in den die Tabelle eingebettet ist.</param>
-        public TOT( Section section )
-            : base( section )
+        public TOT(Section section)
+            : base(section)
         {
             // Load length
             int length = section.Length - 7;
 
             // Check for minimum length required
-            if (length < 7) 
+            if (length < 7)
                 return;
 
             // Load the time
-            Time = Tools.DecodeTime( section, 0 );
+            Time = Tools.DecodeTime(section, 0);
 
             // Correct
             length -= 7;
 
             // Load the length of the descriptors
-            int deslen = Tools.MergeBytesToWord( section[6], section[5] ) & 0x0fff;
+            int deslen = Tools.MergeBytesToWord(section[6], section[5]) & 0x0fff;
 
             // Validate
             if (deslen > length)
                 return;
 
             // Create my descriptors
-            Descriptors = Descriptor.Load( this, 7, deslen );
+            Descriptors = Descriptor.Load(this, 7, deslen);
 
             // Done
             m_IsValid = (deslen == length);

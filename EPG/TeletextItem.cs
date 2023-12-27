@@ -34,7 +34,7 @@ namespace JMS.DVB.EPG
         /// <param name="type">Die Art der VideoText Information.</param>
         /// <param name="magazine">Die Nummer des Textblocks.</param>
         /// <param name="pageBCD">Die Nummer der Seite im Textblock.</param>
-        public TeletextItem( string language, TeletextTypes type, byte magazine, byte pageBCD )
+        public TeletextItem(string language, TeletextTypes type, byte magazine, byte pageBCD)
         {
             // Remember
             MagazineNumber = magazine;
@@ -47,20 +47,20 @@ namespace JMS.DVB.EPG
         /// Erstellt eine neue Beschreibung.
         /// </summary>
         /// <param name="section">Die Rohdaten.</param>
-        /// <param name="offset">Das erste Byte in den Rohdaten, das zu einer Beschreibung gehört.</param>
-        private TeletextItem( Section section, int offset )
+        /// <param name="offset">Das erste Byte in den Rohdaten, das zu einer Beschreibung gehï¿½rt.</param>
+        private TeletextItem(Section section, int offset)
         {
             // Load
-            ISOLanguage = section.ReadString( offset + 0, 3 );
-            Type = (TeletextTypes) (section[offset + 3] >> 3);
-            MagazineNumber = (byte) (section[offset + 3] & 0x7);
+            ISOLanguage = section.ReadString(offset + 0, 3);
+            Type = (TeletextTypes)(section[offset + 3] >> 3);
+            MagazineNumber = (byte)(section[offset + 3] & 0x7);
 
             // Decode
             PageNumberBCD = section[offset + 4];
         }
 
         /// <summary>
-        /// Die Größe der zugehörigen Rohdaten in Bytes.
+        /// Die Grï¿½ï¿½e der zugehï¿½rigen Rohdaten in Bytes.
         /// </summary>
         public int Length { get { return 5; } }
 
@@ -68,30 +68,30 @@ namespace JMS.DVB.EPG
         /// Erstellt eine neue Beschreibung.
         /// </summary>
         /// <param name="section">Die Rohdaten.</param>
-        /// <param name="offset">Das erste Byte in den Rohdaten, das zu einer Beschreibung gehört.</param>
-        /// <param name="length">Die Größe der Beschreibung in den Rohdaten.</param>
+        /// <param name="offset">Das erste Byte in den Rohdaten, das zu einer Beschreibung gehï¿½rt.</param>
+        /// <param name="length">Die Grï¿½ï¿½e der Beschreibung in den Rohdaten.</param>
         /// <returns>Die angeforderte neue Beschreibung.</returns>
-        internal static TeletextItem Create( Section section, int offset, int length )
+        internal static TeletextItem? Create(Section section, int offset, int length)
         {
             // Check 
-            if (length < 5) return null;
+            if (length < 5) return null!;
 
             // Create
-            return new TeletextItem( section, offset );
+            return new TeletextItem(section, offset);
         }
 
         /// <summary>
         /// Rekonstruiert eine VideoText Beschreibung.
         /// </summary>
         /// <param name="buffer">Sammelt Detailbeschreibungen.</param>
-        internal void CreatePayload( TableConstructor buffer )
+        internal void CreatePayload(TableConstructor buffer)
         {
             // The language
-            buffer.AddLanguage( ISOLanguage );
+            buffer.AddLanguage(ISOLanguage);
 
             // Code field
-            buffer.Add( (byte) ((MagazineNumber & 0x7) | (((int) Type) << 3)) );
-            buffer.Add( PageNumberBCD );
+            buffer.Add((byte)((MagazineNumber & 0x7) | (((int)Type) << 3)));
+            buffer.Add(PageNumberBCD);
         }
     }
 }

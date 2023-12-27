@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-
-namespace JMS.DVB.EPG
+﻿namespace JMS.DVB.EPG
 {
     /// <summary>
     /// Bandbreitenangaben für den terrestrischen Empfang.
@@ -39,7 +34,7 @@ namespace JMS.DVB.EPG
         /// Noch nicht festgelegt.
         /// </summary>
         Reserved101,
-        
+
         /// <summary>
         /// Noch nicht festgelegt.
         /// </summary>

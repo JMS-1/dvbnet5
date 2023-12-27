@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace JMS.DVB.EPG.OpenTV
+﻿namespace JMS.DVB.EPG.OpenTV
 {
     /// <summary>
     /// Diese Klasse wird zur Dekomprimierung von Moduldaten verwendet.
@@ -25,12 +23,12 @@ namespace JMS.DVB.EPG.OpenTV
         /// <summary>
         /// Speicher zur Aufnahme der unkomprimierten Daten.
         /// </summary>
-        private byte[] Buffer;
+        private byte[] Buffer = null!;
 
         /// <summary>
         /// Ursprüngliche Daten.
         /// </summary>
-        private byte[] RawData;
+        private byte[] RawData = null!;
 
         /// <summary>
         /// Zielindex der Daten.
@@ -66,7 +64,7 @@ namespace JMS.DVB.EPG.OpenTV
         public byte[] FinishDecompression()
         {
             // Copy over
-            Array.Copy( RawData, InputPosition - 1, Buffer, OutputPosition, Buffer.Length - OutputPosition );
+            Array.Copy(RawData, InputPosition - 1, Buffer, OutputPosition, Buffer.Length - OutputPosition);
 
             // Did it
             return Buffer;
@@ -78,11 +76,8 @@ namespace JMS.DVB.EPG.OpenTV
         /// <param name="compressed">Der komprimierte Block.</param>
         /// <returns>Gesetzt, wenn eine gültige Komprimierung vorliegt, <i>null</i>, 
         /// wenn eine Komprimierung zwar vorliegt, diese aber fehlerhaft ist..</returns>
-        public bool? StartDecompression( byte[] compressed )
-        {
-            // Forward
-            return StartDecompression( compressed, 0, compressed.Length );
-        }
+        public bool? StartDecompression(byte[] compressed) =>
+             StartDecompression(compressed, 0, compressed.Length);
 
         /// <summary>
         /// Beginnt die Dekomprimierung eines Datenblocks.
@@ -92,7 +87,7 @@ namespace JMS.DVB.EPG.OpenTV
         /// <param name="length">Die Anzahl der zu verwendenden Bytes.</param>
         /// <returns>Gesetzt, wenn eine gültige Komprimierung vorliegt, <i>null</i>, 
         /// wenn eine Komprimierung zwar vorliegt, diese aber fehlerhaft ist..</returns>
-        public bool? StartDecompression( byte[] compressed, int offset, int length )
+        public bool? StartDecompression(byte[] compressed, int offset, int length)
         {
             // Find compression marker
             for (; length >= 17; ++offset, --length)
@@ -106,16 +101,16 @@ namespace JMS.DVB.EPG.OpenTV
             if (length < 17) return false;
 
             // Read parameters
-            Compressed = Tools.MergeBytesToDoubleWord( compressed[offset + 7], compressed[offset + 6], compressed[offset + 5], compressed[offset + 4] );
-            Uncompressed = Tools.MergeBytesToDoubleWord( compressed[offset + 11], compressed[offset + 10], compressed[offset + 9], compressed[offset + 8] );
-            FirstUncompressed = Tools.MergeBytesToDoubleWord( compressed[offset + 15], compressed[offset + 14], compressed[offset + 13], compressed[offset + 12] );
+            Compressed = Tools.MergeBytesToDoubleWord(compressed[offset + 7], compressed[offset + 6], compressed[offset + 5], compressed[offset + 4]);
+            Uncompressed = Tools.MergeBytesToDoubleWord(compressed[offset + 11], compressed[offset + 10], compressed[offset + 9], compressed[offset + 8]);
+            FirstUncompressed = Tools.MergeBytesToDoubleWord(compressed[offset + 15], compressed[offset + 14], compressed[offset + 13], compressed[offset + 12]);
 
             // See if the input buffer is large enough
             if ((Compressed > length) || (Compressed < 17)) return null;
 
             // Get positions
-            InputPosition = (uint) (offset + 17);
-            InputPositionLimit = (uint) (offset + Compressed);
+            InputPosition = (uint)(offset + 17);
+            InputPositionLimit = (uint)(offset + Compressed);
 
             // Create new buffer
             try
@@ -143,13 +138,13 @@ namespace JMS.DVB.EPG.OpenTV
         /// </summary>
         /// <param name="data">Das gewünschte Byte.</param>
         /// <returns>Gesetzt, wenn die Operation möglich war.</returns>
-        private bool WriteByte( uint data )
+        private bool WriteByte(uint data)
         {
             // Validate
             if (OutputPosition >= FirstUncompressed) return false;
 
             // Store
-            Buffer[OutputPosition++] = (byte) data;
+            Buffer[OutputPosition++] = (byte)data;
 
             // Dit it
             return true;
@@ -160,7 +155,7 @@ namespace JMS.DVB.EPG.OpenTV
         /// </summary>
         /// <param name="data">Wird mit dem nächsten Bytewert gefüllt.</param>
         /// <returns>Gesetzt, wenn ein Wert ermittelt werden konnte.</returns>
-        private bool ReadByte( ref uint data )
+        private bool ReadByte(ref uint data)
         {
             // Beyond the edge
             if (InputPosition >= InputPositionLimit) return false;
@@ -186,7 +181,7 @@ namespace JMS.DVB.EPG.OpenTV
         /// </summary>
         /// <param name="offset">Der gewünschte Offset.</param>
         /// <returns>Gesetzt, wenn der Lesevorgang möglich war.</returns>
-        private bool ReadNibble( ref uint offset )
+        private bool ReadNibble(ref uint offset)
         {
             // See if we can access the full byte
             if (HalfByteMode)
@@ -195,7 +190,7 @@ namespace JMS.DVB.EPG.OpenTV
                 offset = RawData[InputPosition - 1];
 
                 // Adjust
-                offset = offset & 0x0f;
+                offset &= 0x0f;
             }
             else
             {
@@ -206,7 +201,7 @@ namespace JMS.DVB.EPG.OpenTV
                 offset = RawData[InputPosition++];
 
                 // Adjust
-                offset = offset >> 4;
+                offset >>= 4;
             }
 
             // Swap mode
@@ -226,7 +221,7 @@ namespace JMS.DVB.EPG.OpenTV
             uint opMask = 0;
 
             // Read the control byte
-            if (!ReadByte( ref opMask )) return false;
+            if (!ReadByte(ref opMask)) return false;
 
             // Process the control byte
             for (int n = 8; n-- > 0; opMask *= 2)
@@ -235,13 +230,13 @@ namespace JMS.DVB.EPG.OpenTV
                 uint control = 0;
 
                 // Read the control byte
-                if (!ReadByte( ref control )) return false;
+                if (!ReadByte(ref control)) return false;
 
                 // Simple copy operation
                 if (0x80 == (opMask & 0x80))
                 {
                     // Copy
-                    if (!WriteByte( control )) return false;
+                    if (!WriteByte(control)) return false;
 
                     // Next
                     continue;
@@ -275,7 +270,7 @@ namespace JMS.DVB.EPG.OpenTV
                     uint moreOffset = 0;
 
                     // Load additional offset
-                    if (!ReadByte( ref moreOffset )) return false;
+                    if (!ReadByte(ref moreOffset)) return false;
 
                     // Merge
                     offsetLow = moreOffset + 256 * offsetLow;
@@ -286,7 +281,7 @@ namespace JMS.DVB.EPG.OpenTV
                     copyCount = 3 + 2 * offsetLow;
 
                     // Read next offset
-                    if (!ReadByte( ref offsetLow )) return false;
+                    if (!ReadByte(ref offsetLow)) return false;
 
                     // Merge in
                     if (0 != (offsetLow & 0x80))
@@ -302,7 +297,7 @@ namespace JMS.DVB.EPG.OpenTV
                     uint moreOffset = 0;
 
                     // Read next
-                    if (!ReadByte( ref moreOffset )) return false;
+                    if (!ReadByte(ref moreOffset)) return false;
 
                     // Merge
                     offsetLow = moreOffset + 256 * offsetLow;
@@ -311,16 +306,16 @@ namespace JMS.DVB.EPG.OpenTV
                     if (copyCount == (3 + 0x1f))
                     {
                         // Read next
-                        if (!ReadByte( ref copyCount )) return false;
+                        if (!ReadByte(ref copyCount)) return false;
 
                         // Even more
                         if (0xff == copyCount)
                         {
                             // Read more
-                            if (!ReadByte( ref copyCount )) return false;
+                            if (!ReadByte(ref copyCount)) return false;
 
                             // Read next
-                            if (!ReadByte( ref moreOffset )) return false;
+                            if (!ReadByte(ref moreOffset)) return false;
 
                             // Merge in upper bytes
                             copyCount = moreOffset + 256 * copyCount;
@@ -341,7 +336,7 @@ namespace JMS.DVB.EPG.OpenTV
                     copyCount = 2;
 
                     // Use full offset
-                    offsetLow = offsetLow + offsetHigh;
+                    offsetLow += offsetHigh;
                 }
                 else if (control < 0xc0)
                 {
@@ -352,7 +347,7 @@ namespace JMS.DVB.EPG.OpenTV
                     uint moreOffset = 0;
 
                     // Read it
-                    if (!ReadNibble( ref moreOffset )) return false;
+                    if (!ReadNibble(ref moreOffset)) return false;
 
                     // Merge together
                     offsetLow = offsetLow + offsetHigh + 32 * moreOffset;
@@ -369,10 +364,10 @@ namespace JMS.DVB.EPG.OpenTV
                         uint moreOffset = 0;
 
                         // Read it
-                        if (!ReadNibble( ref moreOffset )) return false;
+                        if (!ReadNibble(ref moreOffset)) return false;
 
                         // Merge together
-                        offsetLow = offsetLow + 16 * moreOffset;
+                        offsetLow += 16 * moreOffset;
                     }
                 }
                 else
@@ -387,10 +382,10 @@ namespace JMS.DVB.EPG.OpenTV
                     uint moreOffset = 0;
 
                     // Read it
-                    if (!ReadNibble( ref moreOffset )) return false;
+                    if (!ReadNibble(ref moreOffset)) return false;
 
                     // Merge together
-                    offsetLow = offsetLow + 16 * moreOffset;
+                    offsetLow += 16 * moreOffset;
                 }
 
                 // See if there is enough room
@@ -403,7 +398,7 @@ namespace JMS.DVB.EPG.OpenTV
                 if (offsetLow > OutputPosition) return false;
 
                 // Clone area
-                for (uint iSrc = OutputPosition - offsetLow; copyCount-- > 0; )
+                for (uint iSrc = OutputPosition - offsetLow; copyCount-- > 0;)
                 {
                     // Copy over
                     Buffer[OutputPosition++] = Buffer[iSrc++];

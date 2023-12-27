@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-
 namespace JMS.DVB.EPG.Descriptors
 {
     /// <summary>
     /// A data broadcast descriptor.
     /// </summary>
-	public class DataBroadcast: Descriptor
-	{
+	public class DataBroadcast : Descriptor
+    {
         /// <summary>
         /// The data broadcast identifier.
         /// </summary>
@@ -21,17 +18,17 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// The selector bytes.
         /// </summary>
-        public readonly byte[] Selector;
+        public readonly byte[] Selector = null!;
 
         /// <summary>
         /// The ISO language code for this broadcast.
         /// </summary>
-        public readonly string ISOLanguage;
+        public readonly string ISOLanguage = null!;
 
         /// <summary>
         /// The text description for the broadcast.
         /// </summary>
-        public readonly string Text;
+        public readonly string Text = null!;
 
         /// <summary>
         /// Create a new descriptor instance.
@@ -45,9 +42,9 @@ namespace JMS.DVB.EPG.Descriptors
         /// <param name="length">Number of payload bytes for this descriptor.</param>
         public DataBroadcast(IDescriptorContainer container, int offset, int length)
             : base(container, offset, length)
-		{
-			// Check minimum length
-			if ( length < 8 ) return;
+        {
+            // Check minimum length
+            if (length < 8) return;
 
             // Attach to the section
             Section section = container.Section;
@@ -86,9 +83,9 @@ namespace JMS.DVB.EPG.Descriptors
             // Load
             Text = section.ReadEncodedString(offset + 4, text);
 
-			// Test
+            // Test
             m_Valid = true;
-		}
+        }
 
         /// <summary>
         /// Check if this class is responsible for a given descriptor tag.
@@ -96,9 +93,9 @@ namespace JMS.DVB.EPG.Descriptors
         /// <param name="tag">The tag to test for.</param>
         /// <returns>Set if this class can handle the payload for the given tag.</returns>
         public static bool IsHandlerFor(byte tag)
-		{
-			// Check it
+        {
+            // Check it
             return (DescriptorTags.DataBroadcast == (DescriptorTags)tag);
-		}
-	}
+        }
+    }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace JMS.DVB.EPG.OpenTV
+﻿namespace JMS.DVB.EPG.OpenTV
 {
     /// <summary>
     /// Hilfsklasse zum Zusammenstellen der Daten eines einzelnen Moduls.
@@ -51,12 +46,12 @@ namespace JMS.DVB.EPG.OpenTV
         /// <summary>
         /// Daten zum Modul.
         /// </summary>
-        private byte[] m_Collector = null;
+        private byte[]? m_Collector = null;
 
         /// <summary>
         /// Methode, die bei Komplettierung eines Moduls aufgerufen wird.
         /// </summary>
-        public event CompleteHandler OnModuleComplete;
+        public event CompleteHandler? OnModuleComplete;
 
         /// <summary>
         /// Erzeugt eine neues Modul.
@@ -70,14 +65,7 @@ namespace JMS.DVB.EPG.OpenTV
         /// innerhalb von <see cref="OnModuleComplete"/> aufgerufen
         /// werden.
         /// </summary>
-        public byte[] ModuleData
-        {
-            get
-            {
-                // Report
-                return m_Collector;
-            }
-        }
+        public byte[]? ModuleData => m_Collector;
 
         /// <summary>
         /// Dekomprimiert die Moduldaten, sofern erforderlich.
@@ -89,10 +77,10 @@ namespace JMS.DVB.EPG.OpenTV
             try
             {
                 // Create helper
-                Decompressor worker = new Decompressor();
+                Decompressor worker = new();
 
                 // Set it up
-                bool? start = worker.StartDecompression(m_Collector).GetValueOrDefault();
+                bool? start = worker.StartDecompression(m_Collector!).GetValueOrDefault();
 
                 // We are in error
                 if (!start.HasValue)
@@ -169,7 +157,7 @@ namespace JMS.DVB.EPG.OpenTV
                 }
 
             // Check consistency
-            if (m_Collector.Length != table.ModuleLength)
+            if (m_Collector!.Length != table.ModuleLength)
             {
                 // SI table data mismatch
                 ++WrongLength;
@@ -209,7 +197,7 @@ namespace JMS.DVB.EPG.OpenTV
                 if (Decompress())
                 {
                     // Get the callback
-                    CompleteHandler callback = OnModuleComplete;
+                    var callback = OnModuleComplete;
 
                     // Report finished packet to client
                     if (null != callback) callback(table, this);

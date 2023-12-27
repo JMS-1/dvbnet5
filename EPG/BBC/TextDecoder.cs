@@ -10,12 +10,12 @@ namespace JMS.DVB.EPG.BBC
         /// <summary>
         /// Die komprimierten Werte.
         /// </summary>
-        public byte[] CompressedData { get; set; }
+        public byte[] CompressedData { get; set; } = null!;
 
         /// <summary>
         /// Bisher dekomprimierte Zeichen.
         /// </summary>
-        public string Uncompressed { get; set; }
+        public string Uncompressed { get; set; } = null!;
 
         /// <summary>
         /// Die verwendete Dekomprimierungstabelle.
@@ -26,7 +26,7 @@ namespace JMS.DVB.EPG.BBC
         /// <see cref="CompressedData"/> in der Textrepräsentation der
         /// binären Form.
         /// </summary>
-        private string m_Sequence;
+        private string m_Sequence = null!;
 
         /// <summary>
         /// Erzeugt eine neue Informationsinstanz.
@@ -90,7 +90,7 @@ namespace JMS.DVB.EPG.BBC
         /// <summary>
         /// Die vollen Informationen für die Komprimerungstabellen.
         /// </summary>
-        private static HuffmanPairTable[] CodePages = new HuffmanPairTable[2];
+        private static readonly HuffmanPairTable[] CodePages = new HuffmanPairTable[2];
 
         /// <summary>
         /// Die Tabelle für die erste Komprimierungsart.
@@ -113,11 +113,9 @@ namespace JMS.DVB.EPG.BBC
                 try
                 {
                     // Attach to resource
-                    using (Stream stream = me.Assembly.GetManifestResourceStream(string.Format("{0}.CodePage{1}.xht", me.Namespace, i)))
-                    {
-                        // Just load
-                        LoadTable(i, HuffmanPairTable.Load(stream));
-                    }
+                    using Stream stream = me.Assembly.GetManifestResourceStream(string.Format("{0}.CodePage{1}.xht", me.Namespace, i))!;
+
+                    LoadTable(i, HuffmanPairTable.Load(stream));
                 }
                 catch
                 {
@@ -136,7 +134,7 @@ namespace JMS.DVB.EPG.BBC
         public static int[] DynamicLoadTables()
         {
             // Reset
-            List<int> tables = new List<int>();
+            List<int> tables = [];
 
             // Get the directory
             DirectoryInfo tableDirectory = RunTimeLoader.GetDirectory("Huffman Tables");
@@ -191,8 +189,8 @@ namespace JMS.DVB.EPG.BBC
         public static void LoadTable(int codepage, HuffmanPairTable table)
         {
             // Validate
-            if (null == table) throw new ArgumentNullException("table");
-            if ((codepage < 1) || (codepage > 2)) throw new ArgumentException(codepage.ToString(), "codepage");
+            if (null == table) throw new ArgumentNullException(nameof(table));
+            if ((codepage < 1) || (codepage > 2)) throw new ArgumentException(codepage.ToString(), nameof(codepage));
 
             // Try to compile the table
             ushort[] compiled = table.CreateBinary().GetTable();
@@ -207,21 +205,18 @@ namespace JMS.DVB.EPG.BBC
         /// <summary>
         /// Meldet die Dekodierung im DVB.NET 4.0 EPG Parser an.
         /// </summary>
-        internal static void RegisterWithEPG()
-        {
-            // Process
+        internal static void RegisterWithEPG() =>
             Section.RegisterEncoding(0x1f, new TextDecoder());
-        }
 
         /// <summary>
         /// Wird aufgerufen, wenn eine Dekompromierung fehlgeschlagen ist.
         /// </summary>
-        public static event EventHandler<DecodingFailureArgs> OnFailure;
+        public static event EventHandler<DecodingFailureArgs>? OnFailure;
 
         /// <summary>
         /// Wird aufgerufen, wenn eine Decomprimierung erfolgreich war.
         /// </summary>
-        public static event EventHandler<DecodingReportArgs> OnSuccess;
+        public static event EventHandler<DecodingReportArgs>? OnSuccess;
 
         /// <summary>
         /// Erzeugt eine neue Dekodierungsinstanz.
@@ -319,7 +314,7 @@ namespace JMS.DVB.EPG.BBC
                 return string.Empty;
 
             // Get the table
-            ushort[] table = null;
+            ushort[] table = null!;
             if (1 == bytes[index])
                 table = BinaryTables[0];
             else if (2 == bytes[index])
@@ -374,10 +369,10 @@ namespace JMS.DVB.EPG.BBC
                         break;
 
                     // Load result
-                    string decompressed = Encoding.UTF8.GetString(builder.ToArray());
+                    string decompressed = UTF8.GetString(builder.ToArray());
 
                     // Load client
-                    EventHandler<DecodingReportArgs> successHandler = OnSuccess;
+                    var successHandler = OnSuccess;
 
                     // Report
                     if (null != successHandler)
@@ -389,12 +384,12 @@ namespace JMS.DVB.EPG.BBC
                         Array.Copy(bytes, initialIndex, compressed, 0, compressed.Length);
 
                         // Create argument list
-                        DecodingReportArgs args = new DecodingReportArgs();
-
-                        // Fill it
-                        args.CodePage = (table == BinaryTables[0]) ? 1 : 2;
-                        args.Uncompressed = decompressed;
-                        args.CompressedData = compressed;
+                        DecodingReportArgs args = new()
+                        {
+                            CodePage = (table == BinaryTables[0]) ? 1 : 2,
+                            Uncompressed = decompressed,
+                            CompressedData = compressed
+                        };
 
                         // Report
                         successHandler(this, args);
@@ -426,7 +421,7 @@ namespace JMS.DVB.EPG.BBC
                     break;
 
                 // Check for escape mode
-                bool inEscape = (tableIndex == TableCreator.EscapeIndicator);
+                bool inEscape = tableIndex == TableCreator.EscapeIndicator;
 
                 // Get the number of bits to process
                 ushort bitWidth = inEscape ? (ushort)8 : table[tableIndex++];
@@ -558,7 +553,7 @@ namespace JMS.DVB.EPG.BBC
             }
 
             // Load client
-            EventHandler<DecodingFailureArgs> handler = OnFailure;
+            var handler = OnFailure;
 
             // Report
             if (null != handler)
@@ -570,20 +565,20 @@ namespace JMS.DVB.EPG.BBC
                 Array.Copy(bytes, initialIndex, compressed, 0, compressed.Length);
 
                 // Create argument list
-                DecodingFailureArgs args = new DecodingFailureArgs();
-
-                // Fill it
-                args.Uncompressed = Encoding.UTF8.GetString(builder.ToArray());
-                args.CodePage = (table == BinaryTables[0]) ? 1 : 2;
-                args.BitPosition = lastCharPosition;
-                args.CompressedData = compressed;
+                DecodingFailureArgs args = new()
+                {
+                    Uncompressed = UTF8.GetString(builder.ToArray()),
+                    CodePage = (table == BinaryTables[0]) ? 1 : 2,
+                    BitPosition = lastCharPosition,
+                    CompressedData = compressed
+                };
 
                 // Report
                 handler(this, args);
             }
 
             // Report
-            return Encoding.UTF8.GetString(builder.ToArray()) + "....";
+            return UTF8.GetString(builder.ToArray()) + "....";
         }
     }
 }

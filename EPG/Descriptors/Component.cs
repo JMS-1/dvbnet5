@@ -1,5 +1,3 @@
-using System;
-
 namespace JMS.DVB.EPG.Descriptors
 {
 	/// <summary>
@@ -9,7 +7,7 @@ namespace JMS.DVB.EPG.Descriptors
 	/// For details please refer to the original documentation,
 	/// e.g. <i>ETSI EN 300 468 V1.6.1 (2004-06)</i> or alternate versions.
 	/// </remarks>
-	public class Component: Descriptor
+	public class Component : Descriptor
 	{
 		/// <summary>
 		/// Type of the component described.
@@ -24,39 +22,39 @@ namespace JMS.DVB.EPG.Descriptors
 		/// <summary>
 		/// Language used in the component data.
 		/// </summary>
-		public readonly string Language;
+		public readonly string Language = null!;
 
 		/// <summary>
 		/// Content type.
 		/// </summary>
 		public readonly int Content;
-	
+
 		/// <summary>
 		/// Some description of the component.
 		/// </summary>
-		public readonly string Text;
+		public readonly string Text = null!;
 
-        /// <summary>
-        /// Create a new descriptor instance.
-        /// </summary>
-        /// <remarks>
-        /// <see cref="Descriptor.IsValid"/> will only be set if the payload is 
-        /// consistent.
-        /// </remarks>
-        /// <param name="container">The related container instance.</param>
-        /// <param name="offset">First byte of the descriptor data - the first byte after the tag.</param>
-        /// <param name="length">Number of payload bytes for this descriptor.</param>
-        public Component(IDescriptorContainer container, int offset, int length)
-            : base(container, offset, length)
+		/// <summary>
+		/// Create a new descriptor instance.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="Descriptor.IsValid"/> will only be set if the payload is 
+		/// consistent.
+		/// </remarks>
+		/// <param name="container">The related container instance.</param>
+		/// <param name="offset">First byte of the descriptor data - the first byte after the tag.</param>
+		/// <param name="length">Number of payload bytes for this descriptor.</param>
+		public Component(IDescriptorContainer container, int offset, int length)
+			: base(container, offset, length)
 		{
 			// Check minimum length
-			if ( length < 6 ) return;
+			if (length < 6) return;
 
 			// Attach to data
-            Section section = container.Section;
+			Section section = container.Section;
 
 			// Read parts
-			Content = section[offset + 0]&0xf;
+			Content = section[offset + 0] & 0xf;
 			ComponentType = section[offset + 1];
 			ComponentTag = section[offset + 2];
 
@@ -68,12 +66,12 @@ namespace JMS.DVB.EPG.Descriptors
 			m_Valid = true;
 		}
 
-        /// <summary>
-        /// Check if this class is responsible for a given descriptor tag.
-        /// </summary>
-        /// <param name="tag">The tag to test for.</param>
-        /// <returns>Set if this class can handle the payload for the given tag.</returns>
-        public static bool IsHandlerFor(byte tag)
+		/// <summary>
+		/// Check if this class is responsible for a given descriptor tag.
+		/// </summary>
+		/// <param name="tag">The tag to test for.</param>
+		/// <returns>Set if this class can handle the payload for the given tag.</returns>
+		public static bool IsHandlerFor(byte tag)
 		{
 			// Check it
 			return (DescriptorTags.Component == (DescriptorTags)tag);

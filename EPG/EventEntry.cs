@@ -1,5 +1,3 @@
-using System;
-
 namespace JMS.DVB.EPG
 {
 	/// <summary>
@@ -29,7 +27,7 @@ namespace JMS.DVB.EPG
 	/// Then a number of <see cref="Descriptor"/> instances follow filling up the
 	/// indicated loop length number of bytes.
 	/// </remarks>
-	public class EventEntry: EntryBase
+	public class EventEntry : EntryBase
 	{
 		/// <summary>
 		/// Some unique identifier for this event.
@@ -71,7 +69,7 @@ namespace JMS.DVB.EPG
 		/// <summary>
 		/// Component to delay load descriptors.
 		/// </summary>
-		private Descriptors.DescriptorLoader m_Loader = null;
+		private readonly Descriptors.DescriptorLoader m_Loader = null!;
 
 		/// <summary>
 		/// Initial offset to data.
@@ -96,7 +94,7 @@ namespace JMS.DVB.EPG
 			byte flags = section[offset + 10];
 
 			// Decode
-			int highLoop = flags&0xf;
+			int highLoop = flags & 0xf;
 			int lowLoop = section[offset + 11];
 
 			// Construct
@@ -106,17 +104,17 @@ namespace JMS.DVB.EPG
 			m_Offset = offset;
 
 			// Direct
-			FreeCA = (0 != (flags&0x10));
-			Status = (EventStatus)((flags>>5)&0x7);
+			FreeCA = (0 != (flags & 0x10));
+			Status = (EventStatus)((flags >> 5) & 0x7);
 
 			// Number of descriptors
 			int loop = lowLoop + 256 * highLoop;
-			
+
 			// Caluclate the total length
 			Length = 12 + loop;
 
 			// Verify
-			if ( Length > length ) return;
+			if (Length > length) return;
 
 			// Install delay load of descriptors
 			m_Loader = new Descriptors.DescriptorLoader(this, offset + 12, loop);
@@ -139,7 +137,7 @@ namespace JMS.DVB.EPG
 		static internal EventEntry Create(Table table, int offset, int length)
 		{
 			// Validate
-			if ( length < 12 ) return null;
+			if (length < 12) return null!;
 
 			// Create
 			return new EventEntry(table, offset, length);
@@ -152,14 +150,7 @@ namespace JMS.DVB.EPG
 		/// Please refer to the original documentation to find out which descriptor
 		/// type is allowed in a <see cref="Tables.EIT"/> table.
 		/// </remarks>
-		public Descriptor[] Descriptors
-		{
-			get
-			{
-				// Report
-				return (null == m_Loader) ? new Descriptor[0] : m_Loader.Descriptors;
-			}
-		}
+		public Descriptor[] Descriptors => (null == m_Loader) ? new Descriptor[0] : m_Loader.Descriptors;
 
 		/// <summary>
 		/// The start time of the event in GMT/UTC notation.

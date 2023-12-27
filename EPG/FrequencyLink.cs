@@ -36,11 +36,11 @@ namespace JMS.DVB.EPG
         /// <param name="offset">Der Index des ersten Bytes dieser Information in den Rohdaten des SI Bereichs.</param>
         /// <param name="length">Die Anzahl der Bytes für diese Information.</param>
         /// <returns>Die zugehörige Information oder <i>null</i>, wenn eine Rekonstruktion nicht möglich war.</returns>
-        public static FrequencyLink Create( Section section, int offset, int length )
+        public static FrequencyLink? Create(Section section, int offset, int length)
         {
             // Check minimum length
             if (length < 7)
-                return null;
+                return null!;
 
             // Correct length
             length -= 7;
@@ -50,18 +50,18 @@ namespace JMS.DVB.EPG
 
             // Validate
             if (extlen > length)
-                return null;
+                return null!;
 
             // Read direct data
-            ushort cellId = Tools.MergeBytesToWord( section[offset + 1], section[offset + 0] );
-            uint frequency = Tools.MergeBytesToDoubleWord( section[offset + 5], section[offset + 4], section[offset + 3], section[offset + 2] );
+            ushort cellId = Tools.MergeBytesToWord(section[offset + 1], section[offset + 0]);
+            uint frequency = Tools.MergeBytesToDoubleWord(section[offset + 5], section[offset + 4], section[offset + 3], section[offset + 2]);
 
             // Create new
             FrequencyLink info = new FrequencyLink
             {
                 Length = 7 + extlen,
                 Identifier = cellId,
-                Frequency = Descriptors.TerrestrialDelivery.ConvertFrequency( frequency )
+                Frequency = Descriptors.TerrestrialDelivery.ConvertFrequency(frequency)
             };
 
             // Report

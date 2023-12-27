@@ -1,41 +1,37 @@
-using System;
-using System.Text;
-using System.Collections.Generic;
-
 namespace JMS.DVB.EPG.Descriptors
 {
 	/// <summary>
-	/// Dient zum verzögerten Decodieren der Descriptoren in einer 
+	/// Dient zum verzï¿½gerten Decodieren der Descriptoren in einer 
 	/// SI Struktur.
 	/// </summary>
 	public class DescriptorLoader
 	{
 		/// <summary>
-		/// Die zugehörige SI Struktur.
+		/// Die zugehï¿½rige SI Struktur.
 		/// </summary>
 		private IDescriptorContainer m_Container;
 
 		/// <summary>
-		/// Erstes Byte der Daten für die Descriptoren.
+		/// Erstes Byte der Daten fï¿½r die Descriptoren.
 		/// </summary>
 		private int m_Offset;
 
 		/// <summary>
-		/// Anzahl der Bytes für Descriptoren.
+		/// Anzahl der Bytes fï¿½r Descriptoren.
 		/// </summary>
 		private int m_Length;
 
 		/// <summary>
 		/// Die decodierten Descriptoren.
 		/// </summary>
-		private Descriptor[] m_Descriptors = null;
+		private Descriptor[] m_Descriptors = null!;
 
 		/// <summary>
 		/// Erzeugt eine neue Ladeinstanz.
 		/// </summary>
-		/// <param name="table">Die zugehörige SI Struktur.</param>
-		/// <param name="offset">Erstes Byte für Descriptoren.</param>
-		/// <param name="length">Anzahl der Bytes für Descriptoren.</param>
+		/// <param name="table">Die zugehï¿½rige SI Struktur.</param>
+		/// <param name="offset">Erstes Byte fï¿½r Descriptoren.</param>
+		/// <param name="length">Anzahl der Bytes fï¿½r Descriptoren.</param>
 		public DescriptorLoader(IDescriptorContainer table, int offset, int length)
 		{
 			// Remember all
@@ -45,7 +41,7 @@ namespace JMS.DVB.EPG.Descriptors
 		}
 
 		/// <summary>
-		/// Meldet die zugehörigen Descriptoren.
+		/// Meldet die zugehï¿½rigen Descriptoren.
 		/// </summary>
 		public Descriptor[] Descriptors
 		{

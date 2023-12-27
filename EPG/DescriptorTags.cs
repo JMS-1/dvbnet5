@@ -1,5 +1,3 @@
-using System;
-
 namespace JMS.DVB.EPG
 {
     /// <summary>
@@ -414,7 +412,7 @@ namespace JMS.DVB.EPG
 		AAC = 0x7c,
 
         /// <summary>
-        /// Enthält die Ausstrahlungsdaten einer Sendung des deutschen PayTV
+        /// Enthï¿½lt die Ausstrahlungsdaten einer Sendung des deutschen PayTV
         /// Anbieters PREMIERE.
         /// </summary>
         ContentTransmissionPremiere = 0xf2

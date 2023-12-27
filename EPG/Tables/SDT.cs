@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 
 namespace JMS.DVB.EPG.Tables
@@ -7,7 +6,7 @@ namespace JMS.DVB.EPG.Tables
 	/// The class is used to describe a <i>Service Description Table</i> which can
 	/// be found on PID <i>0x11</i> in a transport stream.
 	/// </summary>
-	public class SDT: Table
+	public class SDT : Table
 	{
 		/// <summary>
 		/// The original identifier of the network this <see cref="Table"/> refers to.
@@ -22,7 +21,7 @@ namespace JMS.DVB.EPG.Tables
 		/// <summary>
 		/// Services included in thie <see cref="Table"/>.
 		/// </summary>
-		public readonly ServiceEntry[] Services = {};
+		public readonly ServiceEntry[] Services = { };
 
 		/// <summary>
 		/// Set for table identifiers <i>0x42</i> and <i>0x46</i>.
@@ -46,7 +45,7 @@ namespace JMS.DVB.EPG.Tables
 			int offset = 8, length = section.Length - 3 - offset - 4;
 
 			// Minimum size
-			if ( length < 0 ) return;
+			if (length < 0) return;
 
 			// Construct
 			TransportStreamIdentifier = Tools.MergeBytesToWord(section[1], section[0]);
@@ -56,8 +55,8 @@ namespace JMS.DVB.EPG.Tables
 			ArrayList services = new ArrayList();
 
 			// Process
-			for ( ServiceEntry entry ; null != (entry = ServiceEntry.Create(this, offset, length)) ; )
-				if ( entry.IsValid )
+			for (ServiceEntry? entry; null != (entry = ServiceEntry.Create(this, offset, length));)
+				if (entry.IsValid)
 				{
 					// Remember
 					services.Add(entry);
@@ -71,7 +70,7 @@ namespace JMS.DVB.EPG.Tables
 			m_IsValid = (0 == length);
 
 			// Convert
-			if ( m_IsValid ) Services = (ServiceEntry[])services.ToArray(typeof(ServiceEntry));
+			if (m_IsValid) Services = (ServiceEntry[])services.ToArray(typeof(ServiceEntry));
 		}
 	}
 }

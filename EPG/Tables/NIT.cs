@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-
-
 namespace JMS.DVB.EPG.Tables
 {
     /// <summary>
@@ -9,7 +6,7 @@ namespace JMS.DVB.EPG.Tables
     public class NIT : Table
     {
         /// <summary>
-        /// Gesezt, wenn die Informationen zum aktiven Datenstrom gehören.
+        /// Gesezt, wenn die Informationen zum aktiven Datenstrom gehï¿½ren.
         /// </summary>
         public readonly bool ForThisStream;
 
@@ -21,19 +18,19 @@ namespace JMS.DVB.EPG.Tables
         /// <summary>
         /// Alle Detailbeschreibungen.
         /// </summary>
-        public readonly Descriptor[] Descriptors;
+        public readonly Descriptor[] Descriptors = null!;
 
         /// <summary>
         /// Die Komponenten des Netzwerks.
         /// </summary>
-        public readonly NetworkEntry[] NetworkEntries;
+        public readonly NetworkEntry[] NetworkEntries = null!;
 
         /// <summary>
-        /// Prüft, ob eine Tabellenkennung zu einer Netzwerkbeschreibung gehört.
+        /// Prï¿½ft, ob eine Tabellenkennung zu einer Netzwerkbeschreibung gehï¿½rt.
         /// </summary>
-        /// <param name="tableIdentifier">Die zu prüfende Kennung.</param>
+        /// <param name="tableIdentifier">Die zu prï¿½fende Kennung.</param>
         /// <returns>Gesetzt, wenn die Kennung eine Netzwerkbeschreibung bezeichnet.</returns>
-        public static bool IsHandlerFor( byte tableIdentifier )
+        public static bool IsHandlerFor(byte tableIdentifier)
         {
             // Check all
             return ((0x40 == tableIdentifier) || (0x41 == tableIdentifier));
@@ -43,8 +40,8 @@ namespace JMS.DVB.EPG.Tables
         /// Erstellt eine neue Beschreibung.
         /// </summary>
         /// <param name="section">Die Rohdaten.</param>
-        public NIT( Section section )
-            : base( section )
+        public NIT(Section section)
+            : base(section)
         {
             // Load length
             int length = section.Length - 7;
@@ -53,7 +50,7 @@ namespace JMS.DVB.EPG.Tables
             if (length < 7) return;
 
             // Load the length of the descriptors
-            int deslen = Tools.MergeBytesToWord( section[6], section[5] ) & 0x0fff;
+            int deslen = Tools.MergeBytesToWord(section[6], section[5]) & 0x0fff;
 
             // Where the service area starts
             int svcoff = 7 + deslen;
@@ -65,7 +62,7 @@ namespace JMS.DVB.EPG.Tables
             if (length < 2) return;
 
             // Load the length of the service information
-            int svclen = Tools.MergeBytesToWord( section[svcoff + 1], section[svcoff + 0] ) & 0x0fff;
+            int svclen = Tools.MergeBytesToWord(section[svcoff + 1], section[svcoff + 0]) & 0x0fff;
 
             // Correct
             length -= 2 + svclen;
@@ -74,26 +71,26 @@ namespace JMS.DVB.EPG.Tables
             if (0 != length) return;
 
             // Load all descriptors
-            Descriptors = Descriptor.Load( this, 7, deslen );
+            Descriptors = Descriptor.Load(this, 7, deslen);
 
             // Load special
-            NetworkIdentifier = Tools.MergeBytesToWord( section[1], section[0] );
+            NetworkIdentifier = Tools.MergeBytesToWord(section[1], section[0]);
             ForThisStream = (0x40 == section.TableIdentifier);
 
             // Result
             List<NetworkEntry> entries = new List<NetworkEntry>();
 
             // Fill
-            for (svcoff += 2; svclen > 0; )
+            for (svcoff += 2; svclen > 0;)
             {
                 // Create next
-                NetworkEntry entry = NetworkEntry.Create( this, svcoff, svclen );
+                var entry = NetworkEntry.Create(this, svcoff, svclen);
 
                 // Failed
                 if ((null == entry) || !entry.IsValid) return;
 
                 // Remember
-                entries.Add( entry );
+                entries.Add(entry);
 
                 // Adjust
                 svcoff += entry.Length;

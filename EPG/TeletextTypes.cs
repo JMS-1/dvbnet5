@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace JMS.DVB.EPG
 {
     /// <summary>
     /// Teletext types.
     /// </summary>
 	public enum TeletextTypes
-	{
+    {
         /// <summary>
         /// Reserved.
         /// </summary>
@@ -38,5 +34,5 @@ namespace JMS.DVB.EPG
         /// Teletext subtitle page for hearing impaired people.
         /// </summary>
         HearingImpaired
-	}
+    }
 }

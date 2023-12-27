@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace JMS.DVB.EPG.Descriptors
 {
     /// <summary>
@@ -9,31 +6,31 @@ namespace JMS.DVB.EPG.Descriptors
     public class ContentTransmissionPremiere : Descriptor
     {
         /// <summary>
-        /// Die Kennung des zugehörigen <i>Transport Streams</i>.
+        /// Die Kennung des zugehï¿½rigen <i>Transport Streams</i>.
         /// </summary>
         public ushort TransportStreamIdentifier;
 
         /// <summary>
-        /// Die ursprüngliche Netzwerkkennung.
+        /// Die ursprï¿½ngliche Netzwerkkennung.
         /// </summary>
         public ushort OriginalNetworkIdentifier;
 
         /// <summary>
-        /// Der zugehörige Sender.
+        /// Der zugehï¿½rige Sender.
         /// </summary>
         public ushort ServiceIdentifier;
 
         /// <summary>
         /// Alle Startzeiten zu der Sendung.
         /// </summary>
-        public DateTime[] StartTimes;
+        public DateTime[] StartTimes = null!;
 
         /// <summary>
         /// Erzeugt eine neue Beschreibung.
         /// </summary>
-        /// <param name="container">Die zugehörige Liste von Beschreibungen.</param>
+        /// <param name="container">Die zugehï¿½rige Liste von Beschreibungen.</param>
         /// <param name="offset">Erstes Byte dieser Beschreibung.</param>
-        /// <param name="length">Anzahl der Bytes für diese Beschreibung.</param>
+        /// <param name="length">Anzahl der Bytes fï¿½r diese Beschreibung.</param>
         public ContentTransmissionPremiere(IDescriptorContainer container, int offset, int length)
             : base(container, offset, length)
         {
@@ -96,10 +93,10 @@ namespace JMS.DVB.EPG.Descriptors
         }
 
         /// <summary>
-        /// Prüft, ob es sich um einen Sendungsbeschreibung von PREMIERE handelt.
+        /// Prï¿½ft, ob es sich um einen Sendungsbeschreibung von PREMIERE handelt.
         /// </summary>
-        /// <param name="tag">Die zu prüfende Beschreibungsart.</param>
-        /// <returns>Gesetzt, wenn es sich um die unterstützte Art (<i>0xF0</i>) handelt.</returns>
+        /// <param name="tag">Die zu prï¿½fende Beschreibungsart.</param>
+        /// <returns>Gesetzt, wenn es sich um die unterstï¿½tzte Art (<i>0xF0</i>) handelt.</returns>
         public static bool IsHandlerFor(byte tag)
         {
             // Check it

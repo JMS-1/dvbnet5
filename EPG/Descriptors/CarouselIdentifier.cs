@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace JMS.DVB.EPG.Descriptors
 {
     /// <summary>

@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-
 namespace JMS.DVB.EPG.Tables
 {
     /// <summary>
@@ -15,11 +12,11 @@ namespace JMS.DVB.EPG.Tables
         public DateTime Time { get; set; }
 
         /// <summary>
-        /// Meldet, für welche Tabellenkennungen diese Klasse zuständig ist.
+        /// Meldet, fï¿½r welche Tabellenkennungen diese Klasse zustï¿½ndig ist.
         /// </summary>
-        /// <param name="tableIdentifier">Eine zu prüfende Tabellenkennung.</param>
+        /// <param name="tableIdentifier">Eine zu prï¿½fende Tabellenkennung.</param>
         /// <returns>Gesetzt, wenn diese Klasse die Tabelle analysieren kann.</returns>
-        public static bool IsHandlerFor( byte tableIdentifier )
+        public static bool IsHandlerFor(byte tableIdentifier)
         {
             // Check all
             return (0x70 == tableIdentifier);
@@ -29,8 +26,8 @@ namespace JMS.DVB.EPG.Tables
         /// Erzeugt eine neue Tabelle.
         /// </summary>
         /// <param name="section">Der Bereich, in den die Tabelle eingebettet ist.</param>
-        public TDT( Section section )
-            : base( section )
+        public TDT(Section section)
+            : base(section)
         {
             // Load length
             int length = section.Length - 3;
@@ -40,7 +37,7 @@ namespace JMS.DVB.EPG.Tables
                 return;
 
             // Load the time
-            Time = Tools.DecodeTime( section, 0 );
+            Time = Tools.DecodeTime(section, 0);
 
             // Done
             m_IsValid = true;

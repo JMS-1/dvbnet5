@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace JMS.DVB.EPG.Tables
+﻿namespace JMS.DVB.EPG.Tables
 {
     /// <summary>
     /// Beschreibt eine OpenTV Tabelle, die unter anderem für die Programmzeitschrift

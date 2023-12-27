@@ -1,5 +1,3 @@
-using System;
-
 namespace JMS.DVB.EPG
 {
     /// <summary>
@@ -30,18 +28,18 @@ namespace JMS.DVB.EPG
         /// of type <see cref="bool"/> with a single <see cref="byte"/> parameter. This method
         /// has to report <i>true</i> for any table identifier it is responsible for.
         /// </remarks>
-        private static readonly Type[] m_Handlers = 
-		{ 
-			typeof(Tables.EIT),
-			typeof(Tables.SDT),
-			typeof(Tables.PAT),
-			typeof(Tables.PMT),
-			typeof(Tables.NIT),
+        private static readonly Type[] m_Handlers =
+        {
+            typeof(Tables.EIT),
+            typeof(Tables.SDT),
+            typeof(Tables.PAT),
+            typeof(Tables.PMT),
+            typeof(Tables.NIT),
             typeof(Tables.CITPremiere),
             typeof(Tables.OpenTV),
             typeof(Tables.TOT),
             typeof(Tables.TDT),
-		};
+        };
 
         /// <summary>
         /// The <see cref="Section"/> instance where this table is located.
@@ -89,14 +87,14 @@ namespace JMS.DVB.EPG
         static Table()
         {
             // Use helper
-            Tools.InitializeDynamicCreate( m_Handlers, m_HandlerForIdentifier, typeof( Tables.Generic ) );
+            Tools.InitializeDynamicCreate(m_Handlers, m_HandlerForIdentifier, typeof(Tables.Generic));
         }
 
         /// <summary>
         /// Initialize the instance.
         /// </summary>
         /// <param name="section">The related <see cref="Section"/>.</param>
-        protected Table( Section section )
+        protected Table(Section section)
         {
             // Remember
             m_Section = section;
@@ -116,13 +114,13 @@ namespace JMS.DVB.EPG
         /// <param name="section">The related <see cref="Section"/>.</param>
         /// <returns>A new instance of the corresponding handler class. The <see cref="IsValid"/>
         /// of the instance reports if the table is consistent and should be used.</returns>
-        static public Table Create( Section section )
+        static public Table Create(Section section)
         {
             // Attach to the type
-            Type pHandler = (Type) m_HandlerForIdentifier[section.TableIdentifier];
+            Type pHandler = (Type)m_HandlerForIdentifier[section.TableIdentifier];
 
             // Create
-            return (Table) Activator.CreateInstance( pHandler, new object[] { section } );
+            return (Table)Activator.CreateInstance(pHandler, new object[] { section })!;
         }
 
         /// <summary>
@@ -133,40 +131,19 @@ namespace JMS.DVB.EPG
         /// a <see cref="Tables.Generic"/> instance will be created instead. Instance of this
         /// substiate class will never be valid.
         /// </remarks>
-        public bool IsValid
-        {
-            get
-            {
-                // Report
-                return m_IsValid;
-            }
-        }
+        public bool IsValid => m_IsValid;
 
         #region IDescriptorContainer Members
 
         /// <summary>
         /// Report this table.
         /// </summary>
-        public Table Container
-        {
-            get
-            {
-                // Self
-                return this;
-            }
-        }
+        public Table Container => this;
 
         /// <summary>
         /// Report the section.
         /// </summary>
-        public Section Section
-        {
-            get
-            {
-                // Report
-                return m_Section;
-            }
-        }
+        public Section Section => m_Section;
 
         #endregion
     }

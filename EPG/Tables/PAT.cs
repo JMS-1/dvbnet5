@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
 namespace JMS.DVB.EPG.Tables
 {
     /// <summary>
@@ -58,7 +54,7 @@ namespace JMS.DVB.EPG.Tables
             {
                 // Load items
                 ushort number = Tools.MergeBytesToWord(section[offset + 1], section[offset + 0]);
-                ushort pid = (ushort)(0x1fff&Tools.MergeBytesToWord(section[offset + 3], section[offset + 2]));
+                ushort pid = (ushort)(0x1fff & Tools.MergeBytesToWord(section[offset + 3], section[offset + 2]));
 
                 // Remember
                 if (0 == number)

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace JMS.DVB.EPG.Tables
 {
 	/// <summary>
@@ -16,9 +13,9 @@ namespace JMS.DVB.EPG.Tables
 	/// <item><term>1/7-0</term><description>Bits 0 to 7 of the <see cref="ServiceIdentifier"/></description></item>
 	/// <item><term>2/7-6</term><description>Reserved</description></item>
 	/// <item><term>2/5-1</term><description><see cref="Version"/> Number</description></item>
-    /// <item><term>2/0</term><description>Current/Next Indicator, which is stored in <see cref="Table.IsCurrent"/></description></item>
-    /// <item><term>3/7-0</term><description><see cref="Table.SectionNumber"/></description></item>
-    /// <item><term>4/7-0</term><description><see cref="Table.LastSectionNumber"/></description></item>
+	/// <item><term>2/0</term><description>Current/Next Indicator, which is stored in <see cref="Table.IsCurrent"/></description></item>
+	/// <item><term>3/7-0</term><description><see cref="Table.SectionNumber"/></description></item>
+	/// <item><term>4/7-0</term><description><see cref="Table.LastSectionNumber"/></description></item>
 	/// <item><term>5/7-0</term><description>Bits 8 to 15 of <see cref="TransportStreamIdentifier"/></description></item>
 	/// <item><term>6/7-0</term><description>Bits 0 to 7 of <see cref="TransportStreamIdentifier"/></description></item>
 	/// <item><term>7/7-0</term><description>Bits 8 to 15 of <see cref="OriginalNetworkIdentifier"/></description></item>
@@ -33,7 +30,7 @@ namespace JMS.DVB.EPG.Tables
 		/// <summary>
 		/// Any airing event related to this <see cref="Table"/>.
 		/// </summary>
-		public readonly EventEntry[] Entries;
+		public readonly EventEntry[] Entries = null!;
 
 		/// <summary>
 		/// The original identifier of the network this <see cref="Table"/> refers to.
@@ -103,7 +100,7 @@ namespace JMS.DVB.EPG.Tables
 			List<EventEntry> entries = new List<EventEntry>();
 
 			// Process
-			for (EventEntry entry; null != (entry = EventEntry.Create(this, offset, length)); )
+			for (EventEntry entry; null != (entry = EventEntry.Create(this, offset, length));)
 				if (entry.IsValid)
 				{
 					// Remember

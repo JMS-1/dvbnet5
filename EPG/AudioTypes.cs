@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace JMS.DVB.EPG
 {
     /// <summary>
     /// Possible audio types.
     /// </summary>
 	public enum AudioTypes
-	{
+    {
         /// <summary>
         /// Undefined.
         /// </summary>
@@ -28,5 +24,5 @@ namespace JMS.DVB.EPG
         /// Visual impaired.
         /// </summary>
         VisualImpairedCommentary
-	}
+    }
 }

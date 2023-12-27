@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Text;
-
 namespace JMS.DVB.EPG
 {
     /// <summary>
@@ -19,20 +15,20 @@ namespace JMS.DVB.EPG
         /// <see cref="Section"/>.
         /// <seealso cref="SectionFound"/>
         /// </summary>
-        public delegate void SectionFoundHandler( Section section );
+        public delegate void SectionFoundHandler(Section section);
 
         /// <summary>
         /// Will be fired whenever <see cref="OnData(byte[])"/> detects a
         /// <see cref="Section"/> with <see cref="Section.IsValid"/>
         /// set.
         /// </summary>
-        public event SectionFoundHandler SectionFound;
+        public event SectionFoundHandler? SectionFound;
 
         /// <summary>
         /// The filter data for EPG filtering.
         /// <seealso cref="FilterMask"/>
         /// </summary>
-        static public byte[] FilterData = { 0x40 };
+        static public byte[] FilterData = [0x40];
 
         /// <summary>
         /// The filter mask for EPG filtering.
@@ -43,12 +39,12 @@ namespace JMS.DVB.EPG
         /// <i>0x40</i> to <i>0x7f</i> which includes all variants of 
         /// <see cref="Tables.EIT"/> tables.
         /// </remarks>
-        static public byte[] FilterMask = { 0xc0 };
+        static public byte[] FilterMask = [0xc0];
 
         /// <summary>
         /// Local buffer.
         /// </summary>
-        private byte[] m_Buffer = null;
+        private byte[] m_Buffer = null!;
 
         /// <summary>
         /// Next byte to read from the current buffer.
@@ -97,15 +93,15 @@ namespace JMS.DVB.EPG
         /// in very rare situations that the current buffer never shrinks. In this case an upper
         /// bound of 250kBytes will be applied.
         /// </exception>
-        public void Add( byte[] data, int offset, int length )
+        public void Add(byte[] data, int offset, int length)
         {
             // Check parameters
-            if (null == data) throw new ArgumentNullException( "data" );
-            if (offset < 0) throw new ArgumentOutOfRangeException( "offset", offset, "must not be negative" );
-            if (offset > data.Length) throw new ArgumentOutOfRangeException( "offset", offset, "out of array" );
-            if (length < 0) throw new ArgumentOutOfRangeException( "length", length, "must not be negative" );
-            if (length > data.Length) throw new ArgumentOutOfRangeException( "length", length, "out of array" );
-            if ((offset + length) > data.Length) throw new ArgumentOutOfRangeException( "length", length, "not enough space in source" );
+            if (null == data) throw new ArgumentNullException("data");
+            if (offset < 0) throw new ArgumentOutOfRangeException("offset", offset, "must not be negative");
+            if (offset > data.Length) throw new ArgumentOutOfRangeException("offset", offset, "out of array");
+            if (length < 0) throw new ArgumentOutOfRangeException("length", length, "must not be negative");
+            if (length > data.Length) throw new ArgumentOutOfRangeException("length", length, "out of array");
+            if ((offset + length) > data.Length) throw new ArgumentOutOfRangeException("length", length, "not enough space in source");
 
             // Validate
             if (0 == length) return;
@@ -117,7 +113,7 @@ namespace JMS.DVB.EPG
             if (length <= rest)
             {
                 // Move in
-                Array.Copy( data, offset, m_Buffer, m_BufferSize, length );
+                Array.Copy(data, offset, m_Buffer!, m_BufferSize, length);
 
                 // Adjust
                 m_BufferSize += length;
@@ -143,17 +139,17 @@ namespace JMS.DVB.EPG
                 m_BufferSize = 0;
 
                 // Report error - filter stream will normally reconnect
-                throw new OverflowException( "Buffer overrun - Stream may be corrupted" );
+                throw new OverflowException("Buffer overrun - Stream may be corrupted");
             }
 
             // New buffer
             byte[] newBuffer = ((null == m_Buffer) || (size > m_Buffer.Length)) ? new byte[size] : m_Buffer;
 
             // Copy
-            if (null != m_Buffer) Array.Copy( m_Buffer, m_BufferPos, newBuffer, 0, dataSize );
+            if (null != m_Buffer) Array.Copy(m_Buffer, m_BufferPos, newBuffer, 0, dataSize);
 
             // Append
-            Array.Copy( data, offset, newBuffer, dataSize, length );
+            Array.Copy(data, offset, newBuffer, dataSize, length);
 
             // Remember
             m_Buffer = newBuffer;
@@ -173,16 +169,16 @@ namespace JMS.DVB.EPG
         /// called again before more data is added to the current buffer using <see cref="Add"/>.
         /// If a <see cref="Section"/> is returned its <see cref="Section.IsValid"/> will
         /// always be set.</returns>
-        public virtual Section ReadSection()
+        public virtual Section? ReadSection()
         {
             // As long as necessary
             for (; ; )
             {
                 // Try to create section at the indicated position
-                Section section = Section.Create( m_Buffer, m_BufferPos, m_BufferSize - m_BufferPos, this );
+                var section = Section.Create(m_Buffer, m_BufferPos, m_BufferSize - m_BufferPos, this);
 
                 // Need more data
-                if (null == section) return null;
+                if (null == section) return null!;
 
                 // Advance
                 m_BufferPos += section.Length;
@@ -212,13 +208,13 @@ namespace JMS.DVB.EPG
         /// against corrupted streams.
         /// </remarks>
         /// <param name="aData">Some data to be addeded.</param>
-        public void OnData( byte[] aData )
+        public void OnData(byte[] aData)
         {
             // Make sure that errors do not propagate to filter thread
             try
             {
                 // Process
-                OnData( aData, 0, aData.Length );
+                OnData(aData, 0, aData.Length);
             }
             catch
             {
@@ -236,15 +232,15 @@ namespace JMS.DVB.EPG
         /// <param name="data">The external buffer where the new data can be found.</param>
         /// <param name="offset">First byte in the external buffer.</param>
         /// <param name="length">Number of bytes to add to our current buffer.</param>
-        public void OnData( byte[] data, int offset, int length )
+        public void OnData(byte[] data, int offset, int length)
         {
             // Merge in
-            Add( data, offset, length );
+            Add(data, offset, length);
 
             // Read all sections
-            for (Section section; null != (section = ReadSection()); )
+            for (Section? section; null != (section = ReadSection());)
                 if (section.IsValid || IgnoreCRCErrors)
-                    OnSectionFound( section );
+                    OnSectionFound(section);
         }
 
         /// <summary>
@@ -252,32 +248,25 @@ namespace JMS.DVB.EPG
         /// </summary>
         /// <param name="section">A <see cref="Section"/> constructed from
         /// the raw input stream.</param>
-        protected virtual void OnSectionFound( Section section )
-        {
-            // Load
-            SectionFoundHandler handler = SectionFound;
-
-            // Send
-            if (null != handler) handler( section );
-        }
+        protected virtual void OnSectionFound(Section section) => SectionFound?.Invoke(section);
     }
 
     /// <summary>
-    /// Überwacht SI Tabellen einer bestimmten Art.
+    /// ï¿½berwacht SI Tabellen einer bestimmten Art.
     /// </summary>
     /// <typeparam name="T">Die Art der SI Tabelle.</typeparam>
     public class TypedSIParser<T> : Parser where T : Table
     {
         /// <summary>
-        /// Signatur einer Methode zur Information über eine erfolgreich empfangene SI Tabelle.
+        /// Signatur einer Methode zur Information ï¿½ber eine erfolgreich empfangene SI Tabelle.
         /// </summary>
         /// <param name="table">Die empfangene Tabelle.</param>
-        public delegate void TableFoundHandler( T table );
+        public delegate void TableFoundHandler(T table);
 
         /// <summary>
         /// Methode, die beim Empfang einer SI Tabelle aktiviert wird.
         /// </summary>
-        public event TableFoundHandler TableFound;
+        public event TableFoundHandler? TableFound;
 
         /// <summary>
         /// Erzeugt eine neue Analyseinstanz.
@@ -290,23 +279,15 @@ namespace JMS.DVB.EPG
         /// Analysiert eine Tabelle.
         /// </summary>
         /// <param name="section">Die SI Tabelle.</param>
-        protected override void OnSectionFound( Section section )
+        protected override void OnSectionFound(Section section)
         {
             // See if table has the rigth type
             if ((null != section) && section.IsValid)
-            {
-                // Load table
-                T table = section.Table as T;
-                if ((null != table) && table.IsValid)
-                {
-                    // Forward
-                    TableFoundHandler callback = TableFound;
-                    if (null != callback) callback( table );
-                }
-            }
+                if ((section.Table is T table) && table.IsValid)
+                    TableFound?.Invoke(table);
 
             // Forward
-            base.OnSectionFound( section );
+            base.OnSectionFound(section!);
         }
     }
 }

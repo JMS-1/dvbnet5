@@ -1,7 +1,4 @@
-using System;
-using System.Reflection;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace JMS.DVB.EPG
 {
@@ -101,7 +98,7 @@ namespace JMS.DVB.EPG
         /// Future versions of this implementation will not be strongly bind <see cref="Descriptor"/>
         /// instances to <see cref="IDescriptorContainer"/> instances.
         /// </remarks>
-        public readonly IDescriptorContainer Container = null;
+        public readonly IDescriptorContainer Container = null!;
 
         /// <summary>
         /// The overall length of the raw data in bytes.
@@ -160,7 +157,7 @@ namespace JMS.DVB.EPG
             Type pHandler = (Type)m_HandlerForTag[container.Section[offset - 2]];
 
             // Create
-            return (Descriptor)Activator.CreateInstance(pHandler, new object[] { container, offset, length });
+            return (Descriptor)Activator.CreateInstance(pHandler, [container, offset, length])!;
         }
 
         /// <summary>
@@ -276,16 +273,16 @@ namespace JMS.DVB.EPG
         /// </summary>
         /// <typeparam name="T">Die Art der gesuchten Beschreibung.</typeparam>
         /// <param name="descriptors">Die Liste der zu durchsuchenden Beschreibungen.</param>
-        /// <returns>Die gewünschte Beschreibung oder <i>null</i>, wenn keine Beschreibung
+        /// <returns>Die gewï¿½nschte Beschreibung oder <i>null</i>, wenn keine Beschreibung
         /// der gesuchten Art in der Liste vorhanden ist.</returns>
-        public static T Find<T>(this Descriptor[] descriptors) where T : Descriptor
+        public static T? Find<T>(this Descriptor[] descriptors) where T : Descriptor
         {
             // Not possible
             if (null == descriptors)
                 return null;
 
             // Lookup
-            return (T)Array.Find(descriptors, d => typeof(T) == d.GetType());
+            return (T?)Array.Find(descriptors, d => typeof(T) == d.GetType());
         }
 
     }

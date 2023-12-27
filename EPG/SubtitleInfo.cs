@@ -1,8 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-
-namespace JMS.DVB.EPG
+﻿namespace JMS.DVB.EPG
 {
     /// <summary>
     /// Die möglichen Arten von Untertiteln.
@@ -97,7 +93,7 @@ namespace JMS.DVB.EPG
         /// <param name="compositionPage">Die primäre Seite.</param>
         /// <param name="ancillaryPage">Die zusätzliche Seite.</param>
         /// </summary>
-        public SubtitleInfo( string language, SubtitleTypes type, ushort compositionPage, ushort ancillaryPage )
+        public SubtitleInfo(string language, SubtitleTypes type, ushort compositionPage, ushort ancillaryPage)
         {
             // Remember
             CompositionPage = compositionPage;
@@ -111,17 +107,17 @@ namespace JMS.DVB.EPG
         /// </summary>
         /// <param name="section">Die SI Tabelle, in der die Informationen abgelegt sind.</param>
         /// <param name="offset">Das erste Byte, das Informationen zu Untertiteln enthält.</param>
-        private SubtitleInfo( Section section, int offset )
+        private SubtitleInfo(Section section, int offset)
         {
             // Load the language
-            ISOLanguage = section.ReadString( offset, 3 );
+            ISOLanguage = section.ReadString(offset, 3);
 
             // Load the type
-            Type = (SubtitleTypes) section[offset + 3];
+            Type = (SubtitleTypes)section[offset + 3];
 
             // Load pages
-            CompositionPage = Tools.MergeBytesToWord( section[offset + 5], section[offset + 4] );
-            AncillaryPage = Tools.MergeBytesToWord( section[offset + 7], section[offset + 6] );
+            CompositionPage = Tools.MergeBytesToWord(section[offset + 5], section[offset + 4]);
+            AncillaryPage = Tools.MergeBytesToWord(section[offset + 7], section[offset + 6]);
         }
 
         /// <summary>
@@ -144,30 +140,30 @@ namespace JMS.DVB.EPG
         /// <param name="length">Die Anzahl der Bytes, die für die Beschreibung zur Verfügung stehen.</param>
         /// <returns>Die Informationsinstanz oder <i>null</i>, wenn keine aus den Daten erstellt
         /// werden konnte.</returns>
-        internal static SubtitleInfo Create( Section section, int offset, int length )
+        internal static SubtitleInfo? Create(Section section, int offset, int length)
         {
             // Test for length
-            if (length < 8) return null;
+            if (length < 8) return null!;
 
             // Create
-            return new SubtitleInfo( section, offset );
+            return new SubtitleInfo(section, offset);
         }
 
         /// <summary>
         /// Rekonstuiert die Daten für diese Informationsinstanz.
         /// </summary>
         /// <param name="buffer">Hilfskomponente zum Aufbau der Beschreibung.</param>
-        internal void CreatePayload( TableConstructor buffer )
+        internal void CreatePayload(TableConstructor buffer)
         {
             // Append language
-            buffer.AddLanguage( ISOLanguage );
+            buffer.AddLanguage(ISOLanguage);
 
             // Append type
-            buffer.Add( (byte) Type );
+            buffer.Add((byte)Type);
 
             // Append pages
-            buffer.Add( CompositionPage );
-            buffer.Add( AncillaryPage );
+            buffer.Add(CompositionPage);
+            buffer.Add(AncillaryPage);
         }
 
         /// <summary>
@@ -178,11 +174,11 @@ namespace JMS.DVB.EPG
             get
             {
                 // Not possible
-                if (string.IsNullOrEmpty( ISOLanguage ))
+                if (string.IsNullOrEmpty(ISOLanguage))
                     return ISOLanguage;
 
                 // Try conversion
-                return ProgramEntry.GetLanguageFromISOLanguage( ISOLanguage );
+                return ProgramEntry.GetLanguageFromISOLanguage(ISOLanguage);
             }
         }
     }

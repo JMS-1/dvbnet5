@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Globalization;
 
 
@@ -24,7 +23,7 @@ namespace JMS.DVB.EPG
         /// </summary>
         /// <param name="language">Die Sprach in <i>ISO</i> Notation.</param>
         /// <param name="effect">Details zum Imhalt der Sprachkomponente.</param>
-        public LanguageItem( string language, AudioTypes effect )
+        public LanguageItem(string language, AudioTypes effect)
         {
             // Remember
             ISOLanguage = language;
@@ -36,17 +35,17 @@ namespace JMS.DVB.EPG
         /// </summary>
         /// <param name="section">Die Rohdaten.</param>
         /// <param name="offset">Das erste Byte der Beschreibung in den Rohdaten.</param>
-        private LanguageItem( Section section, int offset )
+        private LanguageItem(Section section, int offset)
         {
             // Load the string
-            ISOLanguage = section.ReadString( offset, 3 );
+            ISOLanguage = section.ReadString(offset, 3);
 
             // Load the effect
-            Effect = (AudioTypes) section[offset + 3];
+            Effect = (AudioTypes)section[offset + 3];
         }
 
         /// <summary>
-        /// Meldet die Größe der Rohbeschreibung in Bytes.
+        /// Meldet die Grï¿½ï¿½e der Rohbeschreibung in Bytes.
         /// </summary>
         public int Length { get { return 4; } }
 
@@ -55,33 +54,33 @@ namespace JMS.DVB.EPG
         /// </summary>
         /// <param name="section">Die Rohdaten.</param>
         /// <param name="offset">Das erste Byte der Beschreibung in den Rohdaten.</param>
-        /// <param name="length">Die Größe der Rohdaten zu dieser Beschreibung in Bytes.</param>
-        /// <returns>Die gewünschte Beschreibung.</returns>
-        internal static LanguageItem Create( Section section, int offset, int length )
+        /// <param name="length">Die Grï¿½ï¿½e der Rohdaten zu dieser Beschreibung in Bytes.</param>
+        /// <returns>Die gewï¿½nschte Beschreibung.</returns>
+        internal static LanguageItem? Create(Section section, int offset, int length)
         {
             // Test for length
-            if (length < 4) return null;
+            if (length < 4) return null!;
 
             // Create
-            return new LanguageItem( section, offset );
+            return new LanguageItem(section, offset);
         }
 
         /// <summary>
         /// Rekonstruiert eine Beschreibung.
         /// </summary>
         /// <param name="buffer">Sammelt die Rekonstruktion mehrere Beschreibungen.</param>
-        internal void CreatePayload( TableConstructor buffer )
+        internal void CreatePayload(TableConstructor buffer)
         {
             // Append language
-            buffer.AddLanguage( ISOLanguage );
+            buffer.AddLanguage(ISOLanguage);
 
             // Append effect
-            buffer.Add( (byte) Effect );
+            buffer.Add((byte)Effect);
         }
     }
 
     /// <summary>
-    /// Erweiterungsmethoden für das Arbeiten mit Sprachen.
+    /// Erweiterungsmethoden fï¿½r das Arbeiten mit Sprachen.
     /// </summary>
     public static class LanguageItemExtensions
     {
@@ -100,21 +99,20 @@ namespace JMS.DVB.EPG
         /// </summary>
         /// <param name="audioName"></param>
         /// <returns></returns>
-        private static string FindISOLanguage( string audioName )
+        private static string FindISOLanguage(string audioName)
         {
             // Not possible
-            if (string.IsNullOrEmpty( audioName )) return null;
+            if (string.IsNullOrEmpty(audioName)) return null!;
 
             // Split off
-            string[] parts = audioName.Split( ' ', '[' );
+            string[] parts = audioName.Split(' ', '[');
 
             // Find it
-            string shortName;
-            if (LanguageMap.TryGetValue( parts[0], out shortName ))
+            if (LanguageMap.TryGetValue(parts[0], out var shortName))
                 return shortName;
 
             // Find it
-            if (EnglishLanguageMap.TryGetValue( parts[0], out shortName ))
+            if (EnglishLanguageMap.TryGetValue(parts[0], out shortName))
                 return shortName;
 
             // Not found
@@ -129,7 +127,7 @@ namespace JMS.DVB.EPG
             // Lock the map and load
             lock (m_LanguageMap)
                 if (m_LanguageMap.Count < 1)
-                    foreach (CultureInfo info in CultureInfo.GetCultures( CultureTypes.NeutralCultures ))
+                    foreach (CultureInfo info in CultureInfo.GetCultures(CultureTypes.NeutralCultures))
                     {
                         // Primary
                         m_LanguageMap[info.NativeName] = info.ThreeLetterISOLanguageName;
@@ -170,18 +168,18 @@ namespace JMS.DVB.EPG
         }
 
         /// <summary>
-        /// Ermittelt zu einer Sprachangabe die ISO Kurznotation, sofern möglich.
+        /// Ermittelt zu einer Sprachangabe die ISO Kurznotation, sofern mï¿½glich.
         /// </summary>
-        /// <param name="language">Die gewünschte Sprache.</param>
+        /// <param name="language">Die gewï¿½nschte Sprache.</param>
         /// <returns>Die ISO Kurznotation.</returns>
-        public static string ToISOLanguage( this string language )
+        public static string ToISOLanguage(this string language)
         {
             // Not possible
             if (null == language)
-                return null;
+                return null!;
 
             // Use helper
-            return FindISOLanguage( language );
+            return FindISOLanguage(language);
         }
     }
 }

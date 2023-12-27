@@ -1,11 +1,4 @@
-using System;
-using System.IO;
-using System.Text;
-using System.Threading;
 using System.Reflection;
-using System.Configuration;
-using System.Globalization;
-using System.Collections.Generic;
 
 namespace JMS.DVB.EPG
 {
@@ -14,8 +7,6 @@ namespace JMS.DVB.EPG
     /// </summary>
     public static class Tools
     {
-        private static object m_ScanLogLock = new object();
-
         /// <summary>
         /// Create some identifier lookup map from a handler <see cref="Type"/> list.
         /// <see cref="Table"/>
@@ -42,7 +33,7 @@ namespace JMS.DVB.EPG
             for (int ih = handlers.Length; ih-- > 0;)
             {
                 // Find it
-                aTest[ih] = handlers[ih].GetMethod("IsHandlerFor", BindingFlags.Public | BindingFlags.Static);
+                aTest[ih] = handlers[ih].GetMethod("IsHandlerFor", BindingFlags.Public | BindingFlags.Static)!;
             }
 
             // Process all
@@ -56,7 +47,7 @@ namespace JMS.DVB.EPG
 
                 // Find it
                 for (int ih = handlers.Length; ih-- > 0;)
-                    if ((bool)aTest[ih].Invoke(null, iiArray))
+                    if ((bool)aTest[ih].Invoke(null, iiArray)!)
                     {
                         // Remember
                         providers[ii] = handlers[ih];

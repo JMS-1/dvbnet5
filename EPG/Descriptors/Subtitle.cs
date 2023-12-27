@@ -1,40 +1,37 @@
-using System;
-using System.Collections.Generic;
-
 namespace JMS.DVB.EPG.Descriptors
 {
     /// <summary>
-    /// Enthält die Beschreibung der DVB Untertitel zu einem Sender.
+    /// Enthï¿½lt die Beschreibung der DVB Untertitel zu einem Sender.
     /// </summary>
-	public class Subtitle: Descriptor
-	{
+	public class Subtitle : Descriptor
+    {
         /// <summary>
-        /// Enthält die Beschreibung aller DVB Untertitel.
+        /// Enthï¿½lt die Beschreibung aller DVB Untertitel.
         /// </summary>
         public readonly List<SubtitleInfo> Subtitles = new List<SubtitleInfo>();
 
-		/// <summary>
+        /// <summary>
         /// Erzeugt eine neue Beschreibung.
-		/// </summary>
+        /// </summary>
         public Subtitle()
-			: base(DescriptorTags.Subtitling)
-		{
-		}
+            : base(DescriptorTags.Subtitling)
+        {
+        }
 
         /// <summary>
         /// Erzeugt eine neue Beschreibung.
         /// </summary>
-        /// <param name="container">Die zugehörige Liste zusammengehöriger Beschreibungen.</param>
-        /// <param name="offset">Erstes Byte für diese einzelne Beschreibung.</param>
-        /// <param name="length">Die Länge dieser Beschreibung in Bytes.</param>
+        /// <param name="container">Die zugehï¿½rige Liste zusammengehï¿½riger Beschreibungen.</param>
+        /// <param name="offset">Erstes Byte fï¿½r diese einzelne Beschreibung.</param>
+        /// <param name="length">Die Lï¿½nge dieser Beschreibung in Bytes.</param>
         public Subtitle(IDescriptorContainer container, int offset, int length)
             : base(container, offset, length)
-		{
+        {
             // Process all
             while (length > 0)
             {
                 // Create sub title data
-                SubtitleInfo info = SubtitleInfo.Create(container.Section, offset, length);
+                var info = SubtitleInfo.Create(container.Section, offset, length);
                 if (null == info) break;
 
                 // Adjust

@@ -1,8 +1,4 @@
-using System;
 using System.Text;
-using System.Collections;
-using System.Globalization;
-using System.Collections.Generic;
 
 namespace JMS.DVB.EPG
 {
@@ -48,7 +44,7 @@ namespace JMS.DVB.EPG
         /// <summary>
         /// Default encoding to use.
         /// </summary>
-        static public Encoding DefaultEncoding { get; private set; }
+        static public Encoding DefaultEncoding { get; private set; } = null!;
 
         /// <summary>
         /// Report if this instance has a valid checksum.
@@ -69,7 +65,7 @@ namespace JMS.DVB.EPG
         /// <remarks>
         /// The <see cref="EPG.Table.IsValid"/> will always be set.
         /// </remarks>
-        public readonly Table Table;
+        public readonly Table Table = null!;
 
         /// <summary>
         /// The syntax indicator from the raw data.
@@ -95,17 +91,17 @@ namespace JMS.DVB.EPG
         /// The <see cref="Array.Length"/> of this <see cref="Array"/> will
         /// be 3 less than our <see cref="Length"/>.
         /// </remarks>
-        private byte[] m_RawData;
+        private readonly byte[] m_RawData;
 
         /// <summary>
         /// Flag field.
         /// </summary>
-        private byte m_Flags = 0;
+        private readonly byte m_Flags = 0;
 
         /// <summary>
         /// Spezielle Emulation des ISO-6937 Zeichensatzes.
         /// </summary>
-        private static StandardProgramGuideEncoding m_StandardEncoding = new StandardProgramGuideEncoding();
+        private static readonly StandardProgramGuideEncoding m_StandardEncoding = new();
 
         /// <summary>
         /// Initialize the static lookup tables.
@@ -263,7 +259,7 @@ namespace JMS.DVB.EPG
             Table = EPG.Table.Create(this);
 
             // Discard
-            if (!Table.IsValid) Table = null;
+            if (!Table.IsValid) Table = null!;
         }
 
         /// <summary>
@@ -278,11 +274,11 @@ namespace JMS.DVB.EPG
         /// the raw data for the section. If a <see cref="Section"/> is reported
         /// it may have <see cref="Section.IsValid"/> unset to indicated that
         /// the <see cref="CRC32"/> validation failed.</returns>
-        static internal Section Create(byte[] buffer, int offset, int length, Parser parser)
+        static internal Section? Create(byte[] buffer, int offset, int length, Parser parser)
         {
             // Check for the minimum size
             if (length < 7)
-                return null;
+                return null!;
 
             // Decode
             byte tableIdentifier = buffer[offset + 0];
@@ -485,7 +481,7 @@ namespace JMS.DVB.EPG
                 return string.Empty;
 
             // Load the encoding
-            Encoding enc = (cpid < m_Encodings.Length) ? m_Encodings[cpid] : null;
+            var enc = (cpid < m_Encodings.Length) ? m_Encodings[cpid] : null;
 
             // Load default
             if (null == enc)
@@ -503,10 +499,10 @@ namespace JMS.DVB.EPG
         /// erste Byte ist immer 0 und beschreibt den Offset.
         /// </summary>
         /// <returns>Datenfeld zur SI Tabelle oder <i>null</i>, wenn diese Instanz ung�ltig ist.</returns>
-        public byte[] CreateSITable()
+        public byte[]? CreateSITable()
         {
             // Not possible
-            if (!IsValid || (null == Table) || !Table.IsValid) return null;
+            if (!IsValid || (null == Table) || !Table.IsValid) return null!;
 
             // Allocate including offset pointer at position 0
             byte[] table = new byte[1 + 3 + m_RawData.Length];

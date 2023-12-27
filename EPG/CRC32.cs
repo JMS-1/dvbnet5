@@ -1,6 +1,3 @@
-using System;
-using System.Reflection;
-
 namespace JMS.DVB.EPG
 {
 	/// <summary>
@@ -30,20 +27,20 @@ namespace JMS.DVB.EPG
 		static CRC32()
 		{
 			// Reflection first
-			for ( int ix = 256 ; ix-- > 0 ; )
+			for (int ix = 256; ix-- > 0;)
 			{
 				// The inverted one
 				byte iRef = 0;
 
 				// Take the eaqsy way
-				if ( 0 != (ix&0x01) ) iRef |= 0x80;
-				if ( 0 != (ix&0x02) ) iRef |= 0x40;
-				if ( 0 != (ix&0x04) ) iRef |= 0x20;
-				if ( 0 != (ix&0x08) ) iRef |= 0x10;
-				if ( 0 != (ix&0x10) ) iRef |= 0x08;
-				if ( 0 != (ix&0x20) ) iRef |= 0x04;
-				if ( 0 != (ix&0x40) ) iRef |= 0x02;
-				if ( 0 != (ix&0x80) ) iRef |= 0x01;
+				if (0 != (ix & 0x01)) iRef |= 0x80;
+				if (0 != (ix & 0x02)) iRef |= 0x40;
+				if (0 != (ix & 0x04)) iRef |= 0x20;
+				if (0 != (ix & 0x08)) iRef |= 0x10;
+				if (0 != (ix & 0x10)) iRef |= 0x08;
+				if (0 != (ix & 0x20)) iRef |= 0x04;
+				if (0 != (ix & 0x40)) iRef |= 0x02;
+				if (0 != (ix & 0x80)) iRef |= 0x01;
 
 				// Store
 				m_Reflection[ix] = iRef;
@@ -53,20 +50,20 @@ namespace JMS.DVB.EPG
 			uint ulPolynomial = 0x04c11db7, ulTest = 0x80000000;
 
 			// All entries
-			for ( uint i = 0 ; i <= 255 ; ++i )
+			for (uint i = 0; i <= 255; ++i)
 			{
 				// Start code
 				uint uCRC = i << 24;
 
 				// Create CRC32 code for index - reflection is not used in EPG
-				for ( int j = 0 ; j < 8 ; ++j )
+				for (int j = 0; j < 8; ++j)
 				{
 					// Adjustment
-					uint uAdj = (0 != (uCRC&ulTest)) ? ulPolynomial : 0;
+					uint uAdj = (0 != (uCRC & ulTest)) ? ulPolynomial : 0;
 
 					// Shift
 					uCRC <<= 1;
-					
+
 					// Update
 					uCRC ^= uAdj;
 				}
@@ -102,8 +99,8 @@ namespace JMS.DVB.EPG
 		static public UInt32 ReflectWord(UInt32 word)
 		{
 			// All parts
-			UInt32 uWord0 = m_Reflection[(word >>  0) & 0xff];
-			UInt32 uWord1 = m_Reflection[(word >>  8) & 0xff];
+			UInt32 uWord0 = m_Reflection[(word >> 0) & 0xff];
+			UInt32 uWord1 = m_Reflection[(word >> 8) & 0xff];
 			UInt32 uWord2 = m_Reflection[(word >> 16) & 0xff];
 			UInt32 uWord3 = m_Reflection[(word >> 24) & 0xff];
 
@@ -125,7 +122,7 @@ namespace JMS.DVB.EPG
 			uint uCRC = 0xffffffff;
 
 			// Process
-			while ( length-- > 0 )
+			while (length-- > 0)
 			{
 				// Process
 				uCRC = (uCRC << 8) ^ m_CRC32[((uCRC >> 24) ^ aData[offset++]) & 0xff];
@@ -149,7 +146,7 @@ namespace JMS.DVB.EPG
 			uint uCRC = 0xffffffff;
 
 			// Process
-			while ( length-- > 0 )
+			while (length-- > 0)
 			{
 				// Process
 				uCRC = (uCRC << 8) ^ m_CRC32[((uCRC >> 24) ^ aData[offset++]) & 0xff];

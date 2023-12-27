@@ -1,16 +1,14 @@
-using System;
-
 namespace JMS.DVB.EPG.Descriptors
 {
-	/// <summary>
-	/// A service <see cref="Descriptor"/>.
-	/// </summary>
-	/// <remarks>
-	/// For details please refer to the original documentation,
-	/// e.g. <i>ETSI EN 300 468 V1.6.1 (2004-06)</i> or alternate versions.
-	/// </remarks>
-	public class Service: Descriptor
-	{
+    /// <summary>
+    /// A service <see cref="Descriptor"/>.
+    /// </summary>
+    /// <remarks>
+    /// For details please refer to the original documentation,
+    /// e.g. <i>ETSI EN 300 468 V1.6.1 (2004-06)</i> or alternate versions.
+    /// </remarks>
+    public class Service : Descriptor
+    {
         /// <summary>
         /// The type of this service.
         /// </summary>
@@ -19,12 +17,12 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Name of the provider.
         /// </summary>
-        public readonly string ProviderName;
+        public readonly string ProviderName = null!;
 
         /// <summary>
         /// Name of the service.
         /// </summary>
-        public readonly string ServiceName;
+        public readonly string ServiceName = null!;
 
         /// <summary>
         /// Create a new descriptor instance.
@@ -38,9 +36,9 @@ namespace JMS.DVB.EPG.Descriptors
         /// <param name="length">Number of payload bytes for this descriptor.</param>
         public Service(IDescriptorContainer container, int offset, int length)
             : base(container, offset, length)
-		{
-			// Validate size
-			if ( length < 1 ) return;
+        {
+            // Validate size
+            if (length < 1) return;
 
             // Attach to data
             Section section = container.Section;
@@ -82,8 +80,8 @@ namespace JMS.DVB.EPG.Descriptors
             ServiceName = Section.ReadEncodedString(offset, serviceLen, true);
 
             // We are valid
-			m_Valid = true;
-		}
+            m_Valid = true;
+        }
 
         /// <summary>
         /// Check if this class is responsible for a given descriptor tag.
@@ -91,9 +89,9 @@ namespace JMS.DVB.EPG.Descriptors
         /// <param name="tag">The tag to test for.</param>
         /// <returns>Set if this class can handle the payload for the given tag.</returns>
         public static bool IsHandlerFor(byte tag)
-		{
-			// Check it
-			return (DescriptorTags.Service == (DescriptorTags)tag);
-		}
-	}
+        {
+            // Check it
+            return (DescriptorTags.Service == (DescriptorTags)tag);
+        }
+    }
 }

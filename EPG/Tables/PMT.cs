@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-
-
 namespace JMS.DVB.EPG.Tables
 {
     /// <summary>
@@ -23,12 +19,12 @@ namespace JMS.DVB.EPG.Tables
         /// <summary>
         /// Descriptors for this program.
         /// </summary>
-        public readonly Descriptor[] Descriptors;
+        public readonly Descriptor[] Descriptors = null!;
 
         /// <summary>
         /// 
         /// </summary>
-        public readonly ProgramEntry[] ProgramEntries;
+        public readonly ProgramEntry[] ProgramEntries = null!;
 
         /// <summary>
         /// Set for table identifiers <i>0x42</i> and <i>0x46</i>.
@@ -36,7 +32,7 @@ namespace JMS.DVB.EPG.Tables
         /// <param name="tableIdentifier">The table identifier for which this <see cref="Type"/>
         /// should report its responsibility.</param>
         /// <returns>Set for table identifier <i>0x42</i> and <i>0x46</i>.</returns>
-        public static bool IsHandlerFor( byte tableIdentifier )
+        public static bool IsHandlerFor(byte tableIdentifier)
         {
             // Check all
             return (0x02 == tableIdentifier);
@@ -46,8 +42,8 @@ namespace JMS.DVB.EPG.Tables
         /// Create a new <i>Program Map Table</i> instance.
         /// </summary>
         /// <param name="section">The section which is currently parsed.</param>
-        public PMT( Section section )
-            : base( section )
+        public PMT(Section section)
+            : base(section)
         {
             // Special recommendation
             if ((0 != SectionNumber) || (0 != LastSectionNumber)) return;
@@ -59,17 +55,17 @@ namespace JMS.DVB.EPG.Tables
             if (length < 0) return;
 
             // Read statics
-            ProgramNumber = Tools.MergeBytesToWord( Section[1], Section[0] );
-            PCRPID = (ushort) (0x1fff & Tools.MergeBytesToWord( Section[6], Section[5] ));
+            ProgramNumber = Tools.MergeBytesToWord(Section[1], Section[0]);
+            PCRPID = (ushort)(0x1fff & Tools.MergeBytesToWord(Section[6], Section[5]));
 
             // Length
-            int infoLength = 0xfff & Tools.MergeBytesToWord( Section[8], Section[7] );
+            int infoLength = 0xfff & Tools.MergeBytesToWord(Section[8], Section[7]);
 
             // Validate
             if (length < infoLength) return;
 
             // Create my descriptors
-            Descriptors = Descriptor.Load( this, offset, infoLength );
+            Descriptors = Descriptor.Load(this, offset, infoLength);
 
             // Adjust
             offset += infoLength;
@@ -82,13 +78,13 @@ namespace JMS.DVB.EPG.Tables
             while (length > 0)
             {
                 // Create next
-                ProgramEntry entry = ProgramEntry.Create( this, offset, length );
+                ProgramEntry? entry = ProgramEntry.Create(this, offset, length);
 
                 // Failed
                 if ((null == entry) || !entry.IsValid) return;
 
                 // Remember
-                entries.Add( entry );
+                entries.Add(entry);
 
                 // Adjust
                 offset += entry.Length;
