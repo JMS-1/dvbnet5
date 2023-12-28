@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.Text;
 
 namespace JMS.DVB.Algorithms.Scheduler
 {
@@ -54,7 +51,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             {
                 // Validate
                 if (comparer == null)
-                    throw new ArgumentNullException("comparer");
+                    throw new ArgumentNullException(nameof(comparer));
 
                 // Remember
                 m_positiveComparer = comparer;
@@ -66,11 +63,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="first">Die erste Instanz.</param>
             /// <param name="second">Die zweite Instanz.</param>
             /// <returns>Das umgekehrte Ergebnis des Originalvergleichs.</returns>
-            public int Compare(TEntity first, TEntity second)
-            {
-                // Forward
-                return -m_positiveComparer.Compare(first, second);
-            }
+            public int Compare(TEntity? first, TEntity? second) => -m_positiveComparer.Compare(first, second);
         }
 
         /// <summary>
@@ -88,7 +81,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// Erstellt eine neue Liste.
             /// </summary>
             /// <param name="comparers">Die einzelnen Algorithmen.</param>
-            public CompoundComparer(IEnumerable<IComparer<TEntity>> comparers = null)
+            public CompoundComparer(IEnumerable<IComparer<TEntity>> comparers = null!)
             {
                 // Nothing to do
                 if (comparers == null)
@@ -97,7 +90,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 // Fill in 
                 foreach (var comparer in comparers)
                     if (comparer == null)
-                        throw new ArgumentNullException("comparers");
+                        throw new ArgumentNullException(nameof(comparers));
                     else
                         Comparers.Add(comparer);
             }
@@ -108,7 +101,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="first">Die erste Instanz.</param>
             /// <param name="second">Die zweite Instanz.</param>
             /// <returns>Positiv, wenn die erste Instanz besser passt.</returns>
-            public int Compare(TEntity first, TEntity second)
+            public int Compare(TEntity? first, TEntity? second)
             {
                 // Forward
                 foreach (var comparer in Comparers)
@@ -148,7 +141,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             {
                 // Validate
                 if (comparer == null)
-                    throw new ArgumentNullException("comparer");
+                    throw new ArgumentNullException(nameof(comparer));
 
                 // Remember
                 m_resourceComparer = comparer;
@@ -161,11 +154,11 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="firstPlan">Der erste Plan.</param>
             /// <param name="secondPlan">Der zweite Plan.</param>
             /// <returns>Gesetzt, wenn der erste Plan nach allen Regeln eine bessere Lösung bietet.</returns>
-            public int Compare(SchedulePlan firstPlan, SchedulePlan secondPlan)
+            public int Compare(SchedulePlan? firstPlan, SchedulePlan? secondPlan)
             {
                 // Get resource lists
-                var firstResources = firstPlan.Resources;
-                var secondResources = secondPlan.Resources;
+                var firstResources = firstPlan!.Resources;
+                var secondResources = secondPlan!.Resources;
 
                 // Internal cross check
                 if (firstResources.Length != secondResources.Length)
@@ -234,7 +227,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         {
             // Validate
             if (fileContents == null)
-                throw new ArgumentNullException("fileContents");
+                throw new ArgumentNullException(nameof(fileContents));
 
             // Result
             var resourceComparer = default(CompoundComparer<ResourcePlan>);
@@ -243,7 +236,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             // Create reader
             using (var stream = new MemoryStream(fileContents, false))
             using (var reader = new StreamReader(stream, true))
-                for (string line; (line = reader.ReadLine()) != null;)
+                for (string line; (line = reader.ReadLine()!) != null;)
                 {
                     // Check for comment and empty line
                     var dataLength = line.IndexOf('#');
@@ -339,7 +332,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                             }
 
                             // Remember
-                            resourceComparer.Comparers.Add(rule);
+                            resourceComparer!.Comparers.Add(rule);
                         }
                         else if (resourceComparer != null)
                             throw new InvalidDataException(string.Format("Schedule Rule can not use Property '{0}'", parts[0]));

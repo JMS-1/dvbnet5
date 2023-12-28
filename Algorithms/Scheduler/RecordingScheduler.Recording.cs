@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Diagnostics;
-using System.Collections.Generic;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     partial class RecordingScheduler
     {
@@ -21,7 +15,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <summary>
             /// Enthält die eindeutigen Kennungen aller Geräte, die benutzt werden dürfen.
             /// </summary>
-            public IScheduleResource[] AllowedResources { get; private set; }
+            public IScheduleResource[] AllowedResources { get; private set; } = null!;
 
             /// <summary>
             /// Alle Ausnahmeregeln, geordnet nach dem Datum.
@@ -31,12 +25,12 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <summary>
             /// Die aktuelle Abfrage der Aufzeichnungsdaten.
             /// </summary>
-            private IEnumerator<SuggestedPlannedTime> m_Scan;
+            private IEnumerator<SuggestedPlannedTime> m_Scan = null!;
 
             /// <summary>
             /// Die nächste Ausführungszeit.
             /// </summary>
-            private SuggestedPlannedTime m_Current;
+            private SuggestedPlannedTime m_Current = null!;
 
             /// <summary>
             /// Aufzeichnungen, die vor diesem Zeitpunkt enden, werden nicht berücksichtigt.
@@ -49,11 +43,10 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="definition">Die Definition der Aufzeichnung.</param>
             /// <param name="exceptions">Alle Ausnahmen zur Aufzeichnung.</param>
             /// <exception cref="ArgumentNullException">Es wurde keine Aufzeichnung angegeben.</exception>
-            public _Schedule(IScheduleDefinition definition, IEnumerable<PlanException> exceptions = null)
+            public _Schedule(IScheduleDefinition definition, IEnumerable<PlanException> exceptions = null!)
             {
                 // Validate
-                if (definition == null)
-                    throw new ArgumentNullException("plan");
+                ArgumentNullException.ThrowIfNull(definition, "plan");
 
                 // Remember
                 Definition = definition;
@@ -65,12 +58,12 @@ namespace JMS.DVB.Algorithms.Scheduler
                 // Validate exceptions
                 foreach (var exception in exceptions)
                     if (exception.ExceptionDate.TimeOfDay != TimeSpan.Zero)
-                        throw new ArgumentException(string.Format("Exception Date is not a Date but {0}", exception.ExceptionDate), "exceptions");
+                        throw new ArgumentException(string.Format("Exception Date is not a Date but {0}", exception.ExceptionDate), nameof(exceptions));
 
                 // Cross validate
                 foreach (var exception in exceptions.GroupBy(e => e.ExceptionDate))
                     if (exception.Count() > 1)
-                        throw new ArgumentException(string.Format("There is more than one Exception on {0}", exception.Key), "exceptions");
+                        throw new ArgumentException(string.Format("There is more than one Exception on {0}", exception.Key), nameof(exceptions));
 
                 // Order plan
                 m_Exceptions = exceptions.ToDictionary(e => e.ExceptionDate);
@@ -80,7 +73,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// Meldet das aktuell gültige Element.
             /// </summary>
             /// <exception cref="InvalidOperationException">Es existiert kein gültiger Zeitpunkt mehr.</exception>
-            public SuggestedPlannedTime Current
+            public SuggestedPlannedTime? Current
             {
                 get
                 {
@@ -100,7 +93,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             public bool PrepareResourceMap(RecordingScheduler scheduler)
             {
                 // Reset
-                AllowedResources = null;
+                AllowedResources = null!;
 
                 // Check mode
                 var resources = Definition.Resources;
@@ -127,7 +120,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                     // Ask base
                     if (m_Scan != null)
                         if (!m_Scan.MoveNext())
-                            m_Scan = null;
+                            m_Scan = null!;
 
                     // Report
                     if (m_Scan == null)

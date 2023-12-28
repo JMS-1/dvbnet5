@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Beschreibt die nächste auszuführende Aktion.
@@ -30,7 +27,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// Erzeugt eine neue Beschreibung.
         /// </summary>
         /// <param name="when">Der Zeitpunkt, an dem die nächste Prüfung auszuführen ist.</param>
-        internal WaitActivity( DateTime when )
+        internal WaitActivity(DateTime when)
         {
             // Rememebr
             RetestTime = when;
@@ -43,7 +40,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         public override string ToString()
         {
             // Construct
-            return string.Format( "Wait until {0}", RetestTime.ToLocalTime() );
+            return string.Format("Wait until {0}", RetestTime.ToLocalTime());
         }
     }
 
@@ -61,7 +58,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// Erzeugt eine neue Beschreibung.
         /// </summary>
         /// <param name="definitionIdentifier">Die eindeutige Kennung der betroffenen Aufzeichnung oder Aufgabe.</param>
-        internal StopActivity( Guid definitionIdentifier )
+        internal StopActivity(Guid definitionIdentifier)
         {
             // Remember
             UniqueIdentifier = definitionIdentifier;
@@ -82,7 +79,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// Erzeugt eine neue Beschreibung.
         /// </summary>
         /// <param name="definition">Die Daten zur Aufzeichnung oder Aufgabe.</param>
-        internal StartActivity( IScheduleInformation definition )
+        internal StartActivity(IScheduleInformation definition)
         {
             // Remember
             Recording = definition;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Diese Klasse übernimmt die periodische Ausführung von Sonderaktionen, wie
@@ -12,12 +7,14 @@ namespace JMS.DVB.Algorithms.Scheduler
     /// <remarks>
     /// Alle Zeitangaben sind in GMT / UTC Notation.
     /// </remarks>
-    public abstract class PeriodicScheduler : IScheduleDefinition
+    /// <param name="name">Eine Name zur Identifikation der Aufgabe.</param>
+    /// <param name="uniqueIdentifier">Die eindeutige Kennung dieser Aufgabe.</param>
+    public abstract class PeriodicScheduler(string name, Guid uniqueIdentifier) : IScheduleDefinition
     {
         /// <summary>
         /// Ein Name zur Identifikation der Aufgabe.
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; private set; } = name;
 
         /// <summary>
         /// Meldet die aktuelle Uhrzeit und kann zu Testzwecken überschrieben werden.
@@ -27,19 +24,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <summary>
         /// Eine eindeutige Identifikation der Aktion.
         /// </summary>
-        public Guid UniqueIdentifier { get; private set; }
-
-        /// <summary>
-        /// Initialisiert eine neue Instanz.
-        /// </summary>
-        /// <param name="name">Eine Name zur Identifikation der Aufgabe.</param>
-        /// <param name="uniqueIdentifier">Die eindeutige Kennung dieser Aufgabe.</param>
-        protected PeriodicScheduler( string name, Guid uniqueIdentifier )
-        {
-            // Remember
-            UniqueIdentifier = uniqueIdentifier;
-            Name = name;
-        }
+        public Guid UniqueIdentifier { get; private set; } = uniqueIdentifier;
 
         /// <summary>
         /// Meldet, ob die Ausführung grundsätzlich aktiviert ist.
@@ -82,7 +67,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             get
             {
                 // Forward
-                return GetNextSchedule( LastRun, GetNow() );
+                return GetNextSchedule(LastRun, GetNow());
             }
         }
 
@@ -91,7 +76,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// </summary>
         /// <param name="lastRun">Der Zeitpunkt der letzten Ausführung.</param>
         /// <param name="now">Die aktuelle Urzeit.</param>
-        private DateTime? GetNextSchedule( DateTime? lastRun, DateTime now )
+        private DateTime? GetNextSchedule(DateTime? lastRun, DateTime now)
         {
             // Generally disabled
             if (!IsEnabled)
@@ -123,13 +108,13 @@ namespace JMS.DVB.Algorithms.Scheduler
             // Map to next full hour in local time zone - using ticks allows us to detect all fractions down to the supported granularity of 0.1µs
             var nextLocal = nextRun.ToLocalTime();
             if ((nextLocal.Ticks % TimeSpan.TicksPerHour) != 0)
-                nextLocal = nextLocal.Date.AddHours( nextLocal.Hour + 1 );
+                nextLocal = nextLocal.Date.AddHours(nextLocal.Hour + 1);
 
             // Find the nearest hour after the indicated start - if hour from list is below the indicated start hour we have to add just another day in local time
-            var hours = (PreferredHours ?? Enumerable.Empty<uint>()).Where( hour => hour < 24 );
-            var bestHour = hours.Select<uint, uint?>( h => (h < nextLocal.Hour) ? (h + 24) : h ).Min();
+            var hours = (PreferredHours ?? Enumerable.Empty<uint>()).Where(hour => hour < 24);
+            var bestHour = hours.Select<uint, uint?>(h => (h < nextLocal.Hour) ? (h + 24) : h).Min();
             if (bestHour.HasValue)
-                nextRun = nextLocal.Date.AddHours( bestHour.Value ).ToUniversalTime();
+                nextRun = nextLocal.Date.AddHours(bestHour.Value).ToUniversalTime();
 
             // Report preferred offset time
             if (nextRun < now)
@@ -145,14 +130,14 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// </summary>
         /// <param name="minTime">Der früheste Ausführungszeitpunkt.</param>
         /// <returns>Alle möglichen Zeiten.</returns>
-        public IEnumerable<SuggestedPlannedTime> GetTimes( DateTime minTime )
+        public IEnumerable<SuggestedPlannedTime> GetTimes(DateTime minTime)
         {
             // Process
             if (Duration.TotalSeconds > 0)
                 for (var lastRun = LastRun; ; minTime = lastRun.Value)
                 {
                     // Load next
-                    var next = GetNextSchedule( lastRun, minTime );
+                    var next = GetNextSchedule(lastRun, minTime);
                     if (!next.HasValue)
                         yield break;
 

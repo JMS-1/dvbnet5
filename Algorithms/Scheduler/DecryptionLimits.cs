@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Beschreibt die Einschränkungen bezüglicher einer Entschlüsselung.
@@ -20,7 +17,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         public override string ToString()
         {
             // Construct
-            return string.Format( "CI<{0}", MaximumParallelSources + 1 );
+            return string.Format("CI<{0}", MaximumParallelSources + 1);
         }
     }
 }

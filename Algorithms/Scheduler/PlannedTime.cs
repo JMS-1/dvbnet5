@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Beschreibt den Zeitraum einer einzelnen Aufzeichnung.
@@ -21,37 +18,16 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <summary>
         /// Meldet den Start der Aufzeichnung in der lokalen Zeitzone.
         /// </summary>
-        public DateTime LocalStart
-        {
-            get
-            {
-                // Report
-                return Start.ToLocalTime();
-            }
-        }
+        public readonly DateTime LocalStart => Start.ToLocalTime();
 
         /// <summary>
         /// Meldet das Ende der Aufzeichnung in UTC / GMT Notation.
         /// </summary>
-        public DateTime End
-        {
-            get
-            {
-                // Report
-                return Start + Duration;
-            }
-        }
+        public readonly DateTime End => Start + Duration;
 
         /// <summary>
         /// Meldet das Ende der Aufzeichnung in der lokalen Zeitzone.
         /// </summary>
-        public DateTime LocalEnd
-        {
-            get
-            {
-                // Report
-                return End.ToLocalTime();
-            }
-        }
+        public readonly DateTime LocalEnd => End.ToLocalTime();
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Stellt einen Vergleich nach der Objektidentität bereit.
@@ -28,18 +24,14 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="x">Das erste Objekt.</param>
             /// <param name="y">Das zweite Objekt.</param>
             /// <returns>Gesetzt, wenn die beiden Objekte identisch sind.</returns>
-            public bool Equals( T x, T y )
-            {
-                // Same objects?
-                return ReferenceEquals( x, y );
-            }
+            public bool Equals(T? x, T? y) => ReferenceEquals(x, y);
 
             /// <summary>
             /// Meldet ein Kürzel.
             /// </summary>
             /// <param name="obj">Ein Objekt.</param>
             /// <returns>Das gewünschte Kürzel.</returns>
-            public int GetHashCode( T obj )
+            public int GetHashCode(T obj)
             {
                 // Report
                 if (obj == null)

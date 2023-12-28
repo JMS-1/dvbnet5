@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 
 
 namespace JMS.DVB.Algorithms.Scheduler
@@ -52,7 +50,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="start">Der Anfang des Bereichs (einschließlich).</param>
             /// <param name="end">Das Ende des Bereichs (ausschließlich).</param>
             /// <param name="data">Die zugehörigen Daten.</param>
-            private Range( DateTime start, DateTime end, TItemType data )
+            private Range(DateTime start, DateTime end, TItemType data)
             {
                 // Remember all
                 m_start = start;
@@ -67,14 +65,14 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="end">Das Ende des Bereichs (ausschließlich).</param>
             /// <param name="data">Die zugehörigen Daten.</param>
             /// <returns>Der gewünschte Bereich.</returns>
-            public static Range Create( DateTime start, DateTime end, TItemType data )
+            public static Range Create(DateTime start, DateTime end, TItemType data)
             {
                 // Must not be empty
                 if (end <= start)
-                    throw new ArgumentOutOfRangeException( "end" );
+                    throw new ArgumentOutOfRangeException(nameof(end));
 
                 // Create
-                return new Range( start, end, data );
+                return new Range(start, end, data);
             }
 
             /// <summary>
@@ -84,10 +82,10 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="duration">Die Größe des Bereichs.</param>
             /// <param name="data">Die zugehörigen Daten.</param>
             /// <returns>Der gewünschte Bereich.</returns>
-            public static Range Create( DateTime start, TimeSpan duration, TItemType data )
+            public static Range Create(DateTime start, TimeSpan duration, TItemType data)
             {
                 // Forward
-                return Create( start, checked( start + duration ), data );
+                return Create(start, checked(start + duration), data);
             }
 
             /// <summary>
@@ -97,7 +95,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             public override string ToString()
             {
                 // Take it easy
-                return string.Format( "[{0}..{1}={3}] '{2}'", Start, End, Data, End - Start );
+                return string.Format("[{0}..{1}={3}] '{2}'", Start, End, Data, End - Start);
             }
         }
 
@@ -110,11 +108,11 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// Ergänzt einen neuen Bereich.
         /// </summary>
         /// <param name="range">Der gewünschte Bereich.</param>
-        public void Add( Range range )
+        public void Add(Range range)
         {
             // Validate
             if (range.End <= range.Start)
-                throw new ArgumentOutOfRangeException( "range" );
+                throw new ArgumentOutOfRangeException(nameof(range));
 
             // Find a place to add it
             for (var index = 0; index < m_ranges.Count; index++)
@@ -126,7 +124,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 if (range.End <= existingRange.Start)
                 {
                     // Insert
-                    m_ranges.Insert( index, range );
+                    m_ranges.Insert(index, range);
 
                     // Done
                     return;
@@ -140,7 +138,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 if (range.Start < existingRange.Start)
                 {
                     // Just add a new bit
-                    m_ranges.Insert( index++, Range.Create( range.Start, existingRange.Start, range.Data ) );
+                    m_ranges.Insert(index++, Range.Create(range.Start, existingRange.Start, range.Data));
 
                     // Correct us
                     range.Start = existingRange.Start;
@@ -150,7 +148,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 else if (range.Start > existingRange.Start)
                 {
                     // Actually this is a split
-                    m_ranges.Insert( index++, Range.Create( existingRange.Start, range.Start, existingRange.Data ) );
+                    m_ranges.Insert(index++, Range.Create(existingRange.Start, range.Start, existingRange.Data));
 
                     // Update the previous data
                     existingRange.Start = range.Start;
@@ -163,7 +161,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 if (range.End >= existingRange.End)
                 {
                     // Update
-                    existingRange.Data = Merge( existingRange.Data, range.Data );
+                    existingRange.Data = Merge(existingRange.Data, range.Data);
 
                     // Write it back
                     m_ranges[index] = existingRange;
@@ -180,10 +178,10 @@ namespace JMS.DVB.Algorithms.Scheduler
                 }
 
                 // Overlapping and ending early: merge item data and append a range for the left existing one
-                m_ranges.Insert( index + 1, Range.Create( range.End, existingRange.End, existingRange.Data ) );
+                m_ranges.Insert(index + 1, Range.Create(range.End, existingRange.End, existingRange.Data));
 
                 // Update exisiting 
-                existingRange.Data = Merge( existingRange.Data, range.Data );
+                existingRange.Data = Merge(existingRange.Data, range.Data);
                 existingRange.End = range.End;
 
                 // Write it back
@@ -194,7 +192,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             }
 
             // Start time beyond the last range: just append
-            m_ranges.Add( range );
+            m_ranges.Add(range);
         }
 
         /// <summary>
@@ -203,7 +201,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="existing">Die Daten des existierenden Bereiches.</param>
         /// <param name="added">Die Daten des neuen Bereichs.</param>
         /// <returns>Die Zusammenfassung der Daten.</returns>
-        protected abstract TItemType Merge( TItemType existing, TItemType added );
+        protected abstract TItemType Merge(TItemType existing, TItemType added);
 
         /// <summary>
         /// Meldet eine Auflistung über alle Bereich.

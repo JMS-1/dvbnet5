@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Diagnostics;
-using System.Collections.Generic;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Verwaltet die Planung für ein einzelnes Gerät.
@@ -32,10 +26,10 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="firstPlan">Die erste Planung.</param>
             /// <param name="secondPlan">Die zweite Planung.</param>
             /// <returns>Positiv, wenn der erste Plan mehr Aufzeichnungen enthält als der zweite.</returns>
-            public int Compare( ResourcePlan firstPlan, ResourcePlan secondPlan )
+            public int Compare(ResourcePlan? firstPlan, ResourcePlan? secondPlan)
             {
                 // Forward
-                return firstPlan.RecordingCount.CompareTo( secondPlan.RecordingCount );
+                return firstPlan!.RecordingCount.CompareTo(secondPlan!.RecordingCount);
             }
         }
 
@@ -50,10 +44,10 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="firstPlan">Die erste Planung.</param>
             /// <param name="secondPlan">Die zweite Planung.</param>
             /// <returns>Positiv, wenn der erste Plan mehr Quellen enthält als der zweite.</returns>
-            public int Compare( ResourcePlan firstPlan, ResourcePlan secondPlan )
+            public int Compare(ResourcePlan? firstPlan, ResourcePlan? secondPlan)
             {
                 // Forward
-                return firstPlan.NumberOfDifferentSources.CompareTo( secondPlan.NumberOfDifferentSources );
+                return firstPlan!.NumberOfDifferentSources.CompareTo(secondPlan!.NumberOfDifferentSources);
             }
         }
 
@@ -83,7 +77,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="recording">Die zugehörige Aufzeichnung.</param>
             /// <param name="time">Die vorgesehene Ausführungszeit.</param>
             /// <param name="startsLate">Gesetzt, wenn die Aufzeichnung verspätet beginnt.</param>
-            public _RecordingItem( IRecordingDefinition recording, PlannedTime time, bool startsLate )
+            public _RecordingItem(IRecordingDefinition recording, PlannedTime time, bool startsLate)
             {
                 // Remember
                 StartsLate = startsLate;
@@ -136,20 +130,20 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="allocations">Optional alle bereits vorgenommenen Zuordnungen.</param>
         /// <param name="planTime">Der aktuelle Planungsbeginn, sofern bekannt.</param>
         /// <exception cref="ArgumentNullException">Es wurde kein Gerät angegeben.</exception>
-        public ResourcePlan( IScheduleResource resource, SchedulePlan schedulePlan, HashSet<Guid> decryptionCounter = null, AllocationMap allocations = null, DateTime? planTime = null )
+        public ResourcePlan(IScheduleResource resource, SchedulePlan schedulePlan, HashSet<Guid> decryptionCounter = null!, AllocationMap allocations = null!, DateTime? planTime = null)
         {
             // Remember
             SchedulePlan = schedulePlan;
             Resource = resource;
 
             // Register a single decryption counter
-            DecryptionCounters = decryptionCounter ?? new HashSet<Guid> { schedulePlan.RegisterDecryption( Resource.Decryption.MaximumParallelSources ) };
+            DecryptionCounters = decryptionCounter ?? new() { schedulePlan.RegisterDecryption(Resource.Decryption.MaximumParallelSources) };
 
             // Check for allocation
             if (allocations != null)
             {
                 // Just clone
-                Allocations = allocations.Clone( planTime );
+                Allocations = allocations.Clone(planTime);
             }
             else
             {
@@ -159,7 +153,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                     sourceLimit = int.MaxValue;
 
                 // Create brand new
-                Allocations = new AllocationMap( sourceLimit, CheckForSourceGroupMatch );
+                Allocations = new AllocationMap(sourceLimit, CheckForSourceGroupMatch);
             }
         }
 
@@ -168,11 +162,11 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// </summary>
         /// <param name="original">Die originalen Planungsdaten.</param>
         /// <param name="schedulePlan">Die zugehörige Gesamtplanung.</param>
-        private ResourcePlan( ResourcePlan original, SchedulePlan schedulePlan )
-            : this( original.Resource, schedulePlan, original.DecryptionCounters, original.Allocations )
+        private ResourcePlan(ResourcePlan original, SchedulePlan schedulePlan)
+            : this(original.Resource, schedulePlan, original.DecryptionCounters, original.Allocations)
         {
             // Finish clone process
-            m_Recordings.AddRange( original.m_Recordings );
+            m_Recordings.AddRange(original.m_Recordings);
             CutRecordings = original.CutRecordings;
             TotalCut = original.TotalCut;
         }
@@ -187,7 +181,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             var resource = Resource;
 
             // Forward
-            return m_Recordings.Select( r => new ScheduleInfo( r.Recording, resource, r.Time, r.StartsLate ) );
+            return m_Recordings.Select(r => new ScheduleInfo(r.Recording, resource, r.Time, r.StartsLate));
         }
 
         /// <summary>
@@ -206,10 +200,10 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="plan">Ein neuer Plan.</param>
         /// <param name="planTime">Der aktuelle Planungsbeginn, sofern bekannt.</param>
         /// <returns>Eine Beschreibung des Gerätes.</returns>
-        public ResourcePlan Restart( SchedulePlan plan, DateTime? planTime )
+        public ResourcePlan Restart(SchedulePlan plan, DateTime? planTime)
         {
             // Create new - this will reset the allocation map to improve performance
-            return new ResourcePlan( Resource, plan, DecryptionCounters, Allocations, planTime );
+            return new ResourcePlan(Resource, plan, DecryptionCounters, Allocations, planTime);
         }
 
         /// <summary>
@@ -217,10 +211,10 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// </summary>
         /// <param name="until">Die Zeit, bis zu der eine Reservierung stattfinden soll.</param>
         /// <returns>Gesetzt, wenn eine Reservierung möglich war.</returns>
-        public bool Reserve( DateTime until )
+        public bool Reserve(DateTime until)
         {
             // Report
-            return Allocations.SetStart( until );
+            return Allocations.SetStart(until);
         }
 
         /// <summary>
@@ -232,22 +226,22 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <returns>Gesetzt, wenn eine Aufzeichnung möglich war.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Aufzeichnung übergeben.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Die Startzeit liegt vor der Aktivierung des Gerätes.</exception>
-        public bool Add( IRecordingDefinition recording, SuggestedPlannedTime time, DateTime minTime )
+        public bool Add(IRecordingDefinition recording, SuggestedPlannedTime time, DateTime minTime)
         {
             // Validate
             if (recording == null)
-                throw new ArgumentNullException( "recording" );
+                throw new ArgumentNullException(nameof(recording));
 
             // If the current resource can see the source we can do nothing at all
             var resource = Resource;
-            if (!resource.CanAccess( recording.Source ))
+            if (!resource.CanAccess(recording.Source))
                 return false;
 
             // If the recording is bound to dedicated sources but not use we should not process
             var allowedResources = recording.Resources;
             if (allowedResources != null)
                 if (allowedResources.Length > 0)
-                    if (!allowedResources.Any( r => ReferenceEquals( r, resource ) ))
+                    if (!allowedResources.Any(r => ReferenceEquals(r, resource)))
                         return false;
 
             // See if we have to cut it off and load the corresponding end of the recording
@@ -266,7 +260,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             }
 
             // See if device could at least receive
-            var sourceAllocation = Allocations.PrepareAllocation( recording.Source, time );
+            var sourceAllocation = Allocations.PrepareAllocation(recording.Source, time);
             if (sourceAllocation == null)
                 return false;
 
@@ -277,20 +271,20 @@ namespace JMS.DVB.Algorithms.Scheduler
             if (recording.Source.IsEncrypted)
             {
                 // What to check for
-                var counters = DecryptionCounters.Select( i => SchedulePlan.DecryptionCounters[i] ).ToArray();
+                var counters = DecryptionCounters.Select(i => SchedulePlan.DecryptionCounters[i]).ToArray();
 
                 // Check all
                 foreach (var counter in counters)
-                    if (counter.PrepareAllocation( recording.Source, time ) == null)
+                    if (counter.PrepareAllocation(recording.Source, time) == null)
                         return false;
 
                 // Now reserve all - this may manipulate the time slice for the recording as well
                 foreach (var counter in counters)
                 {
                     // Allocate again - we may only call the allocate immediatly after preparing
-                    var allocation = counter.PrepareAllocation( recording.Source, time );
+                    var allocation = counter.PrepareAllocation(recording.Source, time);
                     if (allocation == null)
-                        throw new InvalidOperationException( "PrepareAllocation" );
+                        throw new InvalidOperationException("PrepareAllocation");
 
                     // Process
                     allocation.Allocate();
@@ -298,7 +292,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             }
 
             // Remember recording
-            m_Recordings.Add( new _RecordingItem( recording, time.Planned, time.Planned.Start > initialPlan.Start ) );
+            m_Recordings.Add(new _RecordingItem(recording, time.Planned, time.Planned.Start > initialPlan.Start));
 
             // Get cut time
             var delta = initialPlan.Duration - time.Planned.Duration;
@@ -319,10 +313,10 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// </summary>
         /// <param name="schedulePlan">Die zugehörige Gesamtplanung.</param>
         /// <returns>Die gewünschte Kopie.</returns>
-        public ResourcePlan Clone( SchedulePlan schedulePlan )
+        public ResourcePlan Clone(SchedulePlan schedulePlan)
         {
             // Forward
-            return new ResourcePlan( this, schedulePlan );
+            return new ResourcePlan(this, schedulePlan);
         }
 
         /// <summary>
@@ -332,14 +326,14 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="sources">Eine Liste von Quellen, durch genau diese Methode aller auf der
         /// selben Quellgruppe.</param>
         /// <returns>Gesetzt, wenn die Quelle die korrekte Quellgruppe verwendet.</returns>
-        private static bool CheckForSourceGroupMatch( IScheduleSource source, IEnumerable<IScheduleSource> sources )
+        private static bool CheckForSourceGroupMatch(IScheduleSource source, IEnumerable<IScheduleSource> sources)
         {
             // Process
             var any = sources.FirstOrDefault();
             if (any == null)
                 return true;
             else
-                return any.BelongsToSameSourceGroupAs( source );
+                return any.BelongsToSameSourceGroupAs(source);
         }
 
         /// <summary>

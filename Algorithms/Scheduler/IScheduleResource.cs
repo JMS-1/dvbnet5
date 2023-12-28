@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Beschreibt ein mögliches Gerät.
@@ -35,6 +32,6 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// </summary>
         /// <param name="source">Die gewünschte Quelle.</param>
         /// <returns>Gesetzt, wenn die Quelle angesprochen werden kann.</returns>
-        bool CanAccess( IScheduleSource source );
+        bool CanAccess(IScheduleSource source);
     }
 }

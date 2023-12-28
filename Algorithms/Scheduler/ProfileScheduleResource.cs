@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
+﻿using System.Collections.Concurrent;
 
 
 namespace JMS.DVB.Algorithms.Scheduler
@@ -99,7 +97,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 var typedSource = source as _Source;
 
                 // Just test the identification
-                return Equals(Source.Source, typedSource.Source.Source);
+                return Equals(Source.Source, typedSource!.Source.Source);
             }
 
             /// <summary>
@@ -111,9 +109,9 @@ namespace JMS.DVB.Algorithms.Scheduler
             {
                 // Validate
                 if (source == null)
-                    throw new ArgumentNullException("source");
+                    throw new ArgumentNullException(nameof(source));
                 if (!(source.Source is Station))
-                    throw new ArgumentNullException("source");
+                    throw new ArgumentNullException(nameof(source));
 
                 // Remember
                 Source = source;
@@ -126,7 +124,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             public override string ToString()
             {
                 // Just ask our source - we required it to be a full station so there is quite a bit of information in the string representation
-                return Source.Source.ToString();
+                return Source.Source.ToString()!;
             }
         }
 
@@ -236,12 +234,12 @@ namespace JMS.DVB.Algorithms.Scheduler
         {
             // Validate
             if (string.IsNullOrEmpty(profileName))
-                throw new ArgumentNullException("profileName");
+                throw new ArgumentNullException(nameof(profileName));
 
             // Look it up
             var profile = ProfileManager.FindProfile(profileName);
             if (profile == null)
-                throw new ArgumentException(string.Format("There is no Device Profile '{0}'", profileName), "profileName");
+                throw new ArgumentException(string.Format("There is no Device Profile '{0}'", profileName), nameof(profileName));
 
             // Forward
             return new _Implementation(profile.Name);

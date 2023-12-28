@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Beschreibt einen Vorschlag für eine geplante Aufzeichung.
@@ -25,7 +22,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// </summary>
         /// <param name="planned">Der ursprüngliche Vorschlag.</param>
         /// <returns>Der modifizierbare Vorschlag.</returns>
-        public static implicit operator SuggestedPlannedTime( PlannedTime planned )
+        public static implicit operator SuggestedPlannedTime(PlannedTime planned)
         {
             // Create
             return new SuggestedPlannedTime { Planned = planned };

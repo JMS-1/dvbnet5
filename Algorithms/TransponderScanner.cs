@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Diagnostics;
-using System.Collections.Generic;
+﻿using System.Diagnostics;
 
 namespace JMS.DVB.Algorithms
 {
@@ -51,17 +46,17 @@ namespace JMS.DVB.Algorithms
         /// <summary>
         /// Der Ursprung, der untersucht wurde.
         /// </summary>
-        public GroupLocation Location { get; set; }
+        public GroupLocation Location { get; set; } = null!;
 
         /// <summary>
         /// Die zugehörige Quellgruppe.
         /// </summary>
-        public SourceGroup Group { get; set; }
+        public SourceGroup Group { get; set; } = null!;
 
         /// <summary>
         /// Die zugehörige Quelle.
         /// </summary>
-        public SourceIdentifier Source { get; set; }
+        public SourceIdentifier Source { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt einen neuen Protokolleintrag.
@@ -77,7 +72,7 @@ namespace JMS.DVB.Algorithms
         public override string ToString()
         {
             // Check type
-            Station station = Source as Station;
+            var station = Source as Station;
 
             // Depends on mode
             if (null != station)
@@ -101,30 +96,30 @@ namespace JMS.DVB.Algorithms
         /// Wird aktiviert, bevor ein neuer Ursprung aktiviert wird. Wird <i>false</i> zurück
         /// geliefert, so bricht der Suchlauf ab.
         /// </summary>
-        public event Func<GroupLocation, TransponderScanner, bool> OnStartLocation;
+        public event Func<GroupLocation, TransponderScanner, bool>? OnStartLocation;
 
         /// <summary>
         /// Wird aktiviert, nachdem ein Ursprung vollständig abgesucht wurde. Wird <i>false</i> zurück
         /// geliefert, so bricht der Suchlauf ab.
         /// </summary>
-        public event Func<GroupLocation, TransponderScanner, bool> OnDoneLocation;
+        public event Func<GroupLocation, TransponderScanner, bool>? OnDoneLocation;
 
         /// <summary>
         /// Wird aktiviert, bevor eine neue Quellgruppe (Transponder) aktiviert wird. Wird <i>false</i> zurück
         /// geliefert, so bricht der Suchlauf ab.
         /// </summary>
-        public event Func<GroupLocation, SourceGroup, TransponderScanner, bool> OnStartGroup;
+        public event Func<GroupLocation, SourceGroup, TransponderScanner, bool>? OnStartGroup;
 
         /// <summary>
         /// Wird aktiviert, nachdem eine Quellgruppe vollständig abgesucht wurde. Wird <i>false</i> zurück
         /// geliefert, so bricht der Suchlauf ab.
         /// </summary>
-        public event Func<GroupLocation, SourceGroup, TransponderScanner, bool> OnDoneGroup;
+        public event Func<GroupLocation, SourceGroup, TransponderScanner, bool>? OnDoneGroup;
 
         /// <summary>
         /// Wird aktiviert, wenn eine Quelle zur Senderliste hinzugefügt wird.
         /// </summary>
-        public event Func<GroupLocation, SourceGroup, Station, TransponderScanner, bool> OnStationAdded;
+        public event Func<GroupLocation, SourceGroup, Station, TransponderScanner, bool>? OnStationAdded;
 
         /// <summary>
         /// Meldet das verwendete Geräteprofil.
@@ -134,17 +129,17 @@ namespace JMS.DVB.Algorithms
         /// <summary>
         /// Der <see cref="Thread"/>, auf dem der eigentliche Suchlauf ausgeführt wird.
         /// </summary>
-        private volatile Thread m_Worker;
+        private volatile Thread m_Worker = null!;
 
         /// <summary>
         /// Nimmt eine etwaige Fehlermeldung auf, die während des Suchlaufs aufgetreten ist.
         /// </summary>
-        private Exception m_ThreadException;
+        private Exception m_ThreadException = null!;
 
         /// <summary>
         /// Die Urprünge, die abzusuchen sind.
         /// </summary>
-        private List<GroupLocation> m_Locations;
+        private List<GroupLocation> m_Locations = null!;
 
         /// <summary>
         /// Gesetzt, wenn der Suchlauf vorzeitig abgebrochen wurde.
@@ -154,27 +149,27 @@ namespace JMS.DVB.Algorithms
         /// <summary>
         /// Alle Quellgruppen (Transponder), die explizit vom Sendersuchlauf ausgeschlossen wurden.
         /// </summary>
-        private List<SourceGroup> m_GroupsExcluded = new List<SourceGroup>();
+        private readonly List<SourceGroup> m_GroupsExcluded = [];
 
         /// <summary>
         /// Alle Quellgruppen (Transponder), die grundsätzlich nich angesteuert werden können.
         /// </summary>
-        private List<SourceGroup> m_UnhandledGroups = new List<SourceGroup>();
+        private readonly List<SourceGroup> m_UnhandledGroups = [];
 
         /// <summary>
         /// Das Ergebnis einer NIT Analyse.
         /// </summary>
-        private Dictionary<GroupLocation, ScanLocation> m_AnalyseResult = new Dictionary<GroupLocation, ScanLocation>();
+        private readonly Dictionary<GroupLocation, ScanLocation> m_AnalyseResult = new();
 
         /// <summary>
         /// Das Ergebnis eines Sendersuchlaufs.
         /// </summary>
-        private List<GroupLocation> m_ScanResults = new List<GroupLocation>();
+        private readonly List<GroupLocation> m_ScanResults = [];
 
         /// <summary>
         /// Detailinformationen zu einerm Sendersuchlauf.
         /// </summary>
-        private List<ProtocolRecord> m_Protocol = new List<ProtocolRecord>();
+        private readonly List<ProtocolRecord> m_Protocol = [];
 
         /// <summary>
         /// Die gesamte Anzahl der Ursprünge, die abgesucht werden.
@@ -210,7 +205,7 @@ namespace JMS.DVB.Algorithms
         {
             // Validate
             if (null == profile)
-                throw new ArgumentNullException("profile");
+                throw new ArgumentNullException(nameof(profile));
 
             // Remember
             Profile = profile;
@@ -221,7 +216,7 @@ namespace JMS.DVB.Algorithms
         /// </summary>
         /// <param name="profile">Das zu verwendende DVB.NET Geräteprofil.</param>
         public TransponderScanner(string profile)
-            : this(ProfileManager.FindProfile(profile))
+            : this(ProfileManager.FindProfile(profile)!)
         {
         }
 
@@ -234,7 +229,7 @@ namespace JMS.DVB.Algorithms
             Thread worker = m_Worker;
 
             // Wipe it out
-            m_Worker = null;
+            m_Worker = null!;
 
             // Synchronize
             if (null != worker)
@@ -280,7 +275,7 @@ namespace JMS.DVB.Algorithms
             m_Protocol.Clear();
 
             // Reset state
-            m_ThreadException = null;
+            m_ThreadException = null!;
             m_Aborted = false;
 
             // Start the new scanner thread
@@ -296,7 +291,7 @@ namespace JMS.DVB.Algorithms
         /// <param name="group">Die gewünschte Quellgruppe (Transponder).</param>
         /// <param name="lastInversion">Bei DVB-C die zuletzt erfolgreich verwendete spektrale Inversion.</param>
         /// <returns>Die Informationen zu den Quellen oder <i>null</i>.</returns>
-        private GroupInformation SelectGroup(Hardware device, GroupLocation location, SourceGroup group, ref SpectrumInversions lastInversion)
+        private static GroupInformation? SelectGroup(Hardware device, GroupLocation location, SourceGroup group, ref SpectrumInversions lastInversion)
         {
             // See if this is a cable group
             var cableGroup = group as CableGroup;
@@ -344,7 +339,7 @@ namespace JMS.DVB.Algorithms
                 using (HardwareManager.Open())
                 {
                     // Attach to the hardware itself
-                    var device = HardwareManager.OpenHardware(Profile);
+                    var device = HardwareManager.OpenHardware(Profile)!;
 
                     // Tell it that we only do a scan
                     device.PrepareSourceScan();
@@ -459,23 +454,23 @@ namespace JMS.DVB.Algorithms
                             if (checkNIT || group.IsComplete)
                             {
                                 // Clone the group - may change
-                                group = SourceGroup.FromString<SourceGroup>(group.ToString());
+                                group = SourceGroup.FromString<SourceGroup>(group.ToString()!);
 
                                 // Attach to the group
-                                var info = SelectGroup(device, location, group, ref lastInversion);
+                                var info = SelectGroup(device, location, group!, ref lastInversion);
 
                                 // Mark as done again - group may be updated for DVB-C and if unchanged this is simply a no-operation
-                                done.Add(group);
+                                done.Add(group!);
 
                                 // Read the configuration again - actually for DVB-C it may change
-                                filter = Profile.GetFilter(group);
+                                filter = Profile.GetFilter(group!);
 
                                 // See if this should be skiped
                                 if (filter != null)
                                     if (filter.ExcludeFromScan)
                                     {
                                         // Remember
-                                        m_GroupsExcluded.Add(group);
+                                        m_GroupsExcluded.Add(group!);
 
                                         // Next
                                         continue;
@@ -483,31 +478,25 @@ namespace JMS.DVB.Algorithms
 
                                 // Remember that we found a group information - transponder is not dead
                                 if (info != null)
-                                    foundInfo.Add(group);
+                                    foundInfo.Add(group!);
 
                                 // See if NIT update is allowed
                                 if (checkNIT)
                                     if (info != null)
                                     {
-                                        // See if we are a cable group
-                                        var cableGroup = group as CableGroup;
-
                                         // Try load
                                         var nit = device.GetLocationInformation(15000);
                                         if (nit != null)
                                             foreach (SourceGroup other in nit.Groups)
                                                 if (other.GetType() == groupType)
                                                 {
-                                                    // See if this is a cable group
-                                                    var otherCable = other as CableGroup;
-
                                                     // Disable NIT scan on the group as is
                                                     enableNIT.RemoveAll(g => g.CompareTo(other, true));
                                                     process.RemoveAll(g => g.CompareTo(other, true));
 
                                                     // Set inversion
-                                                    if (otherCable != null)
-                                                        if (cableGroup != null)
+                                                    if (other is CableGroup otherCable)
+                                                        if (group is CableGroup cableGroup)
                                                         {
                                                             // Use same parameters
                                                             otherCable.SpectrumInversion = cableGroup.SpectrumInversion;
@@ -527,7 +516,7 @@ namespace JMS.DVB.Algorithms
                                 CurrentLocationGroupsPending = process.Count;
 
                                 // Skip if a legacy template group
-                                if (group.IsComplete)
+                                if (group!.IsComplete)
                                 {
                                     // Merge
                                     newLocation.Groups.Add(group);
@@ -603,7 +592,7 @@ namespace JMS.DVB.Algorithms
                 using (HardwareManager.Open())
                 {
                     // Attach to the hardware itself
-                    Hardware device = HardwareManager.OpenHardware(Profile);
+                    var device = HardwareManager.OpenHardware(Profile)!;
 
                     // Reset counters
                     TotalLocations = m_Locations.Count;
@@ -642,7 +631,7 @@ namespace JMS.DVB.Algorithms
                             Type groupType = group.GetType();
 
                             // Clone the group
-                            SourceGroup newGroup = SourceGroup.FromString<SourceGroup>(group.ToString());
+                            var newGroup = SourceGroup.FromString<SourceGroup>(group.ToString()!)!;
 
                             // Count up
                             --CurrentLocationGroupsPending;
@@ -673,9 +662,6 @@ namespace JMS.DVB.Algorithms
                             // Attach to the group
                             if (null != SelectGroup(device, location, newGroup, ref lastInversion))
                             {
-                                // See if we are a cable group
-                                CableGroup cableGroup = newGroup as CableGroup;
-
                                 // Attach to the NIT
                                 var nit = device.GetLocationInformation(15000);
                                 if (null != nit)
@@ -687,14 +673,11 @@ namespace JMS.DVB.Algorithms
                                     foreach (SourceGroup other in nit.Groups)
                                         if (other.GetType() == groupType)
                                         {
-                                            // See if this is a cable group
-                                            CableGroup otherCable = other as CableGroup;
-
                                             // Update inversion
-                                            if (null != otherCable)
+                                            if (other is CableGroup otherCable)
                                             {
                                                 // Other must be cable, too
-                                                if (null == cableGroup)
+                                                if (newGroup is not CableGroup cableGroup)
                                                     continue;
 
                                                 // Use same parameters
@@ -720,7 +703,7 @@ namespace JMS.DVB.Algorithms
                         foreach (SourceGroup group in nitAvailable)
                         {
                             // Try to find the full qualified name
-                            SourceGroup nitGroup = found.Keys.FirstOrDefault(p => p.CompareTo(group, true));
+                            var nitGroup = found.Keys.FirstOrDefault(p => p.CompareTo(group, true));
 
                             // Update
                             if (null == nitGroup)
@@ -748,38 +731,17 @@ namespace JMS.DVB.Algorithms
         /// <summary>
         /// Meldet das Ergebnis einer NIT Analyse.
         /// </summary>
-        public ScanLocation[] ScanLocations
-        {
-            get
-            {
-                // Report
-                return m_AnalyseResult.Values.ToArray();
-            }
-        }
+        public ScanLocation[] ScanLocations => m_AnalyseResult.Values.ToArray();
 
         /// <summary>
         /// Meldet das Ergebnis des Sendersuchlaufs.
         /// </summary>
-        public GroupLocation[] ScanResults
-        {
-            get
-            {
-                // Report
-                return m_ScanResults.ToArray();
-            }
-        }
+        public GroupLocation[] ScanResults => m_ScanResults.ToArray();
 
         /// <summary>
         /// Meldet Detailergebnisse zum Sendersuchlauf.
         /// </summary>
-        public ProtocolRecord[] Protocol
-        {
-            get
-            {
-                // Report
-                return m_Protocol.ToArray();
-            }
-        }
+        public ProtocolRecord[] Protocol => m_Protocol.ToArray();
 
         /// <summary>
         /// Übernimmt das Ergebnis des Sendersuchlaufs in das Geräteprofil.
@@ -787,7 +749,7 @@ namespace JMS.DVB.Algorithms
         public void UpdateProfile()
         {
             // Create a map of all current locations
-            Dictionary<GroupLocation, GroupLocation> newLocations = new Dictionary<GroupLocation, GroupLocation>();
+            Dictionary<GroupLocation, GroupLocation> newLocations = new();
 
             // Fill current locations
             foreach (GroupLocation location in m_ScanResults)
@@ -846,7 +808,7 @@ namespace JMS.DVB.Algorithms
                         }
 
                         // At least a group must exist
-                        SourceGroup newGroup = null;
+                        SourceGroup? newGroup = null;
 
                         // Find it
                         foreach (SourceGroup testGroup in newLocation.Groups)
@@ -863,14 +825,14 @@ namespace JMS.DVB.Algorithms
                         if (null == newGroup)
                         {
                             // Clone it
-                            newGroup = SourceGroup.FromString<SourceGroup>(oldGroup.ToString());
+                            newGroup = SourceGroup.FromString<SourceGroup>(oldGroup.ToString()!);
 
                             // Remember it
                             newLocation.Groups.Add(newGroup);
                         }
 
                         // Add the missing source
-                        newGroup.Sources.Add(oldSource);
+                        newGroup!.Sources.Add(oldSource);
 
                         // Remember
                         m_Protocol.Add(new ProtocolRecord { Mode = ProtocolRecordMode.NotFound, Location = newLocation, Group = newGroup, Source = oldSource });
@@ -910,7 +872,7 @@ namespace JMS.DVB.Algorithms
         private bool GroupStart(GroupLocation location, SourceGroup group)
         {
             // See if handler is provided
-            Func<GroupLocation, SourceGroup, TransponderScanner, bool> onStartGroup = OnStartGroup;
+            var onStartGroup = OnStartGroup;
             if (null == onStartGroup)
                 return true;
 
@@ -935,7 +897,7 @@ namespace JMS.DVB.Algorithms
         private bool GroupDone(GroupLocation location, SourceGroup group)
         {
             // See if handler is provided
-            Func<GroupLocation, SourceGroup, TransponderScanner, bool> onDoneGroup = OnDoneGroup;
+            var onDoneGroup = OnDoneGroup;
             if (null == onDoneGroup)
                 return true;
 
@@ -958,7 +920,7 @@ namespace JMS.DVB.Algorithms
         private bool LocationStart(GroupLocation location)
         {
             // See if handler is provided
-            Func<GroupLocation, TransponderScanner, bool> onStartLocation = OnStartLocation;
+            var onStartLocation = OnStartLocation;
             if (null == onStartLocation)
                 return true;
 
@@ -983,7 +945,7 @@ namespace JMS.DVB.Algorithms
         private bool StationFound(GroupLocation location, SourceGroup group, Station station)
         {
             // See if handler is provided
-            Func<GroupLocation, SourceGroup, Station, TransponderScanner, bool> onStationAdded = OnStationAdded;
+            var onStationAdded = OnStationAdded;
             if (null == onStationAdded)
                 return true;
 
@@ -1006,7 +968,7 @@ namespace JMS.DVB.Algorithms
         private bool LocationDone(GroupLocation location)
         {
             // See if handler is provided
-            Func<GroupLocation, TransponderScanner, bool> onDoneLocation = OnDoneLocation;
+            var onDoneLocation = OnDoneLocation;
             if (null == onDoneLocation)
                 return true;
 

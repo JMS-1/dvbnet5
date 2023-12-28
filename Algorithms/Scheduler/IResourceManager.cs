@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Diese Schnittstelle wird von einer Verwaltungsinstanz für Geräte angeboten.
@@ -34,14 +29,14 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// Ergänzt ein Gerät.
         /// </summary>
         /// <param name="resource">Das gewünschte Gerät.</param>
-        void Add( IScheduleResource resource );
+        void Add(IScheduleResource resource);
 
         /// <summary>
         /// Meldet komplete Entschlüsselungsregeln an.
         /// </summary>
         /// <param name="group">Eine neue Regel.</param>
         /// <exception cref="ArgumentNullException">Die Regel ist ungültig.</exception>
-        void Add( DecryptionGroup group );
+        void Add(DecryptionGroup group);
 
         /// <summary>
         /// Aktiviert eine Aufzeichnung auf einem Gerät.
@@ -53,13 +48,13 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="plannedStart">Der ursprüngliche Start der Aufzeichnung in UTC / GMT Notation.</param>
         /// <param name="currentEnd">Das aktuelle Ende der Aufzeichnung in UTC / GMT Notation.</param>
         /// <returns>Gesetzt, wenn die Aufzeichnung auf dem gewünschten Gerät aktiviert werden kann.</returns>
-        bool Start( IScheduleResource resource, IScheduleSource source, Guid scheduleIdentifier, string scheduleName, DateTime plannedStart, DateTime currentEnd );
+        bool Start(IScheduleResource resource, IScheduleSource source, Guid scheduleIdentifier, string scheduleName, DateTime plannedStart, DateTime currentEnd);
 
         /// <summary>
         /// Beendet eine Aufzeichnung auf einem Gerät.
         /// </summary>
         /// <param name="scheduleIdentifier">Die eindeutige Kennung der Aufzeichnung.</param>
-        void Stop( Guid scheduleIdentifier );
+        void Stop(Guid scheduleIdentifier);
 
         /// <summary>
         /// Verändert eine Aufzeichnung.
@@ -67,14 +62,14 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="scheduleIdentifier">Die eindeutige Kennung der Aufzeichnung.</param>
         /// <param name="newEnd">Der neue Endzeitpunkt der Aufzeichnung.</param>
         /// <returns>Gesetzt, wenn die Veränderung möglich ist.</returns>
-        bool Modify( Guid scheduleIdentifier, DateTime newEnd );
+        bool Modify(Guid scheduleIdentifier, DateTime newEnd);
 
         /// <summary>
         /// Erzeugt eine passende Planungskomponente.
         /// </summary>
         /// <param name="excludeActiveRecordings">Gesetzt um alle bereits aktiven Aufzeichnungen auszublenden.</param>
         /// <returns>Die zur aktuellen Reservierung passende Planungskomponente.</returns>
-        RecordingScheduler CreateScheduler( bool excludeActiveRecordings = true );
+        RecordingScheduler CreateScheduler(bool excludeActiveRecordings = true);
     }
 
     /// <summary>
@@ -90,20 +85,20 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <returns>Gesetzt, wenn ein Start möglich war.</returns>
         /// <exception cref="NullReferenceException">Es wurde keine Schnittstelle angegeben.</exception>
         /// <exception cref="ArgumentNullException">Es wurde keine Planung angegeben.</exception>
-        public static bool Start( this IResourceManager manager, IScheduleInformation schedule )
+        public static bool Start(this IResourceManager manager, IScheduleInformation schedule)
         {
             // Validate
             if (manager == null)
                 throw new NullReferenceException();
             if (schedule == null)
-                throw new ArgumentNullException( "schedule" );
+                throw new ArgumentNullException(nameof(schedule));
 
             // Load
             var definition = schedule.Definition;
             var recording = definition as IRecordingDefinition;
 
             // Forward
-            return manager.Start( schedule.Resource, (recording == null) ? null : recording.Source, definition.UniqueIdentifier, definition.Name, schedule.Time.Start, schedule.Time.End );
+            return manager.Start(schedule.Resource, (recording == null) ? null! : recording.Source, definition.UniqueIdentifier, definition.Name, schedule.Time.Start, schedule.Time.End);
         }
 
         /// <summary>
@@ -111,7 +106,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// </summary>
         /// <param name="manager">Die zu erweiternde Schnittstelle.</param>
         /// <returns>Der letzte Zeitpunkt aller aktiven Aufzeichnungen und Aufgaben.</returns>
-        public static DateTime? GetEndOfAllocation( this IResourceManager manager )
+        public static DateTime? GetEndOfAllocation(this IResourceManager manager)
         {
             // Validate
             if (manager == null)
@@ -122,7 +117,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             if (recordings.Length < 1)
                 return null;
             else
-                return recordings.Max( r => r.Time.End );
+                return recordings.Max(r => r.Time.End);
         }
 
         /// <summary>
@@ -133,7 +128,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <returns>Die laufende Nummer der Aufzeichnung.</returns>
         /// <exception cref="NullReferenceException">Es wurde keine Schnittstelle angegeben.</exception>
         /// <exception cref="ArgumentException">Die bezeichnete Aufzeichnung ist nicht bekannt.</exception>
-        public static int FindIndex( this IResourceManager manager, Guid uniqueIdentifier )
+        public static int FindIndex(this IResourceManager manager, Guid uniqueIdentifier)
         {
             // Validate
             if (manager == null)
@@ -146,7 +141,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                     return index;
 
             // Failed
-            throw new ArgumentException( uniqueIdentifier.ToString(), "uniqueIdentifier" );
+            throw new ArgumentException(uniqueIdentifier.ToString(), nameof(uniqueIdentifier));
         }
 
         /// <summary>
@@ -157,27 +152,26 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="getSchedules">Methode zur Übertragung der Aufzeichnungen und Aufgaben in den Planungsalgorithmus.</param>
         /// <exception cref="ArgumentNullException">Es wurde keine Initialisierungsmethode angegeben.</exception>
         /// <returns>Die Liste der Aufzeichnungen.</returns>
-        public static IEnumerable<IScheduleInformation> GetSchedules( this IResourceManager manager, DateTime now, Func<RecordingScheduler, DateTime, IEnumerable<IScheduleInformation>> getSchedules )
+        public static IEnumerable<IScheduleInformation> GetSchedules(this IResourceManager manager, DateTime now, Func<RecordingScheduler, DateTime, IEnumerable<IScheduleInformation>> getSchedules)
         {
             // Validate
             if (manager == null)
                 throw new NullReferenceException();
             if (getSchedules == null)
-                throw new ArgumentNullException( "getSchedules" );
+                throw new ArgumentNullException(nameof(getSchedules));
 
             // Create schedule manager
-            var scheduler = manager.CreateScheduler( false );
+            var scheduler = manager.CreateScheduler(false);
 
             // Attach to anything current 
-            var active = manager.CurrentAllocations.ToDictionary( a => a.UniqueIdentifier );
+            var active = manager.CurrentAllocations.ToDictionary(a => a.UniqueIdentifier);
 
             // Process all
-            foreach (var schedule in getSchedules( scheduler, now ))
+            foreach (var schedule in getSchedules(scheduler, now))
             {
                 // We guess this is the same if the recording starts before the active one ends
-                IResourceAllocationInformation allocation;
-                if (active.TryGetValue( schedule.Definition.UniqueIdentifier, out allocation ))
-                    if (ReferenceEquals( allocation, schedule.Definition ))
+                if (active.TryGetValue(schedule.Definition.UniqueIdentifier, out var allocation))
+                    if (ReferenceEquals(allocation, schedule.Definition))
                         continue;
                     else if (schedule.Time.Start < allocation.Time.End)
                         continue;
@@ -196,34 +190,34 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <returns>Die nächste Aktion, sofern bekannt.</returns>
         /// <exception cref="NullReferenceException">Es wurde keine Schnittstelle angegeben.</exception>
         /// <exception cref="ArgumentNullException">Es wurde keine Initialisierungsmethode angegeben.</exception>
-        public static ResourceActivity GetNextActivity( this IResourceManager manager, DateTime now, Func<RecordingScheduler, DateTime, IEnumerable<IScheduleInformation>> getSchedules )
+        public static ResourceActivity? GetNextActivity(this IResourceManager manager, DateTime now, Func<RecordingScheduler, DateTime, IEnumerable<IScheduleInformation>> getSchedules)
         {
             // Validate
             if (manager == null)
                 throw new NullReferenceException();
             if (getSchedules == null)
-                throw new ArgumentNullException( "getSchedules" );
+                throw new ArgumentNullException(nameof(getSchedules));
 
             // Create schedule manager
-            var scheduler = manager.CreateScheduler( true );
+            var scheduler = manager.CreateScheduler(true);
 
             // Get the next to stop
             var allocations = manager.CurrentAllocations;
-            var stopTime = (allocations.Length > 0) ? allocations.Min( a => a.Time.End ) : default( DateTime? );
+            var stopTime = (allocations.Length > 0) ? allocations.Min(a => a.Time.End) : default(DateTime?);
 
             // Process anything scheduled for stop to make devices free
             if (stopTime.HasValue)
                 if (stopTime.Value <= now)
-                    return new StopActivity( allocations.First( a => a.Time.End == stopTime.Value ).UniqueIdentifier );
+                    return new StopActivity(allocations.First(a => a.Time.End == stopTime.Value).UniqueIdentifier);
 
             // See if there is anything in the plan
-            var nextToStart = getSchedules( scheduler, now ).FirstOrDefault();
+            var nextToStart = getSchedules(scheduler, now).FirstOrDefault();
             if (nextToStart != null)
             {
                 // Find the start time
                 var startTime = nextToStart.Time.Start;
                 if (startTime <= now)
-                    return new StartActivity( nextToStart );
+                    return new StartActivity(nextToStart);
 
                 // Get the minimum
                 if (!stopTime.HasValue)
@@ -234,7 +228,7 @@ namespace JMS.DVB.Algorithms.Scheduler
 
             // Just wait
             if (stopTime.HasValue)
-                return new WaitActivity( stopTime.Value );
+                return new WaitActivity(stopTime.Value);
             else
                 return null;
         }

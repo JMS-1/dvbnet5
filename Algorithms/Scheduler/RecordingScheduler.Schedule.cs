@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Diagnostics;
-using System.Collections.Generic;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     partial class RecordingScheduler
     {
@@ -16,32 +10,14 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <summary>
         /// Verwaltet eine Liste von Aufzeichnungen.
         /// </summary>
-        private class _ScheduleList
+        /// <param name="schedules">Alle bekannten Aufzeichnungen.</param>
+        /// <param name="minTime">Der früheste Zeitpunkt für den eine Planung vorgenommen werden soll.</param>
+        private class _ScheduleList(IEnumerable<RecordingScheduler._Recording> schedules, DateTime minTime)
         {
             /// <summary>
             /// Alle noch verfügbaren Aufzeichnungen.
             /// </summary>
-            private List<_Recording> m_Items;
-
-            /// <summary>
-            /// Die laufende Nummer der aktuell betrachteten Aufzeichnung.
-            /// </summary>
-            private int m_CurrentIndex;
-
-            /// <summary>
-            /// Die aktuell betrachtete Aufzeichnung.
-            /// </summary>
-            public _Recording Current { get; private set; }
-
-            /// <summary>
-            /// Erzeugt eine neue Verwaltung.
-            /// </summary>
-            /// <param name="schedules">Alle bekannten Aufzeichnungen.</param>
-            /// <param name="minTime">Der früheste Zeitpunkt für den eine Planung vorgenommen werden soll.</param>
-            public _ScheduleList(IEnumerable<_Recording> schedules, DateTime minTime)
-            {
-                // Process
-                m_Items =
+            private readonly List<_Recording> m_Items =
                     schedules
                         .Select(schedule =>
                         {
@@ -56,7 +32,16 @@ namespace JMS.DVB.Algorithms.Scheduler
                         })
                         .Where(item => item.Current != null)
                         .ToList();
-            }
+
+            /// <summary>
+            /// Die laufende Nummer der aktuell betrachteten Aufzeichnung.
+            /// </summary>
+            private int m_CurrentIndex;
+
+            /// <summary>
+            /// Die aktuell betrachtete Aufzeichnung.
+            /// </summary>
+            public _Recording Current { get; private set; } = null!;
 
             /// <summary>
             /// Ermittelt den nächsten zu bearbeitenden Eintrag.
@@ -75,7 +60,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                         m_Items.RemoveAt(m_CurrentIndex);
 
                     // Reset
-                    Current = null;
+                    Current = null!;
                 }
 
                 // We are done
@@ -87,7 +72,7 @@ namespace JMS.DVB.Algorithms.Scheduler
 
                 // Locate the earliest schedule
                 for (int i = 1, imax = m_Items.Count; i < imax; i++)
-                    if (m_Items[i].Current.Planned.Start < m_Items[m_CurrentIndex].Current.Planned.Start)
+                    if (m_Items[i].Current!.Planned.Start < m_Items[m_CurrentIndex].Current!.Planned.Start)
                         m_CurrentIndex = i;
 
                 // Remember
@@ -119,7 +104,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 // Load the item
                 var candidate = items.Current;
                 var candiateTime = candidate.Current;
-                var planned = candiateTime.Planned;
+                var planned = candiateTime!.Planned;
 
                 // Get the current end of plans and see if we can dump the state - this may increase performance
                 var planStart = plans.SelectMany(p => p.Resources).Min(r => (DateTime?)r.PlanStart);
@@ -131,7 +116,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 if ((++steps > MaximumRecordingsInPlan) || canEndPlan || mustEndPlan || (plans.Count > MaximumAlternativesInPlan))
                 {
                     // Find best plan
-                    var best = SchedulePlan.FindBest(plans, m_comparer);
+                    var best = SchedulePlan.FindBest(plans, m_comparer)!;
 
                     // Report
                     foreach (var info in Dump(best))
@@ -170,7 +155,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 if (plans.Count < 1)
                 {
                     // Report
-                    yield return new ScheduleInfo(candidate.Definition, null, planned, false);
+                    yield return new ScheduleInfo(candidate.Definition, null!, planned, false);
 
                     // Restore the original plans since we did nothing at all
                     plans.AddRange(allPlans);
@@ -178,7 +163,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             }
 
             // Send all we found 
-            foreach (var info in Dump(SchedulePlan.FindBest(plans, m_comparer)))
+            foreach (var info in Dump(SchedulePlan.FindBest(plans, m_comparer)!))
                 yield return info;
         }
 

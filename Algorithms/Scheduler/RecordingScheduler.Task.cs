@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Diagnostics;
-using System.Collections.Generic;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     partial class RecordingScheduler
     {
@@ -37,7 +31,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="endFree">Das Ende des unbenutzten Bereiches.</param>
         /// <param name="tasks">Die Liste der Aufgaben.</param>
         /// <returns>Alle Aufgaben, die dem Gerät in der unbenutzten Zeit zugeordnet wurden.</returns>
-        private IEnumerable<ScheduleInfo> DispatchTasksForResource(IScheduleResource resource, DateTime startFree, DateTime endFree, List<_Task> tasks)
+        private static IEnumerable<ScheduleInfo> DispatchTasksForResource(IScheduleResource resource, DateTime startFree, DateTime endFree, List<_Task> tasks)
         {
             // See if there is room left to run a task
             while ((tasks.Count > 0) && (endFree > startFree))
@@ -57,7 +51,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                         continue;
 
                     // Not enough time - skip
-                    var planned = task.Current.Planned;
+                    var planned = task.Current!.Planned;
                     if (planned.Duration.Ticks <= 0)
                         continue;
                     if (planned.Duration > duration)
@@ -70,7 +64,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                     // Check for best
                     if (tiBest < 0)
                         tiBest = ti;
-                    else if (planned.Start < tasks[tiBest].Current.Planned.Start)
+                    else if (planned.Start < tasks[tiBest].Current!.Planned.Start)
                         tiBest = ti;
                 }
 
@@ -83,7 +77,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 var bestPlan = bestTask.Current;
 
                 // Check mode
-                var startsLate = bestPlan.Planned.Start < startFree;
+                var startsLate = bestPlan!.Planned.Start < startFree;
                 if (startsLate)
                     bestPlan.Planned.Start = startFree;
 
@@ -118,7 +112,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 var resources = new HashSet<IScheduleResource>(allocationPerResource.Where(p => p.Value == bestEnd).Select(p => p.Key), allocationPerResource.Comparer);
 
                 // Process tasks in order of next activity
-                foreach (var orderedTask in tasks.Select((task, index) => new { Task = task, Index = index }).OrderBy(ot => ot.Task.Current.Planned.Start))
+                foreach (var orderedTask in tasks.Select((task, index) => new { Task = task, Index = index }).OrderBy(ot => ot.Task.Current!.Planned.Start))
                 {
                     // See if this task can be assigned to any of the ressources currently under inspection
                     var task = orderedTask.Task;
@@ -127,8 +121,8 @@ namespace JMS.DVB.Algorithms.Scheduler
                         continue;
 
                     // May move a bit in the future - task starting late is not considered a problem
-                    var time = task.Current;
-                    var startsLate = (time.Planned.Start < bestEnd);
+                    var time = task.Current!;
+                    var startsLate = time.Planned.Start < bestEnd;
                     if (startsLate)
                         time.Planned.Start = bestEnd;
 

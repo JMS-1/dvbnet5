@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Hilfsklasse zur Implementierung der <see cref="IScheduleResource"/> Schnittstelle.
@@ -32,7 +29,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <summary>
         /// Meldet den Namen der Ressource.
         /// </summary>
-        public string Name { get; protected set; }
+        public string Name { get; protected set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Implementierung.
@@ -46,7 +43,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// </summary>
         /// <param name="source">Die gewünschte Quelle.</param>
         /// <returns>Gesetzt, wenn die Quelle angesprochen werden kann.</returns>
-        protected abstract bool TestAccess( SourceType source );
+        protected abstract bool TestAccess(SourceType source);
 
         /// <summary>
         /// Prüft, ob eine bestimmte Quelle über dieses Gerät angesprochen werden kann.
@@ -55,19 +52,19 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <returns>Gesetzt, wenn die Quelle angesprochen werden kann.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
         /// <exception cref="ArgumentException">Die Quelle passt nicht zu dieser Art von Gerät.</exception>
-        public bool CanAccess( IScheduleSource source )
+        public bool CanAccess(IScheduleSource source)
         {
             // Validate
             if (source == null)
-                throw new ArgumentNullException( "source" );
+                throw new ArgumentNullException(nameof(source));
 
             // Check type
             var typedSource = source as SourceType;
             if (typedSource == null)
-                throw new ArgumentException( source.GetType().FullName, "source" );
+                throw new ArgumentException(source.GetType().FullName, nameof(source));
 
             // Report
-            return TestAccess( typedSource );
+            return TestAccess(typedSource);
         }
     }
 }

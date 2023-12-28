@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Beschreibt eine geplante Aktion auf einem Gerät.
@@ -30,7 +26,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="minTime">Aufzeichnunge, die vor diesem Zeitpunkt enden, brauchen nicht in
         /// der Auflistung zu erscheinen. Es handelt sich um eine optionale Optimierung.</param>
         /// <returns>Eine Liste aller geplanten Zeiten.</returns>
-        IEnumerable<SuggestedPlannedTime> GetTimes( DateTime minTime );
+        IEnumerable<SuggestedPlannedTime> GetTimes(DateTime minTime);
     }
 
     /// <summary>

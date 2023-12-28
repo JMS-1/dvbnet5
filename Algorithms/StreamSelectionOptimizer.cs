@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using System.Collections.Generic;
+﻿using System.Diagnostics;
 
 namespace JMS.DVB.Algorithms
 {
@@ -184,17 +180,17 @@ namespace JMS.DVB.Algorithms
             /// <summary>
             /// Die verwendete Quelle.
             /// </summary>
-            public SourceSelection Source { get; set; }
+            public SourceSelection Source { get; set; } = null!;
 
             /// <summary>
             /// Die aktuell verwendeten Datenströme.
             /// </summary>
-            public StreamSelection CurrentStreams { get; set; }
+            public StreamSelection CurrentStreams { get; set; } = null!;
 
             /// <summary>
             /// Die ursprünglich verwendeten Datenströme.
             /// </summary>
-            public StreamSelection OriginalStreams { get; set; }
+            public StreamSelection OriginalStreams { get; set; } = null!;
 
             /// <summary>
             /// Die Anzahl der benötigten Teildatenströme (PID).
@@ -227,19 +223,20 @@ namespace JMS.DVB.Algorithms
                 try
                 {
                     // Create the manager
-                    using (SourceStreamsManager manager = Source.Open(OriginalStreams))
-                        if (!manager.CreateStream(null))
-                        {
-                            // Fake entry
-                            CurrentStreams = OriginalStreams.Clone();
-                            ConsumerCount = 0;
-                        }
-                        else
-                        {
-                            // Remember
-                            CurrentStreams = manager.ActiveSelection;
-                            ConsumerCount = manager.ConsumerCount;
-                        }
+                    using SourceStreamsManager manager = Source.Open(OriginalStreams);
+
+                    if (!manager.CreateStream(null!))
+                    {
+                        // Fake entry
+                        CurrentStreams = OriginalStreams.Clone();
+                        ConsumerCount = 0;
+                    }
+                    else
+                    {
+                        // Remember
+                        CurrentStreams = manager.ActiveSelection;
+                        ConsumerCount = manager.ConsumerCount;
+                    }
 
                     // Possible at least in stand-alone mode
                     return;
@@ -280,7 +277,7 @@ namespace JMS.DVB.Algorithms
                 OriginalStreams = CurrentStreams;
 
                 // Correct consumer count
-                ConsumerCount = ConsumerCount.Value - (neededStart - needed);
+                ConsumerCount = ConsumerCount!.Value - (neededStart - needed);
             }
         }
 
@@ -292,7 +289,7 @@ namespace JMS.DVB.Algorithms
         /// <summary>
         /// An diese Stelle werden alle vorgenommenen Veränderungen protokolliert.
         /// </summary>
-        public event Action<SourceSelection, string, int> OnCorrect;
+        public event Action<SourceSelection, string, int>? OnCorrect;
 
         /// <summary>
         /// Erzeugt eine neue Hilfsklasse.
@@ -325,9 +322,9 @@ namespace JMS.DVB.Algorithms
         {
             // Validate
             if (null == source)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
             if (null == streams)
-                throw new ArgumentNullException("streams");
+                throw new ArgumentNullException(nameof(streams));
 
             // Remember
             m_Sources.Add(new SelectionInfo { Source = source, OriginalStreams = streams.Clone() });
@@ -403,7 +400,7 @@ namespace JMS.DVB.Algorithms
             using (HardwareManager.Open())
             {
                 // Attach to the device
-                Hardware device = m_Sources[0].Source.GetHardware();
+                var device = m_Sources[0].Source.GetHardware()!;
 
                 // No limit at all
                 if (!device.HasConsumerRestriction)
@@ -413,7 +410,7 @@ namespace JMS.DVB.Algorithms
                 ushort[] activeStreams = device.GetActiveStreams();
 
                 // Ask for it
-                available = device.Restrictions.ConsumerLimit.Value - activeStreams.Length;
+                available = device.Restrictions.ConsumerLimit!.Value - activeStreams.Length;
 
                 // None at all
                 if (available < 1)
@@ -436,7 +433,7 @@ namespace JMS.DVB.Algorithms
                         managers.Add(manager);
 
                         // See if source is available
-                        if (!manager.CreateStream(null))
+                        if (!manager.CreateStream(null!))
                         {
                             // Fake entry - will not be used
                             info.CurrentStreams = info.OriginalStreams.Clone();
@@ -474,7 +471,7 @@ namespace JMS.DVB.Algorithms
                     SelectionInfo current = m_Sources[ixStream];
 
                     // See how many additional streams will be needed
-                    int needed = current.ConsumerCount.Value - available;
+                    int needed = current.ConsumerCount!.Value - available;
 
                     // Try to free some
                     for (int ixDisable = 0; (needed > 0) && (ixDisable < disableOrder.Length);)

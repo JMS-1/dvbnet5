@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.IO;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Erlaubt das Erzeugen einer Geräteverwaltung.
@@ -19,51 +13,51 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <summary>
             /// Die Liste aller verwalteten Geräte.
             /// </summary>
-            private ResourceCollection m_Resources = new ResourceCollection();
+            private readonly ResourceCollection m_Resources = new();
 
             /// <summary>
             /// Die aktuelle Liste der Aufzeichnungen.
             /// </summary>
-            private List<ResourceAllocationInformation> m_Recordings = new List<ResourceAllocationInformation>();
+            private readonly List<ResourceAllocationInformation> m_Recordings = [];
 
             /// <summary>
             /// Die aktuelle Gesamtplanung.
             /// </summary>
-            private SchedulePlan m_CurrentPlan;
+            private SchedulePlan m_CurrentPlan = null!;
 
             /// <summary>
             /// Der Vergleichsalgorithmus zur Bewertung von Aufzeichnungsplänen.
             /// </summary>
-            private IComparer<SchedulePlan> m_PlanComparer;
+            private readonly IComparer<SchedulePlan> m_PlanComparer;
 
             /// <summary>
             /// Erzeugt eine neue Verwaltung.
             /// </summary>
             /// <param name="rulePath">Der volle Pfad zur Regeldatei.</param>
             /// <param name="resourceNameComparer">Die Vergleichsmethode </param>
-            public Implementation( string rulePath, IEqualityComparer<string> resourceNameComparer )
+            public Implementation(string rulePath, IEqualityComparer<string> resourceNameComparer)
             {
                 // Remember
                 ResourceNameComparer = resourceNameComparer;
 
                 // Load rules
-                if (string.IsNullOrEmpty( rulePath ))
-                    m_PlanComparer = CustomComparer.Default( ResourceNameComparer );
+                if (string.IsNullOrEmpty(rulePath))
+                    m_PlanComparer = CustomComparer.Default(ResourceNameComparer);
                 else
-                    m_PlanComparer = CustomComparer.Create( File.ReadAllBytes( rulePath ), resourceNameComparer );
+                    m_PlanComparer = CustomComparer.Create(File.ReadAllBytes(rulePath), resourceNameComparer);
             }
 
             /// <summary>
             /// Erzeugt eine Planungsinstanz basierend auf den aktuell bekannten Aufzeichnungen.
             /// </summary>
             /// <returns>Der gewünschte Plan.</returns>
-            private SchedulePlan CreateSchedulePlan()
+            private SchedulePlan? CreateSchedulePlan()
             {
                 // Create
-                var plan = new SchedulePlan( m_Resources );
+                var plan = new SchedulePlan(m_Resources);
 
                 // Report
-                var resources = plan.Resources.ToDictionary( r => r.Resource, ReferenceComparer<IScheduleResource>.Default );
+                var resources = plan.Resources.ToDictionary(r => r.Resource, ReferenceComparer<IScheduleResource>.Default);
 
                 // Merge in each schedule
                 foreach (var recording in m_Recordings)
@@ -76,7 +70,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                     if (recording.Source == null)
                     {
                         // Try to reserve
-                        if (!resourcePlan.Reserve( recording.Time.End ))
+                        if (!resourcePlan.Reserve(recording.Time.End))
                             return null;
 
                         // Next 
@@ -87,7 +81,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                     SuggestedPlannedTime planned = recording.Time;
 
                     // Try add
-                    if (!resourcePlan.Add( recording, planned, DateTime.MinValue ))
+                    if (!resourcePlan.Add(recording, planned, DateTime.MinValue))
                         return null;
 
                     // Must not start late
@@ -136,14 +130,14 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// Ergänzt ein Gerät.
             /// </summary>
             /// <param name="resource">Das gewünschte Gerät.</param>
-            public void Add( IScheduleResource resource )
+            public void Add(IScheduleResource resource)
             {
                 // Not allowed
                 if (m_CurrentPlan != null)
-                    throw new NotSupportedException( "Add" );
+                    throw new NotSupportedException("Add");
 
                 // Forward
-                m_Resources.Add( resource );
+                m_Resources.Add(resource);
             }
 
             /// <summary>
@@ -151,30 +145,30 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// </summary>
             /// <param name="group">Eine neue Regel.</param>
             /// <exception cref="ArgumentNullException">Die Regel ist ungültig.</exception>
-            public void Add( DecryptionGroup group )
+            public void Add(DecryptionGroup group)
             {
                 // Not allowed
                 if (m_CurrentPlan != null)
-                    throw new NotSupportedException( "Add" );
+                    throw new NotSupportedException("Add");
 
                 // Forward
-                m_Resources.Add( group );
+                m_Resources.Add(group);
             }
 
             /// <summary>
             /// Beendet eine Aufzeichnung auf einem Gerät.
             /// </summary>
             /// <param name="scheduleIdentifier">Die eindeutige Kennung der Aufzeichnung.</param>
-            public void Stop( Guid scheduleIdentifier )
+            public void Stop(Guid scheduleIdentifier)
             {
                 // Locate and validate
-                var index = this.FindIndex( scheduleIdentifier );
+                var index = this.FindIndex(scheduleIdentifier);
 
                 // Keep current recording settings
                 var recording = m_Recordings[index];
 
                 // Remove it
-                m_Recordings.RemoveAt( index );
+                m_Recordings.RemoveAt(index);
 
                 // Create a new plan
                 try
@@ -182,7 +176,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                     // Get the plan - should NEVER fail or we are in BIG trouble
                     var plan = CreateSchedulePlan();
                     if (plan == null)
-                        throw new InvalidOperationException( "Stop" );
+                        throw new InvalidOperationException("Stop");
 
                     // Remember the new situation
                     m_CurrentPlan = plan;
@@ -190,7 +184,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 catch
                 {
                     // Recover
-                    m_Recordings.Insert( index, recording );
+                    m_Recordings.Insert(index, recording);
 
                     // Forward
                     throw;
@@ -203,20 +197,20 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="scheduleIdentifier">Die eindeutige Kennung der Aufzeichnung.</param>
             /// <param name="newEnd">Der neue Endzeitpunkt der Aufzeichnung.</param>
             /// <returns>Gesetzt, wenn die Veränderung möglich ist.</returns>
-            public bool Modify( Guid scheduleIdentifier, DateTime newEnd )
+            public bool Modify(Guid scheduleIdentifier, DateTime newEnd)
             {
                 // Locate and validate
-                var index = this.FindIndex( scheduleIdentifier );
+                var index = this.FindIndex(scheduleIdentifier);
 
                 // Keep current recording settings
                 var recording = m_Recordings[index];
 
                 // Validate
                 if (newEnd <= recording.Time.Start)
-                    throw new ArgumentOutOfRangeException( "newEnd" );
+                    throw new ArgumentOutOfRangeException(nameof(newEnd));
 
                 // Remove it
-                m_Recordings[index] = new ResourceAllocationInformation( recording.Resource, recording.Source, recording.UniqueIdentifier, recording.Name, recording.Time.Start, newEnd - recording.Time.Start );
+                m_Recordings[index] = new ResourceAllocationInformation(recording.Resource, recording.Source, recording.UniqueIdentifier, recording.Name, recording.Time.Start, newEnd - recording.Time.Start);
 
                 // Create a new plan
                 try
@@ -261,20 +255,20 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <exception cref="ArgumentNullException">Es wurde kein Gerät angegeben.</exception>
             /// <exception cref="ArgumentException">Das Gerät ist nicht bekannt oder kann die Quelle nicht empfangen.</exception>
             /// <exception cref="ArgumentOutOfRangeException">Die Laufzeit der Aufzeichnung ist nicht positiv.</exception>
-            public bool Start( IScheduleResource resource, IScheduleSource source, Guid scheduleIdentifier, string scheduleName, DateTime plannedStart, DateTime currentEnd )
+            public bool Start(IScheduleResource resource, IScheduleSource source, Guid scheduleIdentifier, string scheduleName, DateTime plannedStart, DateTime currentEnd)
             {
                 // Validate
                 if (resource == null)
-                    throw new ArgumentNullException( "resource" );
-                if (!m_Resources.Contains( resource ))
-                    throw new ArgumentException( resource.Name, "resource" );
+                    throw new ArgumentNullException(nameof(resource));
+                if (!m_Resources.Contains(resource))
+                    throw new ArgumentException(resource.Name, nameof(resource));
                 if (plannedStart >= currentEnd)
-                    throw new ArgumentOutOfRangeException( "currentEnd" );
-                if (m_Recordings.Any( r => r.UniqueIdentifier == scheduleIdentifier ))
-                    throw new ArgumentException( "resource" );
+                    throw new ArgumentOutOfRangeException(nameof(currentEnd));
+                if (m_Recordings.Any(r => r.UniqueIdentifier == scheduleIdentifier))
+                    throw new ArgumentException("resource");
 
                 // Create helper entry
-                m_Recordings.Add( new ResourceAllocationInformation( resource, source, scheduleIdentifier, scheduleName, plannedStart, currentEnd - plannedStart ) );
+                m_Recordings.Add(new ResourceAllocationInformation(resource, source, scheduleIdentifier, scheduleName, plannedStart, currentEnd - plannedStart));
 
                 // May require cleanup
                 try
@@ -295,14 +289,14 @@ namespace JMS.DVB.Algorithms.Scheduler
                 catch
                 {
                     // Cleanup
-                    m_Recordings.RemoveAt( m_Recordings.Count - 1 );
+                    m_Recordings.RemoveAt(m_Recordings.Count - 1);
 
                     // Report
                     throw;
                 }
 
                 // Cleanup
-                m_Recordings.RemoveAt( m_Recordings.Count - 1 );
+                m_Recordings.RemoveAt(m_Recordings.Count - 1);
 
                 // Add to list
                 return false;
@@ -313,18 +307,18 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// </summary>
             /// <param name="excludeActiveRecordings">Gesetzt um alle bereits aktiven Aufzeichnungen auszublenden.</param>
             /// <returns>Die zur aktuellen Reservierung passende Planungskomponente.</returns>
-            public RecordingScheduler CreateScheduler( bool excludeActiveRecordings = true )
+            public RecordingScheduler CreateScheduler(bool excludeActiveRecordings = true)
             {
                 // Time to create plan
                 if (m_CurrentPlan == null)
-                    if ((m_CurrentPlan = CreateSchedulePlan()) == null)
-                        throw new NotSupportedException( "CreateScheduler" );
+                    if ((m_CurrentPlan = CreateSchedulePlan()!) == null)
+                        throw new NotSupportedException("CreateScheduler");
 
                 // Create exclusion map
-                var alreadyActive = new HashSet<Guid>( excludeActiveRecordings ? m_Recordings.Select( r => r.UniqueIdentifier ) : Enumerable.Empty<Guid>() );
+                var alreadyActive = new HashSet<Guid>(excludeActiveRecordings ? m_Recordings.Select(r => r.UniqueIdentifier) : Enumerable.Empty<Guid>());
 
                 // Process
-                return new RecordingScheduler( m_Resources, alreadyActive, () => m_CurrentPlan, m_PlanComparer );
+                return new RecordingScheduler(m_Resources, alreadyActive, () => m_CurrentPlan, m_PlanComparer);
             }
 
             #endregion
@@ -335,14 +329,14 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// </summary>
         /// <param name="resourceNameComparer">Die Vergleichsmethode </param>
         /// <returns>Die gewünschte neue Verwaltungsinstanz.</returns>
-        public static IResourceManager Create( IEqualityComparer<string> resourceNameComparer )
+        public static IResourceManager Create(IEqualityComparer<string> resourceNameComparer)
         {
             // Validate
             if (resourceNameComparer == null)
-                throw new ArgumentNullException( "resourceNameComparer" );
+                throw new ArgumentNullException(nameof(resourceNameComparer));
 
             // Forward
-            return new Implementation( null, resourceNameComparer );
+            return new Implementation(null!, resourceNameComparer);
         }
 
         /// <summary>
@@ -351,19 +345,19 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="rulePath">Der volle Pfad zur Regeldatei.</param>
         /// <param name="resourceNameComparer">Die Vergleichsmethode </param>
         /// <returns>Die gewünschte neue Verwaltungsinstanz.</returns>
-        public static IResourceManager Create( string rulePath, IEqualityComparer<string> resourceNameComparer )
+        public static IResourceManager Create(string rulePath, IEqualityComparer<string> resourceNameComparer)
         {
             // Validate
             if (resourceNameComparer == null)
-                throw new ArgumentNullException( "resourceNameComparer" );
-            if (string.IsNullOrEmpty( rulePath ))
-                throw new ArgumentNullException( "rulePath" );
+                throw new ArgumentNullException(nameof(resourceNameComparer));
+            if (string.IsNullOrEmpty(rulePath))
+                throw new ArgumentNullException(nameof(rulePath));
 
             // Forward
-            if (File.Exists( rulePath ))
-                return new Implementation( rulePath, resourceNameComparer );
+            if (File.Exists(rulePath))
+                return new Implementation(rulePath, resourceNameComparer);
             else
-                return new Implementation( null, resourceNameComparer );
+                return new Implementation(null!, resourceNameComparer);
         }
     }
 }

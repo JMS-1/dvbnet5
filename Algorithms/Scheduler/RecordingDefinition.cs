@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Beschreibt eine geplante Aufzeichnung.
@@ -49,14 +44,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <summary>
             /// Die einzige geplante Aufzeichnungszeit.
             /// </summary>
-            protected PlannedTime Plan
-            {
-                get
-                {
-                    // Report
-                    return m_Plan;
-                }
-            }
+            protected PlannedTime Plan => m_Plan;
 
             /// <summary>
             /// Die zugehörige Quelle.
@@ -77,14 +65,14 @@ namespace JMS.DVB.Algorithms.Scheduler
             {
                 // Validate
                 if (source == null)
-                    throw new ArgumentNullException("source");
+                    throw new ArgumentNullException(nameof(source));
                 if (start.Year < 2000)
-                    throw new ArgumentOutOfRangeException("start", string.Format("Recordings before 2000 can not be planned but is {0}", start));
+                    throw new ArgumentOutOfRangeException(nameof(start), string.Format("Recordings before 2000 can not be planned but is {0}", start));
                 if (duration.TotalSeconds <= 0)
-                    throw new ArgumentOutOfRangeException("duration", string.Format("Each Recording must have a positive Recording Duration but is {0}", duration));
+                    throw new ArgumentOutOfRangeException(nameof(duration), string.Format("Each Recording must have a positive Recording Duration but is {0}", duration));
                 if (resources != null)
                     if (resources.Any(r => r == null))
-                        throw new ArgumentNullException("resources");
+                        throw new ArgumentNullException(nameof(resources));
 
                 // Create compound information
                 m_Plan = new PlannedTime { Start = start, Duration = duration };
@@ -154,13 +142,13 @@ namespace JMS.DVB.Algorithms.Scheduler
 
                 // Validate
                 if (end.TimeOfDay != TimeSpan.Zero)
-                    throw new ArgumentException(string.Format("{0} is not a Day", end), "end");
+                    throw new ArgumentException(string.Format("{0} is not a Day", end), nameof(end));
                 if (end < localStartDate)
-                    throw new ArgumentException(string.Format("The last Recording Day {1} must be at least the first Recording Day {0}", localStartDate, end), "end");
+                    throw new ArgumentException(string.Format("The last Recording Day {1} must be at least the first Recording Day {0}", localStartDate, end), nameof(end));
                 if (m_Pattern.Count < 1)
-                    throw new ArgumentException("Repetition Pattern is empty", "pattern");
+                    throw new ArgumentException("Repetition Pattern is empty", nameof(pattern));
                 if (m_Pattern.Count != days.Length)
-                    throw new ArgumentException("Repetition Pattern contains Duplicates", "pattern");
+                    throw new ArgumentException("Repetition Pattern contains Duplicates", nameof(pattern));
             }
 
             /// <summary>

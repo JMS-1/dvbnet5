@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Verwaltet eine Gesamtplanung für eine Liste von Geräten.
@@ -49,11 +43,11 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="firstPlan">Der erste Plan.</param>
             /// <param name="secondPlan">Der zweite Plan.</param>
             /// <returns>Positiv, wenn der erste Plan mehr Aufzeichnungszeit abschneidet als der zweite.</returns>
-            public int Compare(SchedulePlan firstPlan, SchedulePlan secondPlan)
+            public int Compare(SchedulePlan? firstPlan, SchedulePlan? secondPlan)
             {
                 // First check the cut time - move larger loss to the end of the list
-                var firstLoss = firstPlan.Resources.Sum(r => r.TotalCut.Ticks);
-                var secondLoss = secondPlan.Resources.Sum(r => r.TotalCut.Ticks);
+                var firstLoss = firstPlan!.Resources.Sum(r => r.TotalCut.Ticks);
+                var secondLoss = secondPlan!.Resources.Sum(r => r.TotalCut.Ticks);
                 var delta = firstLoss.CompareTo(secondLoss);
 
                 // Can stop if not equal or equal and all zero - normal case!
@@ -78,11 +72,11 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="firstPlan">Der erste Plan.</param>
             /// <param name="secondPlan">Der zweite Plan.</param>
             /// <returns>Die logische Differenz der parallelen Aufzeichnungszeit.</returns>
-            public int Compare(SchedulePlan firstPlan, SchedulePlan secondPlan)
+            public int Compare(SchedulePlan? firstPlan, SchedulePlan? secondPlan)
             {
                 // Read out
-                var firstTime = firstPlan.GetSourceUsage();
-                var secondTime = secondPlan.GetSourceUsage();
+                var firstTime = firstPlan!.GetSourceUsage();
+                var secondTime = secondPlan!.GetSourceUsage();
 
                 // Compare the total time sources are use on multiple devices
                 return firstTime.CompareTo(secondTime);
@@ -107,7 +101,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 /// <summary>
                 /// Alle Geräte, die nicht vor vor dem führenden Gerät gestartet werden sollen.
                 /// </summary>
-                private readonly HashSet<string> m_testResources;
+                private readonly HashSet<string> m_testResources = null!;
 
                 /// <summary>
                 /// Der Algorithmus zum Vergleich von Namen.
@@ -131,7 +125,7 @@ namespace JMS.DVB.Algorithms.Scheduler
 
                     // Reset
                     if (m_testResources.Contains("*"))
-                        m_testResources = null;
+                        m_testResources = null!;
                 }
 
                 /// <summary>
@@ -238,11 +232,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// </summary>
             /// <param name="plan">Der zu prüfende Plan.</param>
             /// <returns>Zählt, wie oft ein Starte des problematischen Gerätes erfolgt.</returns>
-            private int CountRuleViolations(SchedulePlan plan)
-            {
-                // Process
-                return m_rules.Sum(rule => rule.Count(plan));
-            }
+            private int CountRuleViolations(SchedulePlan plan) => m_rules.Sum(rule => rule.Count(plan));
 
             /// <summary>
             /// Vergleicht zwei Pläne über die Startzeiten der enthaltenen Geräte.
@@ -250,11 +240,8 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="firstPlan">Der erste Plan.</param>
             /// <param name="secondPlan">Der zweite Plan.</param>
             /// <returns>Gesetzt, wenn der erste Plan nach allen Regeln eine bessere Lösung bietet.</returns>
-            public int Compare(SchedulePlan firstPlan, SchedulePlan secondPlan)
-            {
-                // Compare violations
-                return -CountRuleViolations(firstPlan).CompareTo(CountRuleViolations(secondPlan));
-            }
+            public int Compare(SchedulePlan? firstPlan, SchedulePlan? secondPlan) =>
+                -CountRuleViolations(firstPlan!).CompareTo(CountRuleViolations(secondPlan!));
         }
 
         /// <summary>
@@ -268,23 +255,20 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <param name="firstPlan">Der erste Plan.</param>
             /// <param name="secondPlan">Der zweite Plan.</param>
             /// <returns>Positiv, wenn der erste Plan mehr Geräte verwendet als der zweite.</returns>
-            public int Compare(SchedulePlan firstPlan, SchedulePlan secondPlan)
-            {
-                // Forward
-                return firstPlan.ResourcesInUseCount.CompareTo(secondPlan.ResourcesInUseCount);
-            }
+            public int Compare(SchedulePlan? firstPlan, SchedulePlan? secondPlan) =>
+                firstPlan!.ResourcesInUseCount.CompareTo(secondPlan!.ResourcesInUseCount);
         }
 
         /// <summary>
         /// Alle Zähler für die verfügbaren Entschlüsselungen.
         /// </summary>
-        public Dictionary<Guid, AllocationMap> DecryptionCounters = new Dictionary<Guid, AllocationMap>();
+        public Dictionary<Guid, AllocationMap> DecryptionCounters = new();
 
         /// <summary>
         /// Alle Geräte in dieser Planung. Diese sind aufsteigend nach der Prioriät geordnet, das unwichtigste
         /// Gerät kommt als erstes.
         /// </summary>
-        public ResourcePlan[] Resources { get; private set; }
+        public ResourcePlan[] Resources { get; private set; } = null!;
 
         /// <summary>
         /// Die zugehörige Planungsinstanz.
@@ -297,7 +281,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="resources">Die zugehörige Planungsinstanz.</param>
         /// <exception cref="ArgumentNullException">Es wurden keine Geräte angegeben.</exception>
         public SchedulePlan(ResourceCollection resources)
-            : this(resources, default(Dictionary<Guid, AllocationMap>), null)
+            : this(resources, default!, null)
         {
             // Load
             Resources = resources.Select(r => new ResourcePlan(r, this)).ToArray();
@@ -319,8 +303,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         private SchedulePlan(ResourceCollection resources, Dictionary<Guid, AllocationMap> counters, DateTime? planTime)
         {
             // Validate
-            if (resources == null)
-                throw new ArgumentNullException("scheduler");
+            ArgumentNullException.ThrowIfNull(resources, "scheduler");
 
             // Attach
             ResourceCollection = resources;
@@ -415,18 +398,18 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="comparer">Der Algorithmus, der entscheidet, wann ein Plan besser als ein anderer ist.</param>
         /// <returns>Der beste Plan.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Liste angegeben.</exception>
-        public static SchedulePlan FindBest(IEnumerable<SchedulePlan> plans, IComparer<SchedulePlan> comparer)
+        public static SchedulePlan? FindBest(IEnumerable<SchedulePlan> plans, IComparer<SchedulePlan> comparer)
         {
             // Validate
             if (plans == null)
-                throw new ArgumentNullException("plans");
+                throw new ArgumentNullException(nameof(plans));
 
             // Reset
-            SchedulePlan best = null;
+            SchedulePlan? best = null;
 
             // Process all
             foreach (var plan in plans)
-                if (plan.CompareTo(best, comparer) > 0)
+                if (plan.CompareTo(best!, comparer) > 0)
                     best = plan;
 
             // Report
@@ -480,7 +463,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         {
             // Validate
             if (comparer == null)
-                throw new ArgumentNullException("comparer");
+                throw new ArgumentNullException(nameof(comparer));
 
             // Not possible
             if (other == null)
@@ -518,8 +501,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                         sources.Add(representative = sourceUsage.Key);
 
                     // Allocate a timeline
-                    AllocationMap.AllocationTimeline timeline;
-                    if (!summary.TryGetValue(representative, out timeline))
+                    if (!summary.TryGetValue(representative, out var timeline))
                         summary.Add(representative, timeline = new AllocationMap.AllocationTimeline());
 
                     // Merge in all

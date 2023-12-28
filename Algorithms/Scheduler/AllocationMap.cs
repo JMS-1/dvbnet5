@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections;
 
 
 namespace JMS.DVB.Algorithms.Scheduler
@@ -14,43 +11,31 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <summary>
         /// Beschreibt das Ergebnis einer Prüfung.
         /// </summary>
-        public class AllocationPlan
+        /// <param name="map">Die zugehörige Verwaltung einer Ressource.</param>
+        /// <param name="source">Die Quelle, die verwendet werden soll.</param>
+        /// <param name="plan">Die ursprüngliche Planung.</param>
+        /// <param name="index">Der erste Eintrag in der Verwaltung, der belegt werden soll.</param>
+        public class AllocationPlan(AllocationMap map, IScheduleSource source, SuggestedPlannedTime plan, int index)
         {
             /// <summary>
             /// Der gewünschte Zeitbereich.
             /// </summary>
-            private readonly SuggestedPlannedTime m_plan;
+            private readonly SuggestedPlannedTime m_plan = plan;
 
             /// <summary>
             /// Die zugehörige Quelle.
             /// </summary>
-            private readonly IScheduleSource m_source;
+            private readonly IScheduleSource m_source = source;
 
             /// <summary>
             /// Die zugehörige Verwaltung einer Ressource.
             /// </summary>
-            private readonly AllocationMap m_map;
+            private readonly AllocationMap m_map = map;
 
             /// <summary>
             /// Der erste Eintrag, der von der Belegung verwendet werden soll.
             /// </summary>
-            private readonly int m_allocationIndex;
-
-            /// <summary>
-            /// Erzeugt eine neue Beschreibung.
-            /// </summary>
-            /// <param name="map">Die zugehörige Verwaltung einer Ressource.</param>
-            /// <param name="source">Die Quelle, die verwendet werden soll.</param>
-            /// <param name="plan">Die ursprüngliche Planung.</param>
-            /// <param name="index">Der erste Eintrag in der Verwaltung, der belegt werden soll.</param>
-            public AllocationPlan(AllocationMap map, IScheduleSource source, SuggestedPlannedTime plan, int index)
-            {
-                // Remember
-                m_allocationIndex = index;
-                m_source = source;
-                m_plan = plan;
-                m_map = map;
-            }
+            private readonly int m_allocationIndex = index;
 
             /// <summary>
             /// Führt die eigentliche Belegung aus.
@@ -123,7 +108,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             {
                 // Validate
                 if (to <= from)
-                    throw new ArgumentOutOfRangeException("to");
+                    throw new ArgumentOutOfRangeException(nameof(to));
 
                 // Finish
                 Sources = new List<IScheduleSource>();
@@ -155,7 +140,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             {
                 // Validate
                 if (source == null)
-                    throw new ArgumentNullException("source");
+                    throw new ArgumentNullException(nameof(source));
 
                 // Remember
                 if (!Sources.Any(s => s.IsSameAs(source)))
@@ -243,11 +228,11 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// </summary>
         /// <param name="initialValue">Der Anfangswert.</param>
         /// <param name="mergeTest">Optional eine Methode zur Beschränkung der Zuordnung.</param>
-        public AllocationMap(int initialValue, Func<IScheduleSource, IEnumerable<IScheduleSource>, bool> mergeTest = null)
+        public AllocationMap(int initialValue, Func<IScheduleSource, IEnumerable<IScheduleSource>, bool> mergeTest = null!)
         {
             // Remember
-            m_Allocations = new List<AllocatedRange> { new AllocatedRange(DateTime.MinValue, DateTime.MaxValue, this) };
-            m_Sources = new List<IScheduleSource>();
+            m_Allocations = [new AllocatedRange(DateTime.MinValue, DateTime.MaxValue, this)];
+            m_Sources = [];
             TotalNumberOfSources = initialValue;
             m_MergeTest = mergeTest;
         }
@@ -302,7 +287,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         {
             // Reset not allowed
             if (start == DateTime.MinValue)
-                throw new ArgumentOutOfRangeException("start");
+                throw new ArgumentOutOfRangeException(nameof(start));
 
             // Already in use
             if (m_Allocations.Count > 1)
@@ -334,8 +319,8 @@ namespace JMS.DVB.Algorithms.Scheduler
         private void Allocate(int allocationIndex, IScheduleSource source, ref PlannedTime time)
         {
             // Reset all caches - just in case...
-            m_cachedResourceStartTimes = null;
-            m_sourceUsage = null;
+            m_cachedResourceStartTimes = null!;
+            m_sourceUsage = null!;
 
             // We are now using the source
             if (!m_Sources.Any(s => s.IsSameAs(source)))
@@ -441,7 +426,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="source">Die zu verwendende Quelle.</param>
         /// <param name="timeHolder">Der Zeitraum, für den die Planung stattfinden soll.</param>
         /// <returns>Gesetzt, wenn eine Zuordnung überhaupt möglich ist. Gemeldet wird dann der Zeitversatz der Zuordnung.</returns>
-        public AllocationPlan PrepareAllocation(IScheduleSource source, SuggestedPlannedTime timeHolder)
+        public AllocationPlan? PrepareAllocation(IScheduleSource source, SuggestedPlannedTime timeHolder)
         {
             // Extract the time to use for plannung
             var time = timeHolder.Planned;
@@ -536,7 +521,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// Meldet alle aktiven Einträge.
         /// </summary>
         /// <returns>Die gewünschte Auflistung.</returns>
-        public IEnumerator<AllocationMap.IAllocationInformation> GetEnumerator()
+        public IEnumerator<IAllocationInformation> GetEnumerator()
         {
             // Forward
             return m_Allocations.GetEnumerator();
@@ -555,7 +540,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <summary>
         /// Die Zeiten, zu denen das zugehörige Gerät aktiviert wird.
         /// </summary>
-        private DateTime[] m_cachedResourceStartTimes;
+        private DateTime[] m_cachedResourceStartTimes = null!;
 
         /// <summary>
         /// Ermittelt die Zeitpunkte, an denen das zugehörige Geräte tatsächlich aktiviert wird.
@@ -598,7 +583,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <summary>
         /// Vermerkt das Aufzeichnungsmuster einzelner Quellen.
         /// </summary>
-        private Dictionary<IScheduleSource, AllocationTimeline> m_sourceUsage;
+        private Dictionary<IScheduleSource, AllocationTimeline> m_sourceUsage = null!;
 
         /// <summary>
         /// Ermittelt, wann einzelne Quellen aufgezeichnet werden.
@@ -646,9 +631,8 @@ namespace JMS.DVB.Algorithms.Scheduler
                             sources.Add(representative = source);
 
                         // Now we can check the time line
-                        AllocationTimeline timeline;
-                        if (!map.TryGetValue(representative, out timeline))
-                            map.Add(representative, timeline = new AllocationTimeline());
+                        if (!map.TryGetValue(representative, out var timeline))
+                            map.Add(representative, timeline = new());
 
                         // Register
                         timeline.Add(range);

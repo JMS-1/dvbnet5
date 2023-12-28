@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-
-
-namespace JMS.DVB.Algorithms.Scheduler
+﻿namespace JMS.DVB.Algorithms.Scheduler
 {
     /// <summary>
     /// Beschreibt Einschränkungen bei der Entschlüsselung, die für mehrere Geräte
@@ -40,8 +36,8 @@ namespace JMS.DVB.Algorithms.Scheduler
                 string.Format
                     (
                         "CI({0}*{1})<{2}",
-                        (DecryptionGroups == null) ? null : string.Join( ",", DecryptionGroups.Select( g => g.ToString() ).ToArray() ),
-                        (ScheduleResources == null) ? null : string.Join( ",", ScheduleResources.Select( r => (r == null) ? null : r.Name ).ToArray() ),
+                        (DecryptionGroups == null) ? null : string.Join(",", DecryptionGroups.Select(g => g.ToString()).ToArray()),
+                        (ScheduleResources == null) ? null : string.Join(",", ScheduleResources.Select(r => (r == null) ? null : r.Name).ToArray()),
                         MaximumParallelSources + 1
                     );
         }
@@ -54,8 +50,8 @@ namespace JMS.DVB.Algorithms.Scheduler
         {
             // Self
             if (ScheduleResources != null)
-                if (ScheduleResources.Any( r => r == null ))
-                    throw new ArgumentNullException( "ScheduleResources" );
+                if (ScheduleResources.Any(r => r == null))
+                    throw new ArgumentNullException("ScheduleResources");
 
             // Forward
             if (DecryptionGroups != null)
