@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB
+﻿namespace JMS.DVB
 {
     /// <summary>
     /// Beschreibt, wie ein Namensvergleich erfolgen soll.

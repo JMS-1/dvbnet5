@@ -1,10 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 using System.Collections;
-using System.IO;
 
 namespace JMS.DVB
 {
@@ -31,7 +26,7 @@ namespace JMS.DVB
     /// Beschreibt, in welcher Form eine Quelle beim Sendersuchlauf modifiziert werden soll.
     /// </summary>
     [Serializable]
-    [XmlType( "Modifier" )]
+    [XmlType("Modifier")]
     public class SourceModifier : SourceIdentifier, ICloneable
     {
         /// <summary>
@@ -42,12 +37,12 @@ namespace JMS.DVB
         /// <summary>
         /// Optional ein fester Name für die Quelle.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Optional der Name eines festen Anbieters für die Quelle.
         /// </summary>
-        public string Provider { get; set; }
+        public string Provider { get; set; } = null!;
 
         /// <summary>
         /// Kann verwendet werden um festzulegen, ob die Quelle verschlüsselt gesendet wird.
@@ -90,15 +85,15 @@ namespace JMS.DVB
         /// Liest oder setzt fixierte Tonspuren - es können immer nur alle Tonspuren auf einmal
         /// fixiert werden.
         /// </summary>
-        [XmlArrayItem( "Stream" )]
-        public AudioInformation[] AudioStreams { get; set; }
+        [XmlArrayItem("Stream")]
+        public AudioInformation[] AudioStreams { get; set; } = null!;
 
         /// <summary>
         /// Liest oder setzt fixierte DVB Untertitel - es können immer nur alle Untertitel auf einmal
         /// fixiert werden.
         /// </summary>
-        [XmlArrayItem( "Stream" )]
-        public SubtitleInformation[] SubtitlesStreams { get; set; }
+        [XmlArrayItem("Stream")]
+        public SubtitleInformation[] SubtitlesStreams { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Modifikationsbeschreibung.
@@ -114,20 +109,19 @@ namespace JMS.DVB
         public SourceModifier Clone()
         {
             // Create serializer
-            XmlSerializer serializer = new XmlSerializer( GetType() );
+            XmlSerializer serializer = new(GetType());
 
             // Create stream
-            using (MemoryStream stream = new MemoryStream())
-            {
-                // Create
-                serializer.Serialize( stream, this );
+            using MemoryStream stream = new();
 
-                // Reset
-                stream.Seek( 0, SeekOrigin.Begin );
+            // Create
+            serializer.Serialize(stream, this);
 
-                // Reload
-                return (SourceModifier) serializer.Deserialize( stream );
-            }
+            // Reset
+            stream.Seek(0, SeekOrigin.Begin);
+
+            // Reload
+            return (SourceModifier)serializer.Deserialize(stream)!;
         }
 
         /// <summary>
@@ -135,16 +129,16 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="station">Die zu verändernde Quelle.</param>
         /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
-        public void ApplyTo( Station station )
+        public void ApplyTo(Station station)
         {
             // Validate
             if (null == station)
-                throw new ArgumentNullException( "station" );
+                throw new ArgumentNullException(nameof(station));
 
             // Blind apply - even if identifier would not match
-            if (!string.IsNullOrEmpty( Name ))
+            if (!string.IsNullOrEmpty(Name))
                 station.Name = Name;
-            if (!string.IsNullOrEmpty( Provider ))
+            if (!string.IsNullOrEmpty(Provider))
                 station.Provider = Provider;
             if (IsEncrypted.HasValue)
                 station.IsEncrypted = IsEncrypted.Value;
@@ -162,9 +156,9 @@ namespace JMS.DVB
             get
             {
                 // Test all
-                if (!string.IsNullOrEmpty( Name ))
+                if (!string.IsNullOrEmpty(Name))
                     return false;
-                if (!string.IsNullOrEmpty( Provider ))
+                if (!string.IsNullOrEmpty(Provider))
                     return false;
                 if (IsEncrypted.HasValue)
                     return false;
@@ -195,16 +189,16 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="source">Die zu verändernde Quelle.</param>
         /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
-        public void ApplyTo( SourceInformation source )
+        public void ApplyTo(SourceInformation source)
         {
             // Validate
             if (null == source)
-                throw new ArgumentNullException( "source" );
+                throw new ArgumentNullException(nameof(source));
 
             // Blind apply - even if identifier would not match
-            if (!string.IsNullOrEmpty( Name ))
+            if (!string.IsNullOrEmpty(Name))
                 source.Name = Name;
-            if (!string.IsNullOrEmpty( Provider ))
+            if (!string.IsNullOrEmpty(Provider))
                 source.Provider = Provider;
             if (IsEncrypted.HasValue)
                 source.IsEncrypted = IsEncrypted.Value;
@@ -225,7 +219,7 @@ namespace JMS.DVB
 
                 // Add all
                 foreach (AudioInformation audio in AudioStreams)
-                    source.AudioTracks.Add( audio.Clone() );
+                    source.AudioTracks.Add(audio.Clone());
             }
 
             // Subtitles
@@ -236,7 +230,7 @@ namespace JMS.DVB
 
                 // Add all
                 foreach (SubtitleInformation sub in SubtitlesStreams)
-                    source.Subtitles.Add( sub.Clone() );
+                    source.Subtitles.Add(sub.Clone());
             }
         }
 
@@ -279,14 +273,13 @@ namespace JMS.DVB
         /// <param name="source">Die gewünschte Quelle.</param>
         /// <returns>Die vorzunehmenden Modifikationen.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
-        public SourceModifier GetFilter( SourceIdentifier source )
+        public SourceModifier GetFilter(SourceIdentifier source)
         {
             // Validate
-            if (null == source)
-                throw new ArgumentNullException( "source" );
+            ArgumentNullException.ThrowIfNull(source, nameof(source));
 
             // Find it
-            SourceModifier filter = (null == SourceDetails) ? null : SourceDetails.Find( f => f.Equals( source ) );
+            var filter = SourceDetails?.Find(f => f.Equals(source));
 
             // Process
             if (null == filter)
@@ -307,7 +300,7 @@ namespace JMS.DVB
         /// <param name="group">Die gewünschte Quellgruppe.</param>
         /// <returns>Informationen zur Quellgruppe.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Quellgruppe angegeben.</exception>
-        public abstract SourceGroupFilter GetFilter( SourceGroup group );
+        public abstract SourceGroupFilter GetFilter(SourceGroup group);
     }
 
     /// <summary>
@@ -335,25 +328,22 @@ namespace JMS.DVB
         /// <param name="group">Die gewünschte Quellgruppe.</param>
         /// <returns>Informationen zur Quellgruppe.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Quellgruppe angegeben.</exception>
-        public override SourceGroupFilter GetFilter( SourceGroup group )
+        public override SourceGroupFilter GetFilter(SourceGroup group)
         {
             // Validate
             if (null == group)
-                throw new ArgumentNullException( "group" );
-
-            // Check type
-            T typedGroup = group as T;
+                throw new ArgumentNullException(nameof(group));
 
             // Not us - never scan
-            if (null == typedGroup)
+            if (group is not T typedGroup)
                 return new SourceGroupFilter { ExcludeFromScan = true };
 
             // Create result
             return
                 new SourceGroupFilter
-                    {
-                        ExcludeFromScan = (null != ExcludedGroups) && ExcludedGroups.Contains( typedGroup )
-                    };
+                {
+                    ExcludeFromScan = (null != ExcludedGroups) && ExcludedGroups.Contains(typedGroup)
+                };
         }
 
         /// <summary>

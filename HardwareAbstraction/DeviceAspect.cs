@@ -1,7 +1,5 @@
-﻿using System;
-using System.Xml;
+﻿using System.Xml;
 using System.Xml.Serialization;
-
 
 namespace JMS.DVB
 {
@@ -14,13 +12,13 @@ namespace JMS.DVB
         /// <summary>
         /// Der Name des Parameters.
         /// </summary>
-        [XmlAttribute( "aspect" )]
-        public string Aspekt { get; set; }
+        [XmlAttribute("aspect")]
+        public string Aspekt { get; set; } = null!;
 
         /// <summary>
         /// Der Wert des Parameters.
         /// </summary>
         [XmlText]
-        public string Value { get; set; }
+        public string Value { get; set; } = null!;
     }
 }

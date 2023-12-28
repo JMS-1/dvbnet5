@@ -66,12 +66,12 @@
         {
             // Validate
             if (string.IsNullOrEmpty(profileName))
-                throw new ArgumentException(profileName, "profileName");
+                throw new ArgumentException(profileName, nameof(profileName));
 
             // Load the profile
-            Profile profile = ProfileManager.FindProfile(profileName);
+            var profile = ProfileManager.FindProfile(profileName);
             if (null == profile)
-                throw new ArgumentException(profileName, "profileName");
+                throw new ArgumentException(profileName, nameof(profileName));
 
             // Forward
             return OpenHardware(profile);
@@ -88,7 +88,7 @@
         {
             // Validate
             if (null == profile)
-                throw new ArgumentNullException("profile");
+                throw new ArgumentNullException(nameof(profile));
             if (string.IsNullOrEmpty(profile.Name))
                 throw new ArgumentNullException("profile.Name");
 
@@ -104,7 +104,7 @@
                     return hardware;
 
                 // Ask profile
-                hardware = profile.CreateHardware();
+                hardware = profile.CreateHardware()!;
 
                 // Remember
                 m_ActiveHardware[profile.Name] = hardware;

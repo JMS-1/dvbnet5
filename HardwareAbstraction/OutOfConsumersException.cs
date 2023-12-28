@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace JMS.DVB
 {
@@ -16,7 +12,7 @@ namespace JMS.DVB
         /// <summary>
         /// Optional die Auswahl der Teildatenströme (PID), die angefordert wurden.
         /// </summary>
-        public StreamSelection RequestedSelection { get; set; }
+        public StreamSelection RequestedSelection { get; set; } = null!;
 
         /// <summary>
         /// Die Anzahl der angeforderten Verbraucher.
@@ -34,7 +30,9 @@ namespace JMS.DVB
         /// <param name="info">Informationen zur Deserialisierung.</param>
         /// <param name="context">Aktuelle Arbeitsumgebung der Deserialisierung.</param>
         public OutOfConsumersException(SerializationInfo info, StreamingContext context)
+#pragma warning disable SYSLIB0051 // Type or member is obsolete
             : base(info, context)
+#pragma warning restore SYSLIB0051 // Type or member is obsolete
         {
         }
 

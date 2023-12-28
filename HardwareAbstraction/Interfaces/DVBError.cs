@@ -1,5 +1,3 @@
-using System;
-
 namespace JMS.TechnoTrend
 {
 	/// <summary>
@@ -10,7 +8,7 @@ namespace JMS.TechnoTrend
 		/// <summary>
 		/// Success.
 		/// </summary>
-		None,		
+		None,
 
 		/// <summary>
 		/// Problems while accessing driver.

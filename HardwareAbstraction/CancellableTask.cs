@@ -1,9 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-
-namespace JMS.DVB
+﻿namespace JMS.DVB
 {
     /// <summary>
     /// Eine Hintergrundaufgabe, die auch abgebrochen werden kann.
@@ -20,8 +15,8 @@ namespace JMS.DVB
         /// Erzeugt eine neue Instanz.
         /// </summary>
         /// <param name="taskMethod">Die Methode, die zur Ausführung der Aufgabe aufgerufen werden soll.</param>
-        private CancellableTask( Func<TResultType> taskMethod )
-            : base( taskMethod )
+        private CancellableTask(Func<TResultType> taskMethod)
+            : base(taskMethod)
         {
         }
 
@@ -45,14 +40,14 @@ namespace JMS.DVB
         /// Bricht die Aufgabe nach einer bestimmten Zeit automatisch ab.
         /// </summary>
         /// <param name="timeout">Die gewünschte Zeit in Millisekunden.</param>
-        public Task<TResultType> CancelAfter( int timeout )
+        public Task<TResultType> CancelAfter(int timeout)
         {
             // Process
             var cancel = m_cancel;
             if (cancel != null)
                 try
                 {
-                    cancel.CancelAfter( timeout );
+                    cancel.CancelAfter(timeout);
                 }
                 catch (ObjectDisposedException)
                 {
@@ -67,37 +62,37 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="worker">Der Algorithmus zur Ausführung.</param>
         /// <returns>Die neue Aufgabe.</returns>
-        public static CancellableTask<TResultType> Run( Func<CancellationToken, TResultType> worker )
+        public static CancellableTask<TResultType> Run(Func<CancellationToken, TResultType> worker)
         {
             // Validate
             if (worker == null)
-                throw new ArgumentException( "no task worker provided", "worker" );
+                throw new ArgumentException("no task worker provided", nameof(worker));
 
             // Allow self reference to new instance
-            CancellableTask<TResultType> task = null;
+            CancellableTask<TResultType> task = null!;
 
             // Create instance
             task =
-                new CancellableTask<TResultType>( () =>
+                new CancellableTask<TResultType>(() =>
                 {
                     // Provide cleanup of cancel source
                     using (var controller = task.m_cancel)
                         try
                         {
                             // Try to process without generating exception - if possible
-                            return worker( controller.Token );
+                            return worker(controller.Token);
                         }
                         catch (Exception)
                         {
                             // In case of any error just report nothing - not applyable to value types
-                            return null;
+                            return null!;
                         }
                         finally
                         {
                             // Never use cancel source again
-                            task.m_cancel = null;
+                            task.m_cancel = null!;
                         }
-                } );
+                });
 
             // Make sure we clean up in case we are not able to start the task
             try
@@ -130,11 +125,11 @@ namespace JMS.DVB
         /// <param name="timeout">Optional die maximale Wartezeit in Millisekunden.</param>
         /// <returns>Gesetzt, wenn die Aufgabe abgeschlossen wurde.</returns>
         /// <typeparam name="TResultType">Die Art des Ergebnisses.</typeparam>
-        public static bool CancellableWait<TResultType>( this Task<TResultType> task, CancellationToken cancel, int timeout = Timeout.Infinite )
+        public static bool CancellableWait<TResultType>(this Task<TResultType> task, CancellationToken cancel, int timeout = Timeout.Infinite)
         {
             // Validate
             if (task == null)
-                throw new ArgumentException( "no task to wait on", "task" );
+                throw new ArgumentException("no task to wait on", nameof(task));
 
             // Pre-check to avoid exception if possible
             if (cancel.IsCancellationRequested)
@@ -144,7 +139,7 @@ namespace JMS.DVB
             try
             {
                 // May throw an exception if token is signaled or simply report the completition state
-                return task.Wait( timeout, cancel );
+                return task.Wait(timeout, cancel);
             }
             catch (Exception)
             {

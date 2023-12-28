@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB
+﻿namespace JMS.DVB
 {
     /// <summary>
     /// Beschreibt eine DVB Hardware für den Satellitenempfang.
@@ -19,10 +16,10 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="group">Die zu prüfende Quellgruppe.</param>
         /// <returns>Gesetzt, wenn die Quellgruppe unterstützt wird.</returns>
-        public override bool SupportsGroup( SatelliteGroup group )
+        public override bool SupportsGroup(SatelliteGroup group)
         {
             // Ask base (will test for null)
-            if (!base.SupportsGroup( group ))
+            if (!base.SupportsGroup(group))
                 return false;
 
             // DVB-S2

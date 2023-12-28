@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.DeviceAccess
+﻿namespace JMS.DVB.DeviceAccess
 {
     /// <summary>
     /// Beschreibt technische Daten zu einem empfangenen Signal.

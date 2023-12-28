@@ -1,7 +1,5 @@
-﻿using System;
-using System.Xml;
+﻿using System.Xml;
 using System.Xml.Serialization;
-using System.Collections.Generic;
 
 namespace JMS.DVB
 {
@@ -15,7 +13,7 @@ namespace JMS.DVB
         /// Die Liste der zugehörigen Referenzen in die allgemeine Konfiguration
         /// des Sendersuchlaufs.
         /// </summary>
-        [XmlElement( "Scan" )]
+        [XmlElement("Scan")]
         public readonly List<string> ScanLocations = new List<string>();
 
         /// <summary>
@@ -40,7 +38,7 @@ namespace JMS.DVB
         /// <summary>
         /// Die Konfiguration des Ursprungs.
         /// </summary>
-        public T Location { get; set; }
+        public T Location { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Referenz.
@@ -53,13 +51,6 @@ namespace JMS.DVB
         /// Meldet den zugehörigen Ursprung.
         /// </summary>
         [XmlIgnore]
-        public override GroupLocation GroupLocation
-        {
-            get
-            {
-                // Report
-                return Location;
-            }
-        }
+        public override GroupLocation GroupLocation => Location;
     }
 }

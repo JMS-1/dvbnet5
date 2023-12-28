@@ -23,7 +23,7 @@ namespace JMS.DVB
         /// <summary>
         /// Die Parameter des Geräteprofils zum Zeitpunkt der Erzeugung der Abstraktion.
         /// </summary>
-        internal List<ProfileParameter> EffectiveProfileParameters { get; private set; }
+        internal List<ProfileParameter> EffectiveProfileParameters { get; private set; } = null!;
 
         /// <summary>
         /// Wandelt die Parameter von der alten Darstellung vor DVB.NET 4.0 in die aktuelle Darstellung um.
@@ -62,7 +62,7 @@ namespace JMS.DVB
         /// <param name="profile">Das zu verwendende Geräteprofil.</param>
         /// <param name="hardwareType">Die konkrete Art der DVB.NET 4.0ff Implementierung.</param>
         /// <returns>Die gewünschte Abstraktion.</returns>
-        private static Hardware StandardSatelliteTranslationWithDiSEqC(Profile profile, Type hardwareType) => StandardTranslation(profile, hardwareType);
+        private static Hardware? StandardSatelliteTranslationWithDiSEqC(Profile profile, Type hardwareType) => StandardTranslation(profile, hardwareType);
 
         /// <summary>
         /// Führt eine Standardumwandlung aus.
@@ -70,13 +70,13 @@ namespace JMS.DVB
         /// <param name="profile">Das zu verwendende Geräteprofil.</param>
         /// <param name="hardwareType">Die konkrete Art der DVB.NET 4.0ff Implementierung.</param>
         /// <returns>Die gewünschte Abstraktion.</returns>
-        private static Hardware StandardTranslation(Profile profile, Type hardwareType)
+        private static Hardware? StandardTranslation(Profile profile, Type hardwareType)
         {
             // Result
-            Hardware result = null;
+            Hardware? result = null;
 
             // Create the hardware
-            var hardware = (Hardware)Activator.CreateInstance(hardwareType, profile);
+            var hardware = (Hardware)Activator.CreateInstance(hardwareType, profile)!;
             try
             {
                 // Report
@@ -111,30 +111,27 @@ namespace JMS.DVB
         /// <exception cref="ArgumentNullException">Es wurde kein Geräteprofil angegeben.</exception>
         /// <exception cref="NotSupportedException">Das Geräteprofil verwendet die nicht mehr unterstützten BDA Abstraktion
         /// vor DVB.NET 4.0.</exception>
-        internal static Hardware Create(Profile profile, bool migrateOnly)
+        internal static Hardware? Create(Profile profile, bool migrateOnly)
         {
             // Validate
-            if (profile == null)
-                throw new ArgumentNullException("profile");
+            ArgumentNullException.ThrowIfNull(profile, nameof(profile));
 
             // For exception translation
             try
             {
                 // Load the primary type
-                var primaryType = Type.GetType(profile.HardwareType, true);
+                var primaryType = Type.GetType(profile.HardwareType, true)!;
 
                 // See we we can translate
-                Type translationType;
                 if (LegacyAssemblyName.Equals(primaryType.Assembly.GetName().Name))
-                    if (s_LegacyMapping.TryGetValue(primaryType.FullName, out translationType))
+                    if (s_LegacyMapping.TryGetValue(primaryType.FullName!, out var translationType))
                     {
                         // Load the provider mapping
-                        var provider = profile.GetDeviceAspect(null);
+                        var provider = profile.GetDeviceAspect(null!);
                         if (!string.IsNullOrEmpty(provider))
                         {
                             // Load the translatior
-                            Func<Profile, Type, Hardware> translator;
-                            if (s_Translators.TryGetValue(provider, out translator))
+                            if (s_Translators.TryGetValue(provider, out var translator))
                             {
                                 // Try translate
                                 var hardware = translator(profile, translationType);
@@ -153,7 +150,7 @@ namespace JMS.DVB
                 if (migrateOnly)
                     return null;
                 else
-                    return (Hardware)Activator.CreateInstance(primaryType, profile);
+                    return (Hardware)Activator.CreateInstance(primaryType, profile)!;
             }
             catch (TargetInvocationException e)
             {
@@ -161,7 +158,7 @@ namespace JMS.DVB
                 if (migrateOnly)
                     return null;
                 else
-                    throw (null == e.InnerException) ? e : e.InnerException;
+                    throw e.InnerException ?? e;
             }
         }
 
@@ -176,7 +173,7 @@ namespace JMS.DVB
         {
             // Validate
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             else
                 return EffectiveProfileParameters.GetParameter(name);
         }

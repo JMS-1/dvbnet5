@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB
+﻿namespace JMS.DVB
 {
     /// <summary>
     /// Die Arten von Erweiterungselementen für die Bearbeitungskette.

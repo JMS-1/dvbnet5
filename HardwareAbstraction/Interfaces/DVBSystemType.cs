@@ -1,6 +1,3 @@
-using System;
-
-
 namespace JMS.DVB.DeviceAccess.Interfaces
 {
     /// <summary>

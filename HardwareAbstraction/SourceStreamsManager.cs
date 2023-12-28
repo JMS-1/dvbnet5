@@ -13,7 +13,7 @@ namespace JMS.DVB
         /// <summary>
         /// Der volle Pfad der erzeugten Datei.
         /// </summary>
-        public string FilePath { get; set; }
+        public string FilePath { get; set; } = null!;
 
         /// <summary>
         /// Das in der Datei verwendete Bildformat.
@@ -35,7 +35,7 @@ namespace JMS.DVB
         /// <summary>
         /// Wird ausgelöst, bevor eine Quelle nach einer Konfigurationsänderung erneut aktiviert wird.
         /// </summary>
-        public event Func<SourceStreamsManager, StreamSelection> BeforeRecreateStream;
+        public event Func<SourceStreamsManager, StreamSelection>? BeforeRecreateStream;
 
         /// <summary>
         /// Das zu verwendende DVB.NET Gerät.
@@ -55,7 +55,7 @@ namespace JMS.DVB
         /// <summary>
         /// Die aktuelle Aufzeichnung in einen <i>Transport Stream</i>.
         /// </summary>
-        private Manager m_TransportStream;
+        private Manager m_TransportStream = null!;
 
         /// <summary>
         /// Meldet, wann die aktuelle Altivierung gestartet wurde.
@@ -66,23 +66,23 @@ namespace JMS.DVB
         /// Eine eindeutige textuelle Beschreibung der aktuellen Aufzeichnung bezüglich
         /// der verwendeten Datenströme.
         /// </summary>
-        private string m_CurrentSignature;
+        private string m_CurrentSignature = null!;
 
         /// <summary>
         /// Die technischen Informationen zur Quelle zum Zeitpunkt des Starts
         /// einer Aufzeichnung.
         /// </summary>
-        private SourceInformation m_OriginalSettings;
+        private SourceInformation m_OriginalSettings = null!;
 
         /// <summary>
         /// Der Dateiname, der bei der Erzeugung der Aufzeichnungsdatei verwendet wurde.
         /// </summary>
-        private string m_OriginalPath;
+        private string m_OriginalPath = null!;
 
         /// <summary>
         /// Verwaltet alle Dateien, die erzeugt wurden.
         /// </summary>
-        private List<FileStreamInformation> m_AllFiles = new List<FileStreamInformation>();
+        private readonly List<FileStreamInformation> m_AllFiles = [];
 
         /// <summary>
         /// Die laufende Nummer der aktuellen Datei.
@@ -92,7 +92,7 @@ namespace JMS.DVB
         /// <summary>
         /// Alle Datenströme, die aktiviert wurden.
         /// </summary>
-        private List<Guid> m_Consumers = new List<Guid>();
+        private readonly List<Guid> m_Consumers = [];
 
         /// <summary>
         /// Optional ein zugehöriges Geräteprofil zur Referenz der Senderliste.
@@ -113,12 +113,12 @@ namespace JMS.DVB
         /// <summary>
         /// Die aktuell verwendeten Teildatenströme beim Empfang.
         /// </summary>
-        public StreamSelection ActiveSelection { get; private set; }
+        public StreamSelection ActiveSelection { get; private set; } = null!;
 
         /// <summary>
         /// Die zuletzt gewählte TCP/IP Zieladresse.
         /// </summary>
-        private string m_LastStreamTarget;
+        private string m_LastStreamTarget = null!;
 
         /// <summary>
         /// Gesetzt, wenn die Entschlüsselung aktiviert wurde.
@@ -128,18 +128,18 @@ namespace JMS.DVB
         /// <summary>
         /// Wird aktiviert, sobald die Systemuhr in eine Datei geschrieben wird.
         /// </summary>
-        private Action<string, long, byte[]> m_WritePCRSink;
+        private Action<string, long, byte[]>? m_WritePCRSink;
 
         /// <summary>
         /// Wird aufgerufen, wenn ein neuer <i>Transport Stream</i> angelegt wurde.
         /// </summary>
-        public event Action<SourceStreamsManager> OnCreatedStream;
+        public event Action<SourceStreamsManager>? OnCreatedStream;
 
         /// <summary>
         /// Eine optionale Methode, die zu einer Art von Nutzdaten die Größe des zu verwendenden
         /// Zwischenspeichers für Dateien ermittelt.
         /// </summary>
-        public Func<EPG.StreamTypes?, int?> FileBufferSizeChooser;
+        public Func<EPG.StreamTypes?, int?>? FileBufferSizeChooser;
 
         /// <summary>
         /// Erzeugt eine neue Verwaltung.
@@ -153,11 +153,11 @@ namespace JMS.DVB
         {
             // Validate
             if (null == hardware)
-                throw new ArgumentNullException("hardware");
+                throw new ArgumentNullException(nameof(hardware));
             if (null == source)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
             if (null == selection)
-                throw new ArgumentNullException("selection");
+                throw new ArgumentNullException(nameof(selection));
 
             // Remember all
             StreamSelection = selection;
@@ -187,14 +187,14 @@ namespace JMS.DVB
         /// Meldet oder legt fest, ob Berichte über das Schreiben der Systemuhr
         /// in eine Datei erzeugt werden sollen.
         /// </summary>
-        public Action<string, long, byte[]> OnWritingPCR
+        public Action<string, long, byte[]>? OnWritingPCR
         {
             get { return m_WritePCRSink; }
             set
             {
                 // Forward
                 if (m_TransportStream != null)
-                    m_TransportStream.OnWritingPCR = value;
+                    m_TransportStream.OnWritingPCR = value!;
 
                 // Update cached
                 m_WritePCRSink = value;
@@ -208,7 +208,7 @@ namespace JMS.DVB
         /// <param name="filePath">Optional die Angabe eines Dateinames.</param>
         /// <returns>Gesetzt, wenn die Quelle bekannt ist und der Empfang aktiviert wurde.</returns>
         /// <exception cref="InvalidOperationException">Es ist bereits eine Aufzeichnung aktiv.</exception>
-        public bool CreateStream(string filePath) => CreateStream(filePath, null);
+        public bool CreateStream(string filePath) => CreateStream(filePath, null!);
 
         /// <summary>
         /// Beginnt die Aufzeichnung in einen <i>Transport Stream</i> - optional als 
@@ -281,7 +281,7 @@ namespace JMS.DVB
 
                 // Check mode
                 if (0 == m_TransportStream.TCPPort)
-                    return null;
+                    return null!;
 
                 // Combine
                 return $"{m_TransportStream.TCPClient}:{m_TransportStream.TCPPort}";
@@ -300,12 +300,12 @@ namespace JMS.DVB
                     // Split
                     var parts = value.Split(':');
                     if (2 != parts.Length)
-                        throw new ArgumentException(value, "value");
+                        throw new ArgumentException(value, nameof(value));
 
                     // Get port
                     ushort port;
                     if (!ushort.TryParse(parts[1], out port))
-                        throw new ArgumentException(value, "value");
+                        throw new ArgumentException(value, nameof(value));
 
                     // Update
                     if (null != m_TransportStream)
@@ -558,7 +558,7 @@ namespace JMS.DVB
                     var ext = Path.GetExtension(filePath);
 
                     // Construct new name
-                    filePath = Path.Combine(dir, $"{name} - {m_FileCount}{ext}");
+                    filePath = Path.Combine(dir!, $"{name} - {m_FileCount}{ext}");
                 }
 
             // Try to decrypt
@@ -587,13 +587,13 @@ namespace JMS.DVB
             var bufferSize = (FileBufferSizeChooser == null) ? null : FileBufferSizeChooser(videoType);
 
             // Create the new stream
-            m_TransportStream = new Manager(filePath, nextPID, bufferSize.GetValueOrDefault(Manager.DefaultBufferSize));
+            m_TransportStream = new(filePath!, nextPID, bufferSize.GetValueOrDefault(Manager.DefaultBufferSize));
 
             // Attach PCR sink
-            m_TransportStream.OnWritingPCR = m_WritePCRSink;
+            m_TransportStream.OnWritingPCR = m_WritePCRSink!;
 
             // Report of the actually selected streams
-            StreamSelection result = new StreamSelection();
+            StreamSelection result = new();
 
             // Cleanup on any error
             try
@@ -744,7 +744,7 @@ namespace JMS.DVB
             {
                 // Simply forget
                 m_TransportStream.Dispose();
-                m_TransportStream = null;
+                m_TransportStream = null!;
 
                 // Forward
                 throw;
@@ -820,8 +820,7 @@ namespace JMS.DVB
         private void AddSubtitleInformation(SubtitleInformation subtitle, Dictionary<ushort, List<EPG.SubtitleInfo>> subtitles)
         {
             // Attach to the list
-            List<EPG.SubtitleInfo> list;
-            if (!subtitles.TryGetValue(subtitle.SubtitleStream, out list))
+            if (!subtitles.TryGetValue(subtitle.SubtitleStream, out var list))
             {
                 // Create new
                 list = new List<EPG.SubtitleInfo>();
@@ -949,13 +948,13 @@ namespace JMS.DVB
             using (var stream = m_TransportStream)
             {
                 // Wipe out
-                m_TransportStream = null;
+                m_TransportStream = null!;
 
                 // Reset time
                 LastActivationTime = null;
 
                 // Forget current settings
-                ActiveSelection = null;
+                ActiveSelection = null!;
 
                 // Nothing more to do
                 if (null == stream)

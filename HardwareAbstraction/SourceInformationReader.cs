@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using JMS.DVB.SI;
-
+﻿using JMS.DVB.SI;
 
 namespace JMS.DVB
 {
@@ -15,9 +12,9 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="source">Alle Informationen zur Quelle.</param>
         /// <returns>Die Hintergrundaufgabe zum Auslesen der Quelldaten.</returns>
-        public static CancellableTask<SourceInformation> GetSourceInformationAsync( this SourceSelection source )
+        public static CancellableTask<SourceInformation> GetSourceInformationAsync(this SourceSelection source)
         {
-            return source.GetHardware().GetSourceInformationAsync( source.Source, source.GetProfile() );
+            return source.GetHardware()!.GetSourceInformationAsync(source.Source, source.GetProfile()!);
         }
 
         /// <summary>
@@ -27,13 +24,13 @@ namespace JMS.DVB
         /// <param name="device">Das zu verwendende Gerät.</param>
         /// <param name="profile">Optional das zu berücksichtigende Geräteprofil.</param>
         /// <returns>Die Hintergrundaufgabe zum Auslesen der Quelledaten.</returns>
-        public static CancellableTask<SourceInformation> GetSourceInformationAsync( this Hardware device, SourceIdentifier source, Profile profile = null )
+        public static CancellableTask<SourceInformation> GetSourceInformationAsync(this Hardware device, SourceIdentifier source, Profile? profile = null)
         {
             // Validate
             if (device == null)
-                throw new ArgumentNullException( "no hardware to use", "device" );
+                throw new ArgumentNullException("no hardware to use", nameof(device));
             if (source == null)
-                throw new ArgumentException( "no source to get information for", "source" );
+                throw new ArgumentException("no source to get information for", nameof(source));
 
             // Attach to tasks
             var patReader = device.AssociationTableReader;
@@ -41,43 +38,43 @@ namespace JMS.DVB
 
             // Start 
             return
-                CancellableTask<SourceInformation>.Run( cancel =>
+                CancellableTask<SourceInformation>.Run(cancel =>
                 {
                     // Check tasks
                     if (groupReader == null)
-                        return null;
+                        return null!;
                     if (patReader == null)
-                        return null;
+                        return null!;
 
                     // Wait on tasks
-                    if (!groupReader.CancellableWait( cancel ))
-                        return null;
-                    if (!patReader.CancellableWait( cancel ))
-                        return null;
+                    if (!groupReader.CancellableWait(cancel))
+                        return null!;
+                    if (!patReader.CancellableWait(cancel))
+                        return null!;
 
                     // Get the current group information
                     var groupInfo = groupReader.Result;
                     if (groupInfo == null)
-                        return null;
+                        return null!;
 
                     // See if group exists
-                    if (!groupInfo.Sources.Any( source.Equals ))
-                        return null;
+                    if (!groupInfo.Sources.Any(source.Equals))
+                        return null!;
 
                     // Find the stream identifier for the service
-                    var pmtIdentifier = patReader.Result.FindService( source.Service );
+                    var pmtIdentifier = patReader.Result.FindService(source.Service);
                     if (!pmtIdentifier.HasValue)
-                        return null;
+                        return null!;
 
                     // Wait for mapping table
-                    var pmtReader = device.GetTableAsync<PMT>( pmtIdentifier.Value );
-                    if (!pmtReader.CancellableWait( cancel ))
-                        return null;
+                    var pmtReader = device.GetTableAsync<PMT>(pmtIdentifier.Value);
+                    if (!pmtReader.CancellableWait(cancel))
+                        return null!;
 
                     // Request table
                     var pmts = pmtReader.Result;
                     if (pmts == null)
-                        return null;
+                        return null!;
 
                     // Create dummy
                     var currentSettings = new SourceInformation { Source = source, VideoType = VideoTypes.NoVideo };
@@ -87,15 +84,15 @@ namespace JMS.DVB
                     {
                         // Overwrite encryption if CA descriptor is present
                         if (pmt.Table.Descriptors != null)
-                            currentSettings.IsEncrypted = pmt.Table.Descriptors.Any( descriptor => EPG.DescriptorTags.CA == descriptor.Tag );
+                            currentSettings.IsEncrypted = pmt.Table.Descriptors.Any(descriptor => EPG.DescriptorTags.CA == descriptor.Tag);
 
                         // Process the program entries
                         foreach (var program in pmt.Table.ProgramEntries)
-                            currentSettings.Update( program );
+                            currentSettings.Update(program);
                     }
 
                     // Find the related station information
-                    var station = groupInfo.Sources.FirstOrDefault( source.Equals ) as Station;
+                    var station = groupInfo.Sources.FirstOrDefault(source.Equals) as Station;
                     if (station != null)
                     {
                         // Take data from there
@@ -114,14 +111,14 @@ namespace JMS.DVB
                     if (profile != null)
                     {
                         // Apply the modifier
-                        var modifier = profile.GetFilter( currentSettings.Source );
+                        var modifier = profile.GetFilter(currentSettings.Source);
                         if (modifier != null)
-                            modifier.ApplyTo( currentSettings );
+                            modifier.ApplyTo(currentSettings);
                     }
 
                     // Report
                     return currentSettings;
-                } );
+                });
         }
     }
 }

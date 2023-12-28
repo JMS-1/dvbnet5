@@ -1,12 +1,9 @@
-﻿using System;
-
-
-namespace JMS.DVB
+﻿namespace JMS.DVB
 {
     /// <summary>
     /// Kennzeichnet eine Klasse, die Aufgaben für Aufgabenlisten anbieten kann.
     /// </summary>
-    [AttributeUsage( AttributeTargets.Class, AllowMultiple = false, Inherited = false )]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class PipelineAttribute : Attribute
     {
         /// <summary>
@@ -29,7 +26,7 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="types">Die von dieser Klasse unterstützten Aufgabenarten.</param>
         /// <param name="displayName">Eine Beschreibung für diese Klasse.</param>
-        public PipelineAttribute( PipelineTypes types, string displayName )
+        public PipelineAttribute(PipelineTypes types, string displayName)
         {
             // Remember
             DisplayName = displayName;

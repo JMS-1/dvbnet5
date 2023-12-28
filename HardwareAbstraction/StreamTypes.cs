@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-
-namespace JMS.DVB
+﻿namespace JMS.DVB
 {
     /// <summary>
     /// Die unterschiedlichen Arten von Datenströmen, die innerhalb einer <see cref="SourceGroup"/>

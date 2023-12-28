@@ -1,16 +1,15 @@
-using System;
-
 namespace JMS.TechnoTrend
 {
 	/// <summary>
 	/// Generic <see cref="Exception"/> used for all API calls.
 	/// </summary>
-	[Serializable] public class DVBException : Exception
+	[Serializable]
+	public class DVBException : Exception
 	{
 		/// <summary>
 		/// Error code from API or <i>None</i>.
 		/// </summary>
-		private DVBError m_Code = DVBError.None;
+		private readonly DVBError m_Code = DVBError.None;
 
 		/// <summary>
 		/// General error - no <see cref="DVBError"/> available.
@@ -34,14 +33,7 @@ namespace JMS.TechnoTrend
 		/// <summary>
 		/// Read <see cref="m_Code"/>.
 		/// </summary>
-		public DVBError ErrorCode
-		{
-			get
-			{
-				// Report
-				return m_Code;
-			}
-		}
+		public DVBError ErrorCode => m_Code;
 
 		/// <summary>
 		/// If the code is not <see cref="DVBError">None</see> a new
@@ -53,7 +45,7 @@ namespace JMS.TechnoTrend
 		public static void ThrowOnError(DVBError eCode, string sMessage)
 		{
 			// Check and throw
-			if ( DVBError.None != eCode ) throw new DVBException(sMessage, eCode);
+			if (DVBError.None != eCode) throw new DVBException(sMessage, eCode);
 		}
 	}
 }

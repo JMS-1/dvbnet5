@@ -1,9 +1,5 @@
-using System;
 using System.Text;
-using System.Collections.Generic;
-
 using JMS.DVB.SI;
-
 
 namespace JMS.DVB
 {
@@ -19,17 +15,17 @@ namespace JMS.DVB
         /// <remarks>
         /// At least the german PayTV station PREMIERE.
         /// </remarks>
-        private static Encoding CodePage = Encoding.GetEncoding( 1252 );
+        private static readonly Encoding CodePage = Encoding.GetEncoding(1252);
 
         /// <summary>
         /// All services found related to the current station.
         /// </summary>
-        private Dictionary<Station, string> m_ServiceNames = new Dictionary<Station, string>();
+        private readonly Dictionary<Station, string> m_ServiceNames = new();
 
         /// <summary>
         /// Synchronize access to currently shown station.
         /// </summary>
-        private object m_SyncStation = new object();
+        private readonly object m_SyncStation = new();
 
         /// <summary>
         /// The currently show station.
@@ -37,33 +33,29 @@ namespace JMS.DVB
         private SourceIdentifier Portal;
 
         /// <summary>
-        /// Das zu verwendende DVB.NET Geräteprofil.
+        /// Das zu verwendende DVB.NET Gerï¿½teprofil.
         /// </summary>
-        private Profile Profile;
+        private readonly Profile Profile;
 
         /// <summary>
         /// Create a new instance and start EPG parsing on PID <i>0x12</i>.
         /// </summary>
         /// <param name="profile">Related hardware device.</param>
         /// <param name="portal">The currently show station.</param>
-        public ServiceParser( Profile profile, SourceIdentifier portal )
+        public ServiceParser(Profile profile, SourceIdentifier portal)
         {
             // Remember
             Profile = profile;
             Portal = portal;
 
             // Register
-            HardwareManager.OpenHardware( Profile ).AddProgramGuideConsumer( TableFound );
+            HardwareManager.OpenHardware(Profile)!.AddProgramGuideConsumer(TableFound);
         }
 
         /// <summary>
         /// Stellt den Datenempfang ein.
         /// </summary>
-        public void Disable()
-        {
-            // Unregister
-            HardwareManager.OpenHardware( Profile ).RemoveProgramGuideConsumer( TableFound );
-        }
+        public void Disable() => HardwareManager.OpenHardware(Profile)!.RemoveProgramGuideConsumer(TableFound);
 
         /// <summary>
         /// Get the current station.
@@ -86,7 +78,7 @@ namespace JMS.DVB
         /// when changing stations.
         /// </remarks>
         /// <param name="source">The new station to focus upon.</param>
-        public void ChangeStation( SourceIdentifier source )
+        public void ChangeStation(SourceIdentifier source)
         {
             // Update
             lock (m_SyncStation)
@@ -102,7 +94,7 @@ namespace JMS.DVB
         /// service group.
         /// </summary>
         /// <param name="table">Currently parsed SI table.</param>
-        public void TableFound( EIT table )
+        public void TableFound(EIT table)
         {
             // Test
             var eit = table.Table;
@@ -135,23 +127,23 @@ namespace JMS.DVB
                             var id = new SourceIdentifier { Network = info.OriginalNetworkIdentifier, TransportStream = info.TransportStreamIdentifier, Service = info.ServiceIdentifier };
 
                             // Lookup in profile
-                            SourceSelection[] sources = Profile.FindSource( id );
+                            SourceSelection[] sources = Profile.FindSource(id);
                             if (sources.Length < 1)
                                 continue;
 
                             // Check the first one to see if this is us
                             if (!found)
-                                found = Equals( id, CurrentPortal );
+                                found = Equals(id, CurrentPortal);
 
                             // Remember
-                            names.Add( string.Format( "{0},{1}", names.Count, CodePage.GetString( info.PrivateData ) ) );
-                            ids.Add( (Station) sources[0].Source );
+                            names.Add(string.Format("{0},{1}", names.Count, CodePage.GetString(info.PrivateData)));
+                            ids.Add((Station)sources[0].Source);
                         }
 
                         // Register
                         if (found)
                             lock (m_ServiceNames)
-                                for (int i = ids.Count; i-- > 0; )
+                                for (int i = ids.Count; i-- > 0;)
                                     m_ServiceNames[ids[i]] = names[i];
                     }
         }
@@ -165,7 +157,7 @@ namespace JMS.DVB
             {
                 // Synchronize and clone
                 lock (m_ServiceNames)
-                    return new Dictionary<Station, string>( m_ServiceNames );
+                    return new Dictionary<Station, string>(m_ServiceNames);
             }
         }
     }

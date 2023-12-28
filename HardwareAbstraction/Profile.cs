@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+﻿using System.Collections;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-
 
 namespace JMS.DVB
 {
@@ -29,14 +23,14 @@ namespace JMS.DVB
         /// Der Name der .NET Klasse mit der Hardwareabstraktion.
         /// </summary>
         [XmlElement("Provider")]
-        public string HardwareType { get; set; }
+        public string HardwareType { get; set; } = null!;
 
         /// <summary>
         /// Ein beliebiger eindeutiger Name, über den dass DVB Gerät ermittelt werden kann,
         /// dass mit diesem Profil verbunden ist.
         /// </summary>
         [XmlElement("Device")]
-        public readonly List<DeviceAspect> DeviceAspects = new List<DeviceAspect>();
+        public readonly List<DeviceAspect> DeviceAspects = [];
 
         /// <summary>
         /// Weitere Einstellungen für die Hardwareabstraktion.
@@ -48,20 +42,20 @@ namespace JMS.DVB
         /// Der vollständige Pfad zur Datei, aus der diese Beschreibung entnommen wurde.
         /// </summary>
         [XmlIgnore]
-        public FileInfo ProfilePath { get; set; }
+        public FileInfo ProfilePath { get; set; } = null!;
 
         /// <summary>
         /// Wird gesetzt um anzuzeigen, dass dieses Profil nur im Speicher vorhanden ist
         /// und Änderungen nicht persistent gespeichert werden.
         /// </summary>
         [XmlIgnore]
-        public string VolatileName { get; set; }
+        public string VolatileName { get; set; } = null!;
 
         /// <summary>
         /// Meldet oder legt fest, ob dieses Profil eigene Quellen verwendet oder die
         /// Quellen eines anderen Profils referenziert.
         /// </summary>
-        public string UseSourcesFrom { get; set; }
+        public string UseSourcesFrom { get; set; } = null!;
 
         /// <summary>
         /// Meldet alle Ursprünge zu diesem Profil.
@@ -119,19 +113,19 @@ namespace JMS.DVB
         public void Save(FileInfo file)
         {
             // Validate
-            if (file == null)
-                throw new ArgumentNullException("file");
+            ArgumentNullException.ThrowIfNull(file, nameof(file));
 
             // Make sure that directory exists
-            file.Directory.Create();
+            file.Directory!.Create();
 
             // Create serializer and settings
             var serializer = new XmlSerializer(GetType(), Namespace);
             var settings = new XmlWriterSettings { Encoding = Encoding.Unicode, Indent = true };
 
             // Store
-            using (var writer = XmlWriter.Create(file.FullName, settings))
-                serializer.Serialize(writer, this);
+            using var writer = XmlWriter.Create(file.FullName, settings);
+
+            serializer.Serialize(writer, this);
         }
 
         /// <summary>
@@ -154,7 +148,7 @@ namespace JMS.DVB
             {
                 // Check mode
                 if (string.IsNullOrEmpty(VolatileName))
-                    return (ProfilePath == null) ? null : Path.GetFileNameWithoutExtension(ProfilePath.FullName);
+                    return (ProfilePath == null) ? null! : Path.GetFileNameWithoutExtension(ProfilePath.FullName);
                 else
                     return VolatileName;
             }
@@ -165,8 +159,7 @@ namespace JMS.DVB
         /// </summary>
         /// <returns>Die neu erzeugte Instanz, die mit <see cref="IDisposable.Dispose"/>
         /// freigegeben werden muss.</returns>
-        public Hardware CreateHardware() => Hardware.Create(this, false);
-
+        public Hardware? CreateHardware() => Hardware.Create(this, false);
 
         /// <summary>
         /// Stellt ein temporäres Profil auf ein permanentes um.
@@ -184,18 +177,14 @@ namespace JMS.DVB
             Save(ProfilePath);
 
             // Forget
-            VolatileName = null;
+            VolatileName = null!;
         }
 
         /// <summary>
         /// Zeigt den Namen dieses Geräteprofils an.
         /// </summary>
         /// <returns>Der Name des Geräteprofils.</returns>
-        public override string ToString()
-        {
-            // Report
-            return Name;
-        }
+        public override string ToString() => Name;
 
         /// <summary>
         /// Prüft, ob ein Geräteprofil zu einem anderen kompatibel ist. Kompatibel sind jeweils
@@ -209,7 +198,7 @@ namespace JMS.DVB
         /// Meldet den Namen des Geräteprofils, in dem die Senderliste abgelegt ist.
         /// </summary>
         [XmlIgnore]
-        public Profile LeafProfile
+        public Profile? LeafProfile
         {
             get
             {
@@ -221,7 +210,7 @@ namespace JMS.DVB
                 var done = new HashSet<string>();
 
                 // Process all
-                for (Profile test = this; (test = ProfileManager.FindProfile(test.UseSourcesFrom)) != null;)
+                for (Profile? test = this; (test = ProfileManager.FindProfile(test.UseSourcesFrom)) != null;)
                 {
                     // Wrong type
                     if (!IsCompatibleTo(test))
@@ -254,7 +243,7 @@ namespace JMS.DVB
         {
             // Validate
             if (source == null)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
             else
                 return InternalFindSource(source).ToArray();
         }
@@ -263,7 +252,7 @@ namespace JMS.DVB
         /// Meldet die Zugriffsdaten zu allen Quellen dieses Geräteprofils.
         /// </summary>
         [XmlIgnore]
-        public IEnumerable<SourceSelection> AllSources { get { return InternalFindSource(null); } }
+        public IEnumerable<SourceSelection> AllSources { get { return InternalFindSource(null!); } }
 
         /// <summary>
         /// Ermittelt alle Quellen sortiert nach dem Anzeigenamen <see cref="SourceSelection.DisplayName"/>
@@ -279,8 +268,8 @@ namespace JMS.DVB
             get
             {
                 // Last processed
-                SourceSelection last = null;
-                string lastName = null;
+                SourceSelection? last = null;
+                string lastName = null!;
 
                 // Process all sorted
                 foreach (var source in AllSources.OrderBy(s => s.DisplayName, StringComparer.InvariantCultureIgnoreCase))
@@ -349,7 +338,7 @@ namespace JMS.DVB
         {
             // Validate
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             else
                 return InternalFindSource(name, matching).ToArray();
         }
@@ -530,7 +519,7 @@ namespace JMS.DVB
                             foreach (SourceGroup group in config.Groups)
                             {
                                 // Clone it
-                                var clonedGroup = SourceGroup.FromString<SourceGroup>(group.ToString());
+                                var clonedGroup = SourceGroup.FromString<SourceGroup>(group.ToString()!);
 
                                 // Add it
                                 if (clonedGroup != null)
@@ -584,10 +573,6 @@ namespace JMS.DVB
         /// </summary>
         /// <param name="group">Die zu prüfende Quellgruppe.</param>
         /// <returns>Gesetzt, wenn die Quellgruppe unterstützt wird.</returns>
-        public override sealed bool SupportsGroup(SourceGroup group)
-        {
-            // Forward
-            return SupportsGroup(group as TGroupType);
-        }
+        public override sealed bool SupportsGroup(SourceGroup group) => SupportsGroup((group as TGroupType)!);
     }
 }

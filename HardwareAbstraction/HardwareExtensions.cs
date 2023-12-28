@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-
-namespace JMS.DVB
+﻿namespace JMS.DVB
 {
     /// <summary>
     /// Einige Erweiterungsmethoden zum Verbinden der abstrakten Quellinformationen 
@@ -22,7 +17,7 @@ namespace JMS.DVB
         {
             // Validate
             if (null == selection)
-                throw new ArgumentNullException("selection");
+                throw new ArgumentNullException(nameof(selection));
 
             // Nothing to do
             if (null == hardware)
@@ -42,11 +37,11 @@ namespace JMS.DVB
         {
             // Validate
             if (null == selection)
-                throw new ArgumentNullException("selection");
+                throw new ArgumentNullException(nameof(selection));
 
             // Forward
             using (HardwareManager.Open())
-                selection.SelectGroup(selection.GetHardware());
+                selection.SelectGroup(selection.GetHardware()!);
         }
 
         /// <summary>
@@ -55,11 +50,11 @@ namespace JMS.DVB
         /// <param name="selection">Die betroffene Quellinformation.</param>
         /// <returns>Die zugehörige Geräteabstraktion.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Quellinformation angegeben.</exception>
-        public static Hardware GetHardware(this SourceSelection selection)
+        public static Hardware? GetHardware(this SourceSelection selection)
         {
             // Validate
             if (null == selection)
-                throw new ArgumentNullException("selection");
+                throw new ArgumentNullException(nameof(selection));
 
             // Forward
             using (HardwareManager.Open())
@@ -73,10 +68,10 @@ namespace JMS.DVB
         /// <returns>Das zugehörige Profil mit der Senderliste, das durchaus von <see cref="GetProfile"/>
         /// abweichen kann.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Quellinformation angegeben.</exception>
-        public static Profile GetLeafProfile(this SourceSelection selection)
+        public static Profile? GetLeafProfile(this SourceSelection selection)
         {
             // Forward
-            Profile profile = selection.GetProfile();
+            var profile = selection.GetProfile();
 
             // Check result
             if (null == profile)
@@ -91,11 +86,11 @@ namespace JMS.DVB
         /// <param name="selection">Die betroffene Quellinformation.</param>
         /// <returns>Das zugehörige Profil.</returns>
         /// <exception cref="ArgumentNullException">Es wurde keine Quellinformation angegeben.</exception>
-        public static Profile GetProfile(this SourceSelection selection)
+        public static Profile? GetProfile(this SourceSelection selection)
         {
             // Validate
             if (null == selection)
-                throw new ArgumentNullException("selection");
+                throw new ArgumentNullException(nameof(selection));
 
             // Forward
             if (string.IsNullOrEmpty(selection.ProfileName))
@@ -130,9 +125,9 @@ namespace JMS.DVB
         {
             // Validate
             if (selection == null)
-                throw new ArgumentNullException("selection");
+                throw new ArgumentNullException(nameof(selection));
             else
-                return selection.Source.Open(selection.GetHardware(), selection.GetLeafProfile(), streams);
+                return selection.Source.Open(selection.GetHardware()!, selection.GetLeafProfile()!, streams);
         }
 
         /// <summary>
@@ -146,7 +141,7 @@ namespace JMS.DVB
         {
             // Validate
             if (profile == null)
-                throw new ArgumentNullException("profile");
+                throw new ArgumentNullException(nameof(profile));
             else
                 return profile.DeviceAspects.GetDeviceAspect(name);
         }
@@ -162,9 +157,9 @@ namespace JMS.DVB
         {
             // Find
             if (aspects == null)
-                return null;
+                return null!;
             else
-                return aspects.Where(a => string.Equals(name, a.Aspekt)).Select(a => a.Value).FirstOrDefault();
+                return aspects.Where(a => string.Equals(name, a.Aspekt)).Select(a => a.Value).FirstOrDefault()!;
         }
 
         /// <summary>
@@ -178,9 +173,9 @@ namespace JMS.DVB
         {
             // Validate
             if (profile == null)
-                throw new ArgumentNullException("profile");
+                throw new ArgumentNullException(nameof(profile));
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
 
             // Find
             return profile.Parameters.GetParameter(name);
@@ -197,13 +192,13 @@ namespace JMS.DVB
         {
             // Validate
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
 
             // Find
             if (parameters == null)
-                return null;
+                return null!;
             else
-                return parameters.Where(p => name.Equals(p.Name)).Select(p => p.Value).FirstOrDefault();
+                return parameters.Where(p => name.Equals(p.Name)).Select(p => p.Value).FirstOrDefault()!;
         }
 
         /// <summary>
@@ -218,7 +213,7 @@ namespace JMS.DVB
         {
             // Forward
             if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             else
                 return parameters.GetParameter(string.Format("{0}{1}", ProfileParameter.GetPrefixForExtensionParameter(type), name));
         }
@@ -234,9 +229,9 @@ namespace JMS.DVB
         {
             // Validate
             if (null == profile)
-                throw new ArgumentNullException("profile");
+                throw new ArgumentNullException(nameof(profile));
             if (null == source)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
 
             // Process
             if (null == profile.ScanConfiguration)
@@ -256,9 +251,9 @@ namespace JMS.DVB
         {
             // Validate
             if (null == profile)
-                throw new ArgumentNullException("profile");
+                throw new ArgumentNullException(nameof(profile));
             if (null == group)
-                throw new ArgumentNullException("group");
+                throw new ArgumentNullException(nameof(group));
 
             // Forward to helper
             if (null == profile.ScanConfiguration)

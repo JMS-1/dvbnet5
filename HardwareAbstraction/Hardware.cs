@@ -118,7 +118,7 @@ namespace JMS.DVB
                 {
                     // Validate
                     if (consumer == null)
-                        throw new ArgumentException("data sink missing", "consumer");
+                        throw new ArgumentException("data sink missing", nameof(consumer));
 
                     // Remember
                     Sink = consumer;
@@ -250,7 +250,7 @@ namespace JMS.DVB
             /// </summary>
             /// <param name="uniqueIdentifier">Die eindeutige Kennung des Verbrauchers.</param>
             /// <returns>Der gewünschte Verbraucher oder <i>null</i>, wenn dieser nicht bekannt ist.</returns>
-            private StreamRegistration this[Guid uniqueIdentifier] { get { return m_Consumers.FirstOrDefault(consumer => consumer.UniqueIdentifier.Equals(uniqueIdentifier)); } }
+            private StreamRegistration this[Guid uniqueIdentifier] { get { return m_Consumers.FirstOrDefault(consumer => consumer.UniqueIdentifier.Equals(uniqueIdentifier))!; } }
 
             /// <summary>
             /// Ermittelt, ob ein bestimmter Verbraucher gerade Daten empfängt.
@@ -309,32 +309,32 @@ namespace JMS.DVB
         /// <summary>
         /// Der aktuell verwendete Ursprung.
         /// </summary>
-        public GroupLocation CurrentLocation { get; private set; }
+        public GroupLocation CurrentLocation { get; private set; } = null!;
 
         /// <summary>
         /// Die aktuell verwendete Quellgruppe.
         /// </summary>
-        public SourceGroup CurrentGroup { get; private set; }
+        public SourceGroup CurrentGroup { get; private set; } = null!;
 
         /// <summary>
         /// Alle Datenströme geordnet nach der Datenstromkennung (PID).
         /// </summary>
-        private Dictionary<ushort, StreamInformation> m_streamsByPID = new Dictionary<ushort, StreamInformation>();
+        private readonly Dictionary<ushort, StreamInformation> m_streamsByPID = new();
 
         /// <summary>
         /// Alle Datenströme, geordnet nach der automatisch vergebenen eindeutigen Kennung.
         /// </summary>
-        private Dictionary<Guid, StreamInformation> m_streamsById = new Dictionary<Guid, StreamInformation>();
+        private readonly Dictionary<Guid, StreamInformation> m_streamsById = new();
 
         /// <summary>
         /// Synchronisiert den Zugriff auf die internen Datenstrukturen.
         /// </summary>
-        protected readonly object InstanceSynchronizer = new object();
+        protected readonly object InstanceSynchronizer = new();
 
         /// <summary>
         /// Ermittelt die aktuelle <i>Network Information Table</i>.
         /// </summary>
-        private CancellableTask<NIT[]> m_networkInformationReader;
+        private CancellableTask<NIT[]> m_networkInformationReader = null!;
 
         /// <summary>
         /// Die Hintergrundaufgabe zum Auslesen der Netzwerkinformationen.
@@ -344,7 +344,7 @@ namespace JMS.DVB
         /// <summary>
         /// Ermittelt die aktuelle <i>Program Association Table</i>.
         /// </summary>
-        private CancellableTask<PAT[]> m_associationReader;
+        private CancellableTask<PAT[]> m_associationReader = null!;
 
         /// <summary>
         /// Die Hintergrundaufgabe zum Auslesen der Dienstbelegung.
@@ -354,7 +354,7 @@ namespace JMS.DVB
         /// <summary>
         /// Ermittelt die aktuelle <i>Service Description Table</i>.
         /// </summary>
-        private CancellableTask<SDT[]> m_serviceReader;
+        private CancellableTask<SDT[]> m_serviceReader = null!;
 
         /// <summary>
         /// Die Hintergrundaufgabe zum Auslesen der Dienstabelle.
@@ -364,7 +364,7 @@ namespace JMS.DVB
         /// <summary>
         /// Die zuletzt ermittelten Daten zur aktuellen Quellgruppe (Transponder).
         /// </summary>
-        private Task<GroupInformation> m_groupReader;
+        private Task<GroupInformation> m_groupReader = null!;
 
         /// <summary>
         /// Die Hintergrundaufgabe zum Auslesen der Informationen zur Quellgruppe.
@@ -379,7 +379,7 @@ namespace JMS.DVB
         /// <summary>
         /// Alle Empfänger von Daten der Programmzeitschrift.
         /// </summary>
-        private volatile Action<EIT> m_programGuideConsumers;
+        private volatile Action<EIT>? m_programGuideConsumers;
 
         /// <summary>
         /// Die eindeutige Kennung für die Anmeldung der Verbraucher für die Programmzeitschrift.
@@ -400,7 +400,7 @@ namespace JMS.DVB
         {
             // Validate
             if (profile == null)
-                throw new ArgumentException("profile missing", "profile");
+                throw new ArgumentException("profile missing", nameof(profile));
 
             // Remember
             Profile = profile;
@@ -425,7 +425,7 @@ namespace JMS.DVB
         {
             // Validate
             if (callback == null)
-                throw new ArgumentException("no program guide sink", "callback");
+                throw new ArgumentException("no program guide sink", nameof(callback));
             else
                 m_programGuideConsumers += callback;
 
@@ -534,7 +534,7 @@ namespace JMS.DVB
                 ResetReader(ref m_networkInformationReader);
                 ResetReader(ref m_associationReader);
                 ResetReader(ref m_serviceReader);
-                m_groupReader = null;
+                m_groupReader = null!;
 
                 // Erase list of EPG receivers
                 m_programGuideConsumers = null;
@@ -564,11 +564,11 @@ namespace JMS.DVB
             if (!Equals(location, CurrentLocation) || !Equals(group, CurrentGroup))
             {
                 // Activate hardware
-                OnSelectGroup(location, group);
+                OnSelectGroup(location!, group!);
 
                 // Remember
-                CurrentLocation = location;
-                CurrentGroup = group;
+                CurrentLocation = location!;
+                CurrentGroup = group!;
 
                 // Mark time
                 m_lastTuneTime = DateTime.UtcNow;
@@ -616,11 +616,8 @@ namespace JMS.DVB
         /// Stellt den Empfang auf die Quellgruppe der bezeichneten Quelle ein.
         /// </summary>
         /// <param name="source">Die Informationen zur gewünschten Quelle.</param>
-        public void SelectGroup(SourceSelection source)
-        {
-            // Forward
+        public void SelectGroup(SourceSelection source) =>
             SelectGroup((source == null) ? null : source.Location, (source == null) ? null : source.Group);
-        }
 
         /// <summary>
         /// Ermittelt die Informationen zum aktuellen Ursprung.
@@ -628,7 +625,7 @@ namespace JMS.DVB
         /// <param name="timeout">Die maximale Wartezeit seit Auswahl der Quellgruppe
         /// (Transponder) in Millisekunden.</param>
         /// <returns>Die gewünschten Informationen oder <i>null.</i></returns>
-        public LocationInformation GetLocationInformation(int timeout = 15000)
+        public LocationInformation? GetLocationInformation(int timeout = 15000)
         {
             // Just forward
             var reader = LocationInformationReader;
@@ -647,7 +644,7 @@ namespace JMS.DVB
         /// (Transponder) in Millisekunden.</param>
         /// <param name="cancel">Optional eine Abbruchsteuerung.</param>
         /// <returns>Die gewünschten Informationen oder <i>null.</i></returns>
-        public GroupInformation GetGroupInformation(int timeout = 5000, CancellationToken? cancel = null)
+        public GroupInformation? GetGroupInformation(int timeout = 5000, CancellationToken? cancel = null)
         {
             // Load reader
             var groupReader = GroupReader;
@@ -671,7 +668,7 @@ namespace JMS.DVB
         {
             // Validate
             if (source == null)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
 
             // Get the current group information
             var groupInfo = GetGroupInformation(cancel: cancel);
@@ -712,8 +709,7 @@ namespace JMS.DVB
             lock (InstanceSynchronizer)
             {
                 // Load the stream information
-                StreamInformation info;
-                if (m_streamsByPID.TryGetValue(stream, out info))
+                if (m_streamsByPID.TryGetValue(stream, out var info))
                 {
                     // Just add to existing registration
                     consumerId = info.AddConsumer(consumer);
@@ -769,7 +765,7 @@ namespace JMS.DVB
         public void SetConsumerState(Guid consumerId, bool? running)
         {
             // The internal information
-            StreamInformation info;
+            StreamInformation? info;
 
             // Reports is state has been changed
             bool? newState;
@@ -844,8 +840,7 @@ namespace JMS.DVB
             lock (InstanceSynchronizer)
             {
                 // Get the corresponding PID information
-                StreamInformation info;
-                if (m_streamsById.TryGetValue(consumerId, out info))
+                if (m_streamsById.TryGetValue(consumerId, out var info))
                     return info.GetConsumerState(consumerId);
             }
 
@@ -909,10 +904,10 @@ namespace JMS.DVB
         /// <param name="reader">Die aktuelle Hintergrundaufgabe.</param>
         /// <param name="factory">Optional die Methode zur Neuinitialisierung.</param>
         /// <returns>Die neue Hintergrundaufgabe.</returns>
-        private CancellableTask<TResultType> ResetReader<TResultType>(ref CancellableTask<TResultType> reader, Func<CancellableTask<TResultType>> factory = null) where TResultType : class
+        private CancellableTask<TResultType> ResetReader<TResultType>(ref CancellableTask<TResultType> reader, Func<CancellableTask<TResultType>>? factory = null) where TResultType : class
         {
             // Wipe out
-            var previous = Interlocked.Exchange(ref reader, null);
+            var previous = Interlocked.Exchange(ref reader!, null);
 
             // Stop it
             if (previous != null)
@@ -960,7 +955,7 @@ namespace JMS.DVB
                 ResetReader(ref m_networkInformationReader);
                 ResetReader(ref m_associationReader);
                 ResetReader(ref m_serviceReader);
-                m_groupReader = null;
+                m_groupReader = null!;
 
                 // Forward
                 OnDispose();

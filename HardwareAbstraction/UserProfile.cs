@@ -3,16 +3,12 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-
 namespace JMS.DVB
 {
     /// <summary>
     /// Beschreibt die benutzerspezifischen Vorgaben.
     /// </summary>
-    [
-        Serializable,
-        XmlRoot("UserProfile")
-    ]
+    [Serializable, XmlRoot("UserProfile")]
     public class PersistedUserProfile
     {
         /// <summary>
@@ -24,7 +20,7 @@ namespace JMS.DVB
             /// <summary>
             /// Der Name des Geräteprofils.
             /// </summary>
-            public string ProfileName { get; set; }
+            public string ProfileName { get; set; } = null!;
         }
 
         /// <summary>
@@ -35,17 +31,17 @@ namespace JMS.DVB
         /// <summary>
         /// Die Datei, aus der diese Vorgaben entnommen wurden.
         /// </summary>
-        private FileInfo m_File;
+        private FileInfo m_File = null!;
 
         /// <summary>
         /// Die bevorzugte Benutzersprache.
         /// </summary>
-        public string PreferredLanguage { get; set; }
+        public string PreferredLanguage { get; set; } = null!;
 
         /// <summary>
         /// Das zugehörige Geräteprofil.
         /// </summary>
-        public Legacy Profile { get; set; }
+        public Legacy Profile { get; set; } = null!;
 
         /// <summary>
         /// Der Name des zugehörigen Geräteprofils.
@@ -58,7 +54,7 @@ namespace JMS.DVB
                 // Check profile
                 var profile = Profile;
                 if (profile == null)
-                    return null;
+                    return null!;
                 else
                     return profile.ProfileName;
             }
@@ -66,7 +62,7 @@ namespace JMS.DVB
             {
                 // Update
                 if (string.IsNullOrEmpty(value))
-                    Profile = null;
+                    Profile = null!;
                 else
                     Profile = new Legacy { ProfileName = value };
             }
@@ -92,8 +88,9 @@ namespace JMS.DVB
                 var serializer = new XmlSerializer(GetType(), ProfileNamespace);
 
                 // Process
-                using (var writer = XmlWriter.Create(stream, settings))
-                    serializer.Serialize(writer, this);
+                using var writer = XmlWriter.Create(stream, settings);
+
+                serializer.Serialize(writer, this);
             }
         }
 
@@ -125,7 +122,7 @@ namespace JMS.DVB
                     var serializer = new XmlSerializer(typeof(PersistedUserProfile), ProfileNamespace);
 
                     // Process
-                    settings = (PersistedUserProfile)serializer.Deserialize(stream);
+                    settings = (PersistedUserProfile)serializer.Deserialize(stream)!;
                 }
 
             // Remember root
@@ -144,16 +141,12 @@ namespace JMS.DVB
         /// <summary>
         /// Die aktuelle Konfiguration.
         /// </summary>
-        private static PersistedUserProfile m_Settings = PersistedUserProfile.Load();
+        private static readonly PersistedUserProfile m_Settings = PersistedUserProfile.Load();
 
         /// <summary>
         /// Speichert die Einstellungen des aktuellen Anwenders.
         /// </summary>
-        public static void Save()
-        {
-            // Forward
-            m_Settings.Save();
-        }
+        public static void Save() => m_Settings.Save();
 
         /// <summary>
         /// Der Name des zu verwendenden Geräteprofils.
@@ -164,7 +157,7 @@ namespace JMS.DVB
         /// Meldet das zu verwendende Geräteprofil. Sollte dieses nicht gesetzt sein, so wird
         /// der Auswahldialog angezeigt.
         /// </summary>
-        public static Profile Profile
+        public static Profile? Profile
         {
             get
             {
@@ -179,7 +172,7 @@ namespace JMS.DVB
                     if (!string.IsNullOrEmpty(name))
                     {
                         // Find it
-                        Profile profile = ProfileManager.FindProfile(name);
+                        var profile = ProfileManager.FindProfile(name);
                         if (null != profile)
                             return profile;
                     }
@@ -200,19 +193,19 @@ namespace JMS.DVB
                 // Get parameter list
                 var args = Environment.GetCommandLineArgs();
                 if (null == args)
-                    return null;
+                    return null!;
 
                 // Find the parameter
                 var overwrite = args.FirstOrDefault(a => (null != a) && a.StartsWith("/profile=Common:"));
                 if (string.IsNullOrEmpty(overwrite))
-                    return null;
+                    return null!;
 
                 // Cut off
                 overwrite = overwrite.Substring(16).Trim();
 
                 // Report
                 if (string.IsNullOrEmpty(overwrite))
-                    return null;
+                    return null!;
                 else
                     return overwrite;
             }
@@ -298,7 +291,7 @@ namespace JMS.DVB
             {
                 // Just forward
                 if (string.IsNullOrEmpty(m_Settings.PreferredLanguage))
-                    return null;
+                    return null!;
                 else
                     return m_Settings.PreferredLanguage;
             }
@@ -306,7 +299,7 @@ namespace JMS.DVB
             {
                 // Store
                 if (string.IsNullOrEmpty(value))
-                    m_Settings.PreferredLanguage = null;
+                    m_Settings.PreferredLanguage = null!;
                 else
                     m_Settings.PreferredLanguage = value;
             }

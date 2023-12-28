@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using JMS.DVB.SI;
+﻿using JMS.DVB.SI;
 using JMS.DVB.EPG.Descriptors;
 
 namespace JMS.DVB
@@ -25,9 +22,9 @@ namespace JMS.DVB
         {
             // Validate
             if (null == provider)
-                throw new ArgumentNullException("provider");
+                throw new ArgumentNullException(nameof(provider));
             if (null == consumer)
-                throw new ArgumentNullException("consumer");
+                throw new ArgumentNullException(nameof(consumer));
 
             // Forward
             return provider.AddConsumer(stream, TableParser.Create(consumer), Table.GetIsExtendedTable<T>() ? StreamTypes.ExtendedTable : StreamTypes.StandardTable);
@@ -46,9 +43,9 @@ namespace JMS.DVB
         {
             // Validate
             if (null == provider)
-                throw new ArgumentNullException("provider");
+                throw new ArgumentNullException(nameof(provider));
             if (null == consumer)
-                throw new ArgumentNullException("consumer");
+                throw new ArgumentNullException(nameof(consumer));
 
             // Read the stream
             ushort stream = WellKnownTable.GetWellKnownStream<T>();
@@ -86,9 +83,9 @@ namespace JMS.DVB
         {
             // Validate
             if (null == provider)
-                throw new ArgumentNullException("provider");
+                throw new ArgumentNullException(nameof(provider));
             if (null == parser)
-                throw new ArgumentNullException("parser");
+                throw new ArgumentNullException(nameof(parser));
 
             // Register
             return provider.AddConsumer(stream, streamType, parser.AddPayload);
@@ -101,10 +98,10 @@ namespace JMS.DVB
         /// <param name="milliSeconds">Die maximale Wartezeit auf die Informationen in Millisekunden.</param>
         /// <returns>Die gewünschten Informationen oder <i>null</i>, wenn diese in der angegebenen
         /// Zeit nicht bereit gestellt werden konnten.</returns>
-        public static SatelliteLocationInformation GetLocationInformation(this SatelliteHardware provider, int milliSeconds)
+        public static SatelliteLocationInformation? GetLocationInformation(this SatelliteHardware provider, int milliSeconds)
         {
             // Forward
-            return (SatelliteLocationInformation)((Hardware)provider).GetLocationInformation(milliSeconds);
+            return (SatelliteLocationInformation?)provider.GetLocationInformation(milliSeconds);
         }
 
         /// <summary>
@@ -114,10 +111,10 @@ namespace JMS.DVB
         /// <param name="milliSeconds">Die maximale Wartezeit auf die Informationen in Millisekunden.</param>
         /// <returns>Die gewünschten Informationen oder <i>null</i>, wenn diese in der angegebenen
         /// Zeit nicht bereit gestellt werden konnten.</returns>
-        public static CableLocationInformation GetLocationInformation(this CableHardware provider, int milliSeconds)
+        public static CableLocationInformation? GetLocationInformation(this CableHardware provider, int milliSeconds)
         {
             // Forward
-            return (CableLocationInformation)((Hardware)provider).GetLocationInformation(milliSeconds);
+            return (CableLocationInformation?)provider.GetLocationInformation(milliSeconds);
         }
 
         /// <summary>
@@ -127,10 +124,10 @@ namespace JMS.DVB
         /// <param name="milliSeconds">Die maximale Wartezeit auf die Informationen in Millisekunden.</param>
         /// <returns>Die gewünschten Informationen oder <i>null</i>, wenn diese in der angegebenen
         /// Zeit nicht bereit gestellt werden konnten.</returns>
-        public static TerrestrialLocationInformation GetLocationInformation(this TerrestrialHardware provider, int milliSeconds)
+        public static TerrestrialLocationInformation? GetLocationInformation(this TerrestrialHardware provider, int milliSeconds)
         {
             // Forward
-            return (TerrestrialLocationInformation)((Hardware)provider).GetLocationInformation(milliSeconds);
+            return (TerrestrialLocationInformation?)provider.GetLocationInformation(milliSeconds);
         }
 
         /// <summary>
@@ -140,33 +137,30 @@ namespace JMS.DVB
         /// <param name="tables">Die Rohinformationen als SI NIT Tabellen.</param>
         /// <param name="provider">Das zugehörige DVB.NET Gerät, das noch auf den Ursprung eingestellt ist.</param>
         /// <returns>Die gewünschten Informationen.</returns>
-        public static LocationInformation ToLocationInformation(this NIT[] tables, Hardware provider)
+        public static LocationInformation? ToLocationInformation(this NIT[] tables, Hardware provider)
         {
             // Validate
             if (null == provider)
-                throw new ArgumentNullException("provider");
+                throw new ArgumentNullException(nameof(provider));
 
             // None
             if (null == tables)
                 return null;
 
             // Check DVB-S(2)
-            Hardware<SatelliteProfile, SatelliteLocation, SatelliteGroup> sat = provider as Hardware<SatelliteProfile, SatelliteLocation, SatelliteGroup>;
-            if (null != sat)
+            if (provider is var sat)
                 return tables.ToLocationInformation(sat);
 
             // Check DVB-C
-            Hardware<CableProfile, CableLocation, CableGroup> cab = provider as Hardware<CableProfile, CableLocation, CableGroup>;
-            if (null != cab)
+            if (provider is var cab)
                 return tables.ToLocationInformation(cab);
 
             // Check DVB-T
-            Hardware<TerrestrialProfile, TerrestrialLocation, TerrestrialGroup> ter = provider as Hardware<TerrestrialProfile, TerrestrialLocation, TerrestrialGroup>;
-            if (null != ter)
+            if (provider is var ter)
                 return tables.ToLocationInformation(ter);
 
             // Not supported
-            throw new ArgumentException(provider.GetType().FullName, "provider");
+            throw new ArgumentException(provider.GetType().FullName, nameof(provider));
         }
 
         /// <summary>
@@ -176,7 +170,7 @@ namespace JMS.DVB
         /// <param name="tables">Die Rohinformationen als SI NIT Tabellen.</param>
         /// <param name="provider">Das zugehörige DVB.NET Gerät, das noch auf den Ursprung eingestellt ist.</param>
         /// <returns>Die gewünschten Informationen.</returns>
-        public static SatelliteLocationInformation ToLocationInformation(this NIT[] tables, Hardware<SatelliteProfile, SatelliteLocation, SatelliteGroup> provider)
+        public static SatelliteLocationInformation? ToLocationInformation(this NIT[] tables, Hardware<SatelliteProfile, SatelliteLocation, SatelliteGroup> provider)
         {
             // Forward
             if (null == provider)
@@ -194,7 +188,7 @@ namespace JMS.DVB
         /// <param name="location">Der Usprung, zu dem die Tabellen ermittelt wurden.</param>
         /// <param name="tables">Die SI NIT Tabellengruppe zum noch angewählten Ursprung.</param>
         /// <returns>Eine Informationsisntanz passend zur SI NIT Tabellengruppe oder <i>null</i>.</returns>
-        private static L CreateLocationInformation<G, L>(GroupLocation<G> location, NIT[] tables)
+        private static L? CreateLocationInformation<G, L>(GroupLocation<G> location, NIT[] tables)
             where G : SourceGroup, new()
             where L : LocationInformation<G>, new()
         {
@@ -211,14 +205,10 @@ namespace JMS.DVB
                     foreach (var descriptor in entry.Descriptors)
                     {
                         // Start with DVB-S(2)
-                        var sat = descriptor as EPG.Descriptors.SatelliteDelivery;
-                        if (null != sat)
+                        if (descriptor is SatelliteDelivery sat)
                         {
-                            // Process
-                            G group = sat.ToGroup() as G;
-
                             // Add if possible
-                            if (null != group)
+                            if (sat.ToGroup() is G group)
                                 info.SourceGroups.Add(group);
 
                             // Process next group
@@ -229,11 +219,8 @@ namespace JMS.DVB
                         var cab = descriptor as EPG.Descriptors.CableDelivery;
                         if (null != cab)
                         {
-                            // Process
-                            G group = cab.ToGroup() as G;
-
                             // Add if possible
-                            if (null != group)
+                            if (cab.ToGroup() is G group)
                                 info.SourceGroups.Add(group);
 
                             // Process next group
@@ -244,11 +231,8 @@ namespace JMS.DVB
                         var ter = descriptor as EPG.Descriptors.TerrestrialDelivery;
                         if (null != ter)
                         {
-                            // Process
-                            G group = ter.ToGroup() as G;
-
                             // Add if possible
-                            if (null != group)
+                            if (ter.ToGroup() is G group)
                                 info.SourceGroups.Add(group);
 
                             // Process next group
@@ -403,7 +387,7 @@ namespace JMS.DVB
         /// <param name="tables">Die Rohinformationen als SI NIT Tabellen.</param>
         /// <param name="provider">Das zugehörige DVB.NET Gerät, das noch auf den Ursprung eingestellt ist.</param>
         /// <returns>Die gewünschten Informationen.</returns>
-        public static CableLocationInformation ToLocationInformation(this NIT[] tables, Hardware<CableProfile, CableLocation, CableGroup> provider)
+        public static CableLocationInformation? ToLocationInformation(this NIT[] tables, Hardware<CableProfile, CableLocation, CableGroup> provider)
         {
             // Forward
             return CreateLocationInformation<CableGroup, CableLocationInformation>(new CableLocation(), tables);
@@ -416,7 +400,7 @@ namespace JMS.DVB
         /// <param name="tables">Die Rohinformationen als SI NIT Tabellen.</param>
         /// <param name="provider">Das zugehörige DVB.NET Gerät, das noch auf den Ursprung eingestellt ist.</param>
         /// <returns>Die gewünschten Informationen.</returns>
-        public static TerrestrialLocationInformation ToLocationInformation(this NIT[] tables, Hardware<TerrestrialProfile, TerrestrialLocation, TerrestrialGroup> provider)
+        public static TerrestrialLocationInformation? ToLocationInformation(this NIT[] tables, Hardware<TerrestrialProfile, TerrestrialLocation, TerrestrialGroup> provider)
         {
             // Forward
             return CreateLocationInformation<TerrestrialGroup, TerrestrialLocationInformation>(new TerrestrialLocation(), tables);
@@ -681,7 +665,7 @@ namespace JMS.DVB
         {
             // Not possible
             if (null == language)
-                return null;
+                return null!;
 
             // Use helper
             return EPG.LanguageItemExtensions.ToISOLanguage(language);
@@ -696,7 +680,7 @@ namespace JMS.DVB
         {
             // Not possible
             if (null == language)
-                return null;
+                return null!;
 
             // Use helper
             return EPG.ProgramEntry.GetLanguageFromISOLanguage(language);
