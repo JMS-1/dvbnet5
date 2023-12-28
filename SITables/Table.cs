@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-
-namespace JMS.DVB.SI
+﻿namespace JMS.DVB.SI
 {
     /// <summary>
     /// Basisklasse zur Implementierung von SI Tabellen.
@@ -28,21 +23,17 @@ namespace JMS.DVB.SI
         /// </summary>
         /// <typeparam name="T">Die betroffene Tabellenart.</typeparam>
         /// <returns>Die Liste der Tabellenarten.</returns>
-        public static byte[] GetTableIdentifiers<T>() where T : Table
-        {
-            // Report
-            return GetTableIdentifiers( typeof( T ) );
-        }
+        public static byte[] GetTableIdentifiers<T>() where T : Table => GetTableIdentifiers(typeof(T));
 
         /// <summary>
         /// Ermittelt zu einer Tabellenart die zugehörigen SI Arten.
         /// </summary>
         /// <param name="tableType">Die betroffene Tabellenart.</param>
         /// /// <returns>Die Liste der Tabellenarten.</returns>
-        public static byte[] GetTableIdentifiers( Type tableType )
+        public static byte[] GetTableIdentifiers(Type tableType)
         {
             // Create
-            Table template = (Table) Activator.CreateInstance( tableType );
+            var template = (Table)Activator.CreateInstance(tableType)!;
 
             // Report
             return template.TableIdentifiers;
@@ -66,35 +57,24 @@ namespace JMS.DVB.SI
         /// <summary>
         /// Meldet, ob diese Tabelle nur Tabellenkennungen oberhalb von 0x7f verwendet.
         /// </summary>
-        public virtual bool IsExtendedTable
-        {
-            get
-            {
-                // Report
-                return false;
-            }
-        }
+        public virtual bool IsExtendedTable => false;
 
         /// <summary>
         /// Ermittelt, ob eine bestimmte Art von Tabelle nur Tabellenkennungen oberhalb von 0x7f verwendet.
         /// </summary>
         /// <typeparam name="T">Die Art der Tabelle.</typeparam>
         /// <returns>Gesetzt, wenn Tabellenkennungen oberhalb von 0x7f verwendet werden.</returns>
-        public static bool GetIsExtendedTable<T>() where T : Table
-        {
-            // Forward
-            return GetIsExtendedTable( typeof( T ) );
-        }
+        public static bool GetIsExtendedTable<T>() where T : Table => GetIsExtendedTable(typeof(T));
 
         /// <summary>
         /// Ermittelt, ob eine bestimmte Art von Tabelle nur Tabellenkennungen oberhalb von 0x7f verwendet.
         /// </summary>
         /// <param name="tableType">Die Art der Tabelle.</param>
         /// <returns>Gesetzt, wenn Tabellenkennungen oberhalb von 0x7f verwendet werden.</returns>
-        public static bool GetIsExtendedTable( Type tableType )
+        public static bool GetIsExtendedTable(Type tableType)
         {
             // Create
-            Table template = (Table) Activator.CreateInstance( tableType );
+            var template = (Table)Activator.CreateInstance(tableType)!;
 
             // Report
             return template.IsExtendedTable;
@@ -125,11 +105,7 @@ namespace JMS.DVB.SI
         /// </summary>
         /// <typeparam name="T">Die betroffene Tabellenart.</typeparam>
         /// <returns>Die gewünschte laufende Nummer.</returns>
-        public static ushort GetWellKnownStream<T>() where T : WellKnownTable
-        {
-            // Forward
-            return GetWellKnownStream( typeof( T ) );
-        }
+        public static ushort GetWellKnownStream<T>() where T : WellKnownTable => GetWellKnownStream(typeof(T));
 
         /// <summary>
         /// Ermittelt zu einer Tabelleart die laufende Nummer (PID) des Datenstroms, an den
@@ -137,10 +113,10 @@ namespace JMS.DVB.SI
         /// </summary>
         /// <param name="tableType">Die betroffene Tabellenart.</param>
         /// <returns>Die gewünschte laufende Nummer.</returns>
-        public static ushort GetWellKnownStream( Type tableType )
+        public static ushort GetWellKnownStream(Type tableType)
         {
             // Create
-            WellKnownTable template = (WellKnownTable) Activator.CreateInstance( tableType );
+            var template = (WellKnownTable)Activator.CreateInstance(tableType)!;
 
             // Report
             return template.WellKnownStream;

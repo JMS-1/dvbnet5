@@ -1,12 +1,9 @@
 ﻿extern alias oldVersion;
 
-using System;
-using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
-using System.Collections.Generic;
 
-using legacy = oldVersion::JMS.DVB.EPG;
+using Legacy = oldVersion::JMS.DVB.EPG;
 
 namespace JMS.DVB.SI.ProgramGuide
 {
@@ -14,54 +11,54 @@ namespace JMS.DVB.SI.ProgramGuide
     /// Beschreibt einen einzelnen Eintrag in der elektronischen Programmzeitschrift.
     /// </summary>
     [Serializable]
-    [XmlType( "ProgramGuideEntry" )]
+    [XmlType("ProgramGuideEntry")]
     public class Event
     {
         /// <summary>
         /// Der zugehörige Eintrag aus dem Datenstrom.
         /// </summary>
-        private IEnumerable<legacy.Descriptor> m_Descriptors;
+        private readonly IEnumerable<Legacy.Descriptor> m_Descriptors = null!;
 
         /// <summary>
         /// Die den Inhalt dieser Sendung beschreibenden Kategorien.
         /// </summary>
-        private HashSet<ContentCategory> m_Categories;
+        private HashSet<ContentCategory> m_Categories = null!;
 
         /// <summary>
         /// Informationen zur Altersfreigabe.
         /// </summary>
-        private HashSet<string> m_Ratings;
+        private HashSet<string> m_Ratings = null!;
 
         /// <summary>
         /// Der Kurzname dieses Eintrags.
         /// </summary>
-        private string m_Name;
+        private string m_Name = null!;
 
         /// <summary>
         /// Die Beschreibung der zugehörigen Sendung.
         /// </summary>
-        private string m_Description;
+        private string m_Description = null!;
 
         /// <summary>
         /// Die optionale Kurzbeschreibung der zugehörigen Sendung.
         /// </summary>
-        private string m_ShortDescription;
+        private string m_ShortDescription = null!;
 
         /// <summary>
         /// Die Landessprache, in der diese Ausstrahlung erfolgt.
         /// </summary>
-        private string m_Language;
+        private string m_Language = null!;
 
         /// <summary>
         /// Der Zeitpunkt, an dem diese Sendung anfängt (in GMT / UTC).
         /// </summary>
-        [XmlAttribute( "start" )]
+        [XmlAttribute("start")]
         public DateTime StartTime { get; set; }
 
         /// <summary>
         /// Die Laufzeit in 0.1µs Einheiten.
         /// </summary>
-        [XmlAttribute( "duration" )]
+        [XmlAttribute("duration")]
         public long DurationTicks { get; set; }
 
         /// <summary>
@@ -73,7 +70,7 @@ namespace JMS.DVB.SI.ProgramGuide
             get
             {
                 // Report
-                return new TimeSpan( DurationTicks );
+                return new TimeSpan(DurationTicks);
             }
             set
             {
@@ -85,12 +82,12 @@ namespace JMS.DVB.SI.ProgramGuide
         /// <summary>
         /// Die zugehörige Quelle.
         /// </summary>
-        public SourceIdentifier Source { get; set; }
+        public SourceIdentifier Source { get; set; } = null!;
 
         /// <summary>
         /// Die eindeutige Kennung der Sendung.
         /// </summary>
-        [XmlAttribute( "id" )]
+        [XmlAttribute("id")]
         public uint Identifier { get; set; }
 
         /// <summary>
@@ -106,8 +103,8 @@ namespace JMS.DVB.SI.ProgramGuide
         /// <param name="source">Die zugehörige Quelle.</param>
         /// <param name="entry">Die Rohdaten aus dem DVB Datenstrom.</param>
         /// <exception cref="ArgumentNullException">Ein Parameter wurde nicht angegeben.</exception>
-        public Event( SourceIdentifier source, legacy.EventEntry entry )
-            : this( source, entry.EventIdentifier, entry.StartTime, entry.Duration, entry.Descriptors )
+        public Event(SourceIdentifier source, Legacy.EventEntry entry)
+            : this(source, entry.EventIdentifier, entry.StartTime, entry.Duration, entry.Descriptors)
         {
         }
 
@@ -120,11 +117,11 @@ namespace JMS.DVB.SI.ProgramGuide
         /// <param name="duration">Die Dauer der Ausstrahlung.</param>
         /// <param name="descriptors">Die Beschreibung der Sendung.</param>
         /// <exception cref="ArgumentNullException">Ein Parameter wurde nicht angegeben.</exception>
-        public Event( SourceIdentifier source, uint identifier, DateTime startTime, TimeSpan duration, IEnumerable<legacy.Descriptor> descriptors )
+        public Event(SourceIdentifier source, uint identifier, DateTime startTime, TimeSpan duration, IEnumerable<Legacy.Descriptor> descriptors)
         {
             // Validate
             if (source == null)
-                throw new ArgumentNullException( "source" );
+                throw new ArgumentNullException(nameof(source));
 
             // Copy over
             Identifier = identifier;
@@ -212,7 +209,7 @@ namespace JMS.DVB.SI.ProgramGuide
         /// <summary>
         /// Meldet die Landessprache zu dieser Sendung.
         /// </summary>
-        [XmlAttribute( "lang" )]
+        [XmlAttribute("lang")]
         public string Language
         {
             get
@@ -233,18 +230,18 @@ namespace JMS.DVB.SI.ProgramGuide
         /// <summary>
         /// Meldet die inhaltliche Beschreibung zu dieser Sendung.
         /// </summary>
-        [XmlArrayItem( typeof( UndefinedContentCategory ) )]
-        [XmlArrayItem( typeof( MovieContentCategory ) )]
-        [XmlArrayItem( typeof( NewsContentCategory ) )]
-        [XmlArrayItem( typeof( ShowContentCategory ) )]
-        [XmlArrayItem( typeof( SportContentCategory ) )]
-        [XmlArrayItem( typeof( ChildrenContentCategory ) )]
-        [XmlArrayItem( typeof( MusicContentCategory ) )]
-        [XmlArrayItem( typeof( ArtContentCategory ) )]
-        [XmlArrayItem( typeof( SocialContentCategory ) )]
-        [XmlArrayItem( typeof( EducationContentCategory ) )]
-        [XmlArrayItem( typeof( LeisureContentCategory ) )]
-        [XmlArrayItem( typeof( ContentCharacteristicsCategory ) )]
+        [XmlArrayItem(typeof(UndefinedContentCategory))]
+        [XmlArrayItem(typeof(MovieContentCategory))]
+        [XmlArrayItem(typeof(NewsContentCategory))]
+        [XmlArrayItem(typeof(ShowContentCategory))]
+        [XmlArrayItem(typeof(SportContentCategory))]
+        [XmlArrayItem(typeof(ChildrenContentCategory))]
+        [XmlArrayItem(typeof(MusicContentCategory))]
+        [XmlArrayItem(typeof(ArtContentCategory))]
+        [XmlArrayItem(typeof(SocialContentCategory))]
+        [XmlArrayItem(typeof(EducationContentCategory))]
+        [XmlArrayItem(typeof(LeisureContentCategory))]
+        [XmlArrayItem(typeof(ContentCharacteristicsCategory))]
         public ContentCategory[] Content
         {
             get
@@ -267,14 +264,14 @@ namespace JMS.DVB.SI.ProgramGuide
                 if (value != null)
                     foreach (var category in value)
                         if (category != null)
-                            m_Categories.Add( category );
+                            m_Categories.Add(category);
             }
         }
 
         /// <summary>
         /// Meldet die bekannten Altersfreigaben zu dieser Sendung.
         /// </summary>
-        [XmlElement( "Rating" )]
+        [XmlElement("Rating")]
         public string[] Ratings
         {
             get
@@ -289,15 +286,15 @@ namespace JMS.DVB.SI.ProgramGuide
             {
                 // Reset
                 if (m_Ratings == null)
-                    m_Ratings = new HashSet<string>( StringComparer.InvariantCultureIgnoreCase );
+                    m_Ratings = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
                 else
                     m_Ratings.Clear();
 
                 // Store
                 if (value != null)
                     foreach (var rating in value)
-                        if (!string.IsNullOrEmpty( rating ))
-                            m_Ratings.Add( rating );
+                        if (!string.IsNullOrEmpty(rating))
+                            m_Ratings.Add(rating);
             }
         }
 
@@ -311,14 +308,14 @@ namespace JMS.DVB.SI.ProgramGuide
                 return;
 
             // Once only
-            m_Ratings = new HashSet<string>( StringComparer.InvariantCultureIgnoreCase );
+            m_Ratings = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
             m_Categories = new HashSet<ContentCategory>();
 
             // Descriptors we can have
-            legacy.Descriptors.ShortEvent shortEvent = null;
+            Legacy.Descriptors.ShortEvent? shortEvent = null;
 
             // Extended events
-            var exEvents = new List<legacy.Descriptors.ExtendedEvent>();
+            var exEvents = new List<Legacy.Descriptors.ExtendedEvent>();
 
             // Check all descriptors
             if (m_Descriptors != null)
@@ -329,7 +326,7 @@ namespace JMS.DVB.SI.ProgramGuide
                         if (null == shortEvent)
                         {
                             // Read
-                            shortEvent = descr as legacy.Descriptors.ShortEvent;
+                            shortEvent = descr as Legacy.Descriptors.ShortEvent;
 
                             // Done for now
                             if (null != shortEvent)
@@ -337,7 +334,7 @@ namespace JMS.DVB.SI.ProgramGuide
                         }
 
                         // Check for rating
-                        var rating = descr as legacy.Descriptors.ParentalRating;
+                        var rating = descr as Legacy.Descriptors.ParentalRating;
 
                         // Done for now
                         if (null != rating)
@@ -345,28 +342,28 @@ namespace JMS.DVB.SI.ProgramGuide
                             // Process
                             if (rating.Ratings != null)
                                 foreach (string singleRating in rating.Ratings)
-                                    if (!string.IsNullOrEmpty( singleRating ))
-                                        m_Ratings.Add( singleRating );
+                                    if (!string.IsNullOrEmpty(singleRating))
+                                        m_Ratings.Add(singleRating);
 
                             // Next
                             continue;
                         }
 
                         // Check for extended event
-                        var exEvent = descr as legacy.Descriptors.ExtendedEvent;
+                        var exEvent = descr as Legacy.Descriptors.ExtendedEvent;
 
                         // Register
                         if (null != exEvent)
                         {
                             // Remember
-                            exEvents.Add( exEvent );
+                            exEvents.Add(exEvent);
 
                             // Next
                             continue;
                         }
 
                         // Check for content information
-                        var content = descr as legacy.Descriptors.Content;
+                        var content = descr as Legacy.Descriptors.Content;
 
                         // Remember
                         if (content != null)
@@ -374,7 +371,7 @@ namespace JMS.DVB.SI.ProgramGuide
                             // Process
                             if (content.Categories != null)
                                 foreach (var singleCategory in content.Categories)
-                                    m_Categories.Add( GetContentCategory( singleCategory ) );
+                                    m_Categories.Add(GetContentCategory(singleCategory));
 
                             // Next
                             continue;
@@ -398,7 +395,7 @@ namespace JMS.DVB.SI.ProgramGuide
 
                     // Merge
                     if (exEvent.Text != null)
-                        text.Append( exEvent.Text );
+                        text.Append(exEvent.Text);
                 }
 
                 // Use
@@ -409,26 +406,26 @@ namespace JMS.DVB.SI.ProgramGuide
             if (shortEvent != null)
             {
                 // Remember
-                if (string.IsNullOrEmpty( shortEvent.Name ))
+                if (string.IsNullOrEmpty(shortEvent.Name))
                     m_ShortDescription = shortEvent.Text;
-                else if (string.IsNullOrEmpty( shortEvent.Text ))
+                else if (string.IsNullOrEmpty(shortEvent.Text))
                     m_ShortDescription = shortEvent.Name;
-                else if (string.IsNullOrEmpty( m_Description ) || StringComparer.Ordinal.Equals( shortEvent.Text, m_Description ))
+                else if (string.IsNullOrEmpty(m_Description) || StringComparer.Ordinal.Equals(shortEvent.Text, m_Description))
                     m_ShortDescription = shortEvent.Name;
                 else
-                    m_ShortDescription = string.Format( "{0} ({1})", shortEvent.Name, shortEvent.Text );
+                    m_ShortDescription = string.Format("{0} ({1})", shortEvent.Name, shortEvent.Text);
 
                 // Read
-                if (string.IsNullOrEmpty( m_Name ))
+                if (string.IsNullOrEmpty(m_Name))
                     m_Name = shortEvent.Name;
-                if (string.IsNullOrEmpty( m_Description ))
+                if (string.IsNullOrEmpty(m_Description))
                     m_Description = shortEvent.Text;
-                if (string.IsNullOrEmpty( m_Language ))
+                if (string.IsNullOrEmpty(m_Language))
                     m_Language = shortEvent.Language;
             }
 
             // Not possible
-            if (string.IsNullOrEmpty( m_Name ))
+            if (string.IsNullOrEmpty(m_Name))
                 return;
 
             // Defaults
@@ -436,7 +433,7 @@ namespace JMS.DVB.SI.ProgramGuide
                 m_ShortDescription = string.Empty;
 
             // Defaults
-            if (string.IsNullOrEmpty( m_Description ))
+            if (string.IsNullOrEmpty(m_Description))
                 m_Description = "-";
             if (null == m_Language)
                 m_Language = string.Empty;
@@ -449,10 +446,10 @@ namespace JMS.DVB.SI.ProgramGuide
         /// </summary>
         /// <param name="contentNibbles">Die Rohdarstellung der Kategorie.</param>
         /// <returns></returns>
-        public static ContentCategory GetContentCategory( int contentNibbles )
+        public static ContentCategory GetContentCategory(int contentNibbles)
         {
             // Forward
-            return ContentCategory.Create( contentNibbles );
+            return ContentCategory.Create(contentNibbles);
         }
 
         #endregion

@@ -1,11 +1,6 @@
 ﻿extern alias oldVersion;
 
-using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-
-using legacy = oldVersion::JMS.DVB;
+using Legacy = oldVersion::JMS.DVB;
 
 namespace JMS.DVB.SI
 {
@@ -14,58 +9,28 @@ namespace JMS.DVB.SI
     /// Implementierung vornimmt.
     /// </summary>
     /// <typeparam name="T">Die Art der SI Tabelle.</typeparam>
-    public abstract class LegacyTable<T> : Table where T : legacy.EPG.Table
+    /// <param name="table">Die DVB.NET 3.5 (oder früher) Tabelle.</param>
+    public abstract class LegacyTable<T>(T table) : Table where T : Legacy.EPG.Table
     {
         /// <summary>
         /// Liest oder setzt die DVB.NET 3.5 (oder früher) Tabelle.
         /// </summary>
-        public T Table { get; private set; }
-
-        /// <summary>
-        /// Initialisiert eine Umsetzungsinstanz.
-        /// </summary>
-        /// <param name="table">Die DVB.NET 3.5 (oder früher) Tabelle.</param>
-        public LegacyTable( T table )
-        {
-            // Remember
-            Table = table;
-        }
+        public T Table { get; private set; } = table;
 
         /// <summary>
         /// Meldet die aktuelle laufende Nummer der Tabelle in einer Gruppe zusammengehörender Tabellen.
         /// </summary>
-        public override int CurrentSection
-        {
-            get
-            {
-                // Forward
-                return Table.SectionNumber;
-            }
-        }
+        public override int CurrentSection => Table.SectionNumber;
 
         /// <summary>
         /// Meldet die letzte Nummer einer Tabelle in einer Gruppe zusammengehörender Tabellen
         /// </summary>
-        public override int LastSection
-        {
-            get
-            {
-                // Forward
-                return Table.LastSectionNumber;
-            }
-        }
+        public override int LastSection => Table.LastSectionNumber;
 
         /// <summary>
         /// Meldet die Versionsnummer dieser Tabelle.
         /// </summary>
-        public override int Version
-        {
-            get
-            {
-                // Forward
-                return Table.Version;
-            }
-        }
+        public override int Version => Table.Version;
     }
 
     /// <summary>
@@ -73,57 +38,27 @@ namespace JMS.DVB.SI
     /// Implementierung vornimmt.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class WellKnownLegacyTable<T> : WellKnownTable where T : legacy.EPG.Table
+    /// <param name="table">Die DVB.NET 3.5 (oder früher) Tabelle.</param>
+    public abstract class WellKnownLegacyTable<T>(T table) : WellKnownTable where T : Legacy.EPG.Table
     {
         /// <summary>
         /// Liest oder setzt die DVB.NET 3.5 (oder früher) Tabelle.
         /// </summary>
-        public T Table { get; private set; }
-
-        /// <summary>
-        /// Initialisiert eine Umsetzungsinstanz.
-        /// </summary>
-        /// <param name="table">Die DVB.NET 3.5 (oder früher) Tabelle.</param>
-        public WellKnownLegacyTable( T table )
-        {
-            // Remember
-            Table = table;
-        }
+        public T Table { get; private set; } = table;
 
         /// <summary>
         /// Meldet die aktuelle laufende Nummer der Tabelle in einer Gruppe zusammengehörender Tabellen.
         /// </summary>
-        public override int CurrentSection
-        {
-            get
-            {
-                // Forward
-                return Table.SectionNumber;
-            }
-        }
+        public override int CurrentSection => Table.SectionNumber;
 
         /// <summary>
         /// Meldet die letzte Nummer einer Tabelle in einer Gruppe zusammengehörender Tabellen
         /// </summary>
-        public override int LastSection
-        {
-            get
-            {
-                // Forward
-                return Table.LastSectionNumber;
-            }
-        }
+        public override int LastSection => Table.LastSectionNumber;
 
         /// <summary>
         /// Meldet die Versionsnummer dieser Tabelle.
         /// </summary>
-        public override int Version
-        {
-            get
-            {
-                // Forward
-                return Table.Version;
-            }
-        }
+        public override int Version => Table.Version;
     }
 }

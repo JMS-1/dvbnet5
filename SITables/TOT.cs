@@ -1,30 +1,21 @@
 ﻿extern alias oldVersion;
 
-using System;
-
-using legacy = oldVersion::JMS.DVB;
+using Legacy = oldVersion::JMS.DVB;
 
 namespace JMS.DVB.SI
 {
     /// <summary>
     /// Beschreibt eine <i>Time Offset Table</i> Tabelle.
     /// </summary>
-    public class TOT : WellKnownLegacyTable<legacy.EPG.Tables.TOT>
+    /// <param name="table">Die empfangene Tabelle.</param>
+    public class TOT(Legacy.EPG.Tables.TOT table) : WellKnownLegacyTable<Legacy.EPG.Tables.TOT>(table)
     {
-        /// <summary>
-        /// Erzeugt eine neue Tabellenbeschreibung.
-        /// </summary>
-        /// <param name="table">Die empfangene Tabelle.</param>
-        public TOT( legacy.EPG.Tables.TOT table )
-            : base( table )
-        {
-        }
 
         /// <summary>
         /// Erzeugt eine neue Tabellenbeschreibung.
         /// </summary>
         public TOT()
-            : this( null )
+            : this(null!)
         {
         }
 
@@ -32,37 +23,16 @@ namespace JMS.DVB.SI
         /// Meldet die Liste der SI Tabellenarten, die von dieser Klasse
         /// abgedeckt werden.
         /// </summary>
-        public override byte[] TableIdentifiers
-        {
-            get
-            {
-                // Report
-                return new byte[] { 0x73 };
-            }
-        }
+        public override byte[] TableIdentifiers => [0x73];
 
         /// <summary>
         /// Meldet den Datenstrom, an den dieser Typ von Tabelle fest gebunden ist.
         /// </summary>
-        public override ushort WellKnownStream
-        {
-            get
-            {
-                // Report
-                return 0x14;
-            }
-        }
+        public override ushort WellKnownStream => 0x14;
 
         /// <summary>
         /// Meldet den dieser Tabelle zugeordneten Zeitpunkt.
         /// </summary>
-        public DateTime TimeStamp
-        {
-            get
-            {
-                // Report
-                return Table.Time;
-            }
-        }
+        public DateTime TimeStamp => Table.Time;
     }
 }
