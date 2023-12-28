@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-
 namespace JMS.DVB.TS
 {
     /// <summary>
@@ -12,24 +9,24 @@ namespace JMS.DVB.TS
         /// <summary>
         /// The <see cref="File"/> we write the data to.
         /// </summary>
-        private FileStream m_File = null;
+        private FileStream m_File = null!;
 
         /// <summary>
         /// First buffer.
         /// <seealso cref="m_Buf2"/>
         /// </summary>
-        private byte[] m_Buf1 = null;
+        private byte[] m_Buf1 = null!;
 
         /// <summary>
         /// Second buffer.
         /// <seealso cref="m_Buf1"/>
         /// </summary>
-        private byte[] m_Buf2 = null;
+        private byte[] m_Buf2 = null!;
 
         /// <summary>
         /// Currently active operation
         /// </summary>
-        private IAsyncResult m_Writer = null;
+        private IAsyncResult m_Writer = null!;
 
         /// <summary>
         /// Position in <see cref="m_Buf1"/> where next byte has to go to.
@@ -61,14 +58,14 @@ namespace JMS.DVB.TS
         /// <param name="sOutFileName">Output <see cref="File"/> - if the file alreay
         /// exists it will be overwritten.</param>
         /// <param name="nSize">Size of each buffer in bytes.</param>
-        public DoubleBufferedFile( string sOutFileName, int nSize )
+        public DoubleBufferedFile(string sOutFileName, int nSize)
         {
             // Create buffers
             m_Buf1 = new byte[nSize];
             m_Buf2 = new byte[nSize];
 
             // Attach to file
-            m_File = new FileStream( sOutFileName, FileMode.Create, FileAccess.Write, FileShare.Read );
+            m_File = new FileStream(sOutFileName, FileMode.Create, FileAccess.Write, FileShare.Read);
 
             // Remember
             FilePath = m_File.Name;
@@ -98,7 +95,7 @@ namespace JMS.DVB.TS
         /// is used to synchronize with the disk.
         /// </remarks>
         /// <param name="bMoreData">The file is not finished yet.</param>
-        private void FinishDiskWrite( bool bMoreData )
+        private void FinishDiskWrite(bool bMoreData)
         {
             // Nothing to do
             if (null == m_Writer)
@@ -118,10 +115,10 @@ namespace JMS.DVB.TS
 
             // Finish
             if (null != m_File)
-                m_File.EndWrite( m_Writer );
+                m_File.EndWrite(m_Writer);
 
             // Clear
-            m_Writer = null;
+            m_Writer = null!;
         }
 
         /// <summary>
@@ -135,10 +132,10 @@ namespace JMS.DVB.TS
         /// <seealso cref="StartWrite"/>.
         /// </remarks>
         /// <param name="nBytes">Bytes used in the allocated area.</param>
-        public void EndWrite( int nBytes )
+        public void EndWrite(int nBytes)
         {
             // Invalid
-            if ((nBytes < 0) || ((m_Buf1Pos + nBytes) > m_Buf1.Length)) throw new ArgumentOutOfRangeException( "Not enough Space in Buffer" );
+            if ((nBytes < 0) || ((m_Buf1Pos + nBytes) > m_Buf1.Length)) throw new ArgumentOutOfRangeException("Not enough Space in Buffer");
 
             // Update index
             m_Buf1Pos += nBytes;
@@ -163,11 +160,11 @@ namespace JMS.DVB.TS
         /// <exception cref="ArgumentOutOfRangeException">Number of bytes
         /// is negative or exceeds <see cref="Array.Length"/> of <see cref="m_Buf1"/>.
         /// </exception>
-        public byte[] StartWrite( int nBytes, out int nIndex )
+        public byte[] StartWrite(int nBytes, out int nIndex)
         {
             // Invalid
             if ((nBytes < 0) || (nBytes > m_Buf1.Length))
-                throw new ArgumentOutOfRangeException( "Invalid Buffer Size - only 0 to " + m_Buf1.Length.ToString() + " are allowed" );
+                throw new ArgumentOutOfRangeException("Invalid Buffer Size - only 0 to " + m_Buf1.Length.ToString() + " are allowed");
 
             // Done
             bool bFinish = (0 == nBytes);
@@ -184,13 +181,13 @@ namespace JMS.DVB.TS
                 }
 
             // Write out buffers
-            FinishDiskWrite( !bFinish );
+            FinishDiskWrite(!bFinish);
 
             // Start writing
             if (m_Buf1Pos > 0)
             {
                 // Start processing
-                m_Writer = m_File.BeginWrite( m_Buf1, 0, m_Buf1Pos, null, null );
+                m_Writer = m_File.BeginWrite(m_Buf1, 0, m_Buf1Pos, null, null);
             }
 
             // Restart from scratch
@@ -209,24 +206,24 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Überträgt einen beliebigen Speicherbereich in die angeschlossene Datei.
+        /// ï¿½bertrï¿½gt einen beliebigen Speicherbereich in die angeschlossene Datei.
         /// </summary>
         /// <param name="buffer">Der Speicherbereich.</param>
-        /// <param name="offset">Der Index des ersten zu berücksichtigenden Bytes im Speicherbereich.</param>
-        /// <param name="length">Die Anzahl der zu berücksichtigenden Bytes.</param>
-        public void Write( byte[] buffer, int offset, int length )
+        /// <param name="offset">Der Index des ersten zu berï¿½cksichtigenden Bytes im Speicherbereich.</param>
+        /// <param name="length">Die Anzahl der zu berï¿½cksichtigenden Bytes.</param>
+        public void Write(byte[] buffer, int offset, int length)
         {
             // Process
             while (length > 0)
             {
                 // See how many bytes can be written
-                int trans = Math.Min( length, m_Buf1.Length - m_Buf1Pos );
+                int trans = Math.Min(length, m_Buf1.Length - m_Buf1Pos);
 
                 // Copy in
                 if (trans > 0)
                 {
                     // Fill buffer
-                    Array.Copy( buffer, offset, m_Buf1, m_Buf1Pos, trans );
+                    Array.Copy(buffer, offset, m_Buf1, m_Buf1Pos, trans);
 
                     // Adjust
                     m_Buf1Pos += trans;
@@ -243,10 +240,10 @@ namespace JMS.DVB.TS
                 if (m_Buf1Pos >= m_Buf1.Length)
                 {
                     // Write out buffers
-                    FinishDiskWrite( true );
+                    FinishDiskWrite(true);
 
                     // Always start a new write
-                    m_Writer = m_File.BeginWrite( m_Buf1, 0, m_Buf1Pos, null, null );
+                    m_Writer = m_File.BeginWrite(m_Buf1, 0, m_Buf1Pos, null, null);
 
                     // Restart from scratch
                     m_Buf1Pos = 0;
@@ -270,10 +267,10 @@ namespace JMS.DVB.TS
             int nIndex;
 
             // Force write of last chunk
-            StartWrite( 0, out nIndex );
+            StartWrite(0, out nIndex);
 
             // Wait for final data block
-            FinishDiskWrite( false );
+            FinishDiskWrite(false);
         }
 
         /// <summary>
@@ -292,7 +289,7 @@ namespace JMS.DVB.TS
                 m_File.Close();
 
                 // Detach all
-                m_File = null;
+                m_File = null!;
             }
         }
     }

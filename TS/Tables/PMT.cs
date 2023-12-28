@@ -1,9 +1,5 @@
-using System;
 using JMS.DVB.EPG;
-using System.Collections;
 using JMS.DVB.EPG.Descriptors;
-using System.Collections.Generic;
-
 
 namespace JMS.DVB.TS.Tables
 {
@@ -14,32 +10,34 @@ namespace JMS.DVB.TS.Tables
     /// Actually the table will include a couple of randomly choosen data 
     /// just to make the transport stream valid.
     /// </remarks>
-    public class PMT : SITableBase
+    /// <param name="pid">The related transport stream identifier.</param>
+    /// <param name="program">The unique program number.</param>
+    public class PMT(short pid, short program) : SITableBase(pid)
     {
         /// <summary>
         /// All streams added to this program.
         /// </summary>
-        private List<short> m_Streams = new List<short>();
+        private readonly List<short> m_Streams = [];
 
         /// <summary>
         /// The languages for the audio streams.
         /// </summary>
-        private Dictionary<short, string> m_AudioNames = new Dictionary<short, string>();
+        private readonly Dictionary<short, string> m_AudioNames = new();
 
         /// <summary>
         /// Maps each stream to the related <see cref="StreamTypes"/>.
         /// </summary>
-        private Dictionary<short, StreamTypes> m_Type = new Dictionary<short, StreamTypes>();
+        private readonly Dictionary<short, StreamTypes> m_Type = new();
 
         /// <summary>
         /// Maps each stream to the related AAC information.
         /// </summary>
-        private Dictionary<short, ushort?> m_AAC = new Dictionary<short, ushort?>();
+        private readonly Dictionary<short, ushort?> m_AAC = new();
 
         /// <summary>
         /// Encoding if known.
         /// </summary>
-        private Dictionary<short, byte> m_Encoding = new Dictionary<short, byte>();
+        private readonly Dictionary<short, byte> m_Encoding = new();
 
         /// <summary>
         /// The transport stream identifier of the PCR.
@@ -52,7 +50,7 @@ namespace JMS.DVB.TS.Tables
         /// <summary>
         /// Our unique program number.
         /// </summary>
-        private short ProgrammNumber;
+        private readonly short ProgrammNumber = program;
 
         /// <summary>
         /// Number of audio streams in this program - including <see cref="AC3Streams"/>.
@@ -67,7 +65,7 @@ namespace JMS.DVB.TS.Tables
         /// <summary>
         /// DVB sub title streams in this program.
         /// </summary>
-        private Dictionary<short, SubtitleInfo[]> DVBSubtitles = new Dictionary<short, SubtitleInfo[]>();
+        private readonly Dictionary<short, SubtitleInfo[]> DVBSubtitles = new();
 
         /// <summary>
         /// Number of Dolby Digital (AC3) audio streams in this program.
@@ -78,18 +76,6 @@ namespace JMS.DVB.TS.Tables
         /// Unset to disable PCR generation.
         /// </summary>
         private bool m_AllowPCR = true;
-
-        /// <summary>
-        /// Create a new instance and bind it to the transport stream.
-        /// </summary>
-        /// <param name="pid">The related transport stream identifier.</param>
-        /// <param name="program">The unique program number.</param>
-        public PMT(short pid, short program)
-            : base(pid)
-        {
-            // Remember
-            ProgrammNumber = program;
-        }
 
         /// <summary>
         /// A PMT has a table identifier of <i>2</i>.
@@ -113,7 +99,7 @@ namespace JMS.DVB.TS.Tables
         protected override byte[] CreateTable()
         {
             // Create buffer
-            TableConstructor buffer = new TableConstructor();
+            TableConstructor buffer = new();
 
             // Append to buffer
             buffer.Add((byte)(0xe0 | (PCRPID / 256)));
@@ -179,8 +165,7 @@ namespace JMS.DVB.TS.Tables
                 else if (aud)
                 {
                     // Load language
-                    string language;
-                    if (!m_AudioNames.TryGetValue(pid, out language)) language = "deu";
+                    if (!m_AudioNames.TryGetValue(pid, out var language)) language = "deu";
 
                     // Create language descriptor
                     ISOLanguage audioDescriptor = new ISOLanguage();
@@ -225,7 +210,7 @@ namespace JMS.DVB.TS.Tables
         /// <returns>Set if the first video stream is added and it is used as the PCR
         /// source. Currently this function always reports <i>false</i> since no
         /// PCR will be registered in the transport stream for the only program.</returns>
-        public bool Add(StreamTypes type, byte encoding, short pid) => Add(type, encoding, pid, false, null);
+        public bool Add(StreamTypes type, byte encoding, short pid) => Add(type, encoding, pid, false, null!);
 
         /// <summary>
         /// Add a stream to this program.
@@ -239,7 +224,7 @@ namespace JMS.DVB.TS.Tables
         /// <returns>Set if the first video stream is added and it is used as the PCR
         /// source. Currently this function always reports <i>false</i> since no
         /// PCR will be registered in the transport stream for the only program.</returns>
-        public bool Add(StreamTypes type, byte encoding, short pid, bool noPCR) => Add(type, encoding, pid, noPCR, null, null);
+        public bool Add(StreamTypes type, byte encoding, short pid, bool noPCR) => Add(type, encoding, pid, noPCR, null!, null);
 
         /// <summary>
         /// Add a stream to this program.
@@ -273,10 +258,10 @@ namespace JMS.DVB.TS.Tables
         public bool Add(StreamTypes type, byte encoding, short pid, bool noPCR, SubtitleInfo[] info, ushort? aac)
         {
             // Validate
-            if ((pid < 0) || (pid >= 0x1fff)) throw new ArgumentOutOfRangeException("pid", pid, "only 13 bits allowed");
+            if ((pid < 0) || (pid >= 0x1fff)) throw new ArgumentOutOfRangeException(nameof(pid), pid, "only 13 bits allowed");
 
             // Must be unique
-            if (m_Streams.Contains(pid)) throw new ArgumentException("Duplicate PID " + pid.ToString(), "pid");
+            if (m_Streams.Contains(pid)) throw new ArgumentException("Duplicate PID " + pid.ToString(), nameof(pid));
 
             // Disable PCR generation
             if (!m_AllowPCR) noPCR = true;
@@ -344,15 +329,8 @@ namespace JMS.DVB.TS.Tables
         }
 
         /// <summary>
-        /// Meldet die Anzahl der zugeordneten Datenströme.
+        /// Meldet die Anzahl der zugeordneten Datenstrï¿½me.
         /// </summary>
-        public int Count
-        {
-            get
-            {
-                // Report the current number of streams
-                return m_Streams.Count;
-            }
-        }
+        public int Count => m_Streams.Count;
     }
 }

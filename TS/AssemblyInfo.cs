@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 //
 // General Information about an assembly is controlled through the following 
@@ -11,7 +10,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("JMS")]
 [assembly: AssemblyProduct("DVB.NET")]
-[assembly: AssemblyCopyright("Copyright � 2003-15")]
+[assembly: AssemblyCopyright("Copyright © 2003-24")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

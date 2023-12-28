@@ -1,39 +1,26 @@
-using System;
-
 namespace JMS.DVB.TS
 {
     /// <summary>
-    /// Repräsentiert einen Rohdatenstrom mit echten DVB Untertiteln.
+    /// Reprï¿½sentiert einen Rohdatenstrom mit echten DVB Untertiteln.
     /// </summary>
-	public class SubtitleStream: StreamBase
-	{
-        /// <summary>
-        /// Erzeugt eine neue Repräsentation.
-        /// </summary>
-        /// <param name="consumer">Der zugehörige Gesamtdatenstrom, im Allgemeinen ein
-        /// <i>Transport Stream</i> <see cref="Manager"/>.</param>
-        /// <param name="pid">Die Datenstromkennung im Gesamtstrom.</param>
-        /// <param name="isPCR">Gesetzt, wenn dieser Datenstrom die Zeitbasis für den Gesamtstrom
-        /// bereitstellt (sehr unüblich für Untertitel).</param>
-        public SubtitleStream(IStreamConsumer consumer, short pid, bool isPCR)
-			: base(consumer, pid, isPCR)
-		{
-		}
+    /// <param name="consumer">Der zugehï¿½rige Gesamtdatenstrom, im Allgemeinen ein
+    /// <i>Transport Stream</i> <see cref="Manager"/>.</param>
+    /// <param name="pid">Die Datenstromkennung im Gesamtstrom.</param>
+    /// <param name="isPCR">Gesetzt, wenn dieser Datenstrom die Zeitbasis fï¿½r den Gesamtstrom
+    /// bereitstellt (sehr unï¿½blich fï¿½r Untertitel).</param>
+    public class SubtitleStream(IStreamConsumer consumer, short pid, bool isPCR) : StreamBase(consumer, pid, isPCR)
+    {
 
         /// <summary>
-        /// Prüft, ob ein Zeichen ein legaler MPEG-2 Startcode für DVB Untertitelströme
+        /// Prï¿½ft, ob ein Zeichen ein legaler MPEG-2 Startcode fï¿½r DVB Untertitelstrï¿½me
         /// ist.
         /// </summary>
-        /// <param name="code">Der zu prüfende Code.</param>
+        /// <param name="code">Der zu prï¿½fende Code.</param>
         /// <returns>Gesetzt, wenn es sich um einen legalen Startcode handelt.</returns>
-		protected override bool IsValidStartCode(byte code)
-		{
-			// Must be private data
-			return (0xbd == code);
-		}
+        protected override bool IsValidStartCode(byte code) => 0xbd == code;
 
         /// <summary>
-        /// Nimmt Daten entgegen aber verzögert die Übernahme in den Gesamtdatenstrom bis
+        /// Nimmt Daten entgegen aber verzï¿½gert die ï¿½bernahme in den Gesamtdatenstrom bis
         /// ein PCR vorliegt.
         /// </summary>
         /// <param name="buffer">Speicher mit den Nutzdaten.</param>

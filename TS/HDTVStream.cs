@@ -1,34 +1,18 @@
-using System;
-
 namespace JMS.DVB.TS
 {
 	/// <summary>
 	/// Represents a single H.264 video stream.
 	/// </summary>
-	public class HDTVStream: VideoStream
+	/// <param name="consumer">Related transport stream.</param>
+	/// <param name="pid">Transport stream identifier for this video stream.</param>
+	/// <param name="isPCR">Set if this stream supplies the PCR.</param>
+	public class HDTVStream(IStreamConsumer consumer, short pid, bool isPCR) : VideoStream(consumer, pid, isPCR)
 	{
-		/// <summary>
-		/// Create a new instance.
-		/// </summary>
-		/// <param name="consumer">Related transport stream.</param>
-		/// <param name="pid">Transport stream identifier for this video stream.</param>
-		/// <param name="isPCR">Set if this stream supplies the PCR.</param>
-		public HDTVStream(IStreamConsumer consumer, short pid, bool isPCR)
-			: base(consumer, pid, isPCR)
-		{
-		}
 
 		/// <summary>
 		/// Report that streaming must wait until the first key frame has been seen.
 		/// </summary>
-		protected override bool AwaitKeyFrame
-		{
-			get
-			{
-				// Wait for the first full frame
-				return true;
-			}
-		}
+		protected override bool AwaitKeyFrame => true;
 
 		/// <summary>
 		/// See, if the indicated position in the buffer is a keyframe. Prior to

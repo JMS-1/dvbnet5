@@ -1,5 +1,3 @@
-using System;
-
 namespace JMS.DVB.TS.Tables
 {
     /// <summary>

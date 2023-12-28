@@ -1,6 +1,3 @@
-using System;
-
-
 namespace JMS.DVB.TS.Tables
 {
     /// <summary>
@@ -12,7 +9,7 @@ namespace JMS.DVB.TS.Tables
         /// <summary>
         /// Cached table data.
         /// </summary>
-        private byte[] TableData = null;
+        private byte[] TableData = null!;
 
         /// <summary>
         /// Change count on the table.
@@ -34,7 +31,7 @@ namespace JMS.DVB.TS.Tables
         /// Initialize this instance.
         /// </summary>
         /// <param name="pid">The transposrt stream identifier for this table.</param>
-        protected SITableBase( short pid )
+        protected SITableBase(short pid)
         {
             // Remember
             PID = pid;
@@ -66,7 +63,7 @@ namespace JMS.DVB.TS.Tables
         protected void Changed()
         {
             // Must reload on next call
-            TableData = null;
+            TableData = null!;
 
             // Count version
             ++Version;
@@ -85,10 +82,10 @@ namespace JMS.DVB.TS.Tables
             set
             {
                 // Validate
-                if (value < 0) throw new ArgumentOutOfRangeException( "value" );
+                if (value < 0) throw new ArgumentOutOfRangeException(nameof(value));
 
                 // Must reload on next call
-                TableData = null;
+                TableData = null!;
 
                 // Remember
                 Version = value;
@@ -109,7 +106,7 @@ namespace JMS.DVB.TS.Tables
         /// <exception cref="NotImplementedException">Currently the size of a table
         /// may not exceed a single transport stream package - <see cref="CreateTable"/>
         /// may not report more than 171 bytes.</exception>
-        public void Send( Manager target )
+        public void Send(Manager target)
         {
             // Create table
             if (TableData == null)
@@ -119,7 +116,7 @@ namespace JMS.DVB.TS.Tables
                 var outer = new byte[9 + inner.Length + 4];
 
                 // Merge inner
-                inner.CopyTo( outer, 9 );
+                inner.CopyTo(outer, 9);
 
                 // Load private data
                 int priv = PrivateData;
@@ -132,30 +129,30 @@ namespace JMS.DVB.TS.Tables
 
                 // Fill table header
                 outer[1] = TableIdentifier;
-                outer[2] = (byte) (0xb0 | (len / 256));
-                outer[3] = (byte) (len & 0xff);
-                outer[4] = (byte) (priv / 256);
-                outer[5] = (byte) (priv & 0xff);
-                outer[6] = (byte) (0x01 | ((Version & 0x1f) * 2));
+                outer[2] = (byte)(0xb0 | (len / 256));
+                outer[3] = (byte)(len & 0xff);
+                outer[4] = (byte)(priv / 256);
+                outer[5] = (byte)(priv & 0xff);
+                outer[6] = (byte)(0x01 | ((Version & 0x1f) * 2));
 
                 // Calculate CRC32
-                uint crc32 = EPG.CRC32.GetCRC( outer, 1, len - 1 );
+                uint crc32 = EPG.CRC32.GetCRC(outer, 1, len - 1);
 
                 // At the very end
                 int crcIndex = outer.Length;
 
                 // Fill in
-                outer[--crcIndex] = (byte) (crc32 & 0xff);
-                outer[--crcIndex] = (byte) ((crc32 >> 8) & 0xff);
-                outer[--crcIndex] = (byte) ((crc32 >> 16) & 0xff);
-                outer[--crcIndex] = (byte) (crc32 >> 24);
+                outer[--crcIndex] = (byte)(crc32 & 0xff);
+                outer[--crcIndex] = (byte)((crc32 >> 8) & 0xff);
+                outer[--crcIndex] = (byte)((crc32 >> 16) & 0xff);
+                outer[--crcIndex] = (byte)(crc32 >> 24);
 
                 // Use table
                 TableData = outer;
             }
 
             // Send table
-            target.SendTable( ref Counter, PID, TableData );
+            target.SendTable(ref Counter, PID, TableData);
         }
     }
 }

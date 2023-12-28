@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using JMS.DVB.EPG;
 using JMS.DVB.EPG.Tables;
 using JMS.DVB.TS.TSBuilders;
@@ -19,41 +15,25 @@ namespace JMS.DVB.TS
         /// Informationen �ber den Interessenten an einem der Nutzdatenstr�me. Instanzen dieser
         /// Klasse werden f�r die automatische Extraktion von Bild- und Tonsignal verwendet.
         /// </summary>
-        private class PESInfo : IDisposable
+        /// <param name="parser">Die zugeh�rige Instanz zum Gesamtdatenstrom.</param>
+        /// <param name="pid">Die betroffenen Datenstromkennung.</param>
+        /// <param name="callback">Der Empf�nger der eigentlichen Nutzdaten.</param>
+        private class PESInfo(TSParser parser, ushort pid, Action<byte[]> callback) : IDisposable
         {
             /// <summary>
             /// Die eindeutige Datenstromkennung.
             /// </summary>
-            public readonly ushort PID;
+            public readonly ushort PID = pid;
 
             /// <summary>
             /// Der zugeh�rige Rekonstruktionskomponente f�r den Nutzdatenstrom.
             /// </summary>
-            private PESBuilder m_Builder;
-
-            /// <summary>
-            /// Erzeugt eine neue Analyseinstanz f�r einen Nutzdatenstrom.
-            /// </summary>
-            /// <param name="parser">Die zugeh�rige Instanz zum Gesamtdatenstrom.</param>
-            /// <param name="pid">Die betroffenen Datenstromkennung.</param>
-            /// <param name="callback">Der Empf�nger der eigentlichen Nutzdaten.</param>
-            public PESInfo(TSParser parser, ushort pid, Action<byte[]> callback)
-            {
-                // Remember
-                PID = pid;
-
-                // Create
-                m_Builder = new PESBuilder(parser, callback);
-            }
+            private PESBuilder m_Builder = new PESBuilder(parser, callback);
 
             /// <summary>
             /// Beginnt die Rekonstruktion der Nutzdaten von neuem.
             /// </summary>
-            public void Reset()
-            {
-                // Forward
-                m_Builder.Reset();
-            }
+            public void Reset() => m_Builder.Reset();
 
             /// <summary>
             /// Nimmt ein Rohdatenpaket entgegen.
@@ -64,11 +44,8 @@ namespace JMS.DVB.TS
             /// <param name="noincrement">Gesetzt, wenn der Rohdatenpaketz�hler nicht erh�ht werden darf.</param>
             /// <param name="first">Gesetzt, wenn dieses Rohdatenpaket einen PES Kopf enth�lt.</param>
             /// <param name="counter">Der Rohdatenpaktz�hler zu diesem Paket.</param>
-            public void AddPacket(byte[] packet, int offset, int length, bool noincrement, bool first, byte counter)
-            {
-                // Forward
+            public void AddPacket(byte[] packet, int offset, int length, bool noincrement, bool first, byte counter) =>
                 m_Builder.AddPacket(packet, offset, length, noincrement, first, counter);
-            }
 
             /// <summary>
             /// Beendet die Nutzung dieser Analyseinstanz.
@@ -77,7 +54,7 @@ namespace JMS.DVB.TS
             {
                 // Cleanup
                 using (m_Builder)
-                    m_Builder = null;
+                    m_Builder = null!;
             }
         }
 
@@ -90,17 +67,17 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Verwaltet alle Verbraucher von einzelnen Datenstr�men innerhalb des Gesamtdatenstroms.
         /// </summary>
-        private readonly Dictionary<ushort, TSBuilder> m_Consumers = new Dictionary<ushort, TSBuilder>();
+        private readonly Dictionary<ushort, TSBuilder> m_Consumers = new();
 
         /// <summary>
         /// Verwaltet alle Verbraucher, die Datenstr�me aus den Gesamtdaten vollst�ndig abzweigen.
         /// </summary>
-        private readonly Dictionary<ushort, Action<byte[]>> m_Extractors = new Dictionary<ushort, Action<byte[]>>();
+        private readonly Dictionary<ushort, Action<byte[]>> m_Extractors = new();
 
         /// <summary>
         /// Enth�lt eine Statistik �ber die Anteile der individuellen Datenstr�me am Gesamtdatenstrom.
         /// </summary>
-        private Dictionary<ushort, long> m_PacketStatistics = new Dictionary<ushort, long>();
+        private readonly Dictionary<ushort, long> m_PacketStatistics = new();
 
         /// <summary>
         /// Gesetzt, wenn die Statistik �ber die Anzeile der einzelnen Datenstr�me gef�hrt werden soll.
@@ -110,7 +87,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Zwischenspeicher zur Synchronisation am Beginn einer Rohdaten�bertragung.
         /// </summary>
-        private byte[] m_SyncBuffer;
+        private readonly byte[] m_SyncBuffer;
 
         /// <summary>
         /// Aktuelle Synchronisationsposition.
@@ -120,7 +97,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Ein einzelnes Rohdatenpaket.
         /// </summary>
-        private byte[] m_Packet = new byte[Manager.FullSize];
+        private readonly byte[] m_Packet = new byte[Manager.FullSize];
 
         /// <summary>
         /// Aktueller F�llstand des Rohdatenpaketes.
@@ -182,12 +159,12 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Hilfskomponente zur Analyse der PAT.
         /// </summary>
-        private TypedSIParser<PAT> m_PATParser = new TypedSIParser<PAT>();
+        private readonly TypedSIParser<PAT> m_PATParser = new();
 
         /// <summary>
         /// Hilfskomponente zur Analyse der PMT.
         /// </summary>
-        private TypedSIParser<PMT> m_PMTParser = new TypedSIParser<PMT>();
+        private readonly TypedSIParser<PMT> m_PMTParser = new();
 
         /// <summary>
         /// Hilfskomponente zur Analyse eines Rohdatenstroms mit PATs.
@@ -223,7 +200,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Wird aktiviert, wenn eine bestimmte PMT zur Verf�gung steht.
         /// </summary>
-        public event PMTFoundHandler PMTFound;
+        public event PMTFoundHandler? PMTFound;
 
         /// <summary>
         /// Erzeugt eine neue Analyseinstanz f�r einen <i>Transport Stream</i>.
@@ -294,7 +271,7 @@ namespace JMS.DVB.TS
             // Validate
             if (pmt != null)
                 if (pmt.ProgramNumber != m_WaitForService)
-                    pmt = null;
+                    pmt = null!;
 
             // Disable or restart 
             m_WaitForService = m_ResetAfterServiceFound;
@@ -314,11 +291,7 @@ namespace JMS.DVB.TS
         /// Ermittelt die n�chste PMT zu einem Sender.
         /// </summary>
         /// <param name="serviceIdentifier">Der gew�nschte Sender.</param>
-        public void RequestPMT(ushort serviceIdentifier)
-        {
-            // Forward
-            RequestPMT(serviceIdentifier, false);
-        }
+        public void RequestPMT(ushort serviceIdentifier) => RequestPMT(serviceIdentifier, false);
 
         /// <summary>
         /// Ermittelt die n�chste PMT zu einem Sender.
@@ -342,21 +315,13 @@ namespace JMS.DVB.TS
         /// �bertr�gte Rohdatenpakete in den Gesamtdatenstrom.
         /// </summary>
         /// <param name="buffer">Ein Speicherblock mit Rohdatenpaketen.</param>
-        public void AddPayload(byte[] buffer)
-        {
-            // Forward
-            AddPayload(buffer, 0, buffer.Length);
-        }
+        public void AddPayload(byte[] buffer) => AddPayload(buffer, 0, buffer.Length);
 
         /// <summary>
         /// Injiziert Daten in den Datenstrom, ohne dass diese sofort wieder extrahiert werden.
         /// </summary>
         /// <param name="buffer">Speicher mit Nutzdaten.</param>
-        public void Inject(byte[] buffer)
-        {
-            // Forward
-            Inject(buffer, 0, buffer.Length);
-        }
+        public void Inject(byte[] buffer) => Inject(buffer, 0, buffer.Length);
 
         /// <summary>
         /// Injiziert Daten in den Datenstrom, ohne dass diese sofort wieder extrahiert werden.
@@ -367,8 +332,8 @@ namespace JMS.DVB.TS
         public void Inject(byte[] buffer, int index, int length)
         {
             // Validate
-            if (buffer == null)
-                throw new ArgumentNullException(nameof(buffer));
+            ArgumentNullException.ThrowIfNull(buffer, nameof(buffer));
+
             if ((index < 0) || (index > buffer.Length))
                 throw new ArgumentException(index.ToString(), nameof(index));
             if ((length < 0) || (length > buffer.Length))
@@ -404,9 +369,9 @@ namespace JMS.DVB.TS
                     var counter = (byte)(0xf & flags);
 
                     // Load flags
-                    var adaption = (0x20 == (0x20 & flags));
-                    var payload = (0x10 == (0x10 & flags));
-                    var first = (0x40 == (0x40 & pidh));
+                    var adaption = 0x20 == (0x20 & flags);
+                    var payload = 0x10 == (0x10 & flags);
+                    var first = 0x40 == (0x40 & pidh);
 
                     // Get the payload
                     int start = index + 4, size = Manager.PacketSize;
@@ -427,14 +392,13 @@ namespace JMS.DVB.TS
                     }
 
                     // There are special situations where the counter is not incremented
-                    var noInc = (adaption && !payload && (size == 0));
+                    var noInc = adaption && !payload && (size == 0);
 
                     // Get the real size which is 0 if the payload indicator is not set
-                    var realSize = (payload ? size : 0);
+                    var realSize = payload ? size : 0;
 
                     // Check for custom handler
-                    TSBuilder consumer;
-                    if (m_Consumers.TryGetValue(pid, out consumer))
+                    if (m_Consumers.TryGetValue(pid, out var consumer))
                         consumer.AddPacket(buffer, start, realSize, noInc, first, counter);
                 }
         }
@@ -448,8 +412,8 @@ namespace JMS.DVB.TS
         public void AddPayload(byte[] buffer, int index, int length)
         {
             // Validate
-            if (buffer == null)
-                throw new ArgumentNullException(nameof(buffer));
+            ArgumentNullException.ThrowIfNull(buffer, nameof(buffer));
+
             if ((index < 0) || (index > buffer.Length))
                 throw new ArgumentException(index.ToString(), nameof(index));
             if ((length < 0) || (length > buffer.Length))
@@ -613,8 +577,7 @@ namespace JMS.DVB.TS
                         }
 
                         // Check for complete extraction 
-                        Action<byte[]> extractor;
-                        if (m_Extractors.TryGetValue(pid, out extractor))
+                        if (m_Extractors.TryGetValue(pid, out var extractor))
                         {
                             // Feed it
                             extractor(m_Packet);
@@ -669,8 +632,7 @@ namespace JMS.DVB.TS
                         var realSize = (payload ? size : 0);
 
                         // Check for custom handler
-                        TSBuilder consumer;
-                        if (m_Consumers.TryGetValue(pid, out consumer))
+                        if (m_Consumers.TryGetValue(pid, out var consumer))
                             consumer.AddPacket(m_Packet, start, realSize, noInc, first, counter);
 
                         // Forward to PAT
@@ -693,16 +655,13 @@ namespace JMS.DVB.TS
         /// </summary>
         /// <param name="pid">Die gew�nschte Datenstromkennung.</param>
         /// <returns>Der zugeh�rige Verbraucher oder <i>null</i>.</returns>
-        public TSBuilder this[ushort pid]
+        public TSBuilder? this[ushort pid]
         {
             get
             {
-                // Result
-                TSBuilder consumer;
-
                 // Synchronize
                 lock (m_Consumers)
-                    if (m_Consumers.TryGetValue(pid, out consumer))
+                    if (m_Consumers.TryGetValue(pid, out var consumer))
                         return consumer;
 
                 // Not dound
@@ -720,8 +679,7 @@ namespace JMS.DVB.TS
         public void SetFilter(ushort pid, bool isSITable, Action<byte[]> callback)
         {
             // Validate
-            if (callback == null)
-                throw new ArgumentNullException(nameof(callback));
+            ArgumentNullException.ThrowIfNull(callback, nameof(callback));
 
             // Create
             TSBuilder consumer;
@@ -791,7 +749,7 @@ namespace JMS.DVB.TS
         public void RemoveFilter(ushort pid)
         {
             // Synchronize
-            TSBuilder consumer;
+            TSBuilder? consumer;
             lock (m_Consumers)
                 if (m_Consumers.TryGetValue(pid, out consumer))
                     m_Consumers.Remove(pid);
@@ -869,23 +827,12 @@ namespace JMS.DVB.TS
         /// Setzt den PAT Z�hler zur�ck.
         /// <seealso cref="ValidPATCount"/>
         /// </summary>
-        public void RestartPATCounter()
-        {
-            // Do it
-            Interlocked.Exchange(ref m_ValidPATCount, 0);
-        }
+        public void RestartPATCounter() => Interlocked.Exchange(ref m_ValidPATCount, 0);
 
         /// <summary>
         /// Meldet die Anzahl der erkannten PATs seit dem letzten <see cref="RestartPATCounter"/>.
         /// </summary>
-        public long ValidPATCount
-        {
-            get
-            {
-                // Report
-                return Thread.VolatileRead(ref m_ValidPATCount);
-            }
-        }
+        public long ValidPATCount => Thread.VolatileRead(ref m_ValidPATCount);
 
         /// <summary>
         /// Meldet oder legt fest, ob eine Statistik �ber die Anteile der Teildatestr�me
@@ -933,7 +880,7 @@ namespace JMS.DVB.TS
                     finally
                     {
                         // Forget
-                        m_PATBuilder = null;
+                        m_PATBuilder = null!;
                     }
 
                 // PMT
@@ -946,7 +893,7 @@ namespace JMS.DVB.TS
                     finally
                     {
                         // Forget
-                        m_PMTBuilder = null;
+                        m_PMTBuilder = null!;
                     }
             }
 

@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-
 namespace JMS.DVB.TS
 {
     /// <summary>
@@ -10,25 +7,25 @@ namespace JMS.DVB.TS
     public interface IStreamConsumer
     {
         /// <summary>
-        /// Übermittelt Nutzdaten.
+        /// ï¿½bermittelt Nutzdaten.
         /// </summary>
-        /// <param name="counter">Paketzähler für den zugeordneten Datenstrom im <i>Transport Stream</i>.</param>
+        /// <param name="counter">Paketzï¿½hler fï¿½r den zugeordneten Datenstrom im <i>Transport Stream</i>.</param>
         /// <param name="pid">Nummer des Datenstroms.</param>
         /// <param name="buffer">Puffer mit Daten.</param>
         /// <param name="start">Das erste im Puffer zu verwendende Byte.</param>
-        /// <param name="packs">Die Anzahl der <i>Transport Stream</i> Pakete, die zu übertragen sind.</param>
+        /// <param name="packs">Die Anzahl der <i>Transport Stream</i> Pakete, die zu ï¿½bertragen sind.</param>
         /// <param name="isFirst">Gesetzt, wenn die Daten mit einem PES Paketkopf beginnen.</param>
         /// <param name="sizeOfLast">Anzahl der Daten im letzten <i>Transport Stream</i> Paket.</param>
         /// <param name="pts">Zeitstempel, sofern bekannt.</param>
-        void Send( ref int counter, int pid, byte[] buffer, int start, int packs, bool isFirst, int sizeOfLast, long pts );
+        void Send(ref int counter, int pid, byte[] buffer, int start, int packs, bool isFirst, int sizeOfLast, long pts);
 
         /// <summary>
-        /// Übermittelt die Systemzeit.
+        /// ï¿½bermittelt die Systemzeit.
         /// </summary>
-        /// <param name="counter">Paketzähler für den zugeordneten Datenstrom im <i>Transport Stream</i>.</param>
+        /// <param name="counter">Paketzï¿½hler fï¿½r den zugeordneten Datenstrom im <i>Transport Stream</i>.</param>
         /// <param name="pid">Nummer des Datenstroms.</param>
         /// <param name="pts">Zeitstempel, aus dem die Systemzeit abgeleitet wird.</param>
-        void SendPCR( int counter, int pid, long pts );
+        void SendPCR(int counter, int pid, long pts);
 
         /// <summary>
         /// Gesetzt, wenn die Systemzeit bekannt ist.
@@ -37,12 +34,12 @@ namespace JMS.DVB.TS
     }
 
     /// <summary>
-    /// Erweiterte Schnittstelle für Verbraucher von voranalysierten PES Paketströmen.
+    /// Erweiterte Schnittstelle fï¿½r Verbraucher von voranalysierten PES Paketstrï¿½men.
     /// </summary>
     public interface IStreamConsumer2 : IStreamConsumer
     {
         /// <summary>
-        /// Gesetzt, wenn keine Analyse des Paketstroms erwünscht ist.
+        /// Gesetzt, wenn keine Analyse des Paketstroms erwï¿½nscht ist.
         /// </summary>
         bool IgnoreInput { get; }
     }
@@ -60,7 +57,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Buffer used during on-the-fly parsing of a PES stream.
         /// </summary>
-        private byte[] Delayed = new byte[Manager.PacketSize + 6];
+        private readonly byte[] Delayed = new byte[Manager.PacketSize + 6];
 
         /// <summary>
         /// Current parsing state.
@@ -126,7 +123,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Check for extended functionality.
         /// </summary>
-        private IStreamConsumer2 m_Consumer2;
+        private readonly IStreamConsumer2? m_Consumer2;
 
         /// <summary>
         /// Transport stream packet counter.
@@ -136,7 +133,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Set if this stream provides the PCR from the PTS of the PES headers.
         /// </summary>
-        private bool IsPCR;
+        private readonly bool IsPCR;
 
         /// <summary>
         /// Unset if we are awaiting the first key frame.
@@ -161,8 +158,8 @@ namespace JMS.DVB.TS
         /// </remarks>
         /// <param name="consumer">Related transport stream.</param>
         /// <param name="pid">Corresponding transport stream identifier.</param>
-        protected StreamBase( IStreamConsumer consumer, short pid )
-            : this( consumer, pid, false )
+        protected StreamBase(IStreamConsumer consumer, short pid)
+            : this(consumer, pid, false)
         {
         }
 
@@ -173,7 +170,7 @@ namespace JMS.DVB.TS
         /// <param name="pid">Corresponding transport stream identifier.</param>
         /// <param name="isPCR">Set if this stream provides the PCR from the PTS information
         /// in the PES headers.</param>
-        protected StreamBase( IStreamConsumer consumer, short pid, bool isPCR )
+        protected StreamBase(IStreamConsumer consumer, short pid, bool isPCR)
         {
             // Remember
             m_Consumer2 = consumer as IStreamConsumer2;
@@ -188,14 +185,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Report, if input should be discarded.
         /// </summary>
-        protected bool IgnoreInput
-        {
-            get
-            {
-                // Report
-                return (null != m_Consumer2) && m_Consumer2.IgnoreInput;
-            }
-        }
+        protected bool IgnoreInput => (null != m_Consumer2) && m_Consumer2.IgnoreInput;
 
         /// <summary>
         /// Process the indicated number of bytes and sent data to the transport
@@ -204,14 +194,14 @@ namespace JMS.DVB.TS
         /// <param name="buffer">Some buffer.</param>
         /// <param name="start">First byte to process.</param>
         /// <param name="length">Total number of bytes to process.</param>
-        public virtual void AddPayload( byte[] buffer, int start, int length )
+        public virtual void AddPayload(byte[] buffer, int start, int length)
         {
             // Not active
             if (IgnoreInput)
                 return;
 
             // All
-            for (int i = start, l = length; l-- > 0; )
+            for (int i = start, l = length; l-- > 0;)
             {
                 // To test
                 byte test = buffer[i++];
@@ -266,7 +256,7 @@ namespace JMS.DVB.TS
                         // Set
                         State = (test == StartCode) ? ParseStates.LenHigh : ((0 == test) ? ParseStates.Found0 : ParseStates.Synchronize);
                     }
-                    else if (IsValidStartCode( test ))
+                    else if (IsValidStartCode(test))
                     {
                         // Remember
                         LastStartCode = test;
@@ -315,7 +305,7 @@ namespace JMS.DVB.TS
                 int pesLength = LastLenLow + 256 * LastLenHigh;
 
                 // Validate
-                if (!IsValidLength( pesLength ))
+                if (!IsValidLength(pesLength))
                 {
                     // Reset state
                     if (LastLenLow == 0)
@@ -334,13 +324,13 @@ namespace JMS.DVB.TS
                 int found = i - start;
 
                 // Flush buffers
-                Flush( buffer, start, found, 6 );
+                Flush(buffer, start, found, 6);
 
                 // Time to adjust delayed buffer
                 if (StartCode == 0)
                 {
                     // Copy to the very beginning
-                    Array.Copy( Delayed, DelayedBytes - 6, Delayed, 0, 6 );
+                    Array.Copy(Delayed, DelayedBytes - 6, Delayed, 0, 6);
 
                     // Reset
                     DelayedBytes = 6;
@@ -374,7 +364,7 @@ namespace JMS.DVB.TS
             }
 
             // All but these
-            Flush( buffer, start, length, delay );
+            Flush(buffer, start, length, delay);
         }
 
         /// <summary>
@@ -390,7 +380,7 @@ namespace JMS.DVB.TS
         /// <param name="length">Number of bytes to send.</param>
         /// <param name="delay">Number of bytes not to send but to keep in the
         /// look-ahead buffer.</param>
-        private void Flush( byte[] buffer, int start, int length, int delay )
+        private void Flush(byte[] buffer, int start, int length, int delay)
         {
             // Calculate the overall length
             int len = DelayedBytes + length - delay;
@@ -408,15 +398,15 @@ namespace JMS.DVB.TS
                 if (steal <= 0)
                 {
                     // Send and correct
-                    DelayedBytes -= Send( Delayed, 0, 1, Manager.PacketSize );
+                    DelayedBytes -= Send(Delayed, 0, 1, Manager.PacketSize);
 
                     // Copy
-                    if (DelayedBytes > 0) Array.Copy( Delayed, Manager.PacketSize, Delayed, 0, DelayedBytes );
+                    if (DelayedBytes > 0) Array.Copy(Delayed, Manager.PacketSize, Delayed, 0, DelayedBytes);
                 }
                 else
                 {
                     // Fill up the packet
-                    Array.Copy( buffer, start, Delayed, DelayedBytes, steal );
+                    Array.Copy(buffer, start, Delayed, DelayedBytes, steal);
 
                     // Adjust
                     start += steal;
@@ -426,7 +416,7 @@ namespace JMS.DVB.TS
                     DelayedBytes = 0;
 
                     // Send and correct
-                    Send( Delayed, 0, 1, Manager.PacketSize );
+                    Send(Delayed, 0, 1, Manager.PacketSize);
                 }
 
                 // Full packet less
@@ -440,7 +430,7 @@ namespace JMS.DVB.TS
             if (packs > 0)
             {
                 // Send
-                int trans = Send( buffer, start, packs, Manager.PacketSize );
+                int trans = Send(buffer, start, packs, Manager.PacketSize);
 
                 // Correct
                 start += trans;
@@ -454,17 +444,17 @@ namespace JMS.DVB.TS
             if ((len > 0) && (6 == delay))
             {
                 // Fill up the packet
-                Array.Copy( buffer, start, Delayed, DelayedBytes, length );
+                Array.Copy(buffer, start, Delayed, DelayedBytes, length);
 
                 // Remember
                 DelayedBytes += length;
 
                 // Send
-                DelayedBytes -= Send( Delayed, 0, 1, len );
+                DelayedBytes -= Send(Delayed, 0, 1, len);
 
                 // Correct buffer
                 if (DelayedBytes > 0)
-                    Array.Copy( Delayed, len, Delayed, 0, DelayedBytes );
+                    Array.Copy(Delayed, len, Delayed, 0, DelayedBytes);
 
                 // Finished
                 return;
@@ -474,7 +464,7 @@ namespace JMS.DVB.TS
             if (length < 1) return;
 
             // Remember
-            Array.Copy( buffer, start, Delayed, DelayedBytes, length );
+            Array.Copy(buffer, start, Delayed, DelayedBytes, length);
 
             // Adjust
             DelayedBytes += length;
@@ -485,25 +475,21 @@ namespace JMS.DVB.TS
         /// <seealso cref="AddPayload(byte[], int, int)"/>
         /// </summary>
         /// <param name="buffer">All of this buffer should be processed.</param>
-        public void AddPayload( byte[] buffer )
-        {
-            // Full buffer
-            AddPayload( buffer, 0, buffer.Length );
-        }
+        public void AddPayload(byte[] buffer) => AddPayload(buffer, 0, buffer.Length);
 
         /// <summary>
         /// Check if a PES start code byte is valid for this type of stream.
         /// </summary>
         /// <param name="code">PES start code byte to test.</param>
         /// <returns>Set if the PES start code is valid for this type of stream.</returns>
-        protected abstract bool IsValidStartCode( byte code );
+        protected abstract bool IsValidStartCode(byte code);
 
         /// <summary>
         /// Check if the PES packet length is consistent.
         /// </summary>
         /// <param name="length">Current length.</param>
         /// <returns>Set if the current PES header looks valid.</returns>
-        protected virtual bool IsValidLength( int length )
+        protected virtual bool IsValidLength(int length)
         {
             // The next synchronisation point has not been reached
             if (Position < NextPosition)
@@ -555,7 +541,7 @@ namespace JMS.DVB.TS
         /// <param name="last">Number of bytes in the last packet - which eventually
         /// will be padded.</param>
         /// <returns>Number of bytes sent.</returns>
-        private int Send( byte[] buffer, int start, int packs, int last )
+        private int Send(byte[] buffer, int start, int packs, int last)
         {
             // Get the total size
             int total = (packs - 1) * Manager.PacketSize + last;
@@ -600,7 +586,7 @@ namespace JMS.DVB.TS
                         if (!VeryFirstPacket || !EnableDataFlow)
                         {
                             // Calculate
-                            isKeyFrame = IsKeyFrame( buffer, start, total );
+                            isKeyFrame = IsKeyFrame(buffer, start, total);
 
                             // See if we can send data
                             if (VeryFirstPacket) EnableDataFlow = isKeyFrame.Value;
@@ -608,13 +594,13 @@ namespace JMS.DVB.TS
 
                         // See if we must send a PCR
                         if (EnableDataFlow)
-                            if (VeryFirstPacket || isKeyFrame.Value)
+                            if (VeryFirstPacket || isKeyFrame!.Value)
                             {
                                 // Correct counter
                                 if (VeryFirstPacket) ++Counter;
 
                                 // Send PCR
-                                Consumer.SendPCR( Counter, PID, pts );
+                                Consumer.SendPCR(Counter, PID, pts);
                             }
                     }
                 }
@@ -623,7 +609,7 @@ namespace JMS.DVB.TS
                 if (EnableDataFlow)
                 {
                     // Forward data
-                    Consumer.Send( ref Counter, PID, buffer, start, packs, IsFirst, last, pts );
+                    Consumer.Send(ref Counter, PID, buffer, start, packs, IsFirst, last, pts);
 
                     // Did some
                     VeryFirstPacket = false;
@@ -640,26 +626,12 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Report if this stream uses a small piping buffer.
         /// </summary>
-        protected virtual bool IsVideo
-        {
-            get
-            {
-                // All but video
-                return false;
-            }
-        }
+        protected virtual bool IsVideo => false;
 
         /// <summary>
         /// Reports if streaming has to be synchronized with a key frame.
         /// </summary>
-        protected virtual bool AwaitKeyFrame
-        {
-            get
-            {
-                // Start streaming with the first byte
-                return false;
-            }
-        }
+        protected virtual bool AwaitKeyFrame => false;
 
         /// <summary>
         /// See, if the indicated position in the buffer is a keyframe. Prior to
@@ -670,11 +642,7 @@ namespace JMS.DVB.TS
         /// <param name="start">First byte of the packet.</param>
         /// <param name="length">Number of bytes in the packet.</param>
         /// <returns>Set if this packet starts a key frame.</returns>
-        protected virtual bool IsKeyFrame( byte[] buffer, int start, int length )
-        {
-            // Normally we consider each PES a key frame
-            return true;
-        }
+        protected virtual bool IsKeyFrame(byte[] buffer, int start, int length) => true;
 
         #region IDisposable Members
 

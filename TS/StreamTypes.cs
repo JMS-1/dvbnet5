@@ -1,5 +1,3 @@
-using System;
-
 namespace JMS.DVB.TS
 {
 	/// <summary>
@@ -27,9 +25,9 @@ namespace JMS.DVB.TS
 		/// </summary>
 		TeleText = -1,
 
-        /// <summary>
-        /// DVB subtitle stream mapped to a private stream.
-        /// </summary>
-        SubTitles = -2
+		/// <summary>
+		/// DVB subtitle stream mapped to a private stream.
+		/// </summary>
+		SubTitles = -2
 	}
 }

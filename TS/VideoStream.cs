@@ -1,11 +1,12 @@
-using System;
-
 namespace JMS.DVB.TS
 {
 	/// <summary>
 	/// Represents a single video stream.
 	/// </summary>
-	public class VideoStream: StreamBase
+	/// <param name="consumer">Related transport stream.</param>
+	/// <param name="pid">Transport stream identifier for this video stream.</param>
+	/// <param name="isPCR">Set if this stream supplies the PCR.</param>
+	public class VideoStream(IStreamConsumer consumer, short pid, bool isPCR) : StreamBase(consumer, pid, isPCR)
 	{
 		/// <summary>
 		/// Get or set if any PES length is accepted.
@@ -13,27 +14,12 @@ namespace JMS.DVB.TS
 		public bool AcceptAnyLength = false;
 
 		/// <summary>
-		/// Create a new instance.
-		/// </summary>
-		/// <param name="consumer">Related transport stream.</param>
-		/// <param name="pid">Transport stream identifier for this video stream.</param>
-		/// <param name="isPCR">Set if this stream supplies the PCR.</param>
-		public VideoStream(IStreamConsumer consumer, short pid, bool isPCR)
-			: base(consumer, pid, isPCR)
-		{
-		}
-
-		/// <summary>
 		/// Valid PES start codes for video streams range from <i>0x000001e0</i>
 		/// to <i>0x000001ef</i>.
 		/// </summary>
 		/// <param name="code">The last byte of a start code.</param>
 		/// <returns>Set if the start code represents a video stream.</returns>
-		protected override bool IsValidStartCode(byte code)
-		{
-			// Must be video
-			return ((code >= 0xe0) && (code < 0xf0));
-		}
+		protected override bool IsValidStartCode(byte code) => (code >= 0xe0) && (code < 0xf0);
 
 		/// <summary>
 		/// The only valid length for a DVB-S PES packet is <i>0</i>.
@@ -79,13 +65,6 @@ namespace JMS.DVB.TS
 		/// <summary>
 		/// Video streams must use the largest buffer available.
 		/// </summary>
-		protected override bool IsVideo
-		{
-			get
-			{
-				// Report
-				return true;
-			}
-		}
+		protected override bool IsVideo => true;
 	}
 }

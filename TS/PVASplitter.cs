@@ -1,8 +1,3 @@
-using System;
-using System.Text;
-using System.Threading;
-using System.Collections.Generic;
-
 namespace JMS.DVB.TS
 {
 	/// <summary>
@@ -149,7 +144,7 @@ namespace JMS.DVB.TS
 		/// <summary>
 		/// Der eigentliche Verteiler.
 		/// </summary>
-		private Thread m_Worker = null;
+		private Thread m_Worker = null!;
 
 		/// <summary>
 		/// Erzeugt eine neue Instanz und bindet sie an einen <i>Transport
@@ -238,7 +233,7 @@ namespace JMS.DVB.TS
 				m_Worker.Join();
 
 				// Reset
-				m_Worker = null;
+				m_Worker = null!;
 
 				// Clear memory
 				m_Waiting.Clear();

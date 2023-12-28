@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
-
 
 namespace JMS.DVB.TS
 {
@@ -17,80 +12,63 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Beschreibt die aktuelle Verbindung.
         /// </summary>
-        private class ConnectionInfo
+        /// <param name="client">Der aktuelle Empfï¿½nger.</param>
+        /// <param name="port">Der empfangende UDP Port.</param>
+        /// <param name="socket">Die TCP/IP Verbindung, ï¿½ber die Daten versendet werden sollen.</param>
+        /// <param name="target">Die Adresse des Empfï¿½ngers.</param>
+        private class ConnectionInfo(string client, int port, Socket socket, EndPoint target)
         {
             /// <summary>
             /// Beschreibt eine inaktive Verbindung.
             /// </summary>
-            public static readonly ConnectionInfo Empty = new ConnectionInfo( "localhost", 0, null, null );
+            public static readonly ConnectionInfo Empty = new ConnectionInfo("localhost", 0, null!, null!);
 
             /// <summary>
-            /// Der Name des Empfängersystems.
+            /// Der Name des Empfï¿½ngersystems.
             /// </summary>
-            public string ClientName { get; private set; }
+            public string ClientName { get; private set; } = client;
 
             /// <summary>
             /// Der verwendete UDP Port.
             /// </summary>
-            public int TCPPort { get; private set; }
+            public int TCPPort { get; private set; } = port;
 
             /// <summary>
-            /// Die zugehörige Netzwerkverbindung.
+            /// Die zugehï¿½rige Netzwerkverbindung.
             /// </summary>
-            public Socket Socket { get; private set; }
+            public Socket Socket { get; private set; } = socket;
 
             /// <summary>
-            /// Die zugehörige Empfangsadresse.
+            /// Die zugehï¿½rige Empfangsadresse.
             /// </summary>
-            private readonly EndPoint m_target;
-
-            /// <summary>
-            /// Erzeugt eine neue Beschreibung.
-            /// </summary>
-            /// <param name="client">Der aktuelle Empfänger.</param>
-            /// <param name="port">Der empfangende UDP Port.</param>
-            /// <param name="socket">Die TCP/IP Verbindung, über die Daten versendet werden sollen.</param>
-            /// <param name="target">Die Adresse des Empfängers.</param>
-            public ConnectionInfo( string client, int port, Socket socket, EndPoint target )
-            {
-                // Remember
-                IsActive = (socket != null);
-                ClientName = client;
-                m_target = target;
-                Socket = socket;
-                TCPPort = port;
-            }
+            private readonly EndPoint m_target = target;
 
             /// <summary>
             /// Meldet, ob eine Verbindung aktiv ist.
             /// </summary>
-            public bool IsActive { get; private set; }
+            public bool IsActive { get; private set; } = socket != null;
 
             /// <summary>
-            /// Überträgt Daten.
+            /// ï¿½bertrï¿½gt Daten.
             /// </summary>
-            /// <param name="buffer">Die gewünschten Daten.</param>
-            public void Send( byte[] buffer )
-            {
-                // Forward
-                Socket.SendTo( buffer, m_target );
-            }
+            /// <param name="buffer">Die gewï¿½nschten Daten.</param>
+            public void Send(byte[] buffer) => Socket.SendTo(buffer, m_target);
         }
 
         /// <summary>
-        /// Daten werden grundsätzlich in diesen Einheiten verschickt.
+        /// Daten werden grundsï¿½tzlich in diesen Einheiten verschickt.
         /// </summary>
         public const int BufferSize = 40 * Manager.FullSize;
 
         /// <summary>
-        /// Die aktuell gültige Netzwerkverbindung.
+        /// Die aktuell gï¿½ltige Netzwerkverbindung.
         /// </summary>
         private volatile ConnectionInfo m_currentConnection = ConnectionInfo.Empty;
 
         /// <summary>
         /// Zwischenspeicher zur maximalen Nutzung der UDP Bandbreite.
         /// </summary>
-        private byte[] m_buffer = new byte[BufferSize];
+        private readonly byte[] m_buffer = new byte[BufferSize];
 
         /// <summary>
         /// Aktuelle Position im Zwischenspeicher.
@@ -98,7 +76,7 @@ namespace JMS.DVB.TS
         private int m_nextFreeByteInBuffer = 0;
 
         /// <summary>
-        /// Hops, die ein Multicast-Paket überpringen darf.
+        /// Hops, die ein Multicast-Paket ï¿½berpringen darf.
         /// </summary>
         private readonly int m_TTL;
 
@@ -115,19 +93,19 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Synchronisation mit dem Versendethread.
         /// </summary>
-        private readonly AutoResetEvent m_queueWakeup = new AutoResetEvent( true );
+        private readonly AutoResetEvent m_queueWakeup = new AutoResetEvent(true);
 
         /// <summary>
         /// Our current worker thread.
         /// </summary>
-        private Thread m_currentThread = null;
+        private Thread m_currentThread = null!;
 
         /// <summary>
         /// Erzeugt eine neue Verwaltungsinstanz.
         /// </summary>
-        /// <param name="multicastTTL">Hops, die ein Multicast Paket überpringen darf.</param>
-        /// <param name="maxQueue">Die maximal erlaubte Länge der Warteschlange.</param>
-        public UDPStreaming( int multicastTTL, int maxQueue )
+        /// <param name="multicastTTL">Hops, die ein Multicast Paket ï¿½berpringen darf.</param>
+        /// <param name="maxQueue">Die maximal erlaubte Lï¿½nge der Warteschlange.</param>
+        public UDPStreaming(int multicastTTL, int maxQueue)
         {
             // Remember
             m_maxQueueLength = maxQueue;
@@ -193,7 +171,7 @@ namespace JMS.DVB.TS
                                 // See if we have to finish
                                 var connection = m_currentConnection;
                                 if (connection.IsActive)
-                                    connection.Send( buffer );
+                                    connection.Send(buffer);
                                 else
                                     return;
                             }
@@ -212,18 +190,18 @@ namespace JMS.DVB.TS
             finally
             {
                 // Report
-                Trace.WriteLine( string.Format( "UDP Thread: {0} Packet(s), Maximum Queue Length = {1} ({2} Bytes)", totalPackets, maxPackets, maxPackets * m_buffer.Length ) );
+                Trace.WriteLine(string.Format("UDP Thread: {0} Packet(s), Maximum Queue Length = {1} ({2} Bytes)", totalPackets, maxPackets, maxPackets * m_buffer.Length));
             }
         }
 
         /// <summary>
-        /// Versendet einen Datenblock an die gewünschte Adresse.
+        /// Versendet einen Datenblock an die gewï¿½nschte Adresse.
         /// </summary>
-        /// <param name="buffer">Vollständiger Datenblock.</param>
-        public void Send( byte[] buffer )
+        /// <param name="buffer">Vollstï¿½ndiger Datenblock.</param>
+        public void Send(byte[] buffer)
         {
             // Process all
-            for (int i = 0; m_currentConnection.IsActive && (i < buffer.Length); )
+            for (int i = 0; m_currentConnection.IsActive && (i < buffer.Length);)
                 lock (m_queue)
                 {
                     // Retest inside synchronized area
@@ -231,13 +209,13 @@ namespace JMS.DVB.TS
                         break;
 
                     // How much to send
-                    var send = Math.Min( buffer.Length - i, m_buffer.Length - m_nextFreeByteInBuffer );
+                    var send = Math.Min(buffer.Length - i, m_buffer.Length - m_nextFreeByteInBuffer);
 
                     // Fill in
                     if (send > 0)
                     {
                         // Add to buffer
-                        Array.Copy( buffer, i, m_buffer, m_nextFreeByteInBuffer, send );
+                        Array.Copy(buffer, i, m_buffer, m_nextFreeByteInBuffer, send);
 
                         // Adjust outer
                         i += send;
@@ -254,10 +232,10 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Überträgt Daten in die Warteschlange.
+        /// ï¿½bertrï¿½gt Daten in die Warteschlange.
         /// </summary>
-        /// <remarks>Der Aufrufer hält alle notwendigen Sperren.</remarks>
-        /// <returns>Gesetzt, wenn die Daten übertragen werden konnten.</returns>
+        /// <remarks>Der Aufrufer hï¿½lt alle notwendigen Sperren.</remarks>
+        /// <returns>Gesetzt, wenn die Daten ï¿½bertragen werden konnten.</returns>
         private bool Enqueue()
         {
             // We are not allowed to enqueue any more
@@ -265,7 +243,7 @@ namespace JMS.DVB.TS
                 return false;
 
             // Enter to queue
-            m_queue.Add( (byte[]) m_buffer.Clone() );
+            m_queue.Add((byte[])m_buffer.Clone());
 
             // Reset index - buffer has been sent
             m_nextFreeByteInBuffer = 0;
@@ -280,19 +258,19 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Aktiviert oder deaktiviert den Versand des TS Stroms.
         /// </summary>
-        /// <param name="client">Empfängerrechner oder IP Adresse.</param>
-        /// <param name="port">TCP/IP Port des Empfängers</param>
-        public void SetStreamTarget( string client, int port )
+        /// <param name="client">Empfï¿½ngerrechner oder IP Adresse.</param>
+        /// <param name="port">TCP/IP Port des Empfï¿½ngers</param>
+        public void SetStreamTarget(string client, int port)
         {
             // May need to split off multi-cast part
-            var isMulti = client.StartsWith( "*" );
+            var isMulti = client.StartsWith("*");
 
             // Find the first IP4 address
-            var host = Dns.GetHostEntry( isMulti ? Dns.GetHostName() : client );
-            var hostIP = host.AddressList.FirstOrDefault( addr => addr.AddressFamily == AddressFamily.InterNetwork );
+            var host = Dns.GetHostEntry(isMulti ? Dns.GetHostName() : client);
+            var hostIP = host.AddressList.FirstOrDefault(addr => addr.AddressFamily == AddressFamily.InterNetwork);
 
             // If multicast is enabled
-            var multi = isMulti ? new MulticastOption( IPAddress.Parse( client.Substring( 1 ) ), hostIP ) : null;
+            var multi = isMulti ? new MulticastOption(IPAddress.Parse(client.Substring(1)), hostIP!) : null;
 
             // Read current connection
             var previousConnection = m_currentConnection;
@@ -301,7 +279,7 @@ namespace JMS.DVB.TS
             m_currentConnection = ConnectionInfo.Empty;
 
             // Wait until thread finishes
-            var currentThread = Interlocked.Exchange( ref m_currentThread, null );
+            var currentThread = Interlocked.Exchange(ref m_currentThread!, null);
             if (currentThread != null)
             {
                 // Wakeup call
@@ -314,7 +292,7 @@ namespace JMS.DVB.TS
             // Disconnect
             using (var previousSocket = previousConnection.Socket)
                 if (previousSocket != null)
-                    previousSocket.Close( 2 );
+                    previousSocket.Close(2);
 
             // Reset counters
             lock (m_queue)
@@ -331,34 +309,34 @@ namespace JMS.DVB.TS
                 return;
 
             // Create socket
-            var socket = new Socket( AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp );
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             try
             {
                 // Default target
-                var target = new IPEndPoint( hostIP, port );
+                var target = new IPEndPoint(hostIP!, port);
 
                 // Attach to multi-casting
                 if (multi != null)
                 {
                     // Share port
-                    socket.SetSocketOption( SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true );
+                    socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
                     // Must bind
-                    socket.Bind( target );
+                    socket.Bind(target);
 
                     // Register
-                    socket.SetSocketOption( SocketOptionLevel.IP, SocketOptionName.AddMembership, multi );
-                    socket.SetSocketOption( SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, m_TTL );
+                    socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, multi);
+                    socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, m_TTL);
 
                     // Change target
-                    target = new IPEndPoint( multi.Group, port );
+                    target = new IPEndPoint(multi.Group, port);
                 }
 
                 // Try synchronous mode
                 socket.Blocking = true;
 
                 // Update - from now on streaming is active
-                var connectionInfo = new ConnectionInfo( client, port, socket, target );
+                var connectionInfo = new ConnectionInfo(client, port, socket, target);
 
                 // Make sure that all data is valid on all cores - just to be safe
                 Thread.MemoryBarrier();
@@ -380,19 +358,19 @@ namespace JMS.DVB.TS
             m_queueWakeup.Set();
 
             // Create thread
-            m_currentThread = new Thread( Worker ) { Name = "DVB.NET TS Streaming" };
+            m_currentThread = new Thread(Worker) { Name = "DVB.NET TS Streaming" };
 
             // Start it
             m_currentThread.Start();
         }
 
         /// <summary>
-        /// Meldet den aktuellen Empfänger des Datenstroms.
+        /// Meldet den aktuellen Empfï¿½nger des Datenstroms.
         /// </summary>
         public string Client { get { return m_currentConnection.ClientName; } }
 
         /// <summary>
-        /// Meldet den TCP/IP UDP Port des aktuellen Empfängers des Datenstroms.
+        /// Meldet den TCP/IP UDP Port des aktuellen Empfï¿½ngers des Datenstroms.
         /// </summary>
         public int Port { get { return m_currentConnection.TCPPort; } }
     }

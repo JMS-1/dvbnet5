@@ -1,50 +1,40 @@
-using System;
-
 namespace JMS.DVB.TS.TSBuilders
 {
     /// <summary>
     /// Hilfsklasse zur Rekonstruktion eines elementaren Nutzdatenstroms aus
     /// den Rohdaten eines <i>Transport Streams</i>.
     /// </summary>
-    public class PESBuilder : TSBuilder
+    /// <param name="parser">Die zugehï¿½rige Analyseeinheit.</param>
+    /// <param name="callback">Eine Methode zum Empfang rekonstruierter Pakete.</param>
+    public class PESBuilder(TSParser parser, Action<byte[]> callback) : TSBuilder(parser, callback)
     {
         /// <summary>
         /// Zwischenspeicher zur Konstruktion von Paketen.
         /// </summary>
-        private byte[] m_Buffer = null;
+        private byte[] m_Buffer = null!;
 
         /// <summary>
-        /// Aktueller Füllstand des Zwischenspeichers.
+        /// Aktueller Fï¿½llstand des Zwischenspeichers.
         /// </summary>
         private int m_BufferPos = 0;
 
         /// <summary>
-        /// Aktueller Paketzähler.
+        /// Aktueller Paketzï¿½hler.
         /// </summary>
         private byte m_Counter = 0;
 
         /// <summary>
-        /// Erzeugt eine neue Rekonstruktionsinstanz.
-        /// </summary>
-        /// <param name="parser">Die zugehörige Analyseeinheit.</param>
-        /// <param name="callback">Eine Methode zum Empfang rekonstruierter Pakete.</param>
-        public PESBuilder( TSParser parser, Action<byte[]> callback )
-            : base( parser, callback )
-        {
-        }
-
-        /// <summary>
-        /// Setzt alle Zwischenspeicher auf den Anfangszustand zurück.
+        /// Setzt alle Zwischenspeicher auf den Anfangszustand zurï¿½ck.
         /// </summary>
         public override void Reset()
         {
             // See if packet can be processed
             if (null != m_Buffer)
                 if (m_BufferPos > 0)
-                    Process( m_Buffer, 0, m_BufferPos );
+                    Process(m_Buffer, 0, m_BufferPos);
 
             // Reset
-            m_Buffer = null;
+            m_Buffer = null!;
         }
 
         /// <summary>
@@ -53,10 +43,10 @@ namespace JMS.DVB.TS.TSBuilders
         /// <param name="packet">Zwischenspeicher mit den Paketdaten.</param>
         /// <param name="offset">Position des ersten zu rekonstruierenden Bytes im Zwischenspeicher.</param>
         /// <param name="length">Anzahl der zu rekonstruierenden Bytes.</param>
-        /// <param name="noincrement">Gesetzt, wenn der Paketzähler nicht verändert werden darf.</param>
+        /// <param name="noincrement">Gesetzt, wenn der Paketzï¿½hler nicht verï¿½ndert werden darf.</param>
         /// <param name="first">Gesetzt, wenn es sich um das erste Paket einer Sequenz handelt.</param>
-        /// <param name="counter">Der aktuelle Paketzähler.</param>
-        public override void AddPacket( byte[] packet, int offset, int length, bool noincrement, bool first, byte counter )
+        /// <param name="counter">Der aktuelle Paketzï¿½hler.</param>
+        public override void AddPacket(byte[] packet, int offset, int length, bool noincrement, bool first, byte counter)
         {
             // Start it all
             if (null == m_Buffer)
@@ -69,7 +59,7 @@ namespace JMS.DVB.TS.TSBuilders
 
             // Correct PCR only
             if (noincrement)
-                counter = (byte) ((counter + 1) & 0xf);
+                counter = (byte)((counter + 1) & 0xf);
 
             // Counter
             if (m_Counter != counter)
@@ -79,7 +69,7 @@ namespace JMS.DVB.TS.TSBuilders
 
                 // See if packet can be processed
                 if (m_BufferPos > 0)
-                    Process( m_Buffer, 0, m_BufferPos );
+                    Process(m_Buffer, 0, m_BufferPos);
 
                 // Restart
                 m_Counter = counter;
@@ -88,17 +78,17 @@ namespace JMS.DVB.TS.TSBuilders
 
             // Expect next to be one higher
             if (!noincrement)
-                m_Counter = (byte) ((m_Counter + 1) & 0xf);
+                m_Counter = (byte)((m_Counter + 1) & 0xf);
 
             // Short cut evaluation
             if (length < 1)
                 return;
 
             // Get size
-            int copy = Math.Min( m_Buffer.Length - m_BufferPos, length );
+            int copy = Math.Min(m_Buffer.Length - m_BufferPos, length);
 
             // Fill
-            Array.Copy( packet, offset, m_Buffer, m_BufferPos, copy );
+            Array.Copy(packet, offset, m_Buffer, m_BufferPos, copy);
 
             // Advance
             m_BufferPos += copy;
@@ -115,14 +105,14 @@ namespace JMS.DVB.TS.TSBuilders
             length -= copy;
 
             // Process - force copy of buffer
-            Process( m_Buffer, 0, m_Buffer.Length );
+            Process(m_Buffer, 0, m_Buffer.Length);
 
             // Nothing left
             if (length < 1)
                 return;
 
             // Remember for next step
-            Array.Copy( packet, offset, m_Buffer, 0, m_BufferPos = length );
+            Array.Copy(packet, offset, m_Buffer, 0, m_BufferPos = length);
         }
     }
 }

@@ -1,58 +1,31 @@
-using System;
-using System.Collections;
-
 namespace JMS.DVB.TS.Tables
 {
 	/// <summary>
 	/// Instances of this class represent SI service description tables.
 	/// </summary>
-	public class SDT: SITableBase
+	/// <param name="network">Related network identifier.</param>
+	/// <param name="program">Program reference inside the transport stream.</param>
+	public class SDT(short network, short program) : SITableBase(0x0011)
 	{
 		/// <summary>
 		/// Related network identifier.
 		/// </summary>
-		private short m_NetworkNumber;
+		private readonly short m_NetworkNumber = network;
 
 		/// <summary>
 		/// Program reference inside the transport stream.
 		/// </summary>
-		private short m_ProgramNumber;
-
-		/// <summary>
-		/// Create a new table instance.
-		/// </summary>
-		/// <param name="network">Related network identifier.</param>
-		/// <param name="program">Program reference inside the transport stream.</param>
-		public SDT(short network, short program) : base(0x0011)
-		{
-			// Remember
-			m_NetworkNumber = network;
-			m_ProgramNumber = program;
-		}
+		private readonly short m_ProgramNumber = program;
 
 		/// <summary>
 		/// The identifier for this type of table is <i>0x42</i>.
 		/// </summary>
-		protected override byte TableIdentifier
-		{
-			get
-			{
-				// Identifier
-				return 0x42;
-			}
-		}
+		protected override byte TableIdentifier => 0x42;
 
 		/// <summary>
 		/// Private data is always reported as <i>1</i>.
 		/// </summary>
-		protected override short PrivateData
-		{
-			get
-			{
-				// Report
-				return 1;
-			}
-		}
+		protected override short PrivateData => 1;
 
 		/// <summary>
 		/// Create the inner data of a service description table.
@@ -61,19 +34,19 @@ namespace JMS.DVB.TS.Tables
 		protected override byte[] CreateTable()
 		{
 			// Allocate
-			byte[] table = new byte[29];
+			var table = new byte[29];
 
 			// Fill
-			table[ 0] = (byte)(m_NetworkNumber / 256);
-			table[ 1] = (byte)(m_NetworkNumber & 0xff);
-			table[ 2] = 0xff;
-			table[ 3] = (byte)(m_ProgramNumber / 256);
-			table[ 4] = (byte)(m_ProgramNumber & 0xff);
-			table[ 5] = 0xfc;
-			table[ 6] = 0x80;
-			table[ 7] = 0x15;
-			table[ 8] = 0x48;
-			table[ 9] = 0x13;
+			table[0] = (byte)(m_NetworkNumber / 256);
+			table[1] = (byte)(m_NetworkNumber & 0xff);
+			table[2] = 0xff;
+			table[3] = (byte)(m_ProgramNumber / 256);
+			table[4] = (byte)(m_ProgramNumber & 0xff);
+			table[5] = 0xfc;
+			table[6] = 0x80;
+			table[7] = 0x15;
+			table[8] = 0x48;
+			table[9] = 0x13;
 			table[10] = 0x01;
 			table[11] = 0x08;
 			table[12] = 0x05;

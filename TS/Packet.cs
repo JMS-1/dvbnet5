@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 
 namespace JMS.DVB.TS
@@ -8,7 +7,9 @@ namespace JMS.DVB.TS
     /// collects single packets and in addition holds a queue of complete
     /// packages already collected but not yet send to the transport stream.
     /// </summary>
-    internal class Packet
+    /// <param name="manager">The corresponding transport stream.</param>
+    /// <param name="pid">The stream identifier of this package.</param>
+    internal class Packet(Manager manager, int pid)
     {
         private enum StreamTypes
         {
@@ -21,7 +22,7 @@ namespace JMS.DVB.TS
         /// Each PTS has 33 bits and this is the value to add or subtract in 
         /// case of under- or overflows.
         /// </summary>
-        public const long PTSOverrun = ((long) 1) << 33;
+        public const long PTSOverrun = ((long)1) << 33;
 
         /// <summary>
         /// Set when a packet with no PTS is found.
@@ -36,7 +37,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// The relaqted transport stream.
         /// </summary>
-        private Manager m_Manager;
+        private readonly Manager m_Manager = manager;
 
         /// <summary>
         /// Current PTS excluding any correction.
@@ -62,7 +63,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Complete PES packages waiting to be sent to the transport stream.
         /// </summary>
-        private ArrayList Pending = new ArrayList();
+        private readonly ArrayList Pending = new();
 
         /// <summary>
         /// When the last packet arrived.
@@ -72,31 +73,19 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Partial PES package while collecting.
         /// </summary>
-        private ArrayList Parts = new ArrayList();
+        private readonly ArrayList Parts = new();
 
         /// <summary>
         /// The stream identifier of this package.
         /// </summary>
-        public readonly int PID;
-
-        /// <summary>
-        /// Create a new PES packet manager.
-        /// </summary>
-        /// <param name="manager">The corresponding transport stream.</param>
-        /// <param name="pid">The stream identifier of this package.</param>
-        public Packet( Manager manager, int pid )
-        {
-            // Remember
-            m_Manager = manager;
-            PID = pid;
-        }
+        public readonly int PID = pid;
 
         /// <summary>
         /// Create a new PES packet manager.
         /// </summary>
         /// <param name="other">Template manager.</param>
-        public Packet( Packet other )
-            : this( other.m_Manager, other.PID )
+        public Packet(Packet other)
+            : this(other.m_Manager, other.PID)
         {
             // Clone the type
             m_Video = other.m_Video;
@@ -110,62 +99,33 @@ namespace JMS.DVB.TS
         /// </summary>
         /// <param name="buffer"><i>null</i> will be used to indicate that
         /// the following package carries a PCR.</param>
-        public void Add( byte[] buffer )
-        {
-            // Append
-            Parts.Add( buffer );
-        }
+        public void Add(byte[] buffer) => Parts.Add(buffer);
 
         /// <summary>
         /// Clear the current PES package data.
         /// </summary>
-        public void Clear()
-        {
-            // Cleanup
-            Parts.Clear();
-        }
+        public void Clear() => Parts.Clear();
 
         /// <summary>
         /// Number of parts in the current PES package.
         /// </summary>
-        public int Count
-        {
-            get
-            {
-                // Report
-                return Parts.Count;
-            }
-        }
+        public int Count => Parts.Count;
 
         /// <summary>
         /// Report a part of the current PES package.
         /// </summary>
-        public byte[] this[int index]
-        {
-            get
-            {
-                // Report
-                return (byte[]) Parts[index];
-            }
-        }
+        public byte[] this[int index] => (byte[])Parts[index]!;
 
         /// <summary>
         /// 
         /// </summary>
-        public bool IsActive
-        {
-            get
-            {
-                // Check when the last packet arrived
-                return (DateTime.UtcNow < m_LastPacket.AddSeconds( 1 ));
-            }
-        }
+        public bool IsActive => DateTime.UtcNow < m_LastPacket.AddSeconds(1);
 
         /// <summary>
         /// Append a complete PES package to the processing queue.
         /// </summary>
         /// <param name="buffer">A complete PES package.</param>
-        public void Enqueue( Packet buffer )
+        public void Enqueue(Packet buffer)
         {
             // Count
             m_LastPacket = DateTime.UtcNow;
@@ -175,10 +135,10 @@ namespace JMS.DVB.TS
                 if (IgnorePTS)
                     PTSMissing = true;
                 else if (buffer.Count > 0)
-                    PTSMissing = (buffer.PTS < 0);
+                    PTSMissing = buffer.PTS < 0;
 
             // Remember
-            Pending.Add( buffer );
+            Pending.Add(buffer);
 
             // Check
             if (Pending.Count > m_MaxQueue) m_MaxQueue = Pending.Count;
@@ -209,11 +169,7 @@ namespace JMS.DVB.TS
         /// Only call this method if the queue is not empty.
         /// </remarks>
         /// <returns>Set if anything has been sent.</returns>
-        public bool Dequeue()
-        {
-            // Forward
-            return Dequeue( (Packet) Pending[0] );
-        }
+        public bool Dequeue() => Dequeue((Packet)Pending[0]!);
 
         /// <summary>
         /// Remove the next complete PES package from the waiting queue
@@ -224,10 +180,10 @@ namespace JMS.DVB.TS
         /// </remarks>
         /// <param name="packet">First packet already read from the queue.</param>
         /// <returns>Set if anything has been sent.</returns>
-        private bool Dequeue( Packet packet )
+        private bool Dequeue(Packet packet)
         {
             // Dequeue
-            Pending.RemoveAt( 0 );
+            Pending.RemoveAt(0);
 
             // Send all
             return packet.SendTo();
@@ -251,7 +207,7 @@ namespace JMS.DVB.TS
             while (Pending.Count > 0)
             {
                 // Load the first one
-                Packet peek = (Packet) Pending[0];
+                var peek = (Packet)Pending[0]!;
 
                 // No need to process
                 if (!IgnorePTS)
@@ -259,7 +215,7 @@ namespace JMS.DVB.TS
                         break;
 
                 // Dequeue
-                if (Dequeue( peek ))
+                if (Dequeue(peek))
                     send = true;
             }
 
@@ -310,7 +266,7 @@ namespace JMS.DVB.TS
                 for (int i = 0; i < Parts.Count; ++i)
                 {
                     // Attach to the buffer
-                    byte[] buffer = (byte[]) Parts[i];
+                    var buffer = (byte[]?)Parts[i];
 
                     // Skip
                     if (null == buffer) continue;
@@ -319,7 +275,7 @@ namespace JMS.DVB.TS
                     if (buffer.Length < 10) break;
 
                     // Read flags
-                    byte flags = (byte) (0xf0 & buffer[3]);
+                    byte flags = (byte)(0xf0 & buffer[3]);
 
                     // Check TS header
                     if (0x47 != buffer[0]) break;
@@ -381,7 +337,7 @@ namespace JMS.DVB.TS
             // Send all
             foreach (byte[] buffer in Parts)
                 if (null != buffer)
-                    if (m_Manager.SendBuffer( buffer, this ))
+                    if (m_Manager.SendBuffer(buffer, this))
                         send = true;
 
             // Discard all
@@ -394,14 +350,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Check if there is at least one complete PES package in the waiting queue.
         /// </summary>
-        public bool HasQueue
-        {
-            get
-            {
-                // Report
-                return (Pending.Count > 0);
-            }
-        }
+        public bool HasQueue => Pending.Count > 0;
 
         /// <summary>
         /// Report the PTS of the first complete PES package in the waiting
@@ -415,7 +364,7 @@ namespace JMS.DVB.TS
             get
             {
                 // Load
-                long pts = ((Packet) Pending[0]).PTS;
+                long pts = ((Packet)Pending[0]!).PTS;
 
                 // Video will be shifted a bit
                 if (StreamTypes.Video == m_Video)
@@ -429,33 +378,19 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Get the maximum size of the waiting queue.
         /// </summary>
-        public int MaxQueueLength
-        {
-            get
-            {
-                // Report
-                return m_MaxQueue;
-            }
-        }
+        public int MaxQueueLength => m_MaxQueue;
 
         /// <summary>
         /// Get the number of packets sent due to overflow condition.
         /// </summary>
-        public int Overflows
-        {
-            get
-            {
-                // Report
-                return m_Overflow;
-            }
-        }
+        public int Overflows => m_Overflow;
 
         /// <summary>
         /// Call to mark this as a holder of video packets.
         /// </summary>
         /// <param name="isVideo">Set to indicate a video stream, unset for an audio stream. 
         /// Do not call this method for any other stream type.</param>
-        public void SetAudioVideo( bool isVideo )
+        public void SetAudioVideo(bool isVideo)
         {
             // Remember
             m_Video = isVideo ? StreamTypes.Video : StreamTypes.Audio;
@@ -464,13 +399,6 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Reports if this is an audio or video stream package manager.
         /// </summary>
-        public bool IsAudioOrVideo
-        {
-            get
-            {
-                // Report
-                return (StreamTypes.Other != m_Video);
-            }
-        }
+        public bool IsAudioOrVideo => StreamTypes.Other != m_Video;
     }
 }

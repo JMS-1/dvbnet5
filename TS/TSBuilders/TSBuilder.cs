@@ -1,47 +1,34 @@
-using System;
-
-
 namespace JMS.DVB.TS.TSBuilders
 {
     /// <summary>
-    /// Basisklasse für Rekonstruktionsalgorithmen auf einem <i>Transport Stream</i>.
+    /// Basisklasse fï¿½r Rekonstruktionsalgorithmen auf einem <i>Transport Stream</i>.
     /// </summary>
-    public abstract class TSBuilder : IDisposable
+    /// <param name="parser">Die zugehï¿½rige Analyseeinheit.</param>
+    /// <param name="callback">Optional ein Verbraucher fï¿½r rekonstruierte Pakete.</param>
+    public abstract class TSBuilder(TSParser parser, Action<byte[]> callback) : IDisposable
     {
         /// <summary>
-        /// Vermerkt die Größe des kleinsten an den Verbraucher weitergereichten Paketes.
+        /// Vermerkt die Grï¿½ï¿½e des kleinsten an den Verbraucher weitergereichten Paketes.
         /// </summary>
         private int m_MinPacket = int.MaxValue;
 
         /// <summary>
-        /// Vermerkt die Größe des größten an den Verbraucher weitergereichten Paketes.
+        /// Vermerkt die Grï¿½ï¿½e des grï¿½ï¿½ten an den Verbraucher weitergereichten Paketes.
         /// </summary>
         private int m_MaxPacket = int.MinValue;
 
         /// <summary>
-        /// Ein optionaler Verbraucher für rekonstruierte Pakete.
+        /// Ein optionaler Verbraucher fï¿½r rekonstruierte Pakete.
         /// </summary>
-        private readonly Action<byte[]> m_Callback;
+        private readonly Action<byte[]> m_Callback = callback;
 
         /// <summary>
-        /// Initialisiert die Rekonstruktionsinstanz.
-        /// </summary>
-        /// <param name="parser">Die zugehörige Analyseeinheit.</param>
-        /// <param name="callback">Optional ein Verbraucher für rekonstruierte Pakete.</param>
-        protected TSBuilder( TSParser parser, Action<byte[]> callback )
-        {
-            // Remember
-            m_Callback = callback;
-            Parser = parser;
-        }
-
-        /// <summary>
-        /// Meldet die Größe des kleinsten an den Verbraucher gemeldeten Paketes.
+        /// Meldet die Grï¿½ï¿½e des kleinsten an den Verbraucher gemeldeten Paketes.
         /// </summary>
         public int MinimumPacketSize { get { return (m_MinPacket == int.MaxValue) ? 0 : m_MinPacket; } }
 
         /// <summary>
-        /// Meldet die Größe des größten an den Verbraucher gemeldeten Paketes.
+        /// Meldet die Grï¿½ï¿½e des grï¿½ï¿½ten an den Verbraucher gemeldeten Paketes.
         /// </summary>
         public int MaximumPacketSize { get { return (m_MaxPacket == int.MinValue) ? 0 : m_MaxPacket; } }
 
@@ -56,23 +43,23 @@ namespace JMS.DVB.TS.TSBuilders
         public long TotalBytes { get; private set; }
 
         /// <summary>
-        /// Meldet die zugehörige Analyseeinheit.
+        /// Meldet die zugehï¿½rige Analyseeinheit.
         /// </summary>
-        protected TSParser Parser { get; private set; }
+        protected TSParser Parser { get; private set; } = parser;
 
         /// <summary>
-        /// Überträgt ein elementares Paket von der Analyseeinheit zur Rekonstruktion.
+        /// ï¿½bertrï¿½gt ein elementares Paket von der Analyseeinheit zur Rekonstruktion.
         /// </summary>
         /// <param name="packet">Ein Zwischenspeicher mit den Paketdaten.</param>
         /// <param name="offset">Die Position des ersten relevanten Bytes im Zwischenspeicher.</param>
         /// <param name="length">Die Anzahl der relevanten Bytes im Zwischenspeicher.</param>
-        /// <param name="noincrement">Gesetzt, wenn der Paketzähler nicht erhöht werden darf.</param>
+        /// <param name="noincrement">Gesetzt, wenn der Paketzï¿½hler nicht erhï¿½ht werden darf.</param>
         /// <param name="first">Gesetzt, wenn das elementare Paket als Start einer Sequenz von Paketen gekennzeichnet ist.</param>
-        /// <param name="counter">Der aktuelle Paketzähler.</param>
-        public abstract void AddPacket( byte[] packet, int offset, int length, bool noincrement, bool first, byte counter );
+        /// <param name="counter">Der aktuelle Paketzï¿½hler.</param>
+        public abstract void AddPacket(byte[] packet, int offset, int length, bool noincrement, bool first, byte counter);
 
         /// <summary>
-        /// Fordert zum Zurücksetzen aller Zwischenergebnisse auf.
+        /// Fordert zum Zurï¿½cksetzen aller Zwischenergebnisse auf.
         /// </summary>
         public abstract void Reset();
 
@@ -80,7 +67,7 @@ namespace JMS.DVB.TS.TSBuilders
         /// Sendet ein rekonstruiertes Paket an den zugeordneten Verbraucher.
         /// </summary>
         /// <param name="buffer">Das rekonstruierte Paket.</param>
-        protected void Process( byte[] buffer )
+        protected void Process(byte[] buffer)
         {
             // Counter
             TotalBytes += buffer.Length;
@@ -93,7 +80,7 @@ namespace JMS.DVB.TS.TSBuilders
                 m_MaxPacket = buffer.Length;
 
             // Forward
-            m_Callback( buffer );
+            m_Callback(buffer);
         }
 
         /// <summary>
@@ -102,22 +89,22 @@ namespace JMS.DVB.TS.TSBuilders
         /// <param name="buffer">Ein Gesamtspeicherbereich mit den Paketdaten.</param>
         /// <param name="start">Position des ersten Bytes des Paketes im Gesamtspeicher.</param>
         /// <param name="length">Anzahl der Bytes im Paket.</param>
-        protected void Process( byte[] buffer, int start, int length )
+        protected void Process(byte[] buffer, int start, int length)
         {
             // Allocate new
             var data = new byte[length];
 
             // Copy
-            Array.Copy( buffer, start, data, 0, data.Length );
+            Array.Copy(buffer, start, data, 0, data.Length);
 
             // Use
-            Process( data );
+            Process(data);
         }
 
         #region IDisposable Members
 
         /// <summary>
-        /// Beendet die Nutzung dieser Rekonstruktionsinstanz endgültig.
+        /// Beendet die Nutzung dieser Rekonstruktionsinstanz endgï¿½ltig.
         /// </summary>
         public virtual void Dispose()
         {

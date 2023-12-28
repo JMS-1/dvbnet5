@@ -1,44 +1,34 @@
-using System;
-
 namespace JMS.DVB.TS.TSBuilders
 {
     /// <summary>
     /// Hilfsklasse zur Rekonstruktion von SI Tabellen aus dem Rohdatenstrom.
     /// </summary>
-    public class SIBuilder : TSBuilder
+    /// <param name="parser">Die zugehï¿½rige Analyseeinheit.</param>
+    /// <param name="callback">Eine Methode, an die alle vollstï¿½ndig rekonstruierten Pakete gemeldet werden.</param>
+    public class SIBuilder(TSParser parser, Action<byte[]> callback) : TSBuilder(parser, callback)
     {
         /// <summary>
         /// Zwischenspeicher zum Zusammenbau der Tabellen.
         /// </summary>
-        private byte[] m_Collector = null;
+        private byte[] m_Collector = null!;
 
         /// <summary>
-        /// Aktueller Füllstand des Zwischenspeichers.
+        /// Aktueller Fï¿½llstand des Zwischenspeichers.
         /// </summary>
         private int m_CollectorPos = 0;
 
         /// <summary>
-        /// Aktueller Paketzähler.
+        /// Aktueller Paketzï¿½hler.
         /// </summary>
         private byte m_Counter = 0;
 
         /// <summary>
-        /// Erzeugt eine neue Rekonstruktionsinstanz.
-        /// </summary>
-        /// <param name="parser">Die zugehörige Analyseeinheit.</param>
-        /// <param name="callback">Eine Methode, an die alle vollständig rekonstruierten Pakete gemeldet werden.</param>
-        public SIBuilder( TSParser parser, Action<byte[]> callback )
-            : base( parser, callback )
-        {
-        }
-
-        /// <summary>
-        /// Setzt alle Zwischenspeicher auf den Anfangsstand zurück.
+        /// Setzt alle Zwischenspeicher auf den Anfangsstand zurï¿½ck.
         /// </summary>
         public override void Reset()
         {
             // Force restart
-            m_Collector = null;
+            m_Collector = null!;
         }
 
         /// <summary>
@@ -47,10 +37,10 @@ namespace JMS.DVB.TS.TSBuilders
         /// <param name="packet">Ein Zwischenspeicher mit den Paketdaten.</param>
         /// <param name="offset">Die Position des ersten zu analysierenden Bytes im Zwischenspeicher.</param>
         /// <param name="length">Die Anzahl der zu analysierenden Bytes.</param>
-        /// <param name="noincrement">Gesetzt, wenn der Paketzähler nicht verändert werden darf.</param>
+        /// <param name="noincrement">Gesetzt, wenn der Paketzï¿½hler nicht verï¿½ndert werden darf.</param>
         /// <param name="first">Gesetzt, wenn die zu analyiserenden Daten den Tabellekopf enthalten.</param>
-        /// <param name="counter">Der aktuelle Paketzähler.</param>
-        public override void AddPacket( byte[] packet, int offset, int length, bool noincrement, bool first, byte counter )
+        /// <param name="counter">Der aktuelle Paketzï¿½hler.</param>
+        public override void AddPacket(byte[] packet, int offset, int length, bool noincrement, bool first, byte counter)
         {
             // See if we are awaiting the first packet
             if ((null == m_Collector) || first)
@@ -66,7 +56,7 @@ namespace JMS.DVB.TS.TSBuilders
                     Parser.TableCorrupted();
 
                     // Reset
-                    m_Collector = null;
+                    m_Collector = null!;
 
                     // Next
                     return;
@@ -86,10 +76,10 @@ namespace JMS.DVB.TS.TSBuilders
                             if ((m_Collector.Length - m_CollectorPos) == pointer)
                             {
                                 // Fill
-                                Array.Copy( packet, offset - pointer, m_Collector, m_CollectorPos, pointer );
+                                Array.Copy(packet, offset - pointer, m_Collector, m_CollectorPos, pointer);
 
                                 // Send
-                                Process( m_Collector );
+                                Process(m_Collector);
                             }
 
                 // Validate
@@ -99,7 +89,7 @@ namespace JMS.DVB.TS.TSBuilders
                     Parser.TableCorrupted();
 
                     // Wait for next
-                    m_Collector = null;
+                    m_Collector = null!;
 
                     // Next
                     return;
@@ -119,7 +109,7 @@ namespace JMS.DVB.TS.TSBuilders
                     Parser.TableCorrupted();
 
                     // Reset
-                    m_Collector = null;
+                    m_Collector = null!;
 
                     // Done
                     return;
@@ -137,13 +127,13 @@ namespace JMS.DVB.TS.TSBuilders
             if (m_Counter == counter)
             {
                 // Expect next to be one higher
-                m_Counter = (byte) ((m_Counter + 1) & 0xf);
+                m_Counter = (byte)((m_Counter + 1) & 0xf);
 
                 // How may do we need
-                int copy = Math.Min( m_Collector.Length - m_CollectorPos, length );
+                int copy = Math.Min(m_Collector.Length - m_CollectorPos, length);
 
                 // Fill in
-                Array.Copy( packet, offset, m_Collector, m_CollectorPos, copy );
+                Array.Copy(packet, offset, m_Collector, m_CollectorPos, copy);
 
                 // Adjust
                 m_CollectorPos += length;
@@ -153,7 +143,7 @@ namespace JMS.DVB.TS.TSBuilders
                     return;
 
                 // Process
-                Process( m_Collector );
+                Process(m_Collector);
             }
             else
             {
@@ -162,7 +152,7 @@ namespace JMS.DVB.TS.TSBuilders
             }
 
             // Wait for next start
-            m_Collector = null;
+            m_Collector = null!;
         }
     }
 }
