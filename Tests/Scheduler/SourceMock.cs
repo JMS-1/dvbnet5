@@ -151,7 +151,7 @@ namespace JMS.DVB.SchedulerTests
             var typedSource = source as SourceMock;
 
             // Just test the identification
-            return Equals(Name, typedSource.Name);
+            return Equals(Name, typedSource!.Name);
         }
 
         /// <summary>

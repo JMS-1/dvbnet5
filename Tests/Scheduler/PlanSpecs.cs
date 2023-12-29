@@ -98,10 +98,8 @@ namespace JMS.DVB.SchedulerTests
             {
 
                 // Create component under test
-                var componentUnderTest = new RecordingScheduler(StringComparer.InvariantCultureIgnoreCase);
-
-                // Add
-                componentUnderTest.Add(default(IRecordingDefinition));
+                var componentUnderTest = new RecordingScheduler(StringComparer.InvariantCultureIgnoreCase)
+                    { default(IRecordingDefinition)! };
             });
         }
 

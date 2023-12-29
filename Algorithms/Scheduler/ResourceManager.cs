@@ -255,11 +255,11 @@
             /// <exception cref="ArgumentNullException">Es wurde kein Gerät angegeben.</exception>
             /// <exception cref="ArgumentException">Das Gerät ist nicht bekannt oder kann die Quelle nicht empfangen.</exception>
             /// <exception cref="ArgumentOutOfRangeException">Die Laufzeit der Aufzeichnung ist nicht positiv.</exception>
-            public bool Start(IScheduleResource resource, IScheduleSource source, Guid scheduleIdentifier, string scheduleName, DateTime plannedStart, DateTime currentEnd)
+            public bool Start(IScheduleResource resource, IScheduleSource? source, Guid scheduleIdentifier, string scheduleName, DateTime plannedStart, DateTime currentEnd)
             {
                 // Validate
-                if (resource == null)
-                    throw new ArgumentNullException(nameof(resource));
+                ArgumentNullException.ThrowIfNull(resource, nameof(resource));
+
                 if (!m_Resources.Contains(resource))
                     throw new ArgumentException(resource.Name, nameof(resource));
                 if (plannedStart >= currentEnd)
@@ -268,7 +268,7 @@
                     throw new ArgumentException("resource");
 
                 // Create helper entry
-                m_Recordings.Add(new ResourceAllocationInformation(resource, source, scheduleIdentifier, scheduleName, plannedStart, currentEnd - plannedStart));
+                m_Recordings.Add(new ResourceAllocationInformation(resource, source!, scheduleIdentifier, scheduleName, plannedStart, currentEnd - plannedStart));
 
                 // May require cleanup
                 try

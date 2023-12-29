@@ -18,8 +18,9 @@ namespace JMS.DVB.SchedulerTests
             Assert.Throws<ArgumentNullException>(() =>
             {
                 // Create component under test
-                using (var cut = ResourceManager.Create(StringComparer.InvariantCultureIgnoreCase))
-                    cut.Add(default(IScheduleResource));
+                using var cut = ResourceManager.Create(StringComparer.InvariantCultureIgnoreCase);
+
+                cut.Add(default(IScheduleResource)!);
             });
         }
 
@@ -102,8 +103,9 @@ namespace JMS.DVB.SchedulerTests
             Assert.Throws<ArgumentNullException>(() =>
          {
              // Create component under test
-             using (var cut = ResourceManager.Create(StringComparer.InvariantCultureIgnoreCase))
-                 cut.Start(null, SourceMock.Source1Group1Free, Guid.NewGuid(), "test", DateTime.UtcNow, DateTime.UtcNow.AddHours(1));
+             using var cut = ResourceManager.Create(StringComparer.InvariantCultureIgnoreCase);
+
+             cut.Start(null!, SourceMock.Source1Group1Free, Guid.NewGuid(), "test", DateTime.UtcNow, DateTime.UtcNow.AddHours(1));
          });
         }
 
@@ -116,8 +118,9 @@ namespace JMS.DVB.SchedulerTests
             Assert.Throws<ArgumentException>(() =>
          {
              // Create component under test
-             using (var cut = ResourceManager.Create(StringComparer.InvariantCultureIgnoreCase))
-                 cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, Guid.NewGuid(), "test", DateTime.UtcNow, DateTime.UtcNow.AddHours(1));
+             using var cut = ResourceManager.Create(StringComparer.InvariantCultureIgnoreCase);
+
+             cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, Guid.NewGuid(), "test", DateTime.UtcNow, DateTime.UtcNow.AddHours(1));
          });
         }
 

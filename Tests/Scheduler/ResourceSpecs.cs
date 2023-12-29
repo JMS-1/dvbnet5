@@ -21,7 +21,7 @@ namespace JMS.DVB.SchedulerTests
                 var componentUnderTest = new RecordingScheduler(StringComparer.InvariantCultureIgnoreCase);
 
                 // Register a null resource
-                componentUnderTest.Add(default(IScheduleResource));
+                componentUnderTest.Add(default(IScheduleResource)!);
             });
         }
 

@@ -11,7 +11,7 @@ public class HardwareTests
     [Ignore("will access hardware")]
     public async Task Can_Create_Ubuntu_Hardware()
     {
-        var profile = ProfileManager.LoadProfile(new FileInfo("TestData/stations.dnp"));
+        var profile = ProfileManager.LoadProfile(new FileInfo("TestData/stations.dnp"))!;
         var station = profile.FindSource("ZDF")[0];
 
         Assert.That(station, Is.Not.Null);

@@ -204,10 +204,10 @@
         /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Der Startzeitpunkt liegt vor dem Jahr 2000 oder
         /// die Dauer ist nicht positiv.</exception>
-        public static IRecordingDefinition<UserDataType> Create<UserDataType>(UserDataType context, string name, Guid uniqueIdentifier, IScheduleResource[] resources, IScheduleSource source, DateTime start, TimeSpan duration)
+        public static IRecordingDefinition<UserDataType> Create<UserDataType>(UserDataType context, string name, Guid uniqueIdentifier, IScheduleResource[]? resources, IScheduleSource? source, DateTime start, TimeSpan duration)
         {
             // Use the simple implementation
-            return new _OneOffItem<UserDataType>(context, name, uniqueIdentifier, resources, source, start, duration);
+            return new _OneOffItem<UserDataType>(context, name, uniqueIdentifier, resources!, source!, start, duration);
         }
 
         /// <summary>
@@ -227,10 +227,10 @@
         /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Der Startzeitpunkt liegt vor dem Jahr 2000 oder
         /// die Dauer ist nicht positiv.</exception>
-        public static IRecordingDefinition<UserDataType> Create<UserDataType>(UserDataType context, string name, Guid uniqueIdentifier, IScheduleResource[] resources, IScheduleSource source, DateTime start, TimeSpan duration, DateTime end, params DayOfWeek[] dayPattern)
+        public static IRecordingDefinition<UserDataType> Create<UserDataType>(UserDataType context, string name, Guid uniqueIdentifier, IScheduleResource[]? resources, IScheduleSource? source, DateTime start, TimeSpan duration, DateTime end, params DayOfWeek[] dayPattern)
         {
             // Use the repeating implementation which will do some more tests
-            return new _RepeatingItem<UserDataType>(context, name, uniqueIdentifier, resources, source, start, end, duration, dayPattern ?? Enumerable.Empty<DayOfWeek>());
+            return new _RepeatingItem<UserDataType>(context, name, uniqueIdentifier, resources!, source!, start, end, duration, dayPattern ?? Enumerable.Empty<DayOfWeek>());
         }
     }
 }

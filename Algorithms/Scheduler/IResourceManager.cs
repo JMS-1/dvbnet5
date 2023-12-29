@@ -48,7 +48,7 @@
         /// <param name="plannedStart">Der ursprüngliche Start der Aufzeichnung in UTC / GMT Notation.</param>
         /// <param name="currentEnd">Das aktuelle Ende der Aufzeichnung in UTC / GMT Notation.</param>
         /// <returns>Gesetzt, wenn die Aufzeichnung auf dem gewünschten Gerät aktiviert werden kann.</returns>
-        bool Start(IScheduleResource resource, IScheduleSource source, Guid scheduleIdentifier, string scheduleName, DateTime plannedStart, DateTime currentEnd);
+        bool Start(IScheduleResource resource, IScheduleSource? source, Guid scheduleIdentifier, string scheduleName, DateTime plannedStart, DateTime currentEnd);
 
         /// <summary>
         /// Beendet eine Aufzeichnung auf einem Gerät.

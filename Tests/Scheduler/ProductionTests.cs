@@ -38,14 +38,13 @@ namespace JMS.DVB.SchedulerTests
                 job.Load(jobPath);
 
                 // Common data
-                var autoSelect = bool.Parse(job.SelectSingleNode("VCRJob/AutomaticResourceSelection").InnerText);
-                var defaultSource = job.SelectSingleNode("VCRJob/Source");
+                var autoSelect = bool.Parse(job.SelectSingleNode("VCRJob/AutomaticResourceSelection")!.InnerText);
+                var defaultSource = job.SelectSingleNode("VCRJob/Source")!;
                 var profileName = defaultSource.InnerText.Substring(defaultSource.InnerText.LastIndexOf('@') + 1);
-                var jobName = job.SelectSingleNode("VCRJob/Name").InnerText;
+                var jobName = job.SelectSingleNode("VCRJob/Name")!.InnerText;
 
                 // Load the profile once
-                XmlDocument profile;
-                if (!profileMap.TryGetValue(profileName, out profile))
+                if (!profileMap.TryGetValue(profileName, out var profile))
                 {
                     // Create
                     profile = new XmlDocument();
@@ -100,21 +99,20 @@ namespace JMS.DVB.SchedulerTests
                 Assert.That(autoSelect, Is.True, "Auto Select");
 
                 // Process all schedules
-                foreach (XmlElement schedule in job.SelectNodes("VCRJob/Schedule"))
+                foreach (XmlElement schedule in job.SelectNodes("VCRJob/Schedule")!)
                 {
                     // Extract data
-                    var repeat = schedule.SelectSingleNode("Days").InnerText.Split(' ').Where(d => !string.IsNullOrEmpty(d)).Select(d => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), d)).ToArray();
-                    var firstStart = DateTime.Parse(schedule.SelectSingleNode("FirstStart").InnerText, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-                    var lastDay = DateTime.Parse(schedule.SelectSingleNode("LastDay").InnerText, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-                    var duration = TimeSpan.FromMinutes(uint.Parse(schedule.SelectSingleNode("Duration").InnerText));
+                    var repeat = schedule.SelectSingleNode("Days")!.InnerText.Split(' ').Where(d => !string.IsNullOrEmpty(d)).Select(d => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), d)).ToArray();
+                    var firstStart = DateTime.Parse(schedule.SelectSingleNode("FirstStart")!.InnerText, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                    var lastDay = DateTime.Parse(schedule.SelectSingleNode("LastDay")!.InnerText, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                    var duration = TimeSpan.FromMinutes(uint.Parse(schedule.SelectSingleNode("Duration")!.InnerText));
                     var source = (XmlElement)(schedule.SelectSingleNode("Source") ?? defaultSource);
-                    var id = Guid.Parse(schedule.SelectSingleNode("UniqueID").InnerText);
-                    var scheduleName = schedule.SelectSingleNode("Name").InnerText;
+                    var id = Guid.Parse(schedule.SelectSingleNode("UniqueID")!.InnerText);
+                    var scheduleName = schedule.SelectSingleNode("Name")!.InnerText;
                     var sourceName = source.GetAttribute("name");
 
                     // Find the real source
-                    SourceMock realSource;
-                    if (!sourceMap.TryGetValue(sourceName, out realSource))
+                    if (!sourceMap.TryGetValue(sourceName, out var realSource))
                     {
                         // Split name
                         var split = sourceName.LastIndexOf('[');
@@ -122,9 +120,9 @@ namespace JMS.DVB.SchedulerTests
                         var providerName = sourceName.Substring(split + 1).TrimEnd(']');
 
                         // Locate the station
-                        var station = (XmlElement)profile.SelectSingleNode("//dvbnet:Station[@name='" + stationName + "' and @provider='" + providerName + "']", profileNamespaces);
+                        var station = (XmlElement)profile.SelectSingleNode("//dvbnet:Station[@name='" + stationName + "' and @provider='" + providerName + "']", profileNamespaces)!;
                         var encrypted = bool.Parse(station.GetAttribute("scrambled"));
-                        var group = station.ParentNode;
+                        var group = station.ParentNode!;
 
                         // Unique group identifier
                         Guid groupIdentifier;
