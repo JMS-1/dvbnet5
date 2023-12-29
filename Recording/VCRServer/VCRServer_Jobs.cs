@@ -14,7 +14,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="uniqueIdentifier">Die eindeutige Kennung des Auftrags.</param>
         /// <returns>Der gew�nschte Auftrag oder <i>null</i>.</returns>
-        public VCRJob FindJob(Guid uniqueIdentifier) => JobManager.FindJob(uniqueIdentifier);
+        public VCRJob? FindJob(Guid uniqueIdentifier) => JobManager.FindJob(uniqueIdentifier);
 
         /// <summary>
         /// Aktualisiert einen Auftrag oder legt einen neue an.

@@ -146,7 +146,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 return
                     new EditSchedule
                     {
-                        Source = ServerRuntime.VCRServer.GetUniqueName(new SourceSelection { ProfileName = job.Source.ProfileName, Source = guide.Source }),
+                        Source = VCRServer.GetUniqueName(new SourceSelection { ProfileName = job.Source.ProfileName, Source = guide.Source }),
                         DVBSubtitles = UserProfileSettings.UseSubTitles,
                         DolbyDigital = UserProfileSettings.UseAC3,
                         AllLanguages = UserProfileSettings.UseMP2,
@@ -162,7 +162,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
             // Optionen ermitteln
             var streams = schedule.Streams;
-            var sourceName = ServerRuntime.VCRServer.GetUniqueName(schedule.Source);
+            var sourceName = VCRServer.GetUniqueName(schedule.Source);
 
             // Create
             return

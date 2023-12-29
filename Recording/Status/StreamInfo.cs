@@ -25,13 +25,13 @@ namespace JMS.DVB.NET.Recording.Status
         /// Das optionale Ziel bei einem Netzwerkversand.
         /// </summary>
         [XmlElement(IsNullable = true)]
-        public string StreamsTo { get; set; }
+        public string StreamsTo { get; set; } = null!;
 
         /// <summary>
         /// Die Datei, in der die Daten der Aufzeichnung abgelegt werden.
         /// </summary>
         [XmlElement(IsNullable = true)]
-        public string TargetFile { get; set; }
+        public string TargetFile { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Beschreibung.

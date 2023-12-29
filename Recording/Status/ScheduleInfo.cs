@@ -19,18 +19,18 @@ namespace JMS.DVB.NET.Recording.Status
         /// Die eindeutige Kennung der zugeh�rigen Aufzeichnungsdefinition oder <i>null</i>.
         /// </summary>
         [XmlElement(IsNullable = true)]
-        public string ScheduleUniqueID { get; set; }
+        public string ScheduleUniqueID { get; set; } = null!;
 
         /// <summary>
         /// Die eindeutige Kennung des zugeh�rigen Auftrags oder <i>null</i>.
         /// </summary>
         [XmlElement(IsNullable = true)]
-        public string JobUniqueID { get; set; }
+        public string JobUniqueID { get; set; } = null!;
 
         /// <summary>
         /// Alle zugeh�rigen Aufzeichnungsdateien.
         /// </summary>
-        public string[] Files { get; set; }
+        public string[] Files { get; set; } = null!;
 
         /// <summary>
         /// Meldet oder setzt den Startzeitpunkt dieser Aufzeichnung.
@@ -58,7 +58,7 @@ namespace JMS.DVB.NET.Recording.Status
         /// Die aktuelle Quelle.
         /// </summary>
         [XmlIgnore]
-        public SourceSelection Source { get; set; }
+        public SourceSelection Source { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Beschreibung.
@@ -69,7 +69,7 @@ namespace JMS.DVB.NET.Recording.Status
         public static ScheduleInfo Create(VCRRecordingInfo recording, Dictionary<Guid, string[]> fileMap)
         {
             // Find files
-            string[] files = null;
+            string[]? files = null;
             if (recording.ScheduleUniqueID.HasValue)
                 fileMap?.TryGetValue(recording.ScheduleUniqueID.Value, out files);
 
@@ -77,8 +77,8 @@ namespace JMS.DVB.NET.Recording.Status
             return
                 new ScheduleInfo
                 {
-                    ScheduleUniqueID = recording.ScheduleUniqueID.HasValue ? recording.ScheduleUniqueID.Value.ToString("N").ToUpper() : null,
-                    JobUniqueID = recording.JobUniqueID.HasValue ? recording.JobUniqueID.Value.ToString("N").ToUpper() : null,
+                    ScheduleUniqueID = recording.ScheduleUniqueID.HasValue ? recording.ScheduleUniqueID.Value.ToString("N").ToUpper() : null!,
+                    JobUniqueID = recording.JobUniqueID.HasValue ? recording.JobUniqueID.Value.ToString("N").ToUpper() : null!,
                     StartsAt = recording.StartsAt.GetValueOrDefault(DateTime.UtcNow),
                     TotalSize = recording.TotalSize,
                     Source = recording.Source,

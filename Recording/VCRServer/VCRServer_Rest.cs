@@ -58,12 +58,12 @@ namespace JMS.DVB.NET.Recording
         /// <param name="to">Das Ende eines Zeitraums.</param>
         /// <param name="factory">Name der Metjode zum Erzeugen eines externen Eintrags.</param>
         /// <returns>Der am besten passende Eintrag.</returns>
-        public TTarget FindProgramGuideEntry<TTarget>(string profileName, SourceIdentifier source, DateTime from, DateTime to, Func<ProgramGuideEntry, string, TTarget> factory)
+        public TTarget? FindProgramGuideEntry<TTarget>(string profileName, SourceIdentifier source, DateTime from, DateTime to, Func<ProgramGuideEntry, string, TTarget> factory)
         {
             // See if profile exists
             var profile = Profiles[profileName];
             if (profile == null)
-                return default(TTarget);
+                return default;
             else
                 return profile.ProgramGuide.FindBestEntry(source, from, to, factory);
         }
@@ -75,7 +75,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="source">Die Quelle, deren Eintrag ermittelt werden soll.</param>
         /// <param name="start">Der exakte Startzeitpunkt.</param>
         /// <returns>Der gew�nschte Eintrag.</returns>
-        public ProgramGuideEntry FindProgramGuideEntry(string profileName, SourceIdentifier source, DateTime start) => Profiles[profileName]?.ProgramGuide.FindEntry(source, start);
+        public ProgramGuideEntry? FindProgramGuideEntry(string profileName, SourceIdentifier source, DateTime start) => Profiles[profileName]?.ProgramGuide.FindEntry(source, start);
 
         /// <summary>
         /// Ver�ndert eine Ausnahme.
@@ -152,7 +152,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="fromPlan">Erstellt eine einzelne Beschreibung zu einer Aufzeichnung aus dem Aufzeichnungsplan.</param>
         /// <param name="forIdle">Erstellt eine Beschreibung f�r ein Ger�t, f�r das keine Aufzeichnungen geplant sind.</param>
         /// <returns>Die Liste aller Informationen.</returns>
-        public TInfo[] GetCurrentRecordings<TInfo>(Func<FullInfo, VCRServer, TInfo[]> fromActive, Func<IScheduleInformation, PlanContext, VCRServer, TInfo> fromPlan = null, Func<string, TInfo> forIdle = null)
+        public TInfo[] GetCurrentRecordings<TInfo>(Func<FullInfo, VCRServer, TInfo[]> fromActive, Func<IScheduleInformation, PlanContext, VCRServer, TInfo> fromPlan = null!, Func<string, TInfo> forIdle = null!)
         {
             // Validate
             if (fromActive == null)
@@ -166,7 +166,7 @@ namespace JMS.DVB.NET.Recording
                 Profiles
                     .InspectProfiles(profile => profile.CurrentRecording)
                     .Where(current => current != null)
-                    .ToDictionary(current => current.Recording.Source.ProfileName, current => fromActive(current, this), idleProfiles.Comparer);
+                    .ToDictionary(current => current!.Recording.Source.ProfileName, current => fromActive(current!, this), idleProfiles.Comparer);
 
             // Check for idle profiles
             idleProfiles.ExceptWith(perProfile.Keys);
@@ -288,10 +288,10 @@ namespace JMS.DVB.NET.Recording
         {
             // Locate profile and forward call
             if (string.IsNullOrEmpty(profileName))
-                return default(TInfo);
+                return default!;
             var profile = FindProfile(profileName);
             if (profile == null)
-                return default(TInfo);
+                return default!;
             else
                 return factory(profile.ProgramGuide);
         }
@@ -310,7 +310,7 @@ namespace JMS.DVB.NET.Recording
             var active = new HashSet<string>(profiles, ProfileManager.ProfileNameComparer);
 
             // Set default
-            defaultProfile = profiles.FirstOrDefault();
+            defaultProfile = profiles.FirstOrDefault()!;
 
             // From DVB.NET
             return ProfileManager.AllProfiles.Select(profile => factory(profile, active.Contains(profile.Name))).ToArray();
@@ -330,7 +330,7 @@ namespace JMS.DVB.NET.Recording
             var changed = false;
 
             // Process
-            Array.ForEach(profiles, profile => changed |= updater(profile, ProfileManager.FindProfile(getName(profile))));
+            Array.ForEach(profiles, profile => changed |= updater(profile, ProfileManager.FindProfile(getName(profile))!));
 
             // Report
             return changed;

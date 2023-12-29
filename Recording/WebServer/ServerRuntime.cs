@@ -18,7 +18,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Instanzen dieser Klasse sind nicht zeitgebunden.
         /// </summary>
         /// <returns>Die Antwort muss immer <i>null</i> sein.</returns>
-        public override object InitializeLifetimeService() => null;
+        [Obsolete]
+        public override object InitializeLifetimeService() => null!;
 
         /// <summary>
         /// Wird periodisch aufgerufen um zu sehen, ob die Anwendung noch verf�gbar ist.
@@ -45,7 +46,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// 
         /// </summary>
-        private static VCRServer _VCRServer = null;
+        private static VCRServer _VCRServer = null!;
 
         /// <summary>
         /// Erzeugt eine ASP.NET Laufzeitumgebung.
@@ -81,7 +82,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public void Stop()
         {
             // Reset
-            _VCRServer = null;
+            _VCRServer = null!;
         }
 
         /// <summary>
@@ -109,9 +110,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             if (job == null)
                 return "*";
             else if (schedule == null)
-                return $"*{job.UniqueID.Value:N}";
+                return $"*{job.UniqueID!.Value:N}";
             else
-                return GetUniqueWebId(job.UniqueID.Value, schedule.UniqueID.Value);
+                return GetUniqueWebId(job.UniqueID!.Value, schedule.UniqueID!.Value);
         }
 
         /// <summary>
@@ -161,7 +162,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="id">Die Textdarstellung.</param>
         /// <param name="job">Der ermittelte Auftrag.</param>
         /// <returns>Die zugeh�rige Aufzeichnung im Auftrag.</returns>
-        public static VCRSchedule ParseUniqueWebId(string id, out VCRJob job)
+        public static VCRSchedule? ParseUniqueWebId(string id, out VCRJob job)
         {
             ParseUniqueWebId(id, out Guid jobID, out Guid scheduleID);
 

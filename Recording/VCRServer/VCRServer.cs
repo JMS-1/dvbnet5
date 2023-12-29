@@ -1,3 +1,5 @@
+#pragma warning disable CA1416 // Validate platform compatibility
+
 using System.Text;
 using JMS.DVB.Algorithms.Scheduler;
 using Microsoft.Win32;
@@ -13,7 +15,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Wird beim Bauen automatisch eingemischt.
         /// </summary>
-        private const string CURRENTDATE = "2023/11/19";
+        private const string CURRENTDATE = "2023/12/29";
 
         /// <summary>
         /// Aktuelle Version des VCR.NET Recording Service.
@@ -78,11 +80,8 @@ namespace JMS.DVB.NET.Recording
         /// Instanzen dieser Klasse sind nicht zeitgebunden.
         /// </summary>
         /// <returns>Die Antwort muss immer <i>null</i> sein.</returns>
-        public override object InitializeLifetimeService()
-        {
-            // No lease at all
-            return null;
-        }
+        [Obsolete]
+        public override object InitializeLifetimeService() => null!;
 
         /// <summary>
         /// Meldet die aktuellen Einstellungen des VCR.NET Recording Service.
@@ -92,10 +91,7 @@ namespace JMS.DVB.NET.Recording
             get
             {
                 // Create a new instance
-                var result =
-                    new Settings
-                    {
-                    };
+                var result = new Settings { };
 
                 // Load profile names
                 //result.Profiles.AddRange(VCRProfiles.ProfileNames);
@@ -115,7 +111,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="profileName">Der Name des gew?nschten Ger?teprofils.</param>
         /// <returns>Der Zustand des Profils.</returns>
-        public ProfileState FindProfile(string profileName)
+        public ProfileState? FindProfile(string profileName)
         {
             // Forward
             var state = Profiles[profileName];
@@ -169,11 +165,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="profile">Das zu verwendende Ger?teprofil.</param>
         /// <param name="name">Der (hoffentlicH) eindeutige Name der Quelle.</param>
         /// <returns>Die Beschreibung der Quelle.</returns>
-        public SourceSelection FindSource(string profile, string name)
-        {
-            // Process
-            return VCRProfiles.FindSource(profile, name);
-        }
+        public SourceSelection? FindSource(string profile, string name) => VCRProfiles.FindSource(profile, name);
 
         /// <summary>
         /// Ermittelt den eindeutigen Namen einer Quelle.
@@ -181,11 +173,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="source">Die gew?nschte Quelle.</param>
         /// <returns>Der eindeutige Name oder <i>null</i>, wenn die Quelle nicht
         /// bekannt ist.</returns>
-        public string GetUniqueName(SourceSelection source)
-        {
-            // Forward
-            return source.GetUniqueName();
-        }
+        public static string GetUniqueName(SourceSelection source) => source.GetUniqueName();
 
         /// <summary>
         /// Meldet die aktuellen Regeln f?r die Aufzeichnungsplanung.
@@ -201,7 +189,7 @@ namespace JMS.DVB.NET.Recording
                         return reader.ReadToEnd().Replace("\r\n", "\n");
 
                 // Not set
-                return null;
+                return null!;
             }
             set
             {
@@ -259,10 +247,10 @@ namespace JMS.DVB.NET.Recording
         {
             // Shutdown profiles
             using (Profiles)
-                Profiles = null;
+                Profiles = null!;
 
             // Detach from jobs
-            JobManager = null;
+            JobManager = null!;
         }
 
         #endregion

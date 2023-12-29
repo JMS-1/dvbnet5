@@ -13,12 +13,12 @@ namespace JMS.DVB.NET.Recording.Status
         /// Alle Quellen zu dieser Aufzeichnung
         /// </summary>
         [XmlElement("Stream")]
-        public readonly List<StreamInfo> Streams = new List<StreamInfo>();
+        public readonly List<StreamInfo> Streams = [];
 
         /// <summary>
         /// Die Daten der prim�ren Aufzeichnung.
         /// </summary>
-        public VCRRecordingInfo Recording { get; set; }
+        public VCRRecordingInfo Recording { get; set; } = null!;
 
         /// <summary>
         /// Meldet oder legt fest, on ein Netzwerkversand unterst�tzt wird.

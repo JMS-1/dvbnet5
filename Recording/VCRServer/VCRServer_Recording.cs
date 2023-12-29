@@ -78,7 +78,7 @@ namespace JMS.DVB.NET.Recording
             // Attach to the profile and process
             var state = FindProfile(profile);
             if (state == null)
-                return default(TStatus);
+                return default!;
             else
                 return state.LiveModeOperation(active, connectTo, source, factory);
         }
