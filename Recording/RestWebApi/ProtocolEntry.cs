@@ -17,7 +17,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [DataMember(Name = "start")]
         public string StartTimeISO
         {
-            get { return StartTime.HasValue ? StartTime.Value.ToString("o") : null; }
+            get { return StartTime.HasValue ? StartTime.Value.ToString("o") : null!; }
             set { StartTime = string.IsNullOrEmpty(value) ? default(DateTime?) : DateTime.Parse(value, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind); }
         }
 
@@ -45,25 +45,25 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der Name der ersten Quelle.
         /// </summary>
         [DataMember(Name = "firstSourceName")]
-        public string Source { get; set; }
+        public string Source { get; set; } = null!;
 
         /// <summary>
         /// Die Liste aller Aufzeichnungsdateien.
         /// </summary>
         [DataMember(Name = "files")]
-        public string[] Files { get; set; }
+        public string[] Files { get; set; } = null!;
 
         /// <summary>
         /// Ein Hinweis auf die Größe der Aufzeichnungen.
         /// </summary>
         [DataMember(Name = "size")]
-        public string SizeHint { get; set; }
+        public string SizeHint { get; set; } = null!;
 
         /// <summary>
         /// Der Name der primären Aufzeichnungsdatei.
         /// </summary>
         [DataMember(Name = "primaryFile")]
-        public string PrimaryFile { get; set; }
+        public string PrimaryFile { get; set; } = null!;
 
         /// <summary>
         /// Kovertiert einen Protokolleintrag in ein für den Client nützliches Format.
@@ -80,7 +80,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var protocol =
                 new ProtocolEntry
                 {
-                    PrimaryFile = string.IsNullOrEmpty(entry.FileName) ? null : Path.GetFileName(entry.FileName),
+                    PrimaryFile = string.IsNullOrEmpty(entry.FileName) ? null! : Path.GetFileName(entry.FileName),
                     Files = entry.RecordingFiles.Select(file => file.Path).Where(File.Exists).ToArray(),
                     Source = entry.Source.DisplayName,
                     StartTime = entry.PhysicalStart,

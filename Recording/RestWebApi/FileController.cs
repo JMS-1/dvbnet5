@@ -49,7 +49,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             // Find the first IP4 address
             var host = Dns.GetHostEntry(target);
             var hostIP = host.AddressList.FirstOrDefault(testIP => testIP.AddressFamily == AddressFamily.InterNetwork);
-            var endPoint = new IPEndPoint(hostIP, port);
+            var endPoint = new IPEndPoint(hostIP!, port);
 
             // Create socket
             using (var socket = new Socket(endPoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp) { Blocking = true })

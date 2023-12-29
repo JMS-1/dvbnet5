@@ -32,7 +32,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             Array.Sort(activities, PlanActivity.ByStartComparer);
 
             // Report
-            return activities;
+            return activities!;
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
             // Use helper
             return
-                GetPlan(null, DateTime.UtcNow.AddDays(28).ToString("o"))
+                GetPlan(null!, DateTime.UtcNow.AddDays(28).ToString("o"))
                     .Where(plan => !string.IsNullOrEmpty(plan.Source))
                     .Take(maximum)
                     .Select(PlanActivityMobile.Create)

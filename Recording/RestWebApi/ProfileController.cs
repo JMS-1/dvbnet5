@@ -65,8 +65,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 ServerRuntime
                     .VCRServer
                     .GetJobs(ProfileJobInfo.Create)
-                    .Where(job => job != null)
-                    .Where(job => ProfileManager.ProfileNameComparer.Equals(job.Profile, detail))
+                    .Where(job => job != null && ProfileManager.ProfileNameComparer.Equals(job.Profile, detail))
+                    .Cast<ProfileJobInfo>()
                     .OrderBy(job => job.Name, StringComparer.InvariantCultureIgnoreCase)
                     .ToArray();
         }

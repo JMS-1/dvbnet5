@@ -14,19 +14,19 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der Name des Auftrags.
         /// </summary>
         [DataMember(Name = "name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Die eindeutige Kennung des Auftrags.
         /// </summary>
         [DataMember(Name = "id")]
-        public string WebId { get; set; }
+        public string WebId { get; set; } = null!;
 
         /// <summary>
         /// Die einzelnen Aufzeichnungen des Auftrags.
         /// </summary>
         [DataMember(Name = "schedules")]
-        public InfoSchedule[] Schedules { get; set; }
+        public InfoSchedule[] Schedules { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn der Auftrag aktiv ist.
@@ -38,13 +38,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der Name des Geräteprofils.
         /// </summary>
         [DataMember(Name = "device")]
-        public string ProfileName { get; set; }
+        public string ProfileName { get; set; } = null!;
 
         /// <summary>
         /// Der Name des Quelle.
         /// </summary>
         [DataMember(Name = "source")]
-        public string SourceName { get; set; }
+        public string SourceName { get; set; } = null!;
 
         /// <summary>
         /// Erstellt eine neue Beschreibung.
@@ -59,7 +59,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 new InfoJob
                 {
                     Schedules = job.Schedules.Select(schedule => InfoSchedule.Create(schedule, job)).OrderBy(schedule => schedule.Name ?? string.Empty, StringComparer.InvariantCultureIgnoreCase).ToArray(),
-                    WebId = ServerRuntime.GetUniqueWebId(job, null),
+                    WebId = ServerRuntime.GetUniqueWebId(job, null!),
                     ProfileName = job.Source.ProfileName,
                     SourceName = job.Source.DisplayName,
                     IsActive = active,

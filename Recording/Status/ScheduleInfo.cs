@@ -46,7 +46,7 @@ namespace JMS.DVB.NET.Recording.Status
         /// Der Name der Aufzeichnung.
         /// </summary>
         [XmlIgnore]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Die bisher aufgezeichnete Datenmenge in kBytes.

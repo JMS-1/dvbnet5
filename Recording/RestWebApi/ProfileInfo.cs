@@ -14,7 +14,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der Name des Geräteprofils.
         /// </summary>
         [DataMember(Name = "name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Erstellt eine neue Beschreibung.

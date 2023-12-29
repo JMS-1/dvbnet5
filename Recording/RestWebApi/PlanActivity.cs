@@ -47,19 +47,19 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der Name der Aufzeichnung.
         /// </summary>
         [DataMember(Name = "name")]
-        public string FullName { get; set; }
+        public string FullName { get; set; } = null!;
 
         /// <summary>
         /// Das Gerät, auf dem die Aktion ausgeführt wird.
         /// </summary>
         [DataMember(Name = "device")]
-        public string Device { get; set; }
+        public string Device { get; set; } = null!;
 
         /// <summary>
         /// Der Name des zugehörigen Senders.
         /// </summary>
         [DataMember(Name = "station")]
-        public string Station { get; set; }
+        public string Station { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn die Aufzeichnung verspätet beginnt.
@@ -83,19 +83,19 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der Name des Gerätes, zu dem ein Eintrag in der Programmzeitschrift existiert.
         /// </summary>
         [DataMember(Name = "epgDevice")]
-        public string GuideEntryDevice { get; set; }
+        public string GuideEntryDevice { get; set; } = null!;
 
         /// <summary>
         /// Die zugehörige Quelle, sofern bekannt.
         /// </summary>
         [DataMember(Name = "source")]
-        public string Source { get; set; }
+        public string Source { get; set; } = null!;
 
         /// <summary>
         /// Die Referenz einer Aufzeichnung, so wie sie.
         /// </summary>
         [DataMember(Name = "id")]
-        public string LegacyReference { get; set; }
+        public string LegacyReference { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn die Endzeit möglicherweise durch die Sommerzeit nicht wie
@@ -154,7 +154,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             /// <param name="left">Die erste Planung.</param>
             /// <param name="right">Die zweite Planung.</param>
             /// <returns>Die Anordnung der beiden Planungen.</returns>
-            public int Compare(PlanActivity left, PlanActivity right)
+            public int Compare(PlanActivity? left, PlanActivity? right)
             {
                 // One is not set
                 if (left == null)
@@ -204,7 +204,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Die zugehörige Ausnahmeregel.
         /// </summary>
         [DataMember(Name = "exception")]
-        public PlanException ExceptionRule { get; set; }
+        public PlanException ExceptionRule { get; set; } = null!;
 
         /// <summary>
         /// Prüft, ob die Aufzeichnung über eine Zeitumstellung erfolgt.
@@ -245,7 +245,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 if (runningInfo != null)
                     definition = runningInfo.Schedule.Definition;
                 else
-                    return null;
+                    return null!;
 
             // Create initial entry
             var time = schedule.Time;
@@ -254,7 +254,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var activity =
                 new PlanActivity
                 {
-                    IsHidden = (schedule.Resource == null),
+                    IsHidden = schedule.Resource == null,
                     IsLate = schedule.StartsLate,
                 };
 
@@ -264,7 +264,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 {
                     // Only report the allocation itself
                     if (!isAllocation)
-                        return null;
+                        return null!;
 
                     // Reload the real start and times - just in case someone manipulated
                     start = runningInfo.Schedule.Time.Start;
@@ -292,12 +292,11 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 activity.Device = resource.Name;
 
             // Schedule to process
-            VCRSchedule vcrSchedule = null;
-            VCRJob vcrJob = null;
+            VCRSchedule? vcrSchedule = null;
+            VCRJob? vcrJob = null;
 
             // Analyse definition
-            var scheduleDefinition = definition as IScheduleDefinition<VCRSchedule>;
-            if (scheduleDefinition != null)
+            if (definition is IScheduleDefinition<VCRSchedule> scheduleDefinition)
             {
                 // Regular plan
                 vcrSchedule = scheduleDefinition.Context;
@@ -331,7 +330,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 if (source?.Source != null)
                 {
                     // Remember
-                    activity.Source = SourceIdentifier.ToString(source.Source).Replace(" ", "");
+                    activity.Source = SourceIdentifier.ToString(source.Source)!.Replace(" ", "");
                     activity.Station = source.DisplayName;
 
                     // Load the profile
@@ -341,11 +340,11 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 }
 
                 // Apply special settings
-                activity.CurrentProgramGuide = streams.GetUsesProgramGuide();
-                activity.AllLanguages = streams.GetUsesAllAudio();
-                activity.SubTitles = streams.GetUsesSubtitles();
-                activity.VideoText = streams.GetUsesVideotext();
-                activity.Dolby = streams.GetUsesDolbyAudio();
+                activity.CurrentProgramGuide = streams!.GetUsesProgramGuide();
+                activity.AllLanguages = streams!.GetUsesAllAudio();
+                activity.SubTitles = streams!.GetUsesSubtitles();
+                activity.VideoText = streams!.GetUsesVideotext();
+                activity.Dolby = streams!.GetUsesDolbyAudio();
 
                 // Check for exception rule on the day
                 var exception = vcrSchedule.FindException(time.End);

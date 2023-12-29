@@ -15,13 +15,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der zugehörige Auftrag.
         /// </summary>
         [DataMember(Name = "job")]
-        public EditJob Job { get; set; }
+        public EditJob Job { get; set; } = null!;
 
         /// <summary>
         /// Die zugehörige Aufzeichnung.
         /// </summary>
         [DataMember(Name = "schedule")]
-        public EditSchedule Schedule { get; set; }
+        public EditSchedule Schedule { get; set; } = null!;
     }
 
     /// <summary>
@@ -35,13 +35,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Die eindeutige Kennung der Auftrags.
         /// </summary>
         [DataMember(Name = "jobId")]
-        public string JobIdentifier { get; set; }
+        public string JobIdentifier { get; set; } = null!;
 
         /// <summary>
         /// Die eindeutige Kennung der Aufzeichnung.
         /// </summary>
         [DataMember(Name = "scheduleId")]
-        public string ScheduleIdentifier { get; set; }
+        public string ScheduleIdentifier { get; set; } = null!;
 
         /// <summary>
         /// Legt eine neue Information an.
@@ -57,10 +57,10 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new JobScheduleInfo
                 {
-                    ScheduleIdentifier = (schedule == null) ? null : schedule.UniqueID.Value.ToString("N"),
-                    JobIdentifier = (job == null) ? null : job.UniqueID.Value.ToString("N"),
-                    Schedule = EditSchedule.Create(schedule, job, guide),
-                    Job = EditJob.Create(job, guide, profile),
+                    ScheduleIdentifier = (schedule == null) ? null! : schedule.UniqueID!.Value.ToString("N"),
+                    JobIdentifier = (job == null) ? null! : job.UniqueID!.Value.ToString("N"),
+                    Schedule = EditSchedule.Create(schedule!, job!, guide)!,
+                    Job = EditJob.Create(job!, guide, profile)!,
                 };
         }
     }

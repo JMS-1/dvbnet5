@@ -86,7 +86,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// Ermittelt das Geräteprofil, das die elektronische Programmzeitschrift für dieses
         /// Profil zur Verfügung stellt.
         /// </summary>
-        public Profile LeafGuideProfile
+        public Profile? LeafGuideProfile
         {
             get
             {
@@ -137,7 +137,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Meldet das zugehörige Geräteprofil.
         /// </summary>
-        public Profile Profile => VCRProfiles.FindProfile(ProfileName);
+        public Profile? Profile => VCRProfiles.FindProfile(ProfileName);
 
         /// <summary>
         /// Meldet den Namen des Wertes in der Registrierung von Windows, wo der Zeitpunkt

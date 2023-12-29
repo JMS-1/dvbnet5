@@ -20,13 +20,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             /// Die Gruppe der normalen Benutzer.
             /// </summary>
             [DataMember(Name = "users")]
-            public string UserRole { get; set; }
+            public string UserRole { get; set; } = null!;
 
             /// <summary>
             /// Die Gruppe der Administratoren.
             /// </summary>
             [DataMember(Name = "admins")]
-            public string AdminRole { get; set; }
+            public string AdminRole { get; set; } = null!;
         }
 
         /// <summary>
@@ -39,13 +39,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             /// Die aktuelle Liste der erlaubten Verzeichnisse.
             /// </summary>
             [DataMember(Name = "directories")]
-            public string[] TargetDirectories { get; set; }
+            public string[] TargetDirectories { get; set; } = null!;
 
             /// <summary>
             /// Das Muster für die Erstellung der Dateinamen.
             /// </summary>
             [DataMember(Name = "pattern")]
-            public string RecordingPattern { get; set; }
+            public string RecordingPattern { get; set; } = null!;
         }
 
         /// <summary>
@@ -76,13 +76,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             /// Die Stunden, zu denen eine Aktualisierung stattfinden soll.
             /// </summary>
             [DataMember(Name = "hours")]
-            public uint[] Hours { get; set; }
+            public uint[] Hours { get; set; } = null!;
 
             /// <summary>
             /// Die Quellen, die bei der Aktualisierung zu berücksichtigen sind.
             /// </summary>
             [DataMember(Name = "sources")]
-            public string[] Sources { get; set; }
+            public string[] Sources { get; set; } = null!;
 
             /// <summary>
             /// Gesetzt, wenn auch die britischen Sendungen zu berücksichtigen sind.
@@ -119,7 +119,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             /// Die Stunden, zu denen eine Aktualisierung stattfinden soll.
             /// </summary>
             [DataMember(Name = "hours")]
-            public uint[] Hours { get; set; }
+            public uint[] Hours { get; set; } = null!;
 
             /// <summary>
             /// Gesetzt, wenn die neue Liste mit der alten zusammengeführt werden soll.
@@ -138,13 +138,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             /// Die Liste aller bekannten Geräteprofile.
             /// </summary>
             [DataMember(Name = "profiles")]
-            public ConfigurationProfile[] SystemProfiles { get; set; }
+            public ConfigurationProfile[] SystemProfiles { get; set; } = null!;
 
             /// <summary>
             /// Der Name des bevorzugten Geräteprofils.
             /// </summary>
             [DataMember(Name = "defaultProfile")]
-            public string DefaultProfile { get; set; }
+            public string DefaultProfile { get; set; } = null!;
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             /// Der Inhalt der Regeldatei.
             /// </summary>
             [DataMember(Name = "rules")]
-            public string RuleFileContents { get; set; }
+            public string RuleFileContents { get; set; } = null!;
         }
 
         /// <summary>
@@ -259,15 +259,15 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="root">Das Bezugsverzeichnis.</param>
         /// <returns>Die Verzeichnisse innerhalb ober oberhalb des Bezugsverzeichnisses.</returns>
         [HttpGet]
-        public string[] Browse(string browse, bool toParent = false, string root = null)
+        public string[] Browse(string browse, bool toParent = false, string root = null!)
         {
             // See if we can move up
             if (!string.IsNullOrEmpty(root))
                 if (toParent)
                     if (StringComparer.InvariantCultureIgnoreCase.Equals(root, Path.GetPathRoot(root)))
-                        root = null;
+                        root = null!;
                     else
-                        root = Path.GetDirectoryName(root);
+                        root = Path.GetDirectoryName(root)!;
 
             // Devices
             var names = string.IsNullOrEmpty(root)
@@ -413,7 +413,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
             // Change settings
             update[SettingNames.AdditionalRecorderPaths].NewValue = string.Join(", ", settings.TargetDirectories.Skip(1));
-            update[SettingNames.VideoRecorderDirectory].NewValue = settings.TargetDirectories.FirstOrDefault();
+            update[SettingNames.VideoRecorderDirectory].NewValue = settings.TargetDirectories.FirstOrDefault()!;
             update[SettingNames.FileNamePattern].NewValue = settings.RecordingPattern;
 
             // Process
@@ -486,9 +486,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
             // Fill it
             update[SettingNames.ScanHours].NewValue = string.Join(", ", settings.Hours.Select(hour => hour.ToString()));
-            update[SettingNames.ScanJoinThreshold].NewValue = settings.Threshold.ToString();
+            update[SettingNames.ScanJoinThreshold].NewValue = settings.Threshold.ToString()!;
             update[SettingNames.MergeScanResult].NewValue = settings.MergeLists.ToString();
-            update[SettingNames.ScanInterval].NewValue = settings.Interval.ToString();
+            update[SettingNames.ScanInterval].NewValue = settings.Interval.ToString()!;
             update[SettingNames.ScanDuration].NewValue = settings.Duration.ToString();
 
             // Process
@@ -549,8 +549,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             update[SettingNames.EPGHours].NewValue = string.Join(", ", settings.Hours.Select(hour => hour.ToString()));
             update[SettingNames.EPGIncludeFreeSat].NewValue = settings.WithUKGuide.ToString();
             update[SettingNames.EPGStations].NewValue = string.Join(", ", settings.Sources);
-            update[SettingNames.EPGJoinThreshold].NewValue = settings.Threshold.ToString();
-            update[SettingNames.EPGInterval].NewValue = settings.Interval.ToString();
+            update[SettingNames.EPGJoinThreshold].NewValue = settings.Threshold.ToString()!;
+            update[SettingNames.EPGInterval].NewValue = settings.Interval.ToString()!;
             update[SettingNames.EPGDuration].NewValue = settings.Duration.ToString();
 
             // Process

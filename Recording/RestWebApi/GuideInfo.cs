@@ -15,7 +15,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Alle Quellen, für die Eintragungen existieren.
         /// </summary>
         [DataMember(Name = "stations")]
-        public string[] SourceNames { get; set; }
+        public string[] SourceNames { get; set; } = null!;
 
         /// <summary>
         /// Der Zeitpunkt, an dem der früheste Eintrag startet.
@@ -23,7 +23,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [DataMember(Name = "first")]
         public string FirstStartISO
         {
-            get { return FirstStart.HasValue ? FirstStart.Value.ToString("o") : null; }
+            get { return FirstStart.HasValue ? FirstStart.Value.ToString("o") : null!; }
             set { FirstStart = string.IsNullOrEmpty(value) ? default(DateTime?) : DateTime.Parse(value, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind); }
         }
 
@@ -38,7 +38,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [DataMember(Name = "last")]
         public string LastStartISO
         {
-            get { return LastStart.HasValue ? LastStart.Value.ToString("o") : null; }
+            get { return LastStart.HasValue ? LastStart.Value.ToString("o") : null!; }
             set { LastStart = string.IsNullOrEmpty(value) ? default(DateTime?) : DateTime.Parse(value, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind); }
         }
 
@@ -61,7 +61,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var last = default(DateTime?);
 
             // Process
-            foreach (var entry in guide.LeafEntries.Events)
+            foreach (var entry in guide.LeafEntries!.Events)
             {
                 // Start time
                 var start = entry.StartTime;

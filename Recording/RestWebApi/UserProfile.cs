@@ -18,19 +18,19 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Die Liste der bisher verwendeten Quellen.
         /// </summary>
         [DataMember(Name = "recentSources")]
-        public string[] RecentSources { get; set; }
+        public string[] RecentSources { get; set; } = null!;
 
         /// <summary>
         /// Die bevorzugte Auswahl der Art einer Quelle.
         /// </summary>
         [DataMember(Name = "typeFilter")]
-        public string DefaultSourceTypeSelector { get; set; }
+        public string DefaultSourceTypeSelector { get; set; } = null!;
 
         /// <summary>
         /// Die bevorzugte Auswahl Verschlüsselung einer Quelle.
         /// </summary>
         [DataMember(Name = "encryptionFilter")]
-        public string DefaultSourceEncryptionSelector { get; set; }
+        public string DefaultSourceEncryptionSelector { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn alle Sprachen aufgezeichnet werden sollen.
@@ -100,7 +100,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Meldet oder ändert die gespeicherten Suchen der Programmzeitschrift.
         /// </summary>
         [DataMember(Name = "guideSearches")]
-        public string GuideFavorites { get; set; }
+        public string GuideFavorites { get; set; } = null!;
 
         /// <summary>
         /// Erstellt die Informationen des aktuellen Anwenders.

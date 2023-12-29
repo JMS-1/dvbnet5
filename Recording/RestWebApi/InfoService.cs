@@ -13,13 +13,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Die Zeichenkette mit den Versionsdaten.
         /// </summary>
         [DataMember(Name = "version")]
-        public string Version { get; set; }
+        public string Version { get; set; } = null!;
 
         /// <summary>
         /// Die Zeichenkette mit den Versionsdaten.
         /// </summary>
         [DataMember(Name = "msiVersion")]
-        public string InstalledVersion { get; set; }
+        public string InstalledVersion { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn mindestens ein Gerät in Verwendung ist.
@@ -61,7 +61,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Die Namen aller Geräteprofile.
         /// </summary>
         [DataMember(Name = "profileNames")]
-        public string[] ProfilesNames { get; set; }
+        public string[] ProfilesNames { get; set; } = null!;
 
         /// <summary>
         /// Die minimale Verweildauer (in Minuten) im Schlafzustand.

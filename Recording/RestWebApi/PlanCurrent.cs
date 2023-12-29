@@ -20,13 +20,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der Name des Gerätes.
         /// </summary>
         [DataMember(Name = "device")]
-        public string ProfileName { get; set; }
+        public string ProfileName { get; set; } = null!;
 
         /// <summary>
         /// Der Name der Aufzeichnung.
         /// </summary>
         [DataMember(Name = "name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Der Startzeitpunkt der Aufzeichnung.
@@ -68,13 +68,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Die zugehörige Quelle, sofern bekannt.
         /// </summary>
         [DataMember(Name = "sourceName")]
-        public string SourceName { get; set; }
+        public string SourceName { get; set; } = null!;
 
         /// <summary>
         /// Die zugehörige Quelle, sofern bekannt.
         /// </summary>
         [DataMember(Name = "source")]
-        public string Source { get; set; }
+        public string Source { get; set; } = null!;
 
         /// <summary>
         /// Erstellt eine reduzierte Version der Information zu einer Aktivität.
@@ -115,13 +115,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Die eindeutige Kennung der Aufzeichnung.
         /// </summary>
         [DataMember(Name = "id")]
-        public string Identifier { get; set; }
+        public string Identifier { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn die Aufzeichung gerade ausgeführt wird.
         /// </summary>
         [DataMember(Name = "referenceId")]
-        public string PlanIdentifier { get; set; }
+        public string PlanIdentifier { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn die Aufzeichnung verspätet beginnt.
@@ -139,13 +139,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Eine Beschreibung der Größe, Anzahl etc.
         /// </summary>
         [DataMember(Name = "size")]
-        public string SizeHint { get; set; }
+        public string SizeHint { get; set; } = null!;
 
         /// <summary>
         /// Die zugehörige Quelle.
         /// </summary>
         [NonSerialized]
-        private SourceSelection m_source;
+        private SourceSelection m_source = null!;
 
         /// <summary>
         /// Die laufende Nummer des Datenstroms, die zur Anzeige benötigt wird.
@@ -157,7 +157,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Die Netzwerkadresse, an die gerade die Aufzeichnungsdaten versendet werden.
         /// </summary>
         [DataMember(Name = "streamTarget")]
-        public string StreamTarget { get; set; }
+        public string StreamTarget { get; set; } = null!;
 
         /// <summary>
         /// Die verbleibende Restzeit der Aufzeichnung.
@@ -173,7 +173,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Alle zu dieser Aktivität erstellten Dateien.
         /// </summary>
         [DataMember(Name = "files")]
-        public string[] Files { get; set; }
+        public string[] Files { get; set; } = null!;
 
         /// <summary>
         /// Rundet einen Datumswert auf die volle Sekunde.
@@ -236,7 +236,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var current =
                 new PlanCurrent
                 {
-                    PlanIdentifier = recording.ScheduleUniqueID.Value.ToString("N"),
+                    PlanIdentifier = recording.ScheduleUniqueID!.Value.ToString("N"),
                     ProfileName = source.ProfileName,
                     Duration = end - start,
                     Name = recording.Name,
@@ -272,7 +272,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 return;
 
             // At least we have this
-            Source = SourceIdentifier.ToString(m_source.Source).Replace(" ", "");
+            Source = SourceIdentifier.ToString(m_source.Source)!.Replace(" ", "");
 
             // Check profile - should normally be available
             var profile = server.Profiles[ProfileName];
@@ -326,7 +326,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 var current =
                     new PlanCurrent
                     {
-                        Identifier = (schedule == null) ? null : ServerRuntime.GetUniqueWebId(job, schedule),
+                        Identifier = (schedule == null) ? null! : ServerRuntime.GetUniqueWebId(job!, schedule),
                         PlanIdentifier = scheduleInfo.ScheduleUniqueID,
                         Files = scheduleInfo.Files ?? _NoFiles,
                         StreamTarget = stream.StreamsTo,
@@ -359,21 +359,21 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             // Attach to the definition
             var definition = (IScheduleDefinition<VCRSchedule>)plan.Definition;
             var job = context.TryFindJob(definition.UniqueIdentifier);
-            var schedule = (job == null) ? null : job[definition.UniqueIdentifier];
-            var source = (schedule == null) ? null : (schedule.Source ?? job.Source);
+            var schedule = job?[definition.UniqueIdentifier];
+            var source = (schedule == null) ? null : (schedule.Source ?? job!.Source);
 
             // Create
             var planned =
                 new PlanCurrent
                 {
-                    Identifier = (schedule == null) ? null : ServerRuntime.GetUniqueWebId(job, schedule),
+                    Identifier = (schedule == null) ? null! : ServerRuntime.GetUniqueWebId(job!, schedule),
                     ProfileName = plan.Resource.Name,
                     Duration = plan.Time.Duration,
                     StartTime = plan.Time.Start,
                     IsLate = plan.StartsLate,
                     SizeHint = string.Empty,
                     Name = definition.Name,
-                    m_source = source,
+                    m_source = source!,
                     Files = _NoFiles,
                     Index = -1,
                 };

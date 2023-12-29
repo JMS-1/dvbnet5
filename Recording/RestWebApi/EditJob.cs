@@ -15,25 +15,25 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der Name des Auftrags.
         /// </summary>
         [DataMember(Name = "name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Das Aufzeichnungsverzeichnis zum Auftrag.
         /// </summary>
         [DataMember(Name = "directory")]
-        public string RecordingDirectory { get; set; }
+        public string RecordingDirectory { get; set; } = null!;
 
         /// <summary>
         /// Das für die Auswahl der Quelle verwendete Gerät.
         /// </summary>
         [DataMember(Name = "device")]
-        public string Profile { get; set; }
+        public string Profile { get; set; } = null!;
 
         /// <summary>
         /// Die Quelle, von der aufgezeichnet werden soll.
         /// </summary>
         [DataMember(Name = "sourceName")]
-        public string Source { get; set; }
+        public string Source { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn die Aufzeichnung auf jeden Fall auf dem für die Auswahl der Quelle
@@ -73,7 +73,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="guide">Ein Eintrag der Programmzeitschrift.</param>
         /// <param name="profile">Vorgabe für das Geräteprofil.</param>
         /// <returns>Die zugehörige Beschreibung.</returns>
-        public static EditJob Create(VCRJob job, ProgramGuideEntry guide, string profile)
+        public static EditJob? Create(VCRJob job, ProgramGuideEntry guide, string profile)
         {
             // Process
             if (job == null)
@@ -161,7 +161,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             }
 
             // Locate the source
-            job.Source = ServerRuntime.VCRServer.FindSource(profile, sourceName);
+            job.Source = ServerRuntime.VCRServer.FindSource(profile, sourceName)!;
             if (job.Source == null)
                 return job;
 

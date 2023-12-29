@@ -171,7 +171,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             var entrySet = entries
                 .Select(entry => new { e = entry, s = VCRProfiles.FindSource(ProfileName, entry.Source) })
                 .Where(entry => entry.s != null)
-                .Select(entry => new { e = entry.e, s = (Station)entry.s.Source });
+                .Select(entry => new { e = entry.e, s = (Station)entry.s!.Source });
 
             // Name of the station - best filter first
             if (Source != null)

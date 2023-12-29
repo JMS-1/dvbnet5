@@ -15,7 +15,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der optionale Name der Aufzeichnung.
         /// </summary>
         [DataMember(Name = "name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Der Startzeitpunkt der Aufzeichnung.
@@ -51,13 +51,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der optionale Name der Quelle, von der aufgezeichnet werden soll.
         /// </summary>
         [DataMember(Name = "sourceName")]
-        public string Source { get; set; }
+        public string Source { get; set; } = null!;
 
         /// <summary>
         /// Der eindeutige Name der Aufzeichnung.
         /// </summary>
         [DataMember(Name = "id")]
-        public string WebId { get; set; }
+        public string WebId { get; set; } = null!;
 
         /// <summary>
         /// Die Dauer der Aufzeichnung.

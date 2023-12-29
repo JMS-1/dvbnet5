@@ -15,13 +15,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der Name des zu verwendenden Geräteprofils.
         /// </summary>
         [DataMember(Name = "device")]
-        public string ProfileName { get; set; }
+        public string ProfileName { get; set; } = null!;
 
         /// <summary>
         /// Optional die Quelle.
         /// </summary>
         [DataMember(Name = "station")]
-        public string Source { get; set; }
+        public string Source { get; set; } = null!;
 
         /// <summary>
         /// Optional der Startzeitpunkt.
@@ -29,7 +29,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [DataMember(Name = "start")]
         public string StartISO
         {
-            get { return Start.HasValue ? Start.Value.ToString("o") : null; }
+            get { return Start.HasValue ? Start.Value.ToString("o") : null!; }
             set { Start = string.IsNullOrEmpty(value) ? default(DateTime?) : DateTime.Parse(value, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind); }
         }
 
@@ -42,13 +42,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Das Suchmuster für den Titel, das erste Zeichen bestimmt den Suchmodus.
         /// </summary>
         [DataMember(Name = "title")]
-        public string TitlePattern { get; set; }
+        public string TitlePattern { get; set; } = null!;
 
         /// <summary>
         /// Das Suchmuster für den Inhalt, das erste Zeichen bestimmt den Suchmodus.
         /// </summary>
         [DataMember(Name = "content")]
-        public string ContentPattern { get; set; }
+        public string ContentPattern { get; set; } = null!;
 
         /// <summary>
         /// Die gewünschte Seitengröße.
@@ -79,7 +79,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="filter">Die externe Darstellung des Filters.</param>
         /// <returns>Die gewünschte Repräsentation.</returns>
-        public static GuideEntryFilter Translate(GuideFilter filter)
+        public static GuideEntryFilter? Translate(GuideFilter filter)
         {
             // None
             if (filter == null)
@@ -92,7 +92,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new GuideEntryFilter
                 {
-                    Source = (source == null) ? null : source.Source,
+                    Source = source?.Source!,
                     SourceEncryption = filter.SourceEncryption,
                     ContentPattern = filter.ContentPattern,
                     TitlePattern = filter.TitlePattern,

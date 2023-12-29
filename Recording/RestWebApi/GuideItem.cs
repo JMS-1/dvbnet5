@@ -35,19 +35,19 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der Name der Sendung.
         /// </summary>
         [DataMember(Name = "name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Die Sprache der Sendung.
         /// </summary>
         [DataMember(Name = "language")]
-        public string Language { get; set; }
+        public string Language { get; set; } = null!;
 
         /// <summary>
         /// Der Sender, auf dem die Sendung empfangen wird.
         /// </summary>
         [DataMember(Name = "station")]
-        public string Station { get; set; }
+        public string Station { get; set; } = null!;
 
         /// <summary>
         /// Der Startzeitpunkt der Sendung.
@@ -63,25 +63,25 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Die Liste der Freigaben.
         /// </summary>
         [DataMember(Name = "ratings")]
-        public string[] Ratings { get; set; }
+        public string[] Ratings { get; set; } = null!;
 
         /// <summary>
         /// Die Liste der Kategorien.
         /// </summary>
         [DataMember(Name = "categories")]
-        public string[] Categories { get; set; }
+        public string[] Categories { get; set; } = null!;
 
         /// <summary>
         /// Die Langbeschreibung der Sendung.
         /// </summary>
         [DataMember(Name = "description")]
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
         /// <summary>
         /// Die Kurzbeschreibung der Sendung.
         /// </summary>
         [DataMember(Name = "shortDescription")]
-        public string Summary { get; set; }
+        public string Summary { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn das Ende in der Zukunft liegt.
@@ -93,7 +93,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Die eindeutige Kennung.
         /// </summary>
         [DataMember(Name = "id")]
-        public string Identifier { get; set; }
+        public string Identifier { get; set; } = null!;
 
         /// <summary>
         /// Erstellt einen neuen Eintrag für die Programmzeitschrift.
@@ -114,7 +114,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new GuideItem
                 {
-                    Identifier = $"{entry.StartTime.Ticks}:{profileName}:{SourceIdentifier.ToString(entry.Source).Replace(" ", "")}",
+                    Identifier = $"{entry.StartTime.Ticks}:{profileName}:{SourceIdentifier.ToString(entry.Source)!.Replace(" ", "")}",
                     Station = (source == null) ? entry.StationName : source.GetUniqueName(),
                     Duration = TimeSpan.FromSeconds(entry.Duration),
                     Categories = entry.Categories.ToArray(),

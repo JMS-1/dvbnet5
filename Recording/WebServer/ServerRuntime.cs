@@ -167,7 +167,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             ParseUniqueWebId(id, out Guid jobID, out Guid scheduleID);
 
             // Find the job
-            job = VCRServer.FindJob(jobID);
+            job = VCRServer.FindJob(jobID)!;
 
             // Report schedule if job exists
             if (job == null)

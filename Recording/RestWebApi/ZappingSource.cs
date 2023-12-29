@@ -13,12 +13,12 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Die eindeutige Kennung der Quelle.
         /// </summary>
         [DataMember(Name = "source")]
-        public string Source { get; set; }
+        public string Source { get; set; } = null!;
 
         /// <summary>
         /// Führt individuelle Initialisierungen aus.
         /// </summary>
         /// <param name="station">Die Informationen zur Quelle.</param>
-        protected override void OnCreate(Station station) => Source = SourceIdentifier.ToString(station).Replace(" ", "");
+        protected override void OnCreate(Station station) => Source = SourceIdentifier.ToString(station)!.Replace(" ", "");
     }
 }

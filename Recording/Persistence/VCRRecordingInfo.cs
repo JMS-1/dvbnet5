@@ -200,7 +200,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Meldet die zugeh�rige Quelle, so wie sie im aktuellen Ger�teprofil bekannt ist.
         /// </summary>
         [XmlIgnore]
-        public SourceSelection CurrentSource => VCRProfiles.FindSource(Source);
+        public SourceSelection? CurrentSource => VCRProfiles.FindSource(Source);
 
         /// <summary>
         /// Erstellt eine exakte Kopie dieser Aufzeichnungsinformation.
@@ -499,7 +499,7 @@ namespace JMS.DVB.NET.Recording.Persistence
             var schedule = definition.Context;
 
             // Find the source
-            var source = schedule.Source ?? job.Source;
+            var source = schedule.Source ?? job!.Source;
             if (source != null)
             {
                 // Create a clone
@@ -515,13 +515,13 @@ namespace JMS.DVB.NET.Recording.Persistence
             var recording =
                 new VCRRecordingInfo
                 {
-                    Streams = (schedule.Source == null) ? job.Streams : schedule.Streams,
+                    Streams = (schedule.Source == null) ? job!.Streams : schedule.Streams,
                     ScheduleUniqueID = schedule.UniqueID,
                     IsHidden = planItem.Resource == null,
                     StartsLate = planItem.StartsLate,
                     StartsAt = planItem.Time.Start,
                     EndsAt = planItem.Time.End,
-                    JobUniqueID = job.UniqueID,
+                    JobUniqueID = job!.UniqueID,
                     RelatedSchedule = schedule,
                     FileName = job.Directory,
                     Name = definition.Name,
@@ -561,7 +561,7 @@ namespace JMS.DVB.NET.Recording.Persistence
 
             // May want to disable the program guide
             var streams = Streams.Clone();
-            var disableProgramGuide = profile.ScanConfiguration.GetFilter(source.Source).DisableProgramGuide;
+            var disableProgramGuide = profile!.ScanConfiguration.GetFilter(source.Source).DisableProgramGuide;
             if (disableProgramGuide)
                 streams.ProgramGuide = false;
 

@@ -14,7 +14,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der Anzeigename der Quelle.
         /// </summary>
         [DataMember(Name = "nameWithProvider")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn die Quelle verschlüsselt ist.

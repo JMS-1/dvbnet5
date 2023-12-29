@@ -20,14 +20,14 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             // Check mode
             var split = pattern.IndexOf('-');
             if (split < 0)
-                return null;
+                return null!;
 
             // Split pattern
             var start = new DateTime(long.Parse(pattern.Substring(0, split)) * Tools.UnixTimeFactor + Tools.UnixTimeBias, DateTimeKind.Utc);
             var end = new DateTime(long.Parse(pattern.Substring(split + 1)) * Tools.UnixTimeFactor + Tools.UnixTimeBias, DateTimeKind.Utc);
 
             // Forward
-            return ServerRuntime.VCRServer.FindProgramGuideEntry(profile, SourceIdentifier.Parse(source), start, end, GuideItem.Create);
+            return ServerRuntime.VCRServer.FindProgramGuideEntry(profile, SourceIdentifier.Parse(source), start, end, GuideItem.Create)!;
         }
 
         /// <summary>

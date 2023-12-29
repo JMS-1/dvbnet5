@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿#pragma warning disable SYSLIB1054 // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
+
+using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +34,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Die exakte Version der Installation.
         /// </summary>
-        private static volatile string _InstalledVersion = null;
+        private static volatile string _InstalledVersion = null!;
 
         /// <summary>
         /// Sorgt dafür, dass die Version nur einmalig ermittelt wird.
@@ -141,7 +143,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         private static IEnumerable<string> ScanDirectory(string directory)
         {
             // See if the directory is valid
-            DirectoryInfo info;
+            DirectoryInfo? info;
             try
             {
                 // Create
@@ -161,7 +163,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             yield return info.FullName;
 
             // Get the sub directories
-            string[] children;
+            string[]? children;
             try
             {
                 // Try if directory exists

@@ -14,13 +14,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der Name des Dienstes.
         /// </summary>
         [DataMember(Name = "nameWithIndex")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Die eindeutige Kennung.
         /// </summary>
         [DataMember(Name = "source")]
-        public string Source { get; set; }
+        public string Source { get; set; } = null!;
 
         /// <summary>
         /// Die laufende Nummer dieses Dienstes.
@@ -68,7 +68,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new ZappingService
                 {
-                    Source = SourceIdentifier.ToString(service.Service).Replace(" ", ""),
+                    Source = SourceIdentifier.ToString(service.Service)!.Replace(" ", ""),
                     Index = GetServiceIndex(service.UniqueName),
                     Name = service.UniqueName
                 };

@@ -16,13 +16,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Der optionale Name der Aufzeichnung.
         /// </summary>
         [DataMember(Name = "name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Der optionale Name der Quelle, von der aufgezeichnet werden soll.
         /// </summary>
         [DataMember(Name = "sourceName")]
-        public string Source { get; set; }
+        public string Source { get; set; } = null!;
 
         /// <summary>
         /// Falls <see cref="Source"/> definiert ist wird diese Eigenschaft gesetzt
@@ -88,7 +88,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [DataMember(Name = "lastDay")]
         public string LastDayISO
         {
-            get { return RepeatPattern.HasValue ? LastDay.Date.ToString("o") : null; }
+            get { return RepeatPattern.HasValue ? LastDay.Date.ToString("o") : null!; }
             set { LastDay = string.IsNullOrEmpty(value) ? DateTime.MinValue : DateTime.Parse(value, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind).Date; }
         }
 
@@ -115,7 +115,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public EditSchedule()
         {
             // Finish
-            Exceptions = new PlanException[0];
+            Exceptions = [];
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="job">Der bereits vorhandene Auftrag.</param>
         /// <param name="guide">Ein Eintrag aus der Programmzeitschrift.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public static EditSchedule Create(VCRSchedule schedule, VCRJob job, ProgramGuideEntry guide)
+        public static EditSchedule? Create(VCRSchedule schedule, VCRJob job, ProgramGuideEntry guide)
         {
             // None
             if (schedule == null)
@@ -224,7 +224,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 return schedule;
 
             // Locate the source
-            schedule.Source = ServerRuntime.VCRServer.FindSource(jobSource.ProfileName, sourceName);
+            schedule.Source = ServerRuntime.VCRServer.FindSource(jobSource.ProfileName, sourceName)!;
             if (schedule.Source == null)
                 return schedule;
 

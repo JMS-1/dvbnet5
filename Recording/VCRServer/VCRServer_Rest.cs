@@ -230,7 +230,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="filterConverter">Methode zur Wandlung des Filters in die interne Darstellung.</param>
         /// <param name="factory">Erstellt die externe Repr�sentation eines Eintrags.</param>
         /// <returns>Die Liste aller passenden Eintr�ge.</returns>
-        public TEntry[] GetProgramGuideEntries<TFilter, TEntry>(TFilter filter, Func<TFilter, GuideEntryFilter> filterConverter, Func<ProgramGuideEntry, string, TEntry> factory) where TFilter : class
+        public TEntry[] GetProgramGuideEntries<TFilter, TEntry>(TFilter filter, Func<TFilter, GuideEntryFilter?> filterConverter, Func<ProgramGuideEntry, string, TEntry> factory) where TFilter : class
         {
             // Validate filter
             if (filter == null)
@@ -240,7 +240,7 @@ namespace JMS.DVB.NET.Recording
             var filterIntern = filterConverter(filter);
 
             // Locate profile and forward call
-            var profileName = filterIntern.ProfileName;
+            var profileName = filterIntern!.ProfileName;
             if (string.IsNullOrEmpty(profileName))
                 return new TEntry[0];
             var profile = FindProfile(profileName);
@@ -257,7 +257,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="filter">Der Filter in der externen Darstellung.</param>
         /// <param name="filterConverter">Methode zur Wandlung des Filters in die interne Darstellung.</param>
         /// <returns>Die Anzahl der passenden Eintr�ge.</returns>
-        public int GetProgramGuideEntries<TFilter>(TFilter filter, Func<TFilter, GuideEntryFilter> filterConverter) where TFilter : class
+        public int GetProgramGuideEntries<TFilter>(TFilter filter, Func<TFilter, GuideEntryFilter?> filterConverter) where TFilter : class
         {
             // Validate filter
             if (filter == null)
@@ -267,7 +267,7 @@ namespace JMS.DVB.NET.Recording
             var filterIntern = filterConverter(filter);
 
             // Locate profile and forward call
-            var profileName = filterIntern.ProfileName;
+            var profileName = filterIntern!.ProfileName;
             if (string.IsNullOrEmpty(profileName))
                 return 0;
             var profile = FindProfile(profileName);

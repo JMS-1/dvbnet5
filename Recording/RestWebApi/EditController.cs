@@ -29,7 +29,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             job.Schedules.Add(schedule);
 
             // Process
-            ServerRuntime.VCRServer.UpdateJob(job, schedule.UniqueID.Value);
+            ServerRuntime.VCRServer.UpdateJob(job, schedule.UniqueID!.Value);
 
             // Update recently used channels
             UserProfileSettings.AddRecentChannel(data.Job.Source);
@@ -46,7 +46,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="epg">Informationen zu einem Eintrag aus der Programmzeitschrift.</param>
         /// <returns>Die Daten zur gewünschten Aufzeichnung.</returns>
         [HttpGet]
-        public JobScheduleInfo FindJob(string detail, string epg = null)
+        public JobScheduleInfo FindJob(string detail, string epg = null!)
         {
             // May need to recreate the identifier
             if (detail.StartsWith("*"))
@@ -59,8 +59,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var schedule = ServerRuntime.ParseUniqueWebId(detail, out VCRJob job);
 
             // See if we have to initialize from program guide
-            ProgramGuideEntry epgEntry = null;
-            string profile = null;
+            ProgramGuideEntry? epgEntry = null;
+            string profile = null!;
             if (!string.IsNullOrEmpty(epg))
             {
                 // Get parts
@@ -71,7 +71,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             }
 
             // Information erzeugen
-            return JobScheduleInfo.Create(job, schedule, epgEntry, profile);
+            return JobScheduleInfo.Create(job, schedule!, epgEntry!, profile);
         }
 
         /// <summary>
@@ -90,8 +90,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 throw new ArgumentException("Job or Schedule not found");
 
             // Take the new job data
-            var newJob = data.Job.CreateJob(job.UniqueID.Value);
-            var newSchedule = data.Schedule.CreateSchedule(schedule.UniqueID.Value, newJob);
+            var newJob = data.Job.CreateJob(job.UniqueID!.Value);
+            var newSchedule = data.Schedule.CreateSchedule(schedule.UniqueID!.Value, newJob);
 
             // All exceptions still active
             var activeExceptions = data.Schedule.Exceptions ?? Enumerable.Empty<PlanException>();
@@ -111,7 +111,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             newJob.Schedules.Add(newSchedule);
 
             // Send to persistence
-            ServerRuntime.VCRServer.UpdateJob(newJob, newSchedule.UniqueID.Value);
+            ServerRuntime.VCRServer.UpdateJob(newJob, newSchedule.UniqueID!.Value);
 
             // Update recently used channels
             UserProfileSettings.AddRecentChannel(data.Job.Source);
@@ -159,7 +159,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 throw new ArgumentException("Job not found");
 
             // Take the new job data
-            var newJob = data.Job.CreateJob(job.UniqueID.Value);
+            var newJob = data.Job.CreateJob(job.UniqueID!.Value);
             var newSchedule = data.Schedule.CreateSchedule(newJob);
 
             // See if we can use it
@@ -173,7 +173,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             newJob.Schedules.Add(newSchedule);
 
             // Send to persistence
-            ServerRuntime.VCRServer.UpdateJob(newJob, newSchedule.UniqueID.Value);
+            ServerRuntime.VCRServer.UpdateJob(newJob, newSchedule.UniqueID!.Value);
 
             // Update recently used channels
             UserProfileSettings.AddRecentChannel(data.Job.Source);
