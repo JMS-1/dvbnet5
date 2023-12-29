@@ -118,7 +118,7 @@ namespace JMS.DVB.NET.Recording
                     internalJob.Delete(JobDirectory);
 
                     // Remove from map
-                    m_Jobs.Remove(internalJob.UniqueID.Value);
+                    m_Jobs.Remove(internalJob.UniqueID!.Value);
 
                     // Save to file
                     internalJob.Save(ArchiveDirectory);
@@ -139,13 +139,13 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="jobIdentifier">Die eindeutige Kennung des Auftrags.</param>
         /// <returns>Ein aktiver Auftrag oder <i>null</i>.</returns>
-        public VCRJob this[Guid jobIdentifier]
+        public VCRJob? this[Guid jobIdentifier]
         {
             get
             {
                 // Cut off
                 lock (m_Jobs)
-                    if (m_Jobs.TryGetValue(jobIdentifier, out VCRJob result))
+                    if (m_Jobs.TryGetValue(jobIdentifier, out var result))
                         return result;
 
                 // Report
@@ -160,9 +160,10 @@ namespace JMS.DVB.NET.Recording
         /// <param name="scheduleIdentifier">Die eindeutige Kennung der veränderten Aufzeichnung.</param>
         public void Update(VCRJob job, Guid? scheduleIdentifier)
         {
+            ArgumentNullException.ThrowIfNull(job, nameof(job));
+
             // Report
-            if (job != null)
-                Tools.ExtendedLogging("Updating Job {0}", job.UniqueID);
+            Tools.ExtendedLogging("Updating Job {0}", job.UniqueID!);
 
             // Load default profile name
             job.SetProfile();
@@ -179,9 +180,9 @@ namespace JMS.DVB.NET.Recording
             // Try to store to disk - actually this is inside the lock because the directory virtually is part of our map
             lock (m_Jobs)
                 if (job.Save(JobDirectory).GetValueOrDefault())
-                    m_Jobs[job.UniqueID.Value] = job;
+                    m_Jobs[job.UniqueID!.Value] = job;
                 else
-                    throw new ArgumentException(string.Format("Die Datei zum Auftrag {0} kann nicht geschrieben werden", job.UniqueID), "job");
+                    throw new ArgumentException(string.Format("Die Datei zum Auftrag {0} kann nicht geschrieben werden", job.UniqueID), nameof(job));
         }
 
         /// <summary>
@@ -190,10 +191,10 @@ namespace JMS.DVB.NET.Recording
         /// <param name="jobIdentifier">Die Kennung des Auftrags.</param>
         /// <returns>Der gewünschte Auftrag oder <i>null</i>, wenn kein derartiger
         /// Auftrag existiert.</returns>
-        public VCRJob FindJob(Guid jobIdentifier)
+        public VCRJob? FindJob(Guid jobIdentifier)
         {
             // The result
-            VCRJob result = null;
+            VCRJob? result = null;
 
             // Synchronize
             lock (m_Jobs)
@@ -306,7 +307,7 @@ namespace JMS.DVB.NET.Recording
                     return
                         ArchiveDirectory
                         .GetFiles("*" + VCRJob.FileSuffix)
-                        .Select(file =>
+                        .Select<FileInfo, VCRJob>(file =>
                             {
                                 // Load
                                 var job = SerializationTools.Load<VCRJob>(file);
@@ -317,7 +318,7 @@ namespace JMS.DVB.NET.Recording
                                         job.SetProfile(profile.Name);
 
                                 // Report
-                                return job;
+                                return job!;
                             })
                         .Where(job => job != null)
                         .ToArray();

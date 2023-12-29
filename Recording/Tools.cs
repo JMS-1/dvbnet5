@@ -1,7 +1,8 @@
+#pragma warning disable CA1416 // Validate platform compatibility
+
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
-using Microsoft.Win32;
 
 namespace JMS.DVB.NET.Recording
 {
@@ -33,7 +34,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Die Konfiguration zur aktuellen Anwendung.
         /// </summary>
-        public static volatile Configuration m_ApplicationConfiguration;
+        public static volatile Configuration m_ApplicationConfiguration = null!;
 
         /// <summary>
         /// Die Konfiguration zur aktuellen Anwendung.
@@ -56,14 +57,9 @@ namespace JMS.DVB.NET.Recording
         public static bool EnableTracing = false;
 
         /// <summary>
-        /// Der Registryeintrag f�r die erweiterte Protokollierung in eine Datei.
-        /// </summary>
-        private static RegistryKey m_ExtendedLogging;
-
-        /// <summary>
         /// Eine Kurzbezeichnung f�r die aktuelle Laufzeitumgebung f�r Protokolleintr�ge.
         /// </summary>
-        public static string DomainName;
+        public static string DomainName = null!;
 
         /// <summary>
         /// Initialisiert die statischen Variablen.
@@ -91,11 +87,10 @@ namespace JMS.DVB.NET.Recording
                 var temp = Path.Combine(Path.GetTempPath(), "VCR.NET Recording Service.jlg");
 
                 // Open stream
-                using (var writer = new StreamWriter(temp, true, Encoding.Unicode))
-                {
-                    // Report
-                    writer.WriteLine("{0} Fatal Abort at {2}: {1}", DateTime.Now, e, context);
-                }
+                using var writer = new StreamWriter(temp, true, Encoding.Unicode);
+
+                // Report
+                writer.WriteLine("{0} Fatal Abort at {2}: {1}", DateTime.Now, e, context);
             }
             catch
             {
@@ -119,7 +114,7 @@ namespace JMS.DVB.NET.Recording
                         return;
 
                 // Forward
-                InternalLog(path, string.Format(format, args));
+                InternalLog(path!, string.Format(format, args));
             }
             catch (Exception e)
             {
@@ -149,7 +144,7 @@ namespace JMS.DVB.NET.Recording
                         return;
 
                 // Forward
-                InternalLog(path, message);
+                InternalLog(path!, message);
             }
             catch (Exception e)
             {
@@ -215,7 +210,7 @@ namespace JMS.DVB.NET.Recording
         {
             // Create it
             if (!String.IsNullOrEmpty(fullPath))
-                Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
         }
 
         /// <summary>
@@ -237,7 +232,7 @@ namespace JMS.DVB.NET.Recording
             try
             {
                 // Read it
-                var value = (string)VCRServer.ServiceRegistry.GetValue(name);
+                var value = (string)VCRServer.ServiceRegistry.GetValue(name)!;
                 if (string.IsNullOrEmpty(value))
                     return null;
 
@@ -287,7 +282,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="extension">Die gew�nschte Erweiterung.</param>
         /// <param name="environment">Parameter f�r die Erweiterung.</param>
         /// <returns>Der gestartete Prozess oder <i>null</i>, wenn ein Start nicht m�glich war.</returns>
-        public static Process RunExtension(FileInfo extension, Dictionary<string, string> environment)
+        public static Process? RunExtension(FileInfo extension, Dictionary<string, string> environment)
         {
             // Be safe
             try
@@ -377,7 +372,7 @@ namespace JMS.DVB.NET.Recording
         public static IEnumerable<FileInfo> GetExtensions(string extensionType)
         {
             // Get the path
-            var root = new DirectoryInfo(Path.Combine(ApplicationDirectory.Parent.FullName, "Server Extensions"));
+            var root = new DirectoryInfo(Path.Combine(ApplicationDirectory.Parent!.FullName, "Server Extensions"));
             if (!root.Exists)
                 yield break;
 
@@ -448,7 +443,7 @@ namespace JMS.DVB.NET.Recording
             foreach (var running in extensions.Select(extension => RunExtension(extension, environment)).Where(process => process != null))
             {
                 // Report
-                Tools.ExtendedLogging("Started Extension Process {0}", running.Id);
+                Tools.ExtendedLogging("Started Extension Process {0}", running!.Id);
 
                 // Remember if sucessfully started
                 yield return running;

@@ -12,7 +12,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Der volle Name der Datei.
         /// </summary>
         [XmlText]
-        public string Path { get; set; }
+        public string Path { get; set; } = null!;
 
         /// <summary>
         /// Das Format des Bildsignals.
@@ -24,7 +24,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Die eindeutige Kennung der zugeh�rigen Aufzeichnung.
         /// </summary>
         [XmlAttribute("schedule")]
-        public string ScheduleIdentifier { get; set; }
+        public string ScheduleIdentifier { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt eine Beschreibung aus der DVB.NET Repr�sentation.
@@ -36,7 +36,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         {
             // Validate
             if (file == null)
-                throw new ArgumentNullException("file");
+                throw new ArgumentNullException(nameof(file));
             else
                 return new FileInformation { VideoType = file.VideoType, Path = file.FilePath, ScheduleIdentifier = scheduleIdentifier.ToString("N").ToLower() };
         }
@@ -59,7 +59,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// </summary>
         /// <param name="obj">Eine andere Beschreibung.</param>
         /// <returns>Gesetzt, wenn die Beschreibungen v�llig identisch sind.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             // Check type
             var other = obj as FileInformation;

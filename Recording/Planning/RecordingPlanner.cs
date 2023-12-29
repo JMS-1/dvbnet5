@@ -108,24 +108,21 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <summary>
         /// Beendet die Nutzung dieser Instanz endgültig.
         /// </summary>
-        public void Dispose()
-        {
-            (Interlocked.Exchange(ref m_manager, null))?.Dispose();
-        }
+        public void Dispose() => Interlocked.Exchange(ref m_manager!, null)?.Dispose();
 
         /// <summary>
         /// Ermittelt zu einem Geräteprofil die zugehörige Ressourcenverwaltung.
         /// </summary>
         /// <param name="profileName">Der Name des Geräteprofils.</param>
         /// <returns>Die zugehörige Ressource, sofern bekannt.</returns>
-        public IScheduleResource GetResourceForProfile(string profileName)
+        public IScheduleResource? GetResourceForProfile(string profileName)
         {
             // None
             if (string.IsNullOrEmpty(profileName))
                 return null;
 
             // Ask map
-            if (m_resources.TryGetValue(profileName, out IScheduleResource resource))
+            if (m_resources.TryGetValue(profileName, out var resource))
                 return resource;
 
             // Not found
@@ -157,7 +154,7 @@ namespace JMS.DVB.NET.Recording.Planning
             for (var skipped = new HashSet<Guid>(); ;)
             {
                 // The plan context we created
-                PlanContext context = null;
+                PlanContext? context = null;
 
                 // Request activity - we only look 200 plan items into the future to reduce execution time at least a bit
                 var activity = m_manager.GetNextActivity(referenceTime, (scheduler, time) => context = GetPlan(scheduler, time, skipped.Contains, 200));
@@ -195,7 +192,7 @@ namespace JMS.DVB.NET.Recording.Planning
                     }
 
                     // Forward to site
-                    m_site.Start(schedule, this, context);
+                    m_site.Start(schedule, this, context!);
 
                     // Done
                     return;
@@ -206,7 +203,7 @@ namespace JMS.DVB.NET.Recording.Planning
                 if (stop != null)
                 {
                     // Lookup the item and report to site
-                    if (!m_started.TryGetValue(stop.UniqueIdentifier, out ScheduleInformation schedule))
+                    if (!m_started.TryGetValue(stop.UniqueIdentifier, out var schedule))
                         return;
 
                     // Report to site
@@ -280,7 +277,7 @@ namespace JMS.DVB.NET.Recording.Planning
                 return false;
 
             // See if we know it
-            if (!m_started.TryGetValue(itemIdentifier, out ScheduleInformation started))
+            if (!m_started.TryGetValue(itemIdentifier, out var started))
                 return true;
 
             // Try to get the new schedule data
@@ -326,7 +323,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="referenceTime">Der Bezugspunkt für die Planung.</param>
         /// <returns>Die Liste der nächsten Aufzeichnungen.</returns>
-        public PlanContext GetPlan(DateTime referenceTime) => GetPlan(m_manager.CreateScheduler(false), referenceTime, null, 1000);
+        public PlanContext GetPlan(DateTime referenceTime) => GetPlan(m_manager.CreateScheduler(false), referenceTime, null!, 1000);
 
         /// <summary>
         /// Entfernt alle aktiven Aufzeichnungen.

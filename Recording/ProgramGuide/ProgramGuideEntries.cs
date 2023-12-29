@@ -50,8 +50,8 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             var key = newEvent.Source;
 
             // Attach to holder
-            if (!m_Events.TryGetValue(key, out OrderedEntries events))
-                m_Events.Add(key, events = new OrderedEntries());
+            if (!m_Events.TryGetValue(key, out var events))
+                m_Events.Add(key, events = new());
 
             // Forward
             events.Add(newEvent);
@@ -67,7 +67,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         public bool HasEntry(SourceIdentifier source, DateTime start, DateTime end)
         {
             // Attach to holder
-            if (m_Events.TryGetValue(source, out OrderedEntries events))
+            if (m_Events.TryGetValue(source, out var events))
                 return events.HasEntry(start, end);
             else
                 return false;
@@ -85,10 +85,10 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         public TTarget FindBestEntry<TTarget>(SourceIdentifier source, DateTime start, DateTime end, Func<ProgramGuideEntry, TTarget> factory)
         {
             // Attach to holder
-            if (m_Events.TryGetValue(source, out OrderedEntries events))
+            if (m_Events.TryGetValue(source, out var events))
                 return events.FindBestEntry(start, end, factory);
             else
-                return default(TTarget);
+                return default!;
         }
 
         /// <summary>
@@ -97,10 +97,10 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <param name="source">Die Quelle, deren Eintrag ermittelt werden soll.</param>
         /// <param name="start">Der exakte Startzeitpunkt.</param>
         /// <returns>Der gew�nschte Eintrag.</returns>
-        public ProgramGuideEntry FindEntry(SourceIdentifier source, DateTime start)
+        public ProgramGuideEntry? FindEntry(SourceIdentifier source, DateTime start)
         {
             // Attach to holder
-            if (m_Events.TryGetValue(source, out OrderedEntries events))
+            if (m_Events.TryGetValue(source, out var events))
                 return events.FindEntry(start);
             else
                 return null;
@@ -170,7 +170,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         public IEnumerable<ProgramGuideEntry> GetEntries(SourceIdentifier source)
         {
             // Load list
-            if (!m_Events.TryGetValue(source, out OrderedEntries entries))
+            if (!m_Events.TryGetValue(source, out var entries))
                 yield break;
 
             // Process all as long as caller needs it

@@ -25,7 +25,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Gesetzt, wenn der Übergang in den Schlafzustand verboten ist.
         /// </summary>
-        private IDisposable m_forbidHibernation;
+        private IDisposable m_forbidHibernation = null!;
 
         /// <summary>
         /// Startet Erweiterungen und ergänzt die zugehörigen Prozesse in der Verwaltung.
@@ -77,7 +77,7 @@ namespace JMS.DVB.NET.Recording
             // Release hibernation lock
             lock (m_activeProcesses)
                 using (m_forbidHibernation)
-                    m_forbidHibernation = null;
+                    m_forbidHibernation = null!;
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace JMS.DVB.NET.Recording
                 // May want to change hibernation
                 if (m_activeProcesses.Count < 1)
                     using (m_forbidHibernation)
-                        m_forbidHibernation = null;
+                        m_forbidHibernation = null!;
                 else if (m_forbidHibernation == null)
                     if (!m_isSuspended)
                         m_forbidHibernation = null!; // PowerManager.StartForbidHibernation();

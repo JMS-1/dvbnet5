@@ -13,7 +13,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <summary>
         /// Beschreibt den Zugriff zum Starten der Sammlung der Programmzeitschrift.
         /// </summary>
-        private IAsyncResult m_startPending;
+        private IAsyncResult m_startPending = null!;
 
         /// <summary>
         /// Beschreibt, welche Erweiterungen der Programmzeitschrift auch ausgewertet werden sollen.
@@ -60,7 +60,7 @@ namespace JMS.DVB.NET.Recording.Requests
                     continue;
 
                 // Locate
-                if (allSources.TryGetValue(legacyName, out SourceSelection realSource))
+                if (allSources.TryGetValue(legacyName, out var realSource))
                     m_selected.Add(realSource.Source);
                 else
                     VCRServer.Log(LoggingLevel.Full, "Quelle '{0}' unbekannt: es wird keine Programmzeitschrift ermittelt", legacyName);
@@ -119,7 +119,7 @@ namespace JMS.DVB.NET.Recording.Requests
         {
             // See if we are finished
             if (state.ProgramGuideProgress.GetValueOrDefault(0) >= 1)
-                ChangeEndTime(Representative.ScheduleUniqueID.Value, DateTime.UtcNow.AddDays(-1), false);
+                ChangeEndTime(Representative.ScheduleUniqueID!.Value, DateTime.UtcNow.AddDays(-1), false);
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace JMS.DVB.NET.Recording.Requests
         protected override void OnEndRecording(Guid scheduleIdentifier)
         {
             // Must be us
-            if (scheduleIdentifier != Representative.ScheduleUniqueID.Value)
+            if (scheduleIdentifier != Representative.ScheduleUniqueID!.Value)
                 return;
 
             // Set early to make sure that planner will not re-run immediately
@@ -179,7 +179,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 if (source == null)
                 {
                     // Load default
-                    epg.StationName = item.Source.ToString();
+                    epg.StationName = item.Source.ToString()!;
                 }
                 else
                 {

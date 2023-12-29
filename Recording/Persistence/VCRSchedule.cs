@@ -57,12 +57,12 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Die gew�nschte Quelle.
         /// </summary>
-        public SourceSelection Source { get; set; }
+        public SourceSelection Source { get; set; } = null!;
 
         /// <summary>
         /// Die Datenstr�me, die aufgezeichnet werden sollen.
         /// </summary>
-        public StreamSelection Streams { get; set; }
+        public StreamSelection Streams { get; set; } = null!;
 
         /// <summary>
         /// Dauer der Aufzeichung in Minuten.
@@ -72,7 +72,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Optionaler Name der Aufzeichnung.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Maske zur Definition des Wiederholungsinterfalls.
@@ -140,7 +140,7 @@ namespace JMS.DVB.NET.Recording.Persistence
                 throw new InvalidJobDataException("Die Aufzeichnungsoptionen sind ung�ltig");
 
             // Station
-            if (!job.HasSource)
+            if (!job!.HasSource)
                 if (Source == null)
                     throw new InvalidJobDataException("Wenn einem Auftrag keine Quelle zugeordnet ist, so m�ssen alle Aufzeichnungen eine solche festlegen");
 
@@ -259,7 +259,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <param name="day">Der gew�nschte Tag.</param>
         /// <returns>Die Ausnahme f�r diesen Tag oder <i>null</i>, wenn eine regul�re Aufzeichnung ausgef�hrt
         /// werden soll.</returns>
-        public VCRScheduleException GetException(DateTime day)
+        public VCRScheduleException? GetException(DateTime day)
         {
             // Forward
             var date = day.Date;
@@ -271,7 +271,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// </summary>
         /// <param name="recordingEnd">Der Endzeitpunkt einer Aufzeichnung.</param>
         /// <returns>Die zugeh�rige Ausnahmeregel.</returns>
-        public VCRScheduleException FindException(DateTime recordingEnd)
+        public VCRScheduleException? FindException(DateTime recordingEnd)
         {
             // Not repeating
             if (!Days.HasValue)
@@ -341,7 +341,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Erstellt die Liste der Tage, an denen eine Aufzeichnung wiederholt werden soll.
         /// </summary>
         /// <returns>Die gew�nschte Liste oder <i>null</i>, falls keinerlei Wiederholung erw�nscht ist.</returns>
-        private DayOfWeek[] CreateRepeatPattern()
+        private DayOfWeek[]? CreateRepeatPattern()
         {
             // Load pattern
             if (!IsRepeatable)
@@ -349,7 +349,7 @@ namespace JMS.DVB.NET.Recording.Persistence
 
             // Create the day pattern
             var repeatPattern = new HashSet<DayOfWeek>();
-            for (int i = 7, mask = 0x40, days = (int)Days.Value; i-- > 0; mask >>= 1)
+            for (int i = 7, mask = 0x40, days = (int)Days!.Value; i-- > 0; mask >>= 1)
                 if ((days & mask) != 0)
                     repeatPattern.Add((DayOfWeek)((i + 1) % 7));
 
@@ -370,7 +370,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <param name="disabled">Alle deaktivierten Auftr�ge.</param>
         /// <param name="context">Die aktuelle Planungsumgebung.</param>
         /// <exception cref="ArgumentNullException">Es wurden nicht alle Parameter angegeben.</exception>
-        public void AddToScheduler(RecordingScheduler scheduler, VCRJob job, IScheduleResource[] devices, Func<SourceSelection, SourceSelection> findSource, Func<Guid, bool> disabled, PlanContext context)
+        public void AddToScheduler(RecordingScheduler scheduler, VCRJob job, IScheduleResource[] devices, Func<SourceSelection, SourceSelection?> findSource, Func<Guid, bool> disabled, PlanContext context)
         {
             // Validate
             if (scheduler == null)
@@ -382,7 +382,7 @@ namespace JMS.DVB.NET.Recording.Persistence
 
             // Let VCR.NET choose a profile to do the work
             if (job.AutomaticResourceSelection)
-                devices = null;
+                devices = null!;
 
             // Create the source selection
             var persistedSource = Source ?? job.Source;
@@ -409,14 +409,14 @@ namespace JMS.DVB.NET.Recording.Persistence
                         };
 
             // See if we are allowed to process
-            var identifier = UniqueID.Value;
+            var identifier = UniqueID!.Value;
             if (disabled != null)
                 if (disabled(identifier))
                     return;
 
             // Load all
             var name = string.IsNullOrEmpty(Name) ? job.Name : $"{job.Name} ({Name})";
-            var source = ProfileScheduleResource.CreateSource(selection);
+            var source = ProfileScheduleResource.CreateSource(selection!);
             var duration = TimeSpan.FromMinutes(Duration);
             var noStartBefore = NoStartBefore;
             var start = FirstStart;

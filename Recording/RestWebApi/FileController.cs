@@ -24,19 +24,19 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Validate path
             if (string.IsNullOrEmpty(path))
-                throw new ArgumentNullException("path");
+                throw new ArgumentNullException(nameof(path));
             if (!path.ToLower().EndsWith(".ts"))
-                throw new ArgumentException(path, "path");
+                throw new ArgumentException(path, nameof(path));
 
             // Check against VCR.NET recording directories
             if (!VCRConfiguration.Current.IsValidTarget(path))
-                throw new ArgumentException(path, "path");
+                throw new ArgumentException(path, nameof(path));
 
             // Validate the slice
             if (offset < 0)
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException(nameof(offset));
             if ((length < 0) || (length > 100000000))
-                throw new ArgumentOutOfRangeException("length");
+                throw new ArgumentOutOfRangeException(nameof(length));
 
             // Validate the IP
             if (string.IsNullOrEmpty(target))
@@ -70,7 +70,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                         // And the maximum number of bytes left
                         var rest = streamSize - offset;
                         if (rest < 0)
-                            throw new ArgumentOutOfRangeException("offset");
+                            throw new ArgumentOutOfRangeException(nameof(offset));
 
                         // None left
                         if (rest == 0)

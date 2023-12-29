@@ -213,7 +213,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 return null;
 
             // Process
-            if (VCRConfiguration.Current.CommitUpdate(settings) || forceRestart)
+            if (VCRConfiguration.CommitUpdate(settings) || forceRestart)
             {
                 // Do not restart in debug mode
                 if (VCRServer.InDebugMode)

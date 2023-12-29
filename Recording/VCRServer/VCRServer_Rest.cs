@@ -156,7 +156,7 @@ namespace JMS.DVB.NET.Recording
         {
             // Validate
             if (fromActive == null)
-                throw new ArgumentNullException("fromActive");
+                throw new ArgumentNullException(nameof(fromActive));
 
             // All profile we know
             var idleProfiles = new HashSet<string>(Profiles.InspectProfiles(profile => profile.ProfileName), ProfileManager.ProfileNameComparer);

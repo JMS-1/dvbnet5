@@ -48,7 +48,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         /// <param name="start">Der exakte Startzeitpunkt.</param>
         /// <returns>Der gew�nschte Eintrag.</returns>
-        public ProgramGuideEntry FindEntry(DateTime start)
+        public ProgramGuideEntry? FindEntry(DateTime start)
         {
             // Find the index
             var ix = m_Events.BinarySearch(new ProgramGuideEntry { StartTime = start });
@@ -128,7 +128,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
 
             // Create response
             if (bestEntry == null)
-                return default(TTarget);
+                return default!;
             else
                 return factory(bestEntry);
         }

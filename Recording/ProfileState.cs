@@ -49,7 +49,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Meldet das zugehörige Geräteprofil.
         /// </summary>
-        public Profile Profile { get { return VCRProfiles.FindProfile(ProfileName); } }
+        public Profile? Profile { get { return VCRProfiles.FindProfile(ProfileName); } }
 
         /// <summary>
         /// Meldet die zugehörige VCR.NET Instanz.
@@ -106,7 +106,7 @@ namespace JMS.DVB.NET.Recording
             // See if we have a current request
             var statusRequest = m_CurrentRequest as ZappingProxy;
             if (statusRequest == null)
-                return factory(null, null);
+                return factory(null!, null!);
             else
                 return statusRequest.CreateStatus(factory);
         }
@@ -148,7 +148,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Der aktuelle Zugriff auf die zugehörige DVB.NET Hardwareabstraktion.
         /// </summary>
-        private volatile CardServerProxy m_CurrentRequest;
+        private volatile CardServerProxy m_CurrentRequest = null!;
 
         /// <summary>
         /// Synchronisiert den Zugriff auf die aktuelle Operation.
@@ -188,7 +188,7 @@ namespace JMS.DVB.NET.Recording
         {
             // Validate
             if (ReferenceEquals(request, null))
-                throw new ArgumentNullException("request");
+                throw new ArgumentNullException(nameof(request));
             if (!ReferenceEquals(request.ProfileState, this))
                 throw new ArgumentException(request.ProfileName, "request.ProfileState");
 
@@ -235,14 +235,14 @@ namespace JMS.DVB.NET.Recording
         {
             // Validate
             if (ReferenceEquals(request, null))
-                throw new ArgumentNullException("request");
+                throw new ArgumentNullException(nameof(request));
 
             // Synchronize
             lock (m_RequestLock)
             {
                 // Process
                 if (ReferenceEquals(m_CurrentRequest, request))
-                    ChangeCurrentRequest(null);
+                    ChangeCurrentRequest(null!);
                 else
                     throw new InvalidOperationException("Wrong Request to End");
 
@@ -270,13 +270,13 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Meldet die aktuelle Aufzeichnung oder <i>null</i>.
         /// </summary>
-        public FullInfo CurrentRecording
+        public FullInfo? CurrentRecording
         {
             get
             {
                 // Report
                 var current = m_CurrentRequest;
-                if (ReferenceEquals(current, null))
+                if (current is null)
                     return null;
                 else
                     return current.CreateFullInformation();
@@ -368,14 +368,14 @@ namespace JMS.DVB.NET.Recording
         /// <param name="newEndTime">Der neue Endzeitpunkt.</param>
         /// <param name="disableHibernation">Gesetzt, wenn der Übergang in den Schlafzustand deaktiviert werden soll.</param>
         /// <returns>Die Aktivität auf dem Geräteprofil, die verändert wurde.</returns>
-        public CardServerProxy ChangeStreamEnd(Guid streamIdentifier, DateTime newEndTime, bool disableHibernation)
+        public CardServerProxy? ChangeStreamEnd(Guid streamIdentifier, DateTime newEndTime, bool disableHibernation)
         {
             // Be safe
             lock (m_RequestLock)
             {
                 // Attach to current request
                 var current = m_CurrentRequest;
-                if (ReferenceEquals(current, null))
+                if (current is null)
                     return null;
 
                 // Make sure that job is not restarted

@@ -15,7 +15,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <summary>
         /// Das Verzeichnis, in dem temporäre Dateien während der Sammlung abgelegt werden können.
         /// </summary>
-        public DirectoryInfo CollectorDirectory { get; private set; }
+        public DirectoryInfo CollectorDirectory { get; private set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Verwaltung.
@@ -33,7 +33,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="forResource">Das Geräteprofil, auf dem der Lauf erfolgen soll.</param>
         /// <param name="lastUpdate">Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.</param>
         public SourceListTask(IScheduleResource forResource, Func<DateTime?> lastUpdate)
-            : this(forResource, null, lastUpdate)
+            : this(forResource, null!, lastUpdate)
         {
         }
 

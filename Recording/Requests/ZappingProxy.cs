@@ -17,7 +17,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <summary>
         /// Die letzen Zustandsinformationen.
         /// </summary>
-        private volatile ServerInformation m_lastState;
+        private volatile ServerInformation m_lastState = null!;
 
         /// <summary>
         /// Erstellt einen neuen Zugriff.
@@ -76,7 +76,7 @@ namespace JMS.DVB.NET.Recording.Requests
         public override void ChangeEndTime(Guid streamIdentifier, DateTime newEndTime, bool disableHibernation)
         {
             // Check for us
-            if (streamIdentifier != Representative.ScheduleUniqueID.Value)
+            if (streamIdentifier != Representative.ScheduleUniqueID!.Value)
                 return;
 
             // Get the time
@@ -129,7 +129,7 @@ namespace JMS.DVB.NET.Recording.Requests
 
             // Check for end
             if (DateTime.UtcNow >= Representative.EndsAt)
-                Stop(Representative.ScheduleUniqueID.Value);
+                Stop(Representative.ScheduleUniqueID!.Value);
         }
 
         /// <summary>
@@ -166,13 +166,13 @@ namespace JMS.DVB.NET.Recording.Requests
             // Remap to real source
             var selection = VCRProfiles.FindSource(ProfileName, source);
             if (selection == null)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
 
             // Report
             Tools.ExtendedLogging("Will now zap to Source {0}", selection.Source);
 
             // Process and remember
-            m_lastState = EnqueueActionAndWait(() => ServerImplementation.EndRequest(Server.BeginSetZappingSource(selection.SelectionKey, m_target)));
+            m_lastState = EnqueueActionAndWait(() => ServerImplementation.EndRequest(Server.BeginSetZappingSource(selection.SelectionKey, m_target)))!;
 
             // Report
             return CreateStatus(factory);
@@ -202,7 +202,7 @@ namespace JMS.DVB.NET.Recording.Requests
 
             // None
             if (IsShuttingDown)
-                return factory(null, null);
+                return factory(null!, null!);
             else
                 return factory(m_target, m_lastState);
         }

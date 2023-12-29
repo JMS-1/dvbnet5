@@ -225,7 +225,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             // Forward
             var entries = LeafEntries;
             if (entries == null)
-                return default(TTarget);
+                return default!;
             else
                 return entries.FindBestEntry(source, start, end, entry => factory(entry, ProfileName));
         }
@@ -236,7 +236,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <param name="source">Die Quelle, deren Eintrag ermittelt werden soll.</param>
         /// <param name="start">Der exakte Startzeitpunkt.</param>
         /// <returns>Der gewünschte Eintrag.</returns>
-        public ProgramGuideEntry FindEntry(SourceIdentifier source, DateTime start) => LeafEntries?.FindEntry(source, start);
+        public ProgramGuideEntry? FindEntry(SourceIdentifier source, DateTime start) => LeafEntries?.FindEntry(source, start);
 
         /// <summary>
         /// Ermittelt einen Auszug aus der Programmzeitschrift.
@@ -273,7 +273,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Meldet die tatsächliche Verwaltung der Programmzeitschrift.
         /// </summary>
-        public ProgramGuideEntries LeafEntries
+        public ProgramGuideEntries? LeafEntries
         {
             get
             {

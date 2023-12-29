@@ -105,7 +105,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Validate
             if (entry == null)
-                throw new ArgumentNullException("entry");
+                throw new ArgumentNullException(nameof(entry));
 
             // Default name of the station
             var source = VCRProfiles.FindSource(profileName, entry.Source);

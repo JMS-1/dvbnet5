@@ -24,12 +24,12 @@ namespace JMS.DVB.NET.Recording.Persistence
             /// <param name="rightRecording">Zweite Aufzeichnung.</param>
             /// <returns>Ergebnis von <see cref="DateTime.Compare"/> der
             /// <see cref="VCRRecordingInfo.PhysicalStart"/> Eigenschaften.</returns>
-            public int Compare(VCRRecordingInfo leftRecording, VCRRecordingInfo rightRecording)
+            public int Compare(VCRRecordingInfo? leftRecording, VCRRecordingInfo? rightRecording)
             {
                 // Compare start times - will be called on log entries only
-                if (ReferenceEquals(leftRecording, null))
-                    return (ReferenceEquals(rightRecording, null)) ? 0 : -1;
-                if (ReferenceEquals(rightRecording, null))
+                if (leftRecording is null)
+                    return rightRecording is null ? 0 : -1;
+                if (rightRecording is null)
                     return +1;
 
                 // Load times
@@ -62,7 +62,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Tats�chlicher Startzeitpunkt.
         /// </summary>
-        private object m_physicalStart;
+        private object m_physicalStart = null!;
 
         /// <summary>
         /// Tats�chlicher Startzeitpunkt.
@@ -77,7 +77,7 @@ namespace JMS.DVB.NET.Recording.Persistence
             set
             {
                 // Store in one atomic operation using boxing of the DateTime
-                m_physicalStart = value;
+                m_physicalStart = value!;
             }
         }
 
@@ -121,12 +121,12 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Dateiname f�r die aufgezeichneten Daten.
         /// </summary>
-        public string FileName { get; set; }
+        public string FileName { get; set; } = null!;
 
         /// <summary>
         /// Der Name der Aufzeichnung.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Alle w�hrend der Aufzeichnung entstandenen Dateien.
@@ -137,13 +137,13 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Die zugeh�rige Quelle.
         /// </summary>
-        public SourceSelection Source { get; set; }
+        public SourceSelection Source { get; set; } = null!;
 
         /// <summary>
         /// Die aktuelle Auswahl der aufgezeichneten Datenstr�me.
         /// </summary>
         public StreamSelection Streams { get; set; }
-
+= null!;
         /// <summary>
         /// Die zugeh�rige Aufzeichnung.
         /// </summary>
@@ -154,7 +154,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Die zugeh�rige Aufzeichnung.
         /// </summary>
         [NonSerialized]
-        private VCRSchedule m_RelatedSchedule;
+        private VCRSchedule m_RelatedSchedule = null!;
 
         /// <summary>
         /// Der zugeh�rige Auftrag.
@@ -166,7 +166,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Der zugeh�rige Auftrag.
         /// </summary>
         [NonSerialized]
-        private VCRJob m_RelatedJob;
+        private VCRJob m_RelatedJob = null!;
 
         /// <summary>
         /// Verhindert, dass nach der Ausf�hrung dieses Auftrags der Schlafzustand eingeleitet wird.
@@ -184,7 +184,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Ein eindeutiger Name f�r den Fall, dass es sich um einen Protokolleintrag handelt.
         /// </summary>
         [XmlIgnore]
-        public string LogIdentifier { get; set; }
+        public string LogIdentifier { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, ob diese Aufzeichnung ignoriert wird soll.
@@ -212,8 +212,8 @@ namespace JMS.DVB.NET.Recording.Persistence
             var clone =
                 new VCRRecordingInfo
                 {
-                    Source = (Source == null) ? null : new SourceSelection { DisplayName = Source.DisplayName, SelectionKey = Source.SelectionKey },
-                    Streams = (Streams == null) ? null : Streams.Clone(),
+                    Source = (Source == null) ? null! : new SourceSelection { DisplayName = Source.DisplayName, SelectionKey = Source.SelectionKey },
+                    Streams = (Streams == null) ? null! : Streams.Clone(),
                     DisableHibernation = DisableHibernation,
                     ScheduleUniqueID = ScheduleUniqueID,
                     m_physicalStart = m_physicalStart,
@@ -451,21 +451,17 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <param name="planItem">Die zugeh�rige Beschreibung der geplanten Aktivit�t.</param>
         /// <param name="context">Die Abbildung auf die Auftr�ge.</param>
         /// <returns>Die angeforderte Repr�sentation.</returns>
-        public static VCRRecordingInfo Create(IScheduleInformation planItem, PlanContext context)
+        public static VCRRecordingInfo? Create(IScheduleInformation planItem, PlanContext context)
         {
             // Validate
-            if (planItem == null)
-                throw new ArgumentNullException(nameof(planItem));
-            if (context == null)
-                throw new ArgumentNullException(nameof(context));
+            ArgumentNullException.ThrowIfNull(planItem, nameof(planItem));
+            ArgumentNullException.ThrowIfNull(context, nameof(context));
 
             // Check type
-            var definition = planItem.Definition as IScheduleDefinition<VCRSchedule>;
-            if (definition == null)
+            if (planItem.Definition is not IScheduleDefinition<VCRSchedule> definition)
             {
                 // Check for program guide collector
-                var guideCollection = planItem.Definition as ProgramGuideTask;
-                if (guideCollection != null)
+                if (planItem.Definition is ProgramGuideTask guideCollection)
                     return
                         new VCRRecordingInfo
                         {
@@ -480,8 +476,7 @@ namespace JMS.DVB.NET.Recording.Persistence
                         };
 
                 // Check for source list update
-                var sourceUpdater = planItem.Definition as SourceListTask;
-                if (sourceUpdater != null)
+                if (planItem.Definition is SourceListTask sourceUpdater)
                     return
                         new VCRRecordingInfo
                         {
@@ -531,7 +526,7 @@ namespace JMS.DVB.NET.Recording.Persistence
                     FileName = job.Directory,
                     Name = definition.Name,
                     RelatedJob = job,
-                    Source = source,
+                    Source = source!,
                 };
 
             // May want to adjust start time if job is active
@@ -577,7 +572,7 @@ namespace JMS.DVB.NET.Recording.Persistence
                     HDTVFileBufferSize = VCRConfiguration.Current.HighDefinitionVideoBufferSize,
                     SDTVFileBufferSize = VCRConfiguration.Current.StandardVideoBufferSize,
                     AudioFileBufferSize = VCRConfiguration.Current.AudioBufferSize,
-                    UniqueIdentifier = ScheduleUniqueID.Value,
+                    UniqueIdentifier = ScheduleUniqueID!.Value,
                     SelectionKey = source.SelectionKey,
                     RecordingPath = FileName,
                     Streams = streams,

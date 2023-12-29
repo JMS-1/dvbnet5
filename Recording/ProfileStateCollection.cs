@@ -68,7 +68,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="profileName">Das gewünschte Profil.</param>
         /// <returns>Die Zustandsbeschreibung oder <i>null</i>.</returns>
-        public ProfileState this[string profileName]
+        public ProfileState? this[string profileName]
         {
             get
             {
@@ -85,7 +85,7 @@ namespace JMS.DVB.NET.Recording
                 }
 
                 // Load
-                if (m_profiles.TryGetValue(profileName, out ProfileState profile))
+                if (m_profiles.TryGetValue(profileName, out var profile))
                     return profile;
                 else
                     return null;
@@ -163,7 +163,7 @@ namespace JMS.DVB.NET.Recording
                 {
                     // Full deactivation
                     m_plannerActive = false;
-                    m_planThread = null;
+                    m_planThread = null!;
 
                     // Wake up call
                     Monitor.Pulse(m_newPlanSync);
@@ -175,7 +175,7 @@ namespace JMS.DVB.NET.Recording
 
             // Forget planner
             using (m_planner)
-                m_planner = null;
+                m_planner = null!;
 
             // Be safe
             try
@@ -256,7 +256,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Die aktuell ausstehende Operation.
         /// </summary>
-        private IScheduleInformation m_pendingSchedule;
+        private IScheduleInformation m_pendingSchedule = null!;
 
         /// <summary>
         /// Gesetzt, wenn auf das Starten einer Aufzeichnung gewartet wird.
@@ -276,7 +276,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Synchronisiert den Zugriff auf die Planungsbefehle.
         /// </summary>
-        private readonly object m_newPlanSync = new object();
+        private readonly object m_newPlanSync = new();
 
         /// <summary>
         /// Synchronisiert die Freigabe auf Planungsbefehle.
@@ -286,7 +286,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Sammelt Startvorgänge.
         /// </summary>
-        private Action m_pendingActions;
+        private Action m_pendingActions = null!;
 
         /// <summary>
         /// Aktualisiert ständig die Planung.
@@ -316,7 +316,7 @@ namespace JMS.DVB.NET.Recording
                 try
                 {
                     // Reset start actions
-                    m_pendingActions = null;
+                    m_pendingActions = null!;
 
                     // Protect planning.
                     lock (planner)
@@ -338,8 +338,8 @@ namespace JMS.DVB.NET.Recording
                             if (!m_plannerActive)
                             {
                                 // Reset to initial state
-                                m_pendingSchedule = null;
-                                m_pendingActions = null;
+                                m_pendingSchedule = null!;
+                                m_pendingActions = null!;
                                 m_pendingStart = false;
 
                                 // And forget all allocations
@@ -374,7 +374,7 @@ namespace JMS.DVB.NET.Recording
             // See if we are still up and running
             var planner = m_planner;
             if (planner == null)
-                return new PlanContext(null);
+                return new PlanContext(null!);
 
             // Ensure proper synchronisation with planning thread
             lock (planner)
@@ -488,7 +488,7 @@ namespace JMS.DVB.NET.Recording
                         planner.Stop(scheduleIdentifier);
 
                     // Reset
-                    m_pendingSchedule = null;
+                    m_pendingSchedule = null!;
                 }
 
             // See what to do next
@@ -518,10 +518,10 @@ namespace JMS.DVB.NET.Recording
         PeriodicScheduler IRecordingPlannerSite.CreateProgramGuideTask(IScheduleResource resource, Profile profile)
         {
             // Protect against misuse
-            if (m_profiles.TryGetValue(profile.Name, out ProfileState state))
+            if (m_profiles.TryGetValue(profile.Name, out var state))
                 return new ProgramGuideTask(resource, state);
             else
-                return null;
+                return null!;
         }
 
         /// <summary>
@@ -533,10 +533,10 @@ namespace JMS.DVB.NET.Recording
         PeriodicScheduler IRecordingPlannerSite.CreateSourceScanTask(IScheduleResource resource, Profile profile)
         {
             // Protect against misuse
-            if (m_profiles.TryGetValue(profile.Name, out ProfileState state))
+            if (m_profiles.TryGetValue(profile.Name, out var state))
                 return new SourceListTask(resource, state);
             else
-                return null;
+                return null!;
         }
 
         /// <summary>
@@ -567,7 +567,7 @@ namespace JMS.DVB.NET.Recording
                         continue;
 
                     // Register single item
-                    schedule.AddToScheduler(scheduler, job, new[] { resource }, VCRProfiles.FindSource, disabled, context);
+                    schedule.AddToScheduler(scheduler, job, [resource], VCRProfiles.FindSource, disabled, context);
 
                     // Remember - even if we skipped it
                     context.RegisterSchedule(schedule, job);
@@ -603,7 +603,7 @@ namespace JMS.DVB.NET.Recording
             VCRServer.Log(LoggingLevel.Schedules, "Done recording '{0}'", item.Definition.Name);
 
             // Locate the profile - if we don't find it we are in big trouble!
-            if (!m_profiles.TryGetValue(item.Resource.Name, out ProfileState profile))
+            if (!m_profiles.TryGetValue(item.Resource.Name, out var profile))
                 return;
 
             // Mark as pending
@@ -636,7 +636,7 @@ namespace JMS.DVB.NET.Recording
             VCRServer.Log(LoggingLevel.Schedules, "Start recording '{0}'", item.Definition.Name);
 
             // Locate the profile - if we don't find it we are in big trouble!
-            if (!m_profiles.TryGetValue(item.Resource.Name, out ProfileState profile))
+            if (!m_profiles.TryGetValue(item.Resource.Name, out var profile))
                 return;
 
             // Mark as pending
@@ -644,7 +644,7 @@ namespace JMS.DVB.NET.Recording
             m_pendingStart = true;
 
             // Create the recording
-            var recording = VCRRecordingInfo.Create(item, context);
+            var recording = VCRRecordingInfo.Create(item, context)!;
 
             // Check for EPG
             var guideUpdate = item.Definition as ProgramGuideTask;

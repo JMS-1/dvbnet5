@@ -1,7 +1,6 @@
 ﻿using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Planning;
-using JMS.DVB.NET.Recording.RestWebApi;
 using System.Globalization;
 using System.Runtime.Serialization;
 

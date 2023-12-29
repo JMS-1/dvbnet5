@@ -41,7 +41,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Vermittelt den Zugriff auf die Konfiguration.
         /// </summary>
-        public static VCRConfiguration Current { get; set; }
+        public static VCRConfiguration Current { get; set; } = null!;
 
         /// <summary>
         /// Beschreibt eine einzelne Einstellung.
@@ -56,7 +56,7 @@ namespace JMS.DVB.NET.Recording
             /// <summary>
             /// Ein eventuell veränderter Wert.
             /// </summary>
-            public string NewValue { get; set; }
+            public string NewValue { get; set; } = null!;
 
             /// <summary>
             /// Erzeugt eine neue Beschreibung.
@@ -78,14 +78,14 @@ namespace JMS.DVB.NET.Recording
             /// Liest den Namen der Einstellung.
             /// </summary>
             /// <returns>Der Wert der Einstellung als Zeichenkette.</returns>
-            public string GetCurrentValue() => (string)ReadRawValue(Tools.ApplicationConfiguration);
+            public string GetCurrentValue() => ReadRawValue(Tools.ApplicationConfiguration)!;
 
             /// <summary>
             /// Liest den Namen der Einstellung.
             /// </summary>
             /// <param name="configuration">Die zu verwendende Konfiguration.</param>
             /// <returns>Der Wert der Einstellung als Zeichenkette.</returns>
-            private object ReadRawValue(Configuration configuration) => configuration.AppSettings.Settings[Name.ToString()]?.Value?.Trim();
+            private string ReadRawValue(Configuration configuration) => configuration.AppSettings.Settings[Name.ToString()]?.Value?.Trim()!;
 
             /// <summary>
             /// Aktualisiert einen Konfigurationswert.
@@ -146,12 +146,12 @@ namespace JMS.DVB.NET.Recording
             /// <summary>
             /// Liest oder setzt den Wert.
             /// </summary>
-            public TValueType Value { get; set; }
+            public TValueType Value { get; set; } = default!;
 
             /// <summary>
             /// Der zu verwendende Wert, wenn die Einstellung nicht gefunden wurde.
             /// </summary>
-            private TValueType m_Default;
+            private readonly TValueType m_Default;
 
             /// <summary>
             /// Erzeugt eine neue Beschreibung.
@@ -189,7 +189,7 @@ namespace JMS.DVB.NET.Recording
 
                 // None
                 if (string.IsNullOrEmpty(setting))
-                    return m_Default;
+                    return m_Default!;
 
                 // Try to convert
                 try
@@ -208,12 +208,12 @@ namespace JMS.DVB.NET.Recording
                     if (resultType.IsEnum)
                         return (TValueType)Enum.Parse(resultType, setting);
                     else
-                        return (TValueType)resultType.InvokeMember("Parse", BindingFlags.Public | BindingFlags.Static | BindingFlags.InvokeMethod, null, null, new object[] { setting });
+                        return (TValueType)resultType.InvokeMember("Parse", BindingFlags.Public | BindingFlags.Static | BindingFlags.InvokeMethod, null, null, new object[] { setting })!;
                 }
                 catch
                 {
                     // Report default
-                    return m_Default;
+                    return m_Default!;
                 }
             }
         }
@@ -221,12 +221,12 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Beschreibt alle bekannten Konfigurationswerte.
         /// </summary>
-        private static Dictionary<SettingNames, SettingDescription> m_Settings = new Dictionary<SettingNames, SettingDescription>();
+        private static readonly Dictionary<SettingNames, SettingDescription> m_Settings = new();
 
         /// <summary>
         /// Enthält alle Konfigurationswerte, deren Veränderung einen Neustart des Dienstes erforderlich machen.
         /// </summary>
-        private static Dictionary<SettingNames, bool> m_Restart = new Dictionary<SettingNames, bool>();
+        private static readonly Dictionary<SettingNames, bool> m_Restart = new();
 
         /// <summary>
         /// Initialisiert die statischen Fehler.
@@ -287,7 +287,8 @@ namespace JMS.DVB.NET.Recording
         /// Instanzen dieser Klasse sind nicht zeitgebunden.
         /// </summary>
         /// <returns>Die Antwort muss immer <i>null</i> sein.</returns>
-        public override object InitializeLifetimeService() => null;
+        [Obsolete]
+        public override object InitializeLifetimeService() => null!;
 
         /// <summary>
         /// Bereitet eine Aktualisierung vor.
@@ -298,7 +299,7 @@ namespace JMS.DVB.NET.Recording
         {
             // Create empty
             if (names == null)
-                return new Dictionary<SettingNames, SettingDescription>();
+                return new();
             else
                 return names.ToDictionary(n => n, n => m_Settings[n].Clone());
         }
@@ -308,7 +309,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="settings">Die eventuell veränderten Einstellungen.</param>
         /// <returns>Gesetzt, wenn ein Neustart erforderlich war.</returns>
-        internal bool CommitUpdate(IEnumerable<SettingDescription> settings)
+        internal static bool CommitUpdate(IEnumerable<SettingDescription> settings)
         {
             // Validate
             if (settings == null)
@@ -373,7 +374,7 @@ namespace JMS.DVB.NET.Recording
         {
             // Validate
             if (configuration == null)
-                throw new ArgumentNullException("configuration");
+                throw new ArgumentNullException(nameof(configuration));
             if (Current != null)
                 throw new InvalidOperationException();
 
@@ -394,7 +395,7 @@ namespace JMS.DVB.NET.Recording
         /// Vermerkt eine Einstellung.
         /// </summary>
         /// <param name="name">Der Name der Einstellung.</param>
-        private static void Add(SettingNames name) => Add(name, (string)null);
+        private static void Add(SettingNames name) => Add(name, (string)null!);
 
         /// <summary>
         /// Vermerkt eine Einstellung.
@@ -412,7 +413,7 @@ namespace JMS.DVB.NET.Recording
         private static object ReadSetting(SettingNames name)
         {
             // Find and forward
-            return m_Settings.TryGetValue(name, out SettingDescription settings) ? settings.ReadValue() : null;
+            return m_Settings.TryGetValue(name, out var settings) ? settings.ReadValue() : null!;
         }
 
         /// <summary>
@@ -767,7 +768,7 @@ namespace JMS.DVB.NET.Recording
             get
             {
                 // Get the path
-                var path = Path.Combine(Tools.ApplicationDirectory.Parent.FullName, PrimaryRecordingDirectory);
+                var path = Path.Combine(Tools.ApplicationDirectory.Parent!.FullName, PrimaryRecordingDirectory);
 
                 // Extend it
                 if (!string.IsNullOrEmpty(path))
@@ -855,7 +856,7 @@ namespace JMS.DVB.NET.Recording
                     try
                     {
                         // Create the directory
-                        Directory.CreateDirectory(Path.GetDirectoryName(path));
+                        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
                         // Yeah
                         return true;

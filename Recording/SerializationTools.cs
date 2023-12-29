@@ -21,13 +21,14 @@ namespace JMS.DVB.NET.Recording
             try
             {
                 // Open stream and read
-                using (var file = new FileStream(info.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    return Load<T>(file);
+                using var file = new FileStream(info.FullName, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+                return Load<T>(file);
             }
             catch
             {
                 // None
-                return default(T);
+                return default!;
             }
         }
 
@@ -49,13 +50,14 @@ namespace JMS.DVB.NET.Recording
                 var settings = new XmlReaderSettings { CheckCharacters = false };
 
                 // Create
-                using (var reader = XmlReader.Create(stream, settings))
-                    return (T)deserializer.Deserialize(reader);
+                using var reader = XmlReader.Create(stream, settings);
+
+                return (T)deserializer.Deserialize(reader)!;
             }
             catch
             {
                 // None
-                return default(T);
+                return default!;
             }
         }
 
@@ -94,7 +96,7 @@ namespace JMS.DVB.NET.Recording
             try
             {
                 // Write it out
-                SerializationTools.Save(instance, path);
+                Save(instance, path);
 
                 // Did it
                 return true;

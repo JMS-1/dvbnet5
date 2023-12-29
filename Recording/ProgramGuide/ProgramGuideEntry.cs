@@ -64,46 +64,46 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// Short name of the station.
         /// </summary>
         [XmlElement(IsNullable = true)]
-        public string StationName { get; set; }
+        public string StationName { get; set; } = null!;
 
         /// <summary>
         /// Der Name der Quell inklusive des Namens des Dienstanbieters.
         /// </summary>
-        public string StationAndProviderName { get; set; }
+        public string StationAndProviderName { get; set; } = null!;
 
         /// <summary>
         /// Description of the event.
         /// </summary>
         [XmlElement(IsNullable = true)]
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
         /// <summary>
         /// Eine Kurzbeschreibung der Sendung.
         /// </summary>
         [XmlElement(IsNullable = true)]
-        public string ShortDescription { get; set; }
+        public string ShortDescription { get; set; } = null!;
 
         /// <summary>
         /// Language for the event.
         /// </summary>
         [XmlElement(IsNullable = true)]
-        public string Language { get; set; }
+        public string Language { get; set; } = null!;
 
         /// <summary>
         /// All ratings related with this event.
         /// </summary>
-        public readonly List<string> Ratings = new List<string>();
+        public readonly List<string> Ratings = [];
 
         /// <summary>
         /// Alle Kategorien der Sendung.
         /// </summary>
-        public readonly List<string> Categories = new List<string>();
+        public readonly List<string> Categories = [];
 
         /// <summary>
         /// The name of the event.
         /// </summary>
         [XmlElement(IsNullable = true)]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// The duration of the event in seconds.
@@ -118,7 +118,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Alle Zeichen, die SOAP im XML Modus nicht ohne weiteres unterst�tzt.
         /// </summary>
-        private static char[] m_Disallowed;
+        private static readonly char[] m_Disallowed;
 
         /// <summary>
         /// Eine eindeutige Kennung f�r diesen Eintrag - dieser wird in einem
@@ -227,13 +227,10 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <param name="obj">Some other instance.</param>
         /// <returns><see cref="DateTime.CompareTo(DateTime)"/> of the <see cref="StartTime"/>
         /// or -1 if the parameter is not an <see cref="ProgramGuideEntry"/>.</returns>
-        public int CompareTo(object obj)
+        public int CompareTo(object? obj)
         {
-            // Check other
-            ProgramGuideEntry other = obj as ProgramGuideEntry;
-
             // Not comparable - we are left of these
-            if (other == null)
+            if (obj is not ProgramGuideEntry other)
                 return -1;
 
             // Forward

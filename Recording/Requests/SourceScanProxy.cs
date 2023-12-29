@@ -12,7 +12,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <summary>
         /// Beschreibt den Zugriff zum Starten der Aktualisierung.
         /// </summary>
-        private IAsyncResult m_startPending;
+        private IAsyncResult m_startPending = null!;
 
         /// <summary>
         /// Gesetzt, um die Listen nach Abschluss des Suchlaufs zu kombinieren.
@@ -74,7 +74,7 @@ namespace JMS.DVB.NET.Recording.Requests
         {
             // See if we are finished
             if (state.UpdateProgress.GetValueOrDefault(0) >= 1)
-                ChangeEndTime(Representative.ScheduleUniqueID.Value, DateTime.UtcNow.AddDays(-365), false);
+                ChangeEndTime(Representative.ScheduleUniqueID!.Value, DateTime.UtcNow.AddDays(-365), false);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace JMS.DVB.NET.Recording.Requests
         protected override void OnEndRecording(Guid scheduleIdentifier)
         {
             // Must be us
-            if (scheduleIdentifier != Representative.ScheduleUniqueID.Value)
+            if (scheduleIdentifier != Representative.ScheduleUniqueID!.Value)
                 return;
 
             // Set early to make sure that planner will not re-run immediately

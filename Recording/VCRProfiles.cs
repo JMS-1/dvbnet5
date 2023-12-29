@@ -13,7 +13,7 @@
             /// <summary>
             /// Alle Geräteprofile, die der VCR.NET Recording Service verwenden darf.
             /// </summary>
-            public Profile[] Profiles = new Profile[0];
+            public Profile[] Profiles = [];
 
             /// <summary>
             /// Die Geräteprofile zum schnellen Zugriff über den Namen.
@@ -143,7 +143,7 @@
         /// <summary>
         /// Meldet das erste zu verwendende Geräteprofil.
         /// </summary>
-        public static Profile DefaultProfile
+        public static Profile? DefaultProfile
         {
             get
             {
@@ -162,7 +162,7 @@
         /// <param name="profileName">Das zu verwendende Geräteprofil.</param>
         /// <param name="name">Der Anzeigename der Quelle.</param>
         /// <returns>Die eidneutige Auswahl der Quelle oder <i>null</i>.</returns>
-        public static SourceSelection FindSource(string profileName, string name)
+        public static SourceSelection? FindSource(string profileName, string name)
         {
             // No source
             if (string.IsNullOrEmpty(name))
@@ -177,11 +177,11 @@
                     profileName = state.Profiles[0].Name;
 
             // Map to use
-            if (!state.SourceBySelectionMap.TryGetValue(profileName, out Dictionary<string, SourceSelection> sources))
+            if (!state.SourceBySelectionMap.TryGetValue(profileName, out var sources))
                 return null;
 
             // Ask map
-            if (!sources.TryGetValue(name, out SourceSelection source))
+            if (!sources.TryGetValue(name, out var source))
                 return null;
 
             // Report
@@ -194,7 +194,7 @@
         /// <param name="profileName">Das zu verwendende Geräteprofil.</param>
         /// <param name="source">Die gewünschte Kennung.</param>
         /// <returns>Die eidneutige Auswahl der Quelle oder <i>null</i>.</returns>
-        public static SourceSelection FindSource(string profileName, SourceIdentifier source)
+        public static SourceSelection? FindSource(string profileName, SourceIdentifier source)
         {
             // No source
             if (source == null)
@@ -209,11 +209,11 @@
                     profileName = state.Profiles[0].Name;
 
             // Find the map
-            if (!state.SourceByIdentifierMap.TryGetValue(profileName, out Dictionary<SourceIdentifier, SourceSelection> map))
+            if (!state.SourceByIdentifierMap.TryGetValue(profileName, out var map))
                 return null;
 
             // Find the source
-            if (!map.TryGetValue(source, out SourceSelection found))
+            if (!map.TryGetValue(source, out var found))
                 return null;
             else
                 return found;
@@ -224,7 +224,7 @@
         /// </summary>
         /// <param name="source">Die gewünschte Quelle.</param>
         /// <returns>Die aktuelle Auswahl oder <i>null</i>.</returns>
-        public static SourceSelection FindSource(SourceSelection source)
+        public static SourceSelection? FindSource(SourceSelection source)
         {
             // Never
             if (source == null)
@@ -241,14 +241,14 @@
         /// </summary>
         /// <param name="profileName">Der Name des Geräteprofils.</param>
         /// <returns>Alle Quellen zum Profil.</returns>
-        public static IEnumerable<SourceSelection> GetSources(string profileName) => GetSources(profileName, (Func<SourceSelection, bool>)null);
+        public static IEnumerable<SourceSelection> GetSources(string profileName) => GetSources(profileName, (Func<SourceSelection, bool>)null!);
 
         /// <summary>
         /// Ermittelt alle Quellen zu einem DVB.NET Geräteprofil.
         /// </summary>
         /// <param name="profile">Der Name des Geräteprofils.</param>
         /// <returns>Alle Quellen zum Profil.</returns>
-        public static IEnumerable<SourceSelection> GetSources(Profile profile) => GetSources(profile, (Func<SourceSelection, bool>)null);
+        public static IEnumerable<SourceSelection> GetSources(Profile profile) => GetSources(profile, (Func<SourceSelection, bool>)null!);
 
         /// <summary>
         /// Ermittelt alle Quellen zu einem DVB.NET Geräteprofil.
@@ -256,7 +256,7 @@
         /// <param name="profileName">Der Name des Geräteprofils.</param>
         /// <param name="predicate">Methode, die prüft, ob eine Quelle gemeldet werden soll.</param>
         /// <returns>Alle Quellen zum Profil.</returns>
-        public static IEnumerable<SourceSelection> GetSources(string profileName, Func<SourceSelection, bool> predicate) => GetSources(FindProfile(profileName), predicate);
+        public static IEnumerable<SourceSelection> GetSources(string profileName, Func<SourceSelection, bool> predicate) => GetSources(FindProfile(profileName)!, predicate);
 
         /// <summary>
         /// Ermittelt alle Quellen zu einem DVB.NET Geräteprofil.
@@ -268,9 +268,9 @@
         {
             // Forward
             if (predicate == null)
-                return GetSources(FindProfile(profileName));
+                return GetSources(FindProfile(profileName)!);
             else
-                return GetSources(FindProfile(profileName), s => predicate((Station)s.Source));
+                return GetSources(FindProfile(profileName)!, s => predicate((Station)s.Source));
         }
 
         /// <summary>
@@ -286,7 +286,7 @@
                 yield break;
 
             // Load the map
-            if (!CurrentState.SourceByIdentifierMap.TryGetValue(profile.Name, out Dictionary<SourceIdentifier, SourceSelection> map))
+            if (!CurrentState.SourceByIdentifierMap.TryGetValue(profile.Name, out var map))
                 yield break;
 
             // Use state
@@ -301,14 +301,14 @@
         /// <param name="name">Der Name des Geräteprofils oder <i>null</i> für das
         /// bevorzugte Profil.</param>
         /// <returns>Das gewünschte Geräteprofil.</returns>
-        public static Profile FindProfile(string name)
+        public static Profile? FindProfile(string name)
         {
             // Use default
             if (string.IsNullOrEmpty(name))
                 return DefaultProfile;
 
             // Read out
-            return CurrentState.ProfileMap.TryGetValue(name, out Profile profile) ? profile : null;
+            return CurrentState.ProfileMap.TryGetValue(name, out var profile) ? profile : null;
         }
 
         /// <summary>
@@ -327,11 +327,11 @@
             // Map to current
             var active = FindSource(source);
             if (active == null)
-                return null;
+                return null!;
 
             // Find the name
-            if (!CurrentState.UniqueNameBySelectionMap.TryGetValue(active.SelectionKey, out string name))
-                return null;
+            if (!CurrentState.UniqueNameBySelectionMap.TryGetValue(active.SelectionKey, out var name))
+                return null!;
 
             // Report it
             return name;

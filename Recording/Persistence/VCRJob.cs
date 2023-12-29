@@ -1,4 +1,3 @@
-using JMS.DVB;
 using System.Xml.Serialization;
 
 namespace JMS.DVB.NET.Recording.Persistence
@@ -42,7 +41,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Verzeichnis, in dem Aufzeichnungsdateien abgelegt werden sollen.
         /// </summary>
-        public string Directory { get; set; }
+        public string Directory { get; set; } = null!;
 
         /// <summary>
         /// Eindeutige Kennung des Auftrags.
@@ -52,17 +51,17 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Die gew�nschte Quelle.
         /// </summary>
-        public SourceSelection Source { get; set; }
+        public SourceSelection Source { get; set; } = null!;
 
         /// <summary>
         /// Die Datenstr�me, die aufgezeichnet werden sollen.
         /// </summary>
-        public StreamSelection Streams { get; set; }
+        public StreamSelection Streams { get; set; } = null!;
 
         /// <summary>
         /// Name des Auftrags.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn es das Ger�t zur Aufzeichnung automatisch ausgew�hlt werden darf.
@@ -140,7 +139,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// </summary>
         /// <param name="target">Der Pfad zu einem Zielverzeichnis.</param>
         /// <returns>Die zugeh�rige Datei.</returns>
-        private FileInfo GetFileName(DirectoryInfo target) => UniqueID.HasValue ? new FileInfo(Path.Combine(target.FullName, UniqueID.Value.ToString("N").ToUpper() + FileSuffix)) : null;
+        private FileInfo? GetFileName(DirectoryInfo target) => UniqueID.HasValue ? new FileInfo(Path.Combine(target.FullName, UniqueID.Value.ToString("N").ToUpper() + FileSuffix)) : null;
 
         /// <summary>
         /// Ermittelt alle Auftr�ge in einem Verzeichnis.
@@ -215,7 +214,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// </summary>
         /// <param name="uniqueIdentifier">Die eindeutige Kennung der Aufzeichnung.</param>
         /// <returns>Die Aufzeichnung oder <i>null</i>.</returns>
-        public VCRSchedule this[Guid uniqueIdentifier] => Schedules.Find(s => s.UniqueID.HasValue && (s.UniqueID.Value == uniqueIdentifier));
+        public VCRSchedule? this[Guid uniqueIdentifier] => Schedules.Find(s => s.UniqueID.HasValue && (s.UniqueID.Value == uniqueIdentifier));
 
         /// <summary>
         /// Entfernt alle Ausnahmeregelungen, die bereits verstrichen sind.

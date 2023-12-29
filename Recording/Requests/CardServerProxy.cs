@@ -12,7 +12,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <summary>
         /// Der zugehörige <i>DVB.NET Card Server</i>.
         /// </summary>
-        protected ServerImplementation Server { get; private set; }
+        protected ServerImplementation Server { get; private set; } = null!;
 
         /// <summary>
         /// Meldet den zugehörigen Zustand des Geräteprofils.
@@ -28,12 +28,12 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <summary>
         /// Alle Daten für die Ausführung der Erweiterungen.
         /// </summary>
-        protected Dictionary<string, string> ExtensionEnvironment { get; private set; }
+        protected Dictionary<string, string> ExtensionEnvironment { get; private set; } = null!;
 
         /// <summary>
         /// Verhindert, dass der Rechner während der Aufzeichnung in den Schlafzustand wechselt.
         /// </summary>
-        private IDisposable m_HibernateBlock;
+        private IDisposable m_HibernateBlock = null!;
 
         /// <summary>
         /// Erzeugt eine neue Zugriffsinstanz.
@@ -45,7 +45,7 @@ namespace JMS.DVB.NET.Recording.Requests
         {
             // Validate
             if (state == null)
-                throw new ArgumentNullException("state");
+                throw new ArgumentNullException(nameof(state));
 
             // Finish setup of fields and properties
             RequestFinished = new ManualResetEvent(false);
@@ -85,7 +85,7 @@ namespace JMS.DVB.NET.Recording.Requests
         {
             // Release hibernation block
             using (m_HibernateBlock)
-                m_HibernateBlock = null;
+                m_HibernateBlock = null!;
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace JMS.DVB.NET.Recording.Requests
         public virtual void ChangeEndTime(Guid streamIdentifier, DateTime newEndTime, bool disableHibernation)
         {
             // Not us
-            if (streamIdentifier != Representative.ScheduleUniqueID.Value)
+            if (streamIdentifier != Representative.ScheduleUniqueID!.Value)
                 return;
 
             // Disable hibernation
@@ -157,7 +157,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <summary>
         /// Alle aktiven Aufzeichnungen.
         /// </summary>
-        private readonly Dictionary<Guid, VCRRecordingInfo> m_active = new Dictionary<Guid, VCRRecordingInfo>();
+        private readonly Dictionary<Guid, VCRRecordingInfo> m_active = new();
 
         /// <summary>
         /// Gesetzt, wenn die Aufzeichnungsgruppe vorzeitig beendet wurde.
@@ -167,7 +167,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <summary>
         /// Ein separater <see cref="Thread"/>, der die Ausführung steuert.
         /// </summary>
-        private Thread m_worker;
+        private Thread m_worker = null!;
 
         /// <summary>
         /// Gesetzt, solange die Aufzeichnung läuft.
@@ -269,7 +269,7 @@ namespace JMS.DVB.NET.Recording.Requests
         {
             // Validate
             if (recording == null)
-                throw new ArgumentNullException("recording");
+                throw new ArgumentNullException(nameof(recording));
 
             // Remember synchronized
             lock (m_active)
@@ -370,7 +370,7 @@ namespace JMS.DVB.NET.Recording.Requests
                         OnStart();
 
                         // Process idle loop - done every second if not interrupted earlier
-                        for (IAsyncResult<ServerInformation> stateRequest = null; ; m_wakeUp.WaitOne(m_running ? 1000 : 100))
+                        for (IAsyncResult<ServerInformation>? stateRequest = null; ; m_wakeUp.WaitOne(m_running ? 1000 : 100))
                         {
                             // First check for state request
                             if (stateRequest != null)
@@ -449,7 +449,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 finally
                 {
                     // Detach from server - is already disposed and shut down
-                    Server = null;
+                    Server = null!;
 
                     // Fire all extensions
                     Tools.RunSynchronousExtensions("AfterProfileAccess", coreEnvironment);
@@ -495,7 +495,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <summary>
         /// Der aktuelle Zustand des <i>Card Servers</i>.
         /// </summary>
-        private volatile ServerInformation m_state;
+        private volatile ServerInformation m_state = null!;
 
         /// <summary>
         /// Die nächste Aufzeichnung die gestartet werden soll.
@@ -552,7 +552,7 @@ namespace JMS.DVB.NET.Recording.Requests
         private void ConfirmPendingRequest(bool notifyOnly = false)
         {
             // Current settings
-            VCRRecordingInfo start = null;
+            VCRRecordingInfo? start = null;
             Guid scheduleIdentifier;
 
             // Protect against change and check mode
@@ -561,10 +561,10 @@ namespace JMS.DVB.NET.Recording.Requests
                 {
                     // Load the current value
                     start = m_start;
-                    scheduleIdentifier = start.ScheduleUniqueID.Value;
+                    scheduleIdentifier = start.ScheduleUniqueID!.Value;
 
                     // Reset it
-                    m_start = null;
+                    m_start = null!;
 
                     // Add to map
                     m_active.Add(scheduleIdentifier, start);
@@ -596,7 +596,7 @@ namespace JMS.DVB.NET.Recording.Requests
             // Notify derived class if we are not in shutdown mode
             if (!notifyOnly)
                 if (isStart)
-                    OnStartRecording(start);
+                    OnStartRecording(start!);
                 else
                     OnEndRecording(scheduleIdentifier);
 
@@ -665,7 +665,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="traceArgs">Parameter zum Aufbau der Meldung.</param>
         /// <returns>Gesetzt, wenn der Aufruf abgeschlossen wurde oder bereits war. Ansonsten
         /// ist der Aufruf weiterhin aktiv.</returns>
-        protected bool WaitForEnd<TAsync>(ref TAsync request, string traceFormat = null, params object[] traceArgs) where TAsync : class, IAsyncResult
+        protected bool WaitForEnd<TAsync>(ref TAsync request, string traceFormat = null!, params object[] traceArgs) where TAsync : class, IAsyncResult
         {
             // No request at all
             var pending = request;
@@ -695,7 +695,7 @@ namespace JMS.DVB.NET.Recording.Requests
             finally
             {
                 // Forget
-                request = null;
+                request = null!;
             }
 
             // Stopped it
@@ -706,7 +706,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// Führt eine Aktion auf dem Aufzeichnungsthread aus.
         /// </summary>
         /// <param name="action">Die gewünschte Aktion.</param>
-        protected void EnqueueActionAndWait(Action action) => EnqueueActionAndWait<object>(() => { action(); return null; });
+        protected void EnqueueActionAndWait(Action action) => EnqueueActionAndWait<object>(() => { action(); return null!; });
 
         /// <summary>
         /// Führt eine Aktion auf dem Aufzeichnungsthread aus.
@@ -714,10 +714,10 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <typeparam name="TResult">Die Art des Ergebnisses der Aktion.</typeparam>
         /// <param name="action">Die gewünschte Aktion.</param>
         /// <returns>Das Ergebnis der Aktion.</returns>
-        protected TResult EnqueueActionAndWait<TResult>(Func<TResult> action)
+        protected TResult? EnqueueActionAndWait<TResult>(Func<TResult> action)
         {
             // Validate
-            TResult result = default(TResult);
+            TResult? result = default;
             if (action == null)
                 return result;
 

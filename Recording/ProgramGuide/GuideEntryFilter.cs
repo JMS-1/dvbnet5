@@ -65,7 +65,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             /// <param name="left">Der erste Eintrag.</param>
             /// <param name="right">Der zweite Eintrag.</param>
             /// <returns>Der Unterschied zwischen den Eintr�gen.</returns>
-            public int Compare(ProgramGuideEntry left, ProgramGuideEntry right)
+            public int Compare(ProgramGuideEntry? left, ProgramGuideEntry? right)
             {
                 // Test for nothing
                 if (left == null)
@@ -118,12 +118,12 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Der Name des zu verwendenden Ger�teprofils.
         /// </summary>
-        public string ProfileName { get; set; }
+        public string ProfileName { get; set; } = null!;
 
         /// <summary>
         /// Optional die Quelle.
         /// </summary>
-        public SourceIdentifier Source { get; set; }
+        public SourceIdentifier Source { get; set; } = null!;
 
         /// <summary>
         /// Optional der Startzeitpunkt.
@@ -133,12 +133,12 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Das Suchmuster f�r den Titel, das erste Zeichen bestimmt den Suchmodus.
         /// </summary>
-        public string TitlePattern { get; set; }
+        public string TitlePattern { get; set; } = null!;
 
         /// <summary>
         /// Das Suchmuster f�r den Inhalt, das erste Zeichen bestimmt den Suchmodus.
         /// </summary>
-        public string ContentPattern { get; set; }
+        public string ContentPattern { get; set; } = null!;
 
         /// <summary>
         /// Die gew�nschte Seitengr��e.
@@ -210,8 +210,8 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             }
 
             // Matcher on content
-            Func<ProgramGuideEntry, bool> matchTitle = null;
-            Func<ProgramGuideEntry, bool> matchContent = null;
+            Func<ProgramGuideEntry, bool>? matchTitle = null;
+            Func<ProgramGuideEntry, bool>? matchContent = null;
 
             // Title
             if (!string.IsNullOrEmpty(TitlePattern))

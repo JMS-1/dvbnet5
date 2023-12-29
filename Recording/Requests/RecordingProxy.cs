@@ -9,25 +9,27 @@ namespace JMS.DVB.NET.Recording.Requests
     /// Beschreibt einen Aufzeichnungsauftrag, der sich aus mehreren Einzelaufzeichnungen
     /// auch auf mehreren Quellen zusammensetzen kann.
     /// </summary>
-    public class RecordingProxy : CardServerProxy
+    /// <param name="state">Der Zustands des zugehörigen Geräteprofils.</param>
+    /// <param name="firstRecording">Die erste Aufzeichnung, auf Grund derer dieser Zugriff angelegt wurde.</param>
+    public class RecordingProxy(ProfileState state, VCRRecordingInfo firstRecording) : CardServerProxy(state, firstRecording)
     {
         #region Felder zur Steuerung der asynchronen Aufrufe an den Aufzeichnungsprozess
 
         /// <summary>
         /// Gesetzt, solange auf das Auswählen der Quellgruppe gewartet wird.
         /// </summary>
-        private IAsyncResult m_groupPending;
+        private IAsyncResult m_groupPending = null!;
 
         /// <summary>
         /// Gesetzt, solange auf die Aktivierung einer neuen Quelle gewartet wird. Es wird immer nur
         /// eine Quelle zu jedem Zeitpunkt aktiviert.
         /// </summary>
-        private IAsyncResult<StreamInformation[]> m_startPending;
+        private IAsyncResult<StreamInformation[]> m_startPending = null!;
 
         /// <summary>
         /// Gesetzt, solange auf die Deaktivierung einer Quelle gewartet wird.
         /// </summary>
-        private IAsyncResult m_stopPending;
+        private IAsyncResult m_stopPending = null!;
 
         #endregion
 
@@ -50,16 +52,6 @@ namespace JMS.DVB.NET.Recording.Requests
         private readonly HashSet<FileInformation> m_files = new HashSet<FileInformation>();
 
         #endregion
-
-        /// <summary>
-        /// Erzeugt einen neuen Auftrag.
-        /// </summary>
-        /// <param name="state">Der Zustands des zugehörigen Geräteprofils.</param>
-        /// <param name="firstRecording">Die erste Aufzeichnung, auf Grund derer dieser Zugriff angelegt wurde.</param>
-        public RecordingProxy(ProfileState state, VCRRecordingInfo firstRecording)
-            : base(state, firstRecording)
-        {
-        }
 
         #region Implementierung der abstrakten Basisklasse
 
@@ -186,7 +178,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 {
                     // Load recording
                     var recording = m_recordings[i];
-                    if (!scheduleIdentifier.Equals(recording.ScheduleUniqueID.Value))
+                    if (!scheduleIdentifier.Equals(recording.ScheduleUniqueID!.Value))
                         continue;
 
                     // Remove
@@ -262,11 +254,11 @@ namespace JMS.DVB.NET.Recording.Requests
                         .Select(recording =>
                             {
                                 // Collect the data
-                                var streamInfo = (state == null) ? null : state.Streams.Find(recording.Match);
-                                var target = (streamInfo == null) ? null : streamInfo.StreamTarget;
+                                var streamInfo = state?.Streams.Find(recording.Match);
+                                var target = streamInfo?.StreamTarget;
 
                                 // Create record
-                                return StreamInfo.Create(recording, target, files);
+                                return StreamInfo.Create(recording, target!, files);
                             }));
             }
         }
@@ -354,7 +346,7 @@ namespace JMS.DVB.NET.Recording.Requests
         {
             // Validate
             if (source == null)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
 
             // Report
             Tools.ExtendedLogging("Changing Streaming for {0} [{1}] to {2}", source, uniqueIdentifier, streamingTarget);
@@ -381,7 +373,7 @@ namespace JMS.DVB.NET.Recording.Requests
             foreach (var recording in m_recordings)
             {
                 // Load list
-                if (!names.TryGetValue(recording.FileName, out List<VCRRecordingInfo> recordings))
+                if (!names.TryGetValue(recording.FileName, out var recordings))
                 {
                     // Create new
                     recordings = new List<VCRRecordingInfo>();
@@ -405,7 +397,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 // Get the name of interest and create the start index
                 var file = new FileInfo(recordings[0].FileName);
                 var name = Path.GetFileNameWithoutExtension(file.Name);
-                var dir = file.DirectoryName;
+                var dir = file.DirectoryName!;
                 var ext = file.Extension;
                 var nextIndex = 1;
 
@@ -433,7 +425,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 Tools.ExtendedLogging("Extracting EPGINFO for {0}", recording.Name);
 
                 // Load bounds
-                var from = recording.PhysicalStart.Value;
+                var from = recording.PhysicalStart!.Value;
                 var to = DateTime.UtcNow;
 
                 // Create guide
@@ -452,7 +444,7 @@ namespace JMS.DVB.NET.Recording.Requests
             }
 
             // Detect all files related to the recordings
-            var scheduleIdentifiers = new HashSet<Guid>(recordings.Select(recording => recording.ScheduleUniqueID.Value));
+            var scheduleIdentifiers = new HashSet<Guid>(recordings.Select(recording => recording.ScheduleUniqueID!.Value));
             var files = m_files.Where(file => scheduleIdentifiers.Contains(new Guid(file.ScheduleIdentifier)));
 
             // Clone current environment
@@ -470,7 +462,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="scheduleIdentifier">Die eindeutige Kennung der Aufzeichnung.</param>
         /// <returns>Die Aufzeichnung, sofern bekannt.</returns>
-        private VCRRecordingInfo FindRecording(Guid scheduleIdentifier) => m_recordings.FirstOrDefault(recording => scheduleIdentifier.Equals(recording.ScheduleUniqueID.Value));
+        private VCRRecordingInfo? FindRecording(Guid scheduleIdentifier) => m_recordings.FirstOrDefault(recording => scheduleIdentifier.Equals(recording.ScheduleUniqueID!.Value));
 
         /// <summary>
         /// Berechnet das aktuelle Ende der Aufzeichnung.

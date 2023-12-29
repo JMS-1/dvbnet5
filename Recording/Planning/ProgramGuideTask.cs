@@ -10,12 +10,12 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <summary>
         /// Die Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.
         /// </summary>
-        private Func<DateTime?> m_LastUpdate;
+        private readonly Func<DateTime?> m_LastUpdate;
 
         /// <summary>
         /// Das Verzeichnis, in dem temporäre Dateien während der Sammlung abgelegt werden können.
         /// </summary>
-        public DirectoryInfo CollectorDirectory { get; private set; }
+        public DirectoryInfo CollectorDirectory { get; private set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Verwaltung.
@@ -33,7 +33,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="forResource">Das Gerät, für das die Sammlung erfolgt.</param>
         /// <param name="lastUpdate">Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.</param>
         public ProgramGuideTask(IScheduleResource forResource, Func<DateTime?> lastUpdate)
-            : this(forResource, null, lastUpdate)
+            : this(forResource, null!, lastUpdate)
         {
         }
 
