@@ -1,21 +1,17 @@
-using System;
 using System.Collections;
-using System.IO;
-using System.Linq;
 using System.Xml;
-
 
 namespace JMS.DVB.Provider.Legacy
 {
     /// <summary>
     /// Beschreibt die Parameter einer DVB.NET Hardwareabstraktion.
     /// </summary>
-    internal class LegacyDeviceInformation
+    public class LegacyDeviceInformation
     {
         /// <summary>
         /// Enth�lt die Beschreibung zu allen bekannten Ger�ten der alten DVB.NET Version.
         /// </summary>
-        public static readonly LegacyDeviceInformation[] Devices = LegacyDeviceInformation.Load();
+        public static readonly LegacyDeviceInformation[] Devices = Load();
 
         /// <summary>
         /// Das Wurzelelement der Konfiguration.
@@ -36,26 +32,18 @@ namespace JMS.DVB.Provider.Legacy
                 throw new ArgumentException("bad provider definition", "file");
         }
 
-        private XmlElement FindElement(string name)
-        {
-            // Report
-            return (XmlElement)Root.SelectSingleNode(name);
-        }
+        private XmlElement? FindElement(string name) => (XmlElement?)Root.SelectSingleNode(name);
 
-        public XmlNodeList Parameters { get { return FindElement("Parameters").ChildNodes; } }
+        public XmlNodeList Parameters { get { return FindElement("Parameters")!.ChildNodes; } }
 
         private string UniqueIdentifier { get { return (string)Root.GetAttribute("id"); } }
 
-        public override string ToString()
-        {
-            // Report
-            return UniqueIdentifier;
-        }
+        public override string ToString() => UniqueIdentifier;
 
         /// <summary>
         /// Meldet den Namen der .NET Klasse zum Zugriff auf die DVB Hardware.
         /// </summary>
-        public string DriverType { get { return FindElement("Driver").InnerText; } }
+        public string DriverType { get { return FindElement("Driver")!.InnerText; } }
 
         public string[] Names
         {
@@ -65,7 +53,7 @@ namespace JMS.DVB.Provider.Legacy
                 var names = new ArrayList();
 
                 // All my names
-                foreach (XmlNode name in Root.SelectNodes("CardNames/CardName"))
+                foreach (XmlNode name in Root.SelectNodes("CardNames/CardName")!)
                     names.Add(name.InnerText);
 
                 // Report
@@ -97,12 +85,13 @@ namespace JMS.DVB.Provider.Legacy
                 var me = typeof(LegacyDeviceInformation);
 
                 // Load the DOM from resource
-                using (var providers = me.Assembly.GetManifestResourceStream(me.Namespace + ".DVBNETProviders.xml"))
-                    file.Load(providers);
+                using var providers = me.Assembly.GetManifestResourceStream(me.Assembly.ManifestModule.Name[..^4] + ".DVBNETProviders.xml");
+
+                file.Load(providers!);
             }
 
             // Verify
-            if (!file.DocumentElement.Name.Equals("DVBNETProviders"))
+            if (!file.DocumentElement!.Name.Equals("DVBNETProviders"))
                 throw new ArgumentException("bad provider definition", "file");
             if (!Equals(file.DocumentElement.GetAttribute("SchemaVersion"), "3.9"))
                 throw new ArgumentException("invalid schema version", "file");
@@ -110,8 +99,8 @@ namespace JMS.DVB.Provider.Legacy
             // All providers
             return
                 file
-                    .DocumentElement
-                    .SelectNodes("DVBNETProvider")
+                    .DocumentElement!
+                    .SelectNodes("DVBNETProvider")!
                     .Cast<XmlElement>()
                     .Select(node => new LegacyDeviceInformation(node))
                     .ToDictionary(info => info.UniqueIdentifier)

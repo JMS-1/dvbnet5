@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="Windows-1252"?>
+﻿<?xml version="1.0" encoding="Utf-8"?>
 <DVBNETProviders SchemaVersion="3.9">
   <DVBNETProvider id="Ubuntu Proxy">
     <CardNames>
       <CardName>Ubuntu DVB-S2</CardName>
     </CardNames>
-    <Driver>JMS.DVB.Provider.Ubuntu.DeviceProvider, JMS.DVB.Provider.Ubuntu</Driver>
+    <Driver>JMS.DVB.Provider.Ubuntu.DeviceProvider, JMS.DVB.NET.Ubuntu</Driver>
     <FilterLimit>200</FilterLimit>
     <VideoDisplay>
       <AsChild>true</AsChild>

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using JMS.DVB.DeviceAccess;
 using JMS.DVB.DeviceAccess.Interfaces;
 using JMS.TechnoTrend;
 
@@ -53,10 +52,10 @@ namespace JMS.DVB.Provider.Legacy
             settings["Type"] = SystemType.ToString();
 
             // Find the primary aspect
-            var aspect = profile.DeviceAspects.Find(a => string.IsNullOrEmpty(a.Aspekt));
+            var aspect = profile.DeviceAspects.Find(a => string.IsNullOrEmpty(a.Aspekt))!;
 
             // Create the device
-            LegacyDevice = (ILegacyDevice)Activator.CreateInstance(Type.GetType(aspect.Value, true), settings);
+            LegacyDevice = (ILegacyDevice)Activator.CreateInstance(Type.GetType(aspect.Value, true)!, settings)!;
 
             // Start it
             LegacyDevice.SetVideoAudio(0, 0);
@@ -67,7 +66,7 @@ namespace JMS.DVB.Provider.Legacy
         /// </summary>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
         /// <returns>Die aktiven Einschränlungen.</returns>
-        public static HardwareRestriction GetRestriction(Profile profile)
+        public static HardwareRestriction? GetRestriction(Profile profile)
         {
             // No profile - no description
             if (profile == null)
@@ -115,7 +114,7 @@ namespace JMS.DVB.Provider.Legacy
         {
             // Check device handle
             using (LegacyDevice)
-                LegacyDevice = null;
+                LegacyDevice = null!;
         }
 
         /// <summary>
@@ -139,7 +138,7 @@ namespace JMS.DVB.Provider.Legacy
         {
             // Validate
             if (stream == null)
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
 
             // Not of interest to us
             if (stream.Consumer == null)
@@ -194,8 +193,7 @@ namespace JMS.DVB.Provider.Legacy
         protected override void OnStop(StreamInformation stream)
         {
             // Validate
-            if (stream == null)
-                throw new ArgumentNullException("stream");
+            ArgumentNullException.ThrowIfNull(stream, nameof(stream));
 
             // Not of interest to us
             if (stream.Consumer != null)
@@ -217,7 +215,7 @@ namespace JMS.DVB.Provider.Legacy
             else if (sources.Length > 1)
             {
                 // Not allowed
-                throw new ArgumentException(sources.Length.ToString(), "sources");
+                throw new ArgumentException(sources.Length.ToString(), nameof(sources));
             }
             else
             {
@@ -234,11 +232,7 @@ namespace JMS.DVB.Provider.Legacy
         /// <summary>
         /// Reinitialisiert das mit dieser Hardware verbundene Windows Gerät.
         /// </summary>
-        public override void ResetWakeupDevice()
-        {
-            // Forward
-            LegacyDevice.WakeUp();
-        }
+        public override void ResetWakeupDevice() => LegacyDevice.WakeUp();
 
         /// <summary>
         /// Deaktiviert den Datenempfang unmittelbar bevor eine neue Quellgruppe aktiviert wird.

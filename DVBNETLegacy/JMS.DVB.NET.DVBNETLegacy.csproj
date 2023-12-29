@@ -11,4 +11,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="DVBNETProviders.xml" />
+  </ItemGroup>
 </Project>
