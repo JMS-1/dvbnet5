@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Ermittelt den aktuellen Arbeitszustand eines <i>Card Servers</i>.
@@ -21,7 +18,7 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="response">Die zu befüllende Antwort für den Aufrufer.</param>
         /// <param name="server">Die aktuelle Implementierung des <i>Card Servers</i>.</param>
-        protected override void OnExecute( Response<ServerInformation> response, ServerImplementation server )
+        protected override void OnExecute(Response<ServerInformation> response, ServerImplementation server)
         {
             // Execute
             response.ResponseData = server.BeginGetState().Result;

@@ -1,9 +1,7 @@
 ﻿extern alias oldVersion;
-
-using System;
 using System.Xml.Serialization;
 
-using legacy = oldVersion.JMS.DVB.EPG;
+using Legacy = oldVersion.JMS.DVB.EPG;
 
 
 namespace JMS.DVB.CardServer
@@ -17,7 +15,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Liest oder setzt die Auswahl der Quelle.
         /// </summary>
-        public string SelectionKey { get; set; }
+        public string SelectionKey { get; set; } = null!;
 
         /// <summary>
         /// Optional eine eindeutige Kennung für diese Quelle - damit ist es dann möglich, eine einzelne
@@ -28,12 +26,12 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Liest oder setzt die Teildatenströme (PID), die im Empfang eingeschlossen werden sollen.
         /// </summary>
-        public StreamSelection Streams { get; set; }
+        public StreamSelection Streams { get; set; } = null!;
 
         /// <summary>
         /// Liest oder setzt den optionalen Dateinamen für eine Aufzeichnung.
         /// </summary>
-        public string RecordingPath { get; set; }
+        public string RecordingPath { get; set; } = null!;
 
         /// <summary>
         /// Die Größe des Zwischenspeichers für die Dateien zu Radiosendungen.
@@ -54,7 +52,7 @@ namespace JMS.DVB.CardServer
         /// Die vollständige Beschreibung der zugehörigen Quelle.
         /// </summary>
         [NonSerialized]
-        private SourceSelection m_Selection;
+        private SourceSelection m_Selection = null!;
 
         /// <summary>
         /// Erzeugt eine neue Beschreibung.
@@ -68,7 +66,7 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="type">Die Art des Bildsignals.</param>
         /// <returns>Die zu verwendende Speichergröße.</returns>
-        public int? GetFileBufferSize( legacy.StreamTypes? type )
+        public int? GetFileBufferSize(Legacy.StreamTypes? type)
         {
             // Want audio
             if (!type.HasValue)
@@ -77,8 +75,8 @@ namespace JMS.DVB.CardServer
             // Check for supported types
             switch (type.Value)
             {
-                case legacy.StreamTypes.Video13818: return SDTVFileBufferSize;
-                case legacy.StreamTypes.H264: return HDTVFileBufferSize;
+                case Legacy.StreamTypes.Video13818: return SDTVFileBufferSize;
+                case Legacy.StreamTypes.H264: return HDTVFileBufferSize;
             }
 
             // We don't known
@@ -115,7 +113,7 @@ namespace JMS.DVB.CardServer
             {
                 // Create once
                 if (null == m_Selection)
-                    m_Selection = new SourceSelection { SelectionKey = this.SelectionKey };
+                    m_Selection = new SourceSelection { SelectionKey = SelectionKey };
 
                 // Report
                 return m_Selection;
@@ -128,11 +126,7 @@ namespace JMS.DVB.CardServer
         /// Erzeugt eine Kopie dieser Beschreibung.
         /// </summary>
         /// <returns>Die gewünschte Kopie.</returns>
-        object ICloneable.Clone()
-        {
-            // Forward
-            return Clone();
-        }
+        object ICloneable.Clone() => Clone();
 
         #endregion
     }

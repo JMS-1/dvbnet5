@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Eine Anfrage zum Deaktivieren des Empfangs einer einzelnen Quelle.
@@ -12,7 +9,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Die eindeutige Kennung der betroffenen Quelle.
         /// </summary>
-        public SourceIdentifier Source { get; set; }
+        public SourceIdentifier Source { get; set; } = null!;
 
         /// <summary>
         /// Der eindeutige Name der Quelle.
@@ -31,10 +28,10 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="response">Die zu befüllende Antwort für den Aufrufer.</param>
         /// <param name="server">Die aktuelle Implementierung des <i>Card Servers</i>.</param>
-        protected override void OnExecute( Response response, ServerImplementation server )
+        protected override void OnExecute(Response response, ServerImplementation server)
         {
             // Execute
-            ServerImplementation.EndRequest( server.BeginRemoveSource( Source, UniqueIdentifier ) );
+            ServerImplementation.EndRequest(server.BeginRemoveSource(Source, UniqueIdentifier));
         }
     }
 }

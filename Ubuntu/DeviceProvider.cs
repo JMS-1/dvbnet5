@@ -11,17 +11,18 @@ namespace JMS.DVB.Provider.Ubuntu
     /// <summary>
     /// Device provider using the DVB.NET Linux proxy TCP protocol.
     /// </summary>
-    public class DeviceProvider : ILegacyDevice
+    /// <param name="args">Configuration of the connection.</param>
+    public class DeviceProvider(Hashtable args) : ILegacyDevice
     {
         /// <summary>
         /// Name of IP of the server to 
         /// </summary>
-        private readonly string m_server;
+        private readonly string m_server = (string)args["Adapter.Server"]!;
 
         /// <summary>
         /// TCP port to connect to.
         /// </summary>
-        private readonly int m_port;
+        private readonly int m_port = ArgumentToNumber(args["Adapter.Port"]!, 29713);
 
         /// <summary>
         /// The active connection to the proxy.
@@ -32,16 +33,6 @@ namespace JMS.DVB.Provider.Ubuntu
         /// The transport stream analyser for the connection.
         /// </summary>
         private TSParser m_parser = new(true);
-
-        /// <summary>
-        /// Initialize a new provider instance.
-        /// </summary>
-        /// <param name="args">Configuration of the connection.</param>
-        public DeviceProvider(Hashtable args)
-        {
-            m_server = (string)args["Adapter.Server"]!;
-            m_port = ArgumentToNumber(args["Adapter.Port"]!, 29713);
-        }
 
         /// <summary>
         /// Take a configuration parameter and try to make it a number.

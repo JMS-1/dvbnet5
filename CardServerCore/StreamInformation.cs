@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Enthält alle Daten zum Empfang einer Quelle.
@@ -12,7 +9,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Die eindeutige Kennung der Quelle.
         /// </summary>
-        public SourceIdentifier Source { get; set; }
+        public SourceIdentifier Source { get; set; } = null!;
 
         /// <summary>
         /// Die eindeutige Kennung der Quelle, so wie sie beim Start angegeben wurde.
@@ -22,7 +19,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// In für den Empfang berücksichtigten Aspekte.
         /// </summary>
-        public StreamSelection Streams { get; set; }
+        public StreamSelection Streams { get; set; } = null!;
 
         /// <summary>
         /// Meldet oder legt fest, ob für diese Quelle eine Entschlüsselung aktiv ist.
@@ -33,12 +30,12 @@ namespace JMS.DVB.CardServer
         /// Der vollständige Pfad zur Aufzeichnungdatei oder <i>null</i>, wenn keine Datei
         /// angelegt wird.
         /// </summary>
-        public string TargetPath { get; set; }
+        public string TargetPath { get; set; } = null!;
 
         /// <summary>
         /// Die Netzwerkadresse, an den die Aufzeichnungsdaten verschickt werden.
         /// </summary>
-        public string StreamTarget { get; set; }
+        public string StreamTarget { get; set; } = null!;
 
         /// <summary>
         /// Die Anzahl der Teildatentströme (PID), die für den Empfang dieser Quelle benötigt werden.
@@ -58,7 +55,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Alle Dateien, die für diese Quelle angelegt wurden.
         /// </summary>
-        public FileStreamInformation[] AllFiles { get; set; }
+        public FileStreamInformation[] AllFiles { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Informationsinstanz.

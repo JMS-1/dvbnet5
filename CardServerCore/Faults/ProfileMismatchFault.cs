@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Wird ausgelöst, wenn eine Quelle aktiviert werden soll, die nicht zum aktiven Geräteprofil gehört.
@@ -15,12 +9,12 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Der Name des bereits zugeordneten Geräteprofils.
         /// </summary>
-        public string ProfileInUse { get; set; }
+        public string ProfileInUse { get; set; } = null!;
 
         /// <summary>
         /// Der Name des angeforderten Geräteprofils.
         /// </summary>
-        public string ProfileRequested { get; set; }
+        public string ProfileRequested { get; set; } = null!;
 
         /// <summary>
         /// Wird für die XML Serialisierung benötigt.

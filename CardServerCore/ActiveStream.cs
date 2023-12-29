@@ -1,5 +1,4 @@
-﻿using System;
-using JMS.DVB.Algorithms;
+﻿using JMS.DVB.Algorithms;
 
 
 namespace JMS.DVB.CardServer
@@ -53,14 +52,14 @@ namespace JMS.DVB.CardServer
         /// <param name="targetPath">Ein optionaler Dateiname zur Ablage der empfangenen Daten.</param>
         /// <param name="originalSelection">Die ursprünglich angeforderte Konfiguration der Aufzeichnung.</param>
         /// <exception cref="ArgumentNullException">Es wurde keine Verwaltung angegeben</exception>
-        public ActiveStream( Guid uniqueIdentifier, SourceStreamsManager manager, StreamSelection originalSelection, string targetPath )
+        public ActiveStream(Guid uniqueIdentifier, SourceStreamsManager manager, StreamSelection originalSelection, string targetPath)
         {
             // Validate
             if (manager == null)
-                throw new ArgumentNullException( "manager" );
+                throw new ArgumentNullException(nameof(manager));
 
             // Remember
-            SourceKey = new SourceIdenfierWithKey( uniqueIdentifier, manager.Source );
+            SourceKey = new SourceIdenfierWithKey(uniqueIdentifier, manager.Source);
             RequestedStreams = originalSelection.Clone();
             TargetPath = targetPath;
             Manager = manager;
@@ -79,7 +78,7 @@ namespace JMS.DVB.CardServer
         /// Prüft, ob die Entschlüsselung funktioniert.
         /// </summary>
         /// <param name="interval">Das vom Profil her eingestellte Prüfintervall.</param>
-        public void TestDecryption( TimeSpan interval )
+        public void TestDecryption(TimeSpan interval)
         {
             // Not active
             if (Manager.ConsumerCount < 1)
@@ -123,7 +122,7 @@ namespace JMS.DVB.CardServer
         /// Aktiviert die Verbraucherkontrolle für diese Quelle.
         /// </summary>
         /// <param name="source">Eine volle Referenz zur Quelle.</param>
-        public void EnableOptimizer( SourceSelection source )
+        public void EnableOptimizer(SourceSelection source)
         {
             // Just register
             Manager.BeforeRecreateStream += manager =>
@@ -132,14 +131,14 @@ namespace JMS.DVB.CardServer
                 var localOpt = new StreamSelectionOptimizer();
 
                 // Add the one stream
-                localOpt.Add( source, RequestedStreams );
+                localOpt.Add(source, RequestedStreams);
 
                 // Run the optimization
                 if (localOpt.Optimize() == 1)
-                    return localOpt.GetStreams( 0 );
+                    return localOpt.GetStreams(0);
 
                 // Failed - activation is not possible
-                return null;
+                return null!;
             };
         }
 
@@ -147,7 +146,7 @@ namespace JMS.DVB.CardServer
         /// Erzeugt zum aktuellen Empfang einen Informationsblock.
         /// </summary>
         /// <returns>Die gewünschten Informationen.</returns>
-        public StreamInformation CreateInformation()
+        public StreamInformation? CreateInformation()
         {
             // See if we are already stopped
             var manager = Manager;
@@ -159,8 +158,8 @@ namespace JMS.DVB.CardServer
             return
                 new StreamInformation
                 {
-                    Streams = (activeSelection == null) ? null : activeSelection.Clone(),
-                    IsDecrypting = manager.IsDecrypting.GetValueOrDefault( false ),
+                    Streams = activeSelection?.Clone()!,
+                    IsDecrypting = manager.IsDecrypting.GetValueOrDefault(false),
                     CurrentAudioVideoBytes = manager.CurrentAudioVideoBytes,
                     UniqueIdentifier = SourceKey.UniqueIdentifier,
                     StreamTarget = manager.StreamingTarget,
@@ -192,7 +191,7 @@ namespace JMS.DVB.CardServer
         /// Startet oder aktualisiert den Empfang der Quelle.
         /// </summary>
         /// <param name="interval">Das Interval zur Erkennung von deaktivierten Quellen.</param>
-        public void Refresh( TimeSpan interval )
+        public void Refresh(TimeSpan interval)
         {
             // Already stopped
             var manager = Manager;
@@ -200,7 +199,7 @@ namespace JMS.DVB.CardServer
                 return;
 
             // Get the source information
-            var info = manager.GetCurrentInformationAsync().CancelAfter( 15000 ).Result;
+            var info = manager.GetCurrentInformationAsync().CancelAfter(15000).Result;
 
             // Must start
             if (!FirstActivationDone)
@@ -210,7 +209,7 @@ namespace JMS.DVB.CardServer
                     return;
 
                 // Start the stream
-                FirstActivationDone = manager.CreateStream( TargetPath, info );
+                FirstActivationDone = manager.CreateStream(TargetPath, info);
             }
             else
             {
@@ -220,7 +219,7 @@ namespace JMS.DVB.CardServer
                         return;
 
                 // Update according to current station information
-                manager.RetestSourceInformation( info );
+                manager.RetestSourceInformation(info!);
 
                 // Remember
                 m_LastRetest = DateTime.UtcNow;
@@ -236,7 +235,7 @@ namespace JMS.DVB.CardServer
         {
             // Free once
             using (Manager)
-                Manager = null;
+                Manager = null!;
         }
 
         #endregion

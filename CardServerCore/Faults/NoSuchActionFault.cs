@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Meldet, dass eine bestimmte Erweiterung nicht zur Verfügung steht.

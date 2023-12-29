@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Lädt eine Bibliothek mit Erweiterungen in diese <i>Card Server</i> Instanz.
@@ -12,12 +9,12 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Die eigentliche Erweiterung.
         /// </summary>
-        public byte[] AssemblyData { get; set; }
+        public byte[] AssemblyData { get; set; } = null!;
 
         /// <summary>
         /// Option Informationen zum Debuggen der Erweiterung.
         /// </summary>
-        public byte[] DebugData { get; set; }
+        public byte[] DebugData { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Anfrage.
@@ -31,10 +28,10 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="response">Die zu befüllende Antwort für den Aufrufer.</param>
         /// <param name="server">Die aktuelle Implementierung des <i>Card Servers</i>.</param>
-        protected override void OnExecute( Response response, ServerImplementation server )
+        protected override void OnExecute(Response response, ServerImplementation server)
         {
             // Execute
-            ServerImplementation.EndRequest( server.BeginLoadExtensions( AssemblyData, DebugData ) );
+            ServerImplementation.EndRequest(server.BeginLoadExtensions(AssemblyData, DebugData));
         }
     }
 }

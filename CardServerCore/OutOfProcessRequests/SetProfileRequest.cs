@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Beschreibt die Anfrage zum Festlegen des DVB.NET Geräteprofils, dass der <i>Card Server</i>
@@ -13,7 +10,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Der Name des zu verwendenden Geräteprofils.
         /// </summary>
-        public string ProfileName { get; set; }
+        public string ProfileName { get; set; } = null!;
 
         /// <summary>
         /// Meldet oder legt fest, ob das verbundene Windows Gerät neu initialisiert werden soll.
@@ -44,10 +41,10 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="response">Die zu befüllende Antwort für den Aufrufer.</param>
         /// <param name="server">Die aktuelle Implementierung des <i>Card Servers</i>.</param>
-        protected override void OnExecute( Response response, ServerImplementation server )
+        protected override void OnExecute(Response response, ServerImplementation server)
         {
             // Execute
-            ServerImplementation.EndRequest( server.BeginSetProfile( ProfileName, ResetWakeUpDevice, DisablePCRFromH264Reconstruction, DisablePCRFromMPEG2Reconstruction ) );
+            ServerImplementation.EndRequest(server.BeginSetProfile(ProfileName, ResetWakeUpDevice, DisablePCRFromH264Reconstruction, DisablePCRFromMPEG2Reconstruction));
         }
     }
 }

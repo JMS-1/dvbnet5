@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Wird ausgelöst, wenn eine Quelle mehrfach aktiviert werden soll.
@@ -15,7 +9,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Die betroffene Quelle.
         /// </summary>
-        public SourceIdentifier Source { get; set; }
+        public SourceIdentifier Source { get; set; } = null!;
 
         /// <summary>
         /// Wird für die XML Serialisierung benötigt.

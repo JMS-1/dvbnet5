@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Beschreibt einen NVOD Dienst.
@@ -12,12 +9,12 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Die eindeutige DVB Kennung des Dienstes.
         /// </summary>
-        public SourceIdentifier Service { get; set; }
+        public SourceIdentifier Service { get; set; } = null!;
 
         /// <summary>
         /// Der Name des Dienstes mit weiteren Ordnungsinformationen.
         /// </summary>
-        public string UniqueName { get; set; }
+        public string UniqueName { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Beschreibung.

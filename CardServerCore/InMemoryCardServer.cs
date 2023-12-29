@@ -500,7 +500,7 @@ namespace JMS.DVB.CardServer
             }
 
             // All all streams
-            info.Streams.AddRange(Streams.Values.Select(stream => stream.CreateInformation()));
+            info.Streams.AddRange(Streams.Values.Select(stream => stream.CreateInformation())!);
 
             // Attach to NVOD service list
             var services = (m_ServiceParser == null) ? null : m_ServiceParser.ServiceMap;
@@ -691,7 +691,7 @@ namespace JMS.DVB.CardServer
                         CardServerException.Throw(new NoSuchActionFault(actionType));
 
                     // Process
-                    return customAction!.Execute(device, parameters!);
+                    return customAction!.Execute(device, parameters!)!;
                 });
 
         /// <summary>

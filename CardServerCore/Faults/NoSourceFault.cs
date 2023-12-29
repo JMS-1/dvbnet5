@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Meldet, dass eine Quelle nicht aktiv ist.
@@ -15,7 +9,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Die betroffene Quelle.
         /// </summary>
-        public SourceIdentifier Source { get; set; }
+        public SourceIdentifier Source { get; set; } = null!;
 
         /// <summary>
         /// Wird für die XML Serialisierung benötigt.

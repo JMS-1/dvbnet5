@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Beschreibt eine erweiterte Identifikation einer Quelle.
@@ -23,11 +20,11 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="uniqueIdentifier">Die eindeutige Kennung dieser Quelle.</param>
         /// <param name="source">Die zugehörige Quelle.</param>
-        public SourceIdenfierWithKey( Guid uniqueIdentifier, SourceIdentifier source )
+        public SourceIdenfierWithKey(Guid uniqueIdentifier, SourceIdentifier source)
         {
             // Validate
             if (source == null)
-                throw new ArgumentNullException( "source" );
+                throw new ArgumentNullException(nameof(source));
 
             // Remember            
             UniqueIdentifier = uniqueIdentifier;
@@ -49,15 +46,14 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="obj">Ein anderes Objekt.</param>
         /// <returns>Gesetzt, wenn das andere Objekt die gleiche Quelle mit dme gleichen Schlüssel bezeichnet.</returns>
-        public override bool Equals( object obj )
+        public override bool Equals(object? obj)
         {
             // Check type
-            var other = obj as SourceIdenfierWithKey;
-            if (other == null)
+            if (obj is not SourceIdenfierWithKey other)
                 return false;
 
             // Forward
-            return Source.Equals( other.Source ) && (UniqueIdentifier == other.UniqueIdentifier);
+            return Source.Equals(other.Source) && (UniqueIdentifier == other.UniqueIdentifier);
         }
     }
 }

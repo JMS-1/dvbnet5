@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Pipes;
-using System.Linq;
+﻿using System.IO.Pipes;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Xml;
@@ -38,12 +34,12 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Die Instanz zur Rekonstruktion von Anfragen.
         /// </summary>
-        private static XmlSerializer m_Serializer;
+        private static XmlSerializer m_Serializer = null!;
 
         /// <summary>
         /// Alle zusätzlichen Datentypen, die bei der Serialisierung berücksichtigt werden sollen.
         /// </summary>
-        private static HashSet<Type> m_ExtraTypes = new HashSet<Type>();
+        private static readonly HashSet<Type> m_ExtraTypes = new();
 
         /// <summary>
         /// Initialisiert allgemeine Felder.
@@ -101,13 +97,13 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="anyType">Eine beliebige Klasse.</param>
         /// <returns>Ein Basistyp dieser generischen Klasse oder <i>null</i>.</returns>
-        internal static Type FindCustomActionBase(Type anyType)
+        internal static Type? FindCustomActionBase(Type anyType)
         {
             // Process
             if (anyType != null)
                 if (anyType.IsClass)
                     if (!anyType.IsAbstract)
-                        for (; anyType != null; anyType = anyType.BaseType)
+                        for (; anyType != null; anyType = anyType.BaseType!)
                             if (anyType.IsGenericType)
                                 if (anyType.GetGenericTypeDefinition() == typeof(CustomAction<,>))
                                     return anyType;
@@ -203,7 +199,7 @@ namespace JMS.DVB.CardServer
         /// <param name="pipe">Der gewünschte Kanal.</param>
         /// <param name="serializer">Die Instanz zur Rekonstruktion des Objektes.</param>
         /// <returns>Das rekonstruierte Objekt.</returns>
-        private static object ReadFromPipe(PipeStream pipe, XmlSerializer serializer)
+        private static object? ReadFromPipe(PipeStream pipe, XmlSerializer serializer)
         {
             // Allocate length field
             byte[] len = new byte[sizeof(long)], data;
@@ -243,42 +239,31 @@ namespace JMS.DVB.CardServer
             var settings = new XmlReaderSettings { CheckCharacters = false };
 
             // Reconstruct
-            using (var temp = new MemoryStream(data, false))
-            using (var reader = XmlReader.Create(temp, settings))
-                return serializer.Deserialize(reader);
+            using var temp = new MemoryStream(data, false);
+            using var reader = XmlReader.Create(temp, settings);
+
+            return serializer.Deserialize(reader);
         }
 
         /// <summary>
         /// Überträgt diese Anfrage in der XML Repräsentation in einen Datenstrom.
         /// </summary>
         /// <param name="stream">Der gewünschte Datenstrom.</param>
-        public void SendRequest(AnonymousPipeServerStream stream)
-        {
-            // Forward
-            SendToPipe(stream, m_Serializer, this);
-        }
+        public void SendRequest(AnonymousPipeServerStream stream) => SendToPipe(stream, m_Serializer, this);
 
         /// <summary>
         /// Nimmt eine Anfrage entgegen.
         /// </summary>
         /// <param name="stream">Der Datenstrom, über den die Anfrage übertragen wird.</param>
         /// <returns>Die gewünschte Anfrage.</returns>
-        public static Request ReceiveRequest(AnonymousPipeClientStream stream)
-        {
-            // Process
-            return (Request)ReadFromPipe(stream, m_Serializer);
-        }
+        public static Request? ReceiveRequest(AnonymousPipeClientStream stream) => (Request?)ReadFromPipe(stream, m_Serializer);
 
         /// <summary>
         /// Nimmt eine Antwort zu einer Anfrage entgegen.
         /// </summary>
         /// <param name="stream">Der Datenstrom, auf dem die Antwort bereitgestellt wird.</param>
         /// <returns>Die gewünschte Antwort.</returns>
-        public Response ReceiveResponse(AnonymousPipeServerStream stream)
-        {
-            // Process
-            return (Response)ReadFromPipe(stream, new XmlSerializer(ResponseType));
-        }
+        public Response? ReceiveResponse(AnonymousPipeServerStream stream) => (Response?)ReadFromPipe(stream, new XmlSerializer(ResponseType));
 
         /// <summary>
         /// Führt eine Anfrage aus.

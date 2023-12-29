@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Diese Anfrage schliesst den Sendersuchlauf ab.
@@ -28,10 +25,10 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="response">Die zu befüllende Antwort für den Aufrufer.</param>
         /// <param name="server">Die aktuelle Implementierung des <i>Card Servers</i>.</param>
-        protected override void OnExecute( Response response, ServerImplementation server )
+        protected override void OnExecute(Response response, ServerImplementation server)
         {
             // Execute
-            ServerImplementation.EndRequest( server.BeginEndScan( UpdateProfile ) );
+            ServerImplementation.EndRequest(server.BeginEndScan(UpdateProfile));
         }
     }
 }

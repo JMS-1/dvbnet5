@@ -22,12 +22,12 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Alle bisher angemeldeten Erweiterungsbibliotheken.
         /// </summary>
-        private HashSet<string> m_Extensions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly HashSet<string> m_Extensions = new(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
         /// Current worker thread.
         /// </summary>
-        private Thread m_Worker;
+        private Thread m_Worker = null!;
 
         /// <summary>
         /// Erzeugt eine neue Implementierung.
@@ -35,7 +35,7 @@ namespace JMS.DVB.CardServer
         internal OutOfProcessCardServer()
         {
             // Streams to use
-            AnonymousPipeServerStream writer = null, reader = null;
+            AnonymousPipeServerStream? writer = null, reader = null;
             try
             {
                 // Create streams
@@ -43,12 +43,12 @@ namespace JMS.DVB.CardServer
                 reader = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
 
                 // Create start information
-                ProcessStartInfo info = new ProcessStartInfo();
-
-                // Configure
-                info.Arguments = string.Format("\"{0}\" \"{1}\"", writer.GetClientHandleAsString().Replace("\"", "\"\""), reader.GetClientHandleAsString().Replace("\"", "\"\""));
-                info.FileName = "JMS.DVB.CardServer.exe";
-                info.UseShellExecute = false;
+                ProcessStartInfo info = new()
+                {
+                    Arguments = string.Format("\"{0}\" \"{1}\"", writer.GetClientHandleAsString().Replace("\"", "\"\""), reader.GetClientHandleAsString().Replace("\"", "\"\"")),
+                    FileName = "JMS.DVB.CardServer.exe",
+                    UseShellExecute = false
+                };
 
                 // With cleanup
                 try
@@ -74,10 +74,8 @@ namespace JMS.DVB.CardServer
             finally
             {
                 // Cleanup all
-                if (null != writer)
-                    writer.Dispose();
-                if (null != reader)
-                    reader.Dispose();
+                writer?.Dispose();
+                reader?.Dispose();
             }
         }
 
@@ -97,7 +95,7 @@ namespace JMS.DVB.CardServer
                         request.SendRequest(m_RequestStream);
 
                         // Wait for the answer
-                        Response response = request.ReceiveResponse(m_ResponseStream);
+                        var response = request.ReceiveResponse(m_ResponseStream)!;
 
                         // Report result
                         if (null != response.Fault)
@@ -146,32 +144,23 @@ namespace JMS.DVB.CardServer
         /// <param name="selection">Die Beschreibung einer Quelle, deren Gruppe aktiviert werden soll.</param>
         /// <exception cref="ArgumentNullException">Es wurde keine Quellgruppe angegeben.</exception>
         /// <exception cref="CardServerException">Es wird bereits eine Anfrage ausgeführt.</exception>
-        protected override void OnSelect(SourceSelection selection)
-        {
-            // Process
+        protected override void OnSelect(SourceSelection selection) =>
             Execute(new SelectRequest { SelectionKey = selection.SelectionKey });
-        }
 
         /// <summary>
         /// Aktiviert eine einzelne Quelle für den <i>Zapping Modus</i>.
         /// </summary>
         /// <param name="source">Die gewünschte Quelle.</param>
         /// <param name="target">Die Netzwerkadresse, an die alle Daten versendet werden sollen.</param>
-        protected override void OnSetZappingSource(SourceSelection source, string target)
-        {
-            // Process
+        protected override void OnSetZappingSource(SourceSelection source, string target) =>
             Execute(new SetZappingSourceRequest { SelectionKey = source.SelectionKey, Target = target });
-        }
 
         /// <summary>
         /// Aktiviert den Empfang einer Quelle.
         /// </summary>
         /// <param name="sources">Informationen zu den zu aktivierenden Quellen.</param>
-        protected override void OnAddSources(ReceiveInformation[] sources)
-        {
-            // Process
+        protected override void OnAddSources(ReceiveInformation[] sources) =>
             Execute(new AddSourcesRequest { Sources = sources });
-        }
 
         /// <summary>
         /// Lädt eine Bibliothek mit Erweiterungen.
@@ -179,51 +168,36 @@ namespace JMS.DVB.CardServer
         /// <param name="actionAssembly">Der Binärcode der Bibliothek.</param>
         /// <param name="symbols">Informationen zum Debuggen der Erweiterung.</param>
         /// <returns>Steuereinheit zur Synchronisation des Aufrufs.</returns>
-        protected override void OnLoadExtensions(byte[] actionAssembly, byte[] symbols)
-        {
-            // Process
+        protected override void OnLoadExtensions(byte[] actionAssembly, byte[] symbols) =>
             Execute(new LoadExtensionsRequest { AssemblyData = actionAssembly, DebugData = symbols });
-        }
 
         /// <summary>
         /// Führt eine Erweiterungsoperation aus.
         /// </summary>
         /// <param name="actionType">Die Klasse, von der aus die Erweiterungsmethode abgerufen werden kann.</param>
         /// <param name="parameters">Optionale Parameter zur Ausführung.</param>
-        protected override void OnCustomAction<IN, OUT>(string actionType, IN parameters)
-        {
-            // Process
+        protected override void OnCustomAction<IN, OUT>(string actionType, IN parameters) =>
             Execute(new CustomActionRequest<IN, OUT> { ActionType = actionType, Parameters = parameters });
-        }
 
         /// <summary>
         /// Stellt den Empfang für eine Quelle ein.
         /// </summary>
         /// <param name="source">Die betroffene Quelle.</param>
         /// <param name="uniqueIdentifier">Der eindeutige Name der Quelle.</param>
-        protected override void OnRemoveSource(SourceIdentifier source, Guid uniqueIdentifier)
-        {
-            // Forward
+        protected override void OnRemoveSource(SourceIdentifier source, Guid uniqueIdentifier) =>
             Execute(new RemoveSourceRequest { Source = new SourceIdentifier(source), UniqueIdentifier = uniqueIdentifier });
-        }
 
         /// <summary>
         /// Stellt den Empfang für alle Quellen ein.
         /// </summary>
-        protected override void OnRemoveAllSources()
-        {
-            // Forward
+        protected override void OnRemoveAllSources() =>
             Execute(new RemoveAllSourcesRequest());
-        }
 
         /// <summary>
         /// Ermittelt den aktuellen Zustand des <i>Card Servers</i>.
         /// </summary>
-        protected override void OnGetState()
-        {
-            // Forward
+        protected override void OnGetState() =>
             Execute(new GetStateRequest());
-        }
 
         /// <summary>
         /// Verändert den Netzwerkversand für eine aktive Quelle.
@@ -232,11 +206,8 @@ namespace JMS.DVB.CardServer
         /// <param name="uniqueIdentifier">Der eindeutige Name der Quelle.</param>
         /// <param name="target">Die Daten zum Netzwerkversand.</param>
         /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
-        protected override void OnSetStreamTarget(SourceIdentifier source, Guid uniqueIdentifier, string target)
-        {
-            // Process
+        protected override void OnSetStreamTarget(SourceIdentifier source, Guid uniqueIdentifier, string target) =>
             Execute(new SetStreamTargetRequest { Source = source, UniqueIdentifier = uniqueIdentifier, Target = target });
-        }
 
         /// <summary>
         /// Beginnt mit der Sammlung der Daten für die elektronische Programmzeitschrift
@@ -244,39 +215,27 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="sources">Die zu berücksichtigenden Quellen.</param>
         /// <param name="extensions">Spezielle Zusatzfunktionalitäten der Sammlung.</param>
-        protected override void OnStartEPGCollection(SourceIdentifier[] sources, EPGExtensions extensions)
-        {
-            // Forward
+        protected override void OnStartEPGCollection(SourceIdentifier[] sources, EPGExtensions extensions) =>
             Execute(new StartEPGRequest { Sources = sources, Extensions = extensions });
-        }
 
         /// <summary>
         /// Beendet die Aktualisierung der Programmzeitschrift.
         /// </summary>
-        protected override void OnEndEPGCollection()
-        {
-            // Forward
+        protected override void OnEndEPGCollection() =>
             Execute(new EndEPGRequest());
-        }
 
         /// <summary>
         /// Beginnt einen Sendersuchlauf auf dem aktuellen Geräteprofil.
         /// </summary>
-        protected override void OnStartScan()
-        {
-            // Forward
+        protected override void OnStartScan() =>
             Execute(new StartScanRequest());
-        }
 
         /// <summary>
         /// Beendet einen Sendersuchlauf auf dem aktuellen Geräteprofil.
         /// </summary>
         /// <param name="updateProfile">Gesetzt, wenn das Geräteprofil aktualisiert werden soll.</param>
-        protected override void OnEndScan(bool? updateProfile)
-        {
-            // Forward
+        protected override void OnEndScan(bool? updateProfile) =>
             Execute(new EndScanRequest { UpdateProfile = updateProfile });
-        }
 
         /// <summary>
         /// Beendet die Nutzung dieser Instanz endgültig.
@@ -300,7 +259,7 @@ namespace JMS.DVB.CardServer
                 finally
                 {
                     // Forget
-                    m_ResponseStream = null;
+                    m_ResponseStream = null!;
                 }
             if (null != m_RequestStream)
                 try
@@ -315,7 +274,7 @@ namespace JMS.DVB.CardServer
                 finally
                 {
                     // Forget
-                    m_RequestStream = null;
+                    m_RequestStream = null!;
                 }
 
             // Wait for thread to finish
@@ -325,7 +284,7 @@ namespace JMS.DVB.CardServer
                 m_Worker.Join();
 
                 // Forget
-                m_Worker = null;
+                m_Worker = null!;
             }
         }
 
@@ -343,11 +302,11 @@ namespace JMS.DVB.CardServer
 
             // Already did it
             lock (m_Extensions)
-                if (!m_Extensions.Add(extensionType.Assembly.FullName))
+                if (!m_Extensions.Add(extensionType.Assembly.FullName!))
                     return;
 
             // Attach to the file
-            FileInfo file = new FileInfo(extensionType.Assembly.CodeBase.Substring(8).Replace('/', '\\'));
+            FileInfo file = new(extensionType.Assembly.Location[8..].Replace('/', '\\'));
             if (!file.Exists)
                 throw new ArgumentException(extensionType.AssemblyQualifiedName, "type");
 
@@ -355,20 +314,16 @@ namespace JMS.DVB.CardServer
             var assemblyData = File.ReadAllBytes(file.FullName);
 
             // Attach to default file name
-            FileInfo symbolFile = new FileInfo(Path.ChangeExtension(file.FullName, "pdb"));
+            FileInfo symbolFile = new(Path.ChangeExtension(file.FullName, "pdb"));
 
             // Optional symbol data
-            byte[] symbols = null;
-            if (symbolFile.Exists)
-                symbols = File.ReadAllBytes(symbolFile.FullName);
-            else
-                symbols = null;
+            var symbols = symbolFile.Exists ? File.ReadAllBytes(symbolFile.FullName) : null;
 
             // Register types - client side
             Request.AddTypes(extensionType.Assembly);
 
             // Process
-            EndRequest(BeginLoadExtensions(assemblyData, symbols));
+            EndRequest(BeginLoadExtensions(assemblyData, symbols!));
         }
     }
 }

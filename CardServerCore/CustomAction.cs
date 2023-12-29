@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Basisklasse zur Implementierung von Erweiterungen.
@@ -39,7 +36,7 @@ namespace JMS.DVB.CardServer
         {
             // Validate
             if (cardServer == null)
-                throw new ArgumentNullException("cardServer");
+                throw new ArgumentNullException(nameof(cardServer));
 
             // Remember
             m_CardServer = cardServer;
@@ -61,7 +58,7 @@ namespace JMS.DVB.CardServer
         /// <param name="device">Das zu verwendende Gerät.</param>
         /// <param name="parameters">Optionale Parameter für den Aufruf.</param>
         /// <returns>Das Ergebnis der Operation.</returns>
-        internal object Execute(Hardware device, object parameters)
+        internal object? Execute(Hardware device, object parameters)
         {
             // Configure
             Device = device;

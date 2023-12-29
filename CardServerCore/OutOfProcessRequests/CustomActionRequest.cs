@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Führt eine Erweiterung aus.
@@ -14,12 +11,12 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Die Klasse, von der aus die Erweierung angeboten wird.
         /// </summary>
-        public string ActionType { get; set; }
+        public string ActionType { get; set; } = null!;
 
         /// <summary>
         /// Freie Parameter für die Ausführung der Erweiterung.
         /// </summary>
-        public TInput Parameters { get; set; }
+        public TInput Parameters { get; set; } = default!;
 
         /// <summary>
         /// Erzeugt eine neue Anfrage.
@@ -33,10 +30,10 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="response">Die zu befüllende Antwort für den Aufrufer.</param>
         /// <param name="server">Die aktuelle Implementierung des <i>Card Servers</i>.</param>
-        protected override void OnExecute( Response<TOutput> response, ServerImplementation server )
+        protected override void OnExecute(Response<TOutput> response, ServerImplementation server)
         {
             // Execute
-            response.ResponseData = server.BeginCustomAction<TInput, TOutput>( ActionType, Parameters ).Result;
+            response.ResponseData = server.BeginCustomAction<TInput, TOutput>(ActionType, Parameters).Result;
         }
     }
 }

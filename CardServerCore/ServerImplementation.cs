@@ -42,7 +42,7 @@
             public _AsyncControl(ServerImplementation server)
             {
                 // Remember
-                m_Server = server ?? throw new ArgumentNullException("server");
+                m_Server = server ?? throw new ArgumentNullException(nameof(server));
             }
 
             /// <summary>
@@ -175,7 +175,7 @@
         {
             // Validate
             if (selectionKey == null)
-                throw new ArgumentNullException("selectionKey");
+                throw new ArgumentNullException(nameof(selectionKey));
 
             // Reconstruct
             var selection = new SourceSelection { SelectionKey = selectionKey };
@@ -208,7 +208,7 @@
         {
             // Validate
             if (string.IsNullOrEmpty(actionType))
-                throw new ArgumentNullException("actionType");
+                throw new ArgumentNullException(nameof(actionType));
 
             // Start action
             return (IAsyncResult<TOutput>)Start<TOutput>(() => { OnCustomAction<TInput, TOutput>(actionType, parameters); });
@@ -232,7 +232,7 @@
         {
             // Validate
             if (actionAssembly == null)
-                throw new ArgumentNullException("actionAssembly");
+                throw new ArgumentNullException(nameof(actionAssembly));
 
             // Start action
             return Start<object>(() => { OnLoadExtensions(actionAssembly, symbols); });
@@ -255,7 +255,7 @@
         {
             // Validate
             if (sources == null)
-                throw new ArgumentNullException("sources");
+                throw new ArgumentNullException(nameof(sources));
 
             // Create helper
             var clones = new List<ReceiveInformation>();
@@ -313,7 +313,7 @@
         {
             // Validate
             if (source == null)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
 
             // Start action
             return Start<object>(() => { OnRemoveSource(source, uniqueIdentifier); });
@@ -337,9 +337,9 @@
         {
             // Validate
             if (string.IsNullOrEmpty(selectionKey))
-                throw new ArgumentNullException("selectionKey");
+                throw new ArgumentNullException(nameof(selectionKey));
             if (string.IsNullOrEmpty(target))
-                throw new ArgumentNullException("target");
+                throw new ArgumentNullException(nameof(target));
 
             // Create the selection
             var source = new SourceSelection { SelectionKey = selectionKey };
@@ -427,7 +427,7 @@
         {
             // Validate
             if (source == null)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
 
             // Start action
             return Start<object>(() => { OnSetStreamTarget(new SourceIdentifier(source), uniqueIdentifier, target); });
@@ -662,11 +662,11 @@
         {
             // Validate
             if (request == null)
-                throw new ArgumentNullException("request");
+                throw new ArgumentNullException(nameof(request));
 
             // Change type
             if (request is not _AsyncControl)
-                throw new ArgumentException(request.GetType().FullName, "request");
+                throw new ArgumentException(request.GetType().FullName, nameof(request));
 
             // Wait until it finishes
             request.AsyncWaitHandle.WaitOne();
@@ -760,7 +760,7 @@
             if (server == null)
                 throw new NullReferenceException("server");
             if (selection == null)
-                throw new ArgumentNullException("selection");
+                throw new ArgumentNullException(nameof(selection));
 
             // Forward
             return server.BeginSelect(selection.SelectionKey);

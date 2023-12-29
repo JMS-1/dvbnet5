@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Ermittelt den aktuellen Zustand des <i>Card Servers</i>.
@@ -13,7 +9,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Die aktuell angewählte Quellgruppe (Transponder) inklusive dem Namen des Geräteprofils.
         /// </summary>
-        public string Selection { get; set; }
+        public string Selection { get; set; } = null!;
 
         /// <summary>
         /// Die Informationen zu allen aktiven Quellen.
@@ -53,7 +49,7 @@ namespace JMS.DVB.CardServer
         /// Die Liste aller auf dem aktuellen Portal angebotenen NVOD Dienste oder <i>null</i>,
         /// wenn die Auswertung der Dienste nicht aktiv ist.
         /// </summary>
-        public ServiceInformation[] Services { get; set; }
+        public ServiceInformation[] Services { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Informationsinstanz.

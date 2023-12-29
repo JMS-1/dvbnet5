@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Die Anfrage fordetr den <i>Card Server</i> auf, eine Aktualisierung der Programmzeitschrift zu starten.
@@ -12,7 +9,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Die Quellen, deren Daten benötigt werden.
         /// </summary>
-        public SourceIdentifier[] Sources { get; set; }
+        public SourceIdentifier[] Sources { get; set; } = null!;
 
         /// <summary>
         /// Die Erweiterungen des Suchalgorithmus, die zu aktivieren sind.
@@ -31,10 +28,10 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="response">Die zu befüllende Antwort für den Aufrufer.</param>
         /// <param name="server">Die aktuelle Implementierung des <i>Card Servers</i>.</param>
-        protected override void OnExecute( Response response, ServerImplementation server )
+        protected override void OnExecute(Response response, ServerImplementation server)
         {
             // Execute
-            ServerImplementation.EndRequest( server.BeginStartEPGCollection( Sources, Extensions ) );
+            ServerImplementation.EndRequest(server.BeginStartEPGCollection(Sources, Extensions));
         }
     }
 }

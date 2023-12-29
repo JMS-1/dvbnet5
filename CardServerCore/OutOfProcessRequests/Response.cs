@@ -1,7 +1,5 @@
-﻿using System;
-using System.IO.Pipes;
+﻿using System.IO.Pipes;
 using System.Xml.Serialization;
-
 
 namespace JMS.DVB.CardServer
 {
@@ -14,20 +12,20 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Setzt oder meldet eine Fehlersituation.
         /// </summary>
-        [XmlElement( typeof( CardServerFault ) )]
-        [XmlElement( typeof( EPGActiveFault ) )]
-        [XmlElement( typeof( EPGNotActiveFault ) )]
-        [XmlElement( typeof( NoProfileFault ) )]
-        [XmlElement( typeof( NoSourceFault ) )]
-        [XmlElement( typeof( NoSourceListFault ) )]
-        [XmlElement( typeof( ProfileAlreadyAttachedFault ) )]
-        [XmlElement( typeof( ProfileMismatchFault ) )]
-        [XmlElement( typeof( ServerBusyFault ) )]
-        [XmlElement( typeof( SourceInUseFault ) )]
-        [XmlElement( typeof( SourceUpdateActiveFault ) )]
-        [XmlElement( typeof( SourceUpdateNotActiveFault ) )]
-        [XmlElement( typeof( NoSuchActionFault ) )]
-        public CardServerFault Fault { get; set; }
+        [XmlElement(typeof(CardServerFault))]
+        [XmlElement(typeof(EPGActiveFault))]
+        [XmlElement(typeof(EPGNotActiveFault))]
+        [XmlElement(typeof(NoProfileFault))]
+        [XmlElement(typeof(NoSourceFault))]
+        [XmlElement(typeof(NoSourceListFault))]
+        [XmlElement(typeof(ProfileAlreadyAttachedFault))]
+        [XmlElement(typeof(ProfileMismatchFault))]
+        [XmlElement(typeof(ServerBusyFault))]
+        [XmlElement(typeof(SourceInUseFault))]
+        [XmlElement(typeof(SourceUpdateActiveFault))]
+        [XmlElement(typeof(SourceUpdateNotActiveFault))]
+        [XmlElement(typeof(NoSuchActionFault))]
+        public CardServerFault Fault { get; set; } = null!;
 
         /// <summary>
         /// Initialisiert die Basisklasse.
@@ -45,7 +43,7 @@ namespace JMS.DVB.CardServer
             get
             {
                 // Report
-                return null;
+                return null!;
             }
             set
             {
@@ -56,11 +54,7 @@ namespace JMS.DVB.CardServer
         /// Überträgt diese Antwort in der XML Repräsentation in einen Datenstrom.
         /// </summary>
         /// <param name="stream">Der gewünschte Datenstrom.</param>
-        public void SendResponse( AnonymousPipeClientStream stream )
-        {
-            // Forward
-            Request.SendToPipe( stream, new XmlSerializer( GetType() ), this );
-        }
+        public void SendResponse(AnonymousPipeClientStream stream) => Request.SendToPipe(stream, new XmlSerializer(GetType()), this);
     }
 
     /// <summary>
@@ -74,7 +68,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Der Rückgabewert für diese Anfrage.
         /// </summary>
-        public T ResponseData { get; set; }
+        public T ResponseData { get; set; } = default!;
 
         /// <summary>
         /// Initialisiert die Basisklasse.
@@ -92,12 +86,12 @@ namespace JMS.DVB.CardServer
             get
             {
                 // Report
-                return ResponseData;
+                return ResponseData!;
             }
             set
             {
                 // Change
-                ResponseData = (T) value;
+                ResponseData = (T)value;
             }
         }
     }

@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Eine Anfrage zur Aktivierung oder Deaktivierung des Netzwerkversands einer aktiven
@@ -13,7 +10,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Die betroffene Quelle.
         /// </summary>
-        public SourceIdentifier Source { get; set; }
+        public SourceIdentifier Source { get; set; } = null!;
 
         /// <summary>
         /// Der eindeutige Name der Quelle.
@@ -23,7 +20,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Meldet oder setzt die TCP/IP UDP Empfangsadresse.
         /// </summary>
-        public string Target { get; set; }
+        public string Target { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Anfrage.
@@ -37,10 +34,10 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="response">Die zu befüllende Antwort für den Aufrufer.</param>
         /// <param name="server">Die aktuelle Implementierung des <i>Card Servers</i>.</param>
-        protected override void OnExecute( Response response, ServerImplementation server )
+        protected override void OnExecute(Response response, ServerImplementation server)
         {
             // Execute
-            ServerImplementation.EndRequest( server.BeginSetStreamTarget( Source, UniqueIdentifier, Target ) );
+            ServerImplementation.EndRequest(server.BeginSetStreamTarget(Source, UniqueIdentifier, Target));
         }
     }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Meldet, dass bereits ein Geräteprofil zugeordnet ist.
@@ -15,7 +9,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Der Name des bereits zugeordneten Geräteprofils.
         /// </summary>
-        public string ProfileName { get; set; }
+        public string ProfileName { get; set; } = null!;
 
         /// <summary>
         /// Wird für die XML Serialisierung benötigt.

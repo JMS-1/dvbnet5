@@ -5,7 +5,7 @@ using System.Text;
 using JMS.DVB.SI;
 using JMS.DVB.SI.ProgramGuide;
 
-using legacyEPG = oldVersion.JMS.DVB.EPG;
+using LegacyEPG = oldVersion.JMS.DVB.EPG;
 
 namespace JMS.DVB.CardServer
 {
@@ -168,7 +168,7 @@ namespace JMS.DVB.CardServer
                 foreach (var descriptor in epg.Table.Descriptors)
                 {
                     // Check for schedule information
-                    if (descriptor is not legacyEPG.Descriptors.ContentTransmissionPremiere schedule)
+                    if (descriptor is not LegacyEPG.Descriptors.ContentTransmissionPremiere schedule)
                         continue;
 
                     // Create identifier
@@ -201,7 +201,7 @@ namespace JMS.DVB.CardServer
         /// <param name="duration">Dauer der zugehörigen Sendung.</param>
         /// <param name="descriptors">Ergänzende Beschreibungen zur Sendung.</param>
         /// <returns>Die neu erzeugte Beschreibungsinstanz.</returns>
-        private void AddGuideItem(SourceIdentifier source, uint identifier, DateTime startTime, TimeSpan duration, legacyEPG.Descriptor[] descriptors)
+        private void AddGuideItem(SourceIdentifier source, uint identifier, DateTime startTime, TimeSpan duration, LegacyEPG.Descriptor[] descriptors)
         {
             // First create it
             var info = CreateGuideItem(source, identifier, startTime, duration, descriptors);
@@ -243,14 +243,14 @@ namespace JMS.DVB.CardServer
         /// <param name="duration">Dauer der zugehörigen Sendung.</param>
         /// <param name="descriptors">Ergänzende Beschreibungen zur Sendung.</param>
         /// <returns>Die neu erzeugte Beschreibungsinstanz.</returns>
-        private static ProgramGuideItem? CreateGuideItem(SourceIdentifier source, uint identifier, DateTime startTime, TimeSpan duration, legacyEPG.Descriptor[] descriptors)
+        private static ProgramGuideItem? CreateGuideItem(SourceIdentifier source, uint identifier, DateTime startTime, TimeSpan duration, LegacyEPG.Descriptor[] descriptors)
         {
             // Descriptors we can have
-            legacyEPG.Descriptors.ParentalRating? rating = null;
-            legacyEPG.Descriptors.ShortEvent? shortEvent = null;
+            LegacyEPG.Descriptors.ParentalRating? rating = null;
+            LegacyEPG.Descriptors.ShortEvent? shortEvent = null;
 
             // Collector
-            List<legacyEPG.Descriptors.ExtendedEvent> exEvents = new();
+            List<LegacyEPG.Descriptors.ExtendedEvent> exEvents = new();
             HashSet<ContentCategory> categories = new();
 
             // Check all descriptors
@@ -261,7 +261,7 @@ namespace JMS.DVB.CardServer
                     if (shortEvent == null)
                     {
                         // Read
-                        shortEvent = descr as legacyEPG.Descriptors.ShortEvent;
+                        shortEvent = descr as LegacyEPG.Descriptors.ShortEvent;
 
                         // Done for now
                         if (null != shortEvent)
@@ -270,7 +270,7 @@ namespace JMS.DVB.CardServer
                     if (rating == null)
                     {
                         // Read
-                        rating = descr as legacyEPG.Descriptors.ParentalRating;
+                        rating = descr as LegacyEPG.Descriptors.ParentalRating;
 
                         // Done for now
                         if (null != rating)
@@ -278,7 +278,7 @@ namespace JMS.DVB.CardServer
                     }
 
                     // Event
-                    if (descr is legacyEPG.Descriptors.ExtendedEvent exEvent)
+                    if (descr is LegacyEPG.Descriptors.ExtendedEvent exEvent)
                     {
                         // Remember
                         exEvents.Add(exEvent);
@@ -288,7 +288,7 @@ namespace JMS.DVB.CardServer
                     }
 
                     // Check for content information
-                    if (descr is legacyEPG.Descriptors.Content content)
+                    if (descr is LegacyEPG.Descriptors.Content content)
                     {
                         // Process
                         if (content.Categories != null)

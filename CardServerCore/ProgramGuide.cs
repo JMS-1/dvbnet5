@@ -1,5 +1,4 @@
-﻿using System;
-using JMS.DVB.SI.ProgramGuide;
+﻿using JMS.DVB.SI.ProgramGuide;
 using System.Xml.Serialization;
 
 namespace JMS.DVB.CardServer
@@ -41,7 +40,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Der zugehörige Ursprung.
         /// </summary>
-        public GroupLocation Location { get; private set; }
+        public GroupLocation Location { get; private set; } = null!;
 
         /// <summary>
         /// Die Quellgruppe (Transponder).
@@ -53,14 +52,14 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="source">Die Informationen zur Quelle.</param>
         /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
-        public GroupKey( SourceSelection source )
+        public GroupKey(SourceSelection source)
         {
             // Validate
             if (null == source)
-                throw new ArgumentNullException( "source" );
+                throw new ArgumentNullException(nameof(source));
 
             // Just remember
-            Location = source.Location;
+            Location = source.Location!;
             Group = source.Group;
         }
 
@@ -77,7 +76,7 @@ namespace JMS.DVB.CardServer
             if (null == Group)
                 return hash;
             else
-                return (hash ^ Group.GetHashCode());
+                return hash ^ Group.GetHashCode();
         }
 
         /// <summary>
@@ -85,17 +84,14 @@ namespace JMS.DVB.CardServer
         /// </summary>
         /// <param name="obj">Der andere Schlüssel.</param>
         /// <returns>Gesetzt, wenn die Schlüssel semantisch identisch sind.</returns>
-        public override bool Equals( object obj )
+        public override bool Equals(object? obj)
         {
-            // Change type
-            GroupKey other = obj as GroupKey;
-
             // Not possible
-            if (null == other)
+            if (obj is not GroupKey other)
                 return false;
 
             // Compare all
-            return Equals( Group, other.Group ) && Equals( Location, other.Location );
+            return Equals(Group, other.Group) && Equals(Location, other.Location);
         }
     }
 
@@ -108,7 +104,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Die Quelle, für die diese Beschreibung gültig ist.
         /// </summary>
-        public SourceIdentifier Source { get; set; }
+        public SourceIdentifier Source { get; set; } = null!;
 
         /// <summary>
         /// Die Uhrzeit in UTC / GMT, an der die zugehörige Sendung beginnt.
@@ -123,27 +119,27 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Die Beschreibung zur Sendung.
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
         /// <summary>
         /// Der Name der Sendung.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         /// Die optionale Kurzbeschreibung der Sendung.
         /// </summary>
-        public string ShortDescription { get; set; }
+        public string ShortDescription { get; set; } = null!;
 
         /// <summary>
         /// Die Sprache, in der die Sendung ausgestrahlt wird.
         /// </summary>
-        public string Language { get; set; }
+        public string Language { get; set; } = null!;
 
         /// <summary>
         /// Optionale Informationen zur Jugendfreigabe.
         /// </summary>
-        public string[] Ratings { get; set; }
+        public string[] Ratings { get; set; } = null!;
 
         /// <summary>
         /// Die eindeutige Kennung dieser Sendung.
@@ -153,19 +149,19 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Optional Informationen zum Inhalt der Ausstrahlung.
         /// </summary>
-        [XmlArrayItem( typeof( UndefinedContentCategory ) )]
-        [XmlArrayItem( typeof( MovieContentCategory ) )]
-        [XmlArrayItem( typeof( NewsContentCategory ) )]
-        [XmlArrayItem( typeof( ShowContentCategory ) )]
-        [XmlArrayItem( typeof( SportContentCategory ) )]
-        [XmlArrayItem( typeof( ChildrenContentCategory ) )]
-        [XmlArrayItem( typeof( MusicContentCategory ) )]
-        [XmlArrayItem( typeof( ArtContentCategory ) )]
-        [XmlArrayItem( typeof( SocialContentCategory ) )]
-        [XmlArrayItem( typeof( EducationContentCategory ) )]
-        [XmlArrayItem( typeof( LeisureContentCategory ) )]
-        [XmlArrayItem( typeof( ContentCharacteristicsCategory ) )]
-        public ContentCategory[] Content { get; set; }
+        [XmlArrayItem(typeof(UndefinedContentCategory))]
+        [XmlArrayItem(typeof(MovieContentCategory))]
+        [XmlArrayItem(typeof(NewsContentCategory))]
+        [XmlArrayItem(typeof(ShowContentCategory))]
+        [XmlArrayItem(typeof(SportContentCategory))]
+        [XmlArrayItem(typeof(ChildrenContentCategory))]
+        [XmlArrayItem(typeof(MusicContentCategory))]
+        [XmlArrayItem(typeof(ArtContentCategory))]
+        [XmlArrayItem(typeof(SocialContentCategory))]
+        [XmlArrayItem(typeof(EducationContentCategory))]
+        [XmlArrayItem(typeof(LeisureContentCategory))]
+        [XmlArrayItem(typeof(ContentCharacteristicsCategory))]
+        public ContentCategory[] Content { get; set; } = null!;
 
         /// <summary>
         /// Erzeugt eine neue Beschreibung.
@@ -178,10 +174,10 @@ namespace JMS.DVB.CardServer
         /// Erstellt einen Eintrag aus der Beschreibung einer Ausstrahlung.
         /// </summary>
         /// <param name="event">Die vorgefertigte Beschreibung.</param>
-        public ProgramGuideItem( Event @event )
+        public ProgramGuideItem(Event @event)
         {
             // Copy all
-            Duration = (int) @event.Duration.TotalSeconds;
+            Duration = (int)@event.Duration.TotalSeconds;
             ShortDescription = @event.ShortDescription;
             Description = @event.Description;
             Language = @event.Language;
@@ -195,13 +191,6 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Meldet das Ende der Aufzeichnung in UTC / GMT.
         /// </summary>
-        public DateTime End
-        {
-            get
-            {
-                // Calculate
-                return Start.AddSeconds( Duration );
-            }
-        }
+        public DateTime End => Start.AddSeconds(Duration);
     }
 }

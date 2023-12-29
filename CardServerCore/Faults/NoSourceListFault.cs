@@ -1,10 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace JMS.DVB.CardServer
+﻿namespace JMS.DVB.CardServer
 {
     /// <summary>
     /// Meldet, dass ein Geräteprofil keine eigene Liste von Quellen verwaltet.
@@ -15,7 +9,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Der Name des bereits nich gefundenen Profils.
         /// </summary>
-        public string ProfileName { get; set; }
+        public string ProfileName { get; set; } = null!;
 
         /// <summary>
         /// Wird für die XML Serialisierung benötigt.
