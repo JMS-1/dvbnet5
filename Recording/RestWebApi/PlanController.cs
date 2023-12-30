@@ -6,6 +6,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Erlaubt den Zugriff auf den Aufzeichnungsplan.
     /// </summary>
+    [ApiController]
+    [Route("api/plan")]
     public class PlanController : ControllerBase
     {
         /// <summary>
@@ -41,7 +43,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="limit">Die maximale Anzahl von Einträgen im Ergebnis.</param>
         /// <param name="mobile">Schalter zum Umschalten auf die Liste für mobile Geräte.</param>
         /// <returns>Alle Einträge des Aufzeichnungsplans.</returns>
-        [HttpGet]
+        [HttpGet("mobile")]
         public PlanActivityMobile[] GetPlanMobile(string limit, string mobile)
         {
             // Get the limit
@@ -61,7 +63,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Ermittelt Informationen zu allen Geräteprofilen.
         /// </summary>
         /// <returns>Die gewünschte Liste.</returns>
-        [HttpGet]
+        [HttpGet("current")]
         public PlanCurrent[] GetCurrent()
         {
             // Forward
@@ -79,7 +81,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="mobile">Schalter zum Umschalten auf die Liste für mobile Geräte.</param>
         /// <returns>Die gewünschte Liste.</returns>
-        [HttpGet]
+        [HttpGet("current/mobile")]
         public PlanCurrentMobile[] GetCurrent(string mobile)
         {
             // Forward
@@ -98,14 +100,14 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Fordert die Aktualisierung der Quellen an.
         /// </summary>
         /// <param name="sourceScan">Wird zur Unterscheidung der Methoden verwendet.</param>
-        [HttpPost]
+        [HttpPost("scan")]
         public void StartSourceScan(string sourceScan) => ServerRuntime.VCRServer.ForceSoureListUpdate();
 
         /// <summary>
         /// Fordert die Aktualisierung der Programmzeitschrift an.
         /// </summary>
         /// <param name="guideUpdate">Wird zur Unterscheidung der Methoden verwendet.</param>
-        [HttpPost]
+        [HttpPost("guide")]
         public void StartGuideUpdate(string guideUpdate) => ServerRuntime.VCRServer.ForceProgramGuideUpdate();
 
         /// <summary>
@@ -115,7 +117,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="source">Eine Quelle.</param>
         /// <param name="scheduleIdentifier">Die eindeutige Kennung einer Aufzeichnung.</param>
         /// <param name="target">Das neue Ziel des Netzwerkversands.</param>
-        [HttpPost]
+        [HttpPost("target")]
         public void SetStreamTarget(string detail, string source, Guid scheduleIdentifier, string target)
         {
             // Analyse

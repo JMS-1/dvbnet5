@@ -30,6 +30,31 @@
       "label": "watch",
       "problemMatcher": "$msCompile",
       "type": "process"
+    },
+    {
+      "args": [
+        "build",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "command": "dotnet",
+      "label": "build-server",
+      "options": {
+        "cwd": "${workspaceFolder}/WebServer"
+      },
+      "problemMatcher": "$msCompile",
+      "type": "process"
+    },
+    {
+      "args": ["watch"],
+      "command": "dotnet",
+      "isBackground": true,
+      "label": "watch-server",
+      "options": {
+        "cwd": "${workspaceFolder}/WebServer"
+      },
+      "problemMatcher": "$msCompile",
+      "type": "process"
     }
   ],
   "version": "2.0.0"

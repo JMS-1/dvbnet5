@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JMS.DVB.NET.Recording", "Recording\JMS.DVB.NET.Recording.csproj", "{7840C164-72E9-40B3-B612-858AD1B0B307}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JMS.VCR.NET", "WebServer\JMS.VCR.NET.csproj", "{DA23930E-73E9-4F53-8829-F97C52271302}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{7840C164-72E9-40B3-B612-858AD1B0B307}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7840C164-72E9-40B3-B612-858AD1B0B307}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7840C164-72E9-40B3-B612-858AD1B0B307}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA23930E-73E9-4F53-8829-F97C52271302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA23930E-73E9-4F53-8829-F97C52271302}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA23930E-73E9-4F53-8829-F97C52271302}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA23930E-73E9-4F53-8829-F97C52271302}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
