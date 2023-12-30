@@ -8,8 +8,10 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/plan")]
-    public class PlanController : ControllerBase
+    public class PlanController(VCRServer server) : ControllerBase
     {
+        private readonly VCRServer _server = server;
+
         /// <summary>
         /// Meldet den aktuellen Aufzeichnungsplan.
         /// </summary>
@@ -28,7 +30,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 endTime = DateTime.MaxValue;
 
             // Route from Web AppDomain into service AppDomain
-            var activities = ServerRuntime.VCRServer.GetPlan(endTime, maximum, PlanActivity.Create);
+            var activities = _server.GetPlan(endTime, maximum, PlanActivity.Create);
 
             // Must resort to correct for running entries
             Array.Sort(activities, PlanActivity.ByStartComparer);
@@ -101,14 +103,14 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="sourceScan">Wird zur Unterscheidung der Methoden verwendet.</param>
         [HttpPost("scan")]
-        public void StartSourceScan(string sourceScan) => ServerRuntime.VCRServer.ForceSoureListUpdate();
+        public void StartSourceScan(string sourceScan) => _server.ForceSoureListUpdate();
 
         /// <summary>
         /// Fordert die Aktualisierung der Programmzeitschrift an.
         /// </summary>
         /// <param name="guideUpdate">Wird zur Unterscheidung der Methoden verwendet.</param>
         [HttpPost("guide")]
-        public void StartGuideUpdate(string guideUpdate) => ServerRuntime.VCRServer.ForceProgramGuideUpdate();
+        public void StartGuideUpdate(string guideUpdate) => _server.ForceProgramGuideUpdate();
 
         /// <summary>
         /// Ändert den Netzwerkversand.
@@ -124,7 +126,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var sourceIdentifier = SourceIdentifier.Parse(source);
 
             // Process
-            ServerRuntime.VCRServer.SetStreamTarget(detail, sourceIdentifier, scheduleIdentifier, target);
+            _server.SetStreamTarget(detail, sourceIdentifier, scheduleIdentifier, target);
         }
     }
 }

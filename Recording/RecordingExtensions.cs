@@ -6,5 +6,6 @@ public static class RecordingExtensions
 {
     public static void UseRecording(this IServiceCollection services)
     {
+        services.AddSingleton<VCRServer>();
     }
 }

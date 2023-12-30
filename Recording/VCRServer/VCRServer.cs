@@ -25,7 +25,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Konfigurationseintrag in der Registrierung von Windows.
         /// </summary>
-        public static readonly RegistryKey ServiceRegistry = Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\VCR.NET Service\Parameters");
+        public static readonly RegistryKey ServiceRegistry = null!;
 
         /// <summary>
         /// Die zugeh?rige Verwaltung der aktiven Ger?teprofile.
@@ -55,9 +55,10 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Erzeugt eine neue Instanz.
         /// </summary>
-        /// <param name="rootDirectory">Das Arbeitsverzeichnis f?r die Auftragsverwaltung.</param>
-        public VCRServer(DirectoryInfo rootDirectory)
+        public VCRServer()
         {
+            var rootDirectory = RunTimeLoader.GetDirectory("Recording");
+
             // Report
             Tools.ExtendedLogging("Using Root Directory {0}", rootDirectory.FullName);
 
