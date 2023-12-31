@@ -30,7 +30,7 @@ namespace JMS.DVB.NET.Recording
 
     public static class ConfigurationManager
     {
-        public static Configuration OpenExeConfiguration(string path) => throw new NotImplementedException("ConfigurationManager");
+        public static Configuration OpenExeConfiguration() => new();
     }
 
     /// <summary>
@@ -316,7 +316,7 @@ namespace JMS.DVB.NET.Recording
                 return false;
 
             // Clone the current configuration
-            var newConfiguration = ConfigurationManager.OpenExeConfiguration(Tools.ExecutablePath);
+            var newConfiguration = ConfigurationManager.OpenExeConfiguration();
 
             // See if we changed at all
             bool changed = false, restart = false;

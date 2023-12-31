@@ -1,11 +1,17 @@
-#pragma warning disable CA1416 // Validate platform compatibility
-
 using System.Text;
 using JMS.DVB.Algorithms.Scheduler;
-using Microsoft.Win32;
 
 namespace JMS.DVB.NET.Recording
 {
+    public class RegistryKey
+    {
+        public object? GetValue(string name) => null;
+
+        public void SetValue(string name, object? value) { }
+
+        public void DeleteValue(string name, bool throwOnMissingValue) { }
+    }
+
     /// <summary>
     /// Von dieser Klasse existiert im Allgemeinen nur eine einzige Instanz. Sie
     /// realisiert die fachliche Logik des VCR.NET Recording Service.
@@ -25,7 +31,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Konfigurationseintrag in der Registrierung von Windows.
         /// </summary>
-        public static readonly RegistryKey ServiceRegistry = null!;
+        public static readonly RegistryKey ServiceRegistry = new();
 
         /// <summary>
         /// Die zugeh?rige Verwaltung der aktiven Ger?teprofile.
