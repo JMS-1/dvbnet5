@@ -1,17 +1,52 @@
 ﻿using System.Reflection;
-using Microsoft.Extensions.Logging;
 
 namespace JMS.DVB.NET.Recording
 {
+    public class Setting
+    {
+        public string Value { get; set; } = null!;
+    }
+
+
+    public class Settings
+    {
+        public Setting? this[string key] => throw new NotImplementedException("Configuration");
+
+        public void Add(string key, string value) => throw new NotImplementedException("Configuration");
+    }
+
+
+    public class AppSettings
+    {
+        public readonly Settings Settings = new();
+    }
+
+    public class Configuration
+    {
+        public readonly AppSettings AppSettings = new();
+
+        public void SaveAs(string path) => throw new NotImplementedException("Configuration");
+    }
+
+    public static class ConfigurationManager
+    {
+        public static Configuration OpenExeConfiguration() => new();
+    }
+
     /// <summary>
     /// Verwaltet die Konfiguration des VCR.NET Recording Service.
     /// </summary>
-    public class VCRConfiguration
+    public class VCRConfigurationOriginal : MarshalByRefObject
     {
+        /// <summary>
+        /// Vermittelt den Zugriff auf die Konfiguration.
+        /// </summary>
+        public static VCRConfigurationOriginal Current { get; set; } = null!;
+
         /// <summary>
         /// Beschreibt eine einzelne Einstellung.
         /// </summary>
-        public abstract class SettingDescription : ICloneable
+        public abstract class SettingDescription : MarshalByRefObject, ICloneable
         {
             /// <summary>
             /// Meldet den Namen der Einstellung.
@@ -186,24 +221,18 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Beschreibt alle bekannten Konfigurationswerte.
         /// </summary>
-        private readonly Dictionary<SettingNames, SettingDescription> m_Settings = new();
+        private static readonly Dictionary<SettingNames, SettingDescription> m_Settings = new();
 
         /// <summary>
         /// Enthält alle Konfigurationswerte, deren Veränderung einen Neustart des Dienstes erforderlich machen.
         /// </summary>
-        private readonly Dictionary<SettingNames, bool> m_Restart = new();
-
-        private readonly ILogger<VCRConfiguration> _logger;
+        private static readonly Dictionary<SettingNames, bool> m_Restart = new();
 
         /// <summary>
         /// Initialisiert die statischen Fehler.
         /// </summary>
-        public VCRConfiguration(ILogger<VCRConfiguration> logger)
+        static VCRConfigurationOriginal()
         {
-            _logger = logger;
-
-            _logger.LogTrace("New Configuration Instance Created");
-
             // Remember all
             Add(SettingNames.FileNamePattern, "%Job% - %Schedule% - %Start%");
             Add(SettingNames.SuppressDelayAfterForcedHibernation, false);
@@ -250,19 +279,37 @@ namespace JMS.DVB.NET.Recording
         }
 
         /// <summary>
+        /// Aktiviert eine Konfiguration in der aktuellen <see cref="AppDomain"/>.
+        /// </summary>
+        public static void Startup() => Register(new VCRConfigurationOriginal());
+
+        /// <summary>
+        /// Instanzen dieser Klasse sind nicht zeitgebunden.
+        /// </summary>
+        /// <returns>Die Antwort muss immer <i>null</i> sein.</returns>
+        [Obsolete]
+        public override object InitializeLifetimeService() => null!;
+
+        /// <summary>
         /// Bereitet eine Aktualisierung vor.
         /// </summary>
         /// <param name="names">Die zu aktualisierenden Einträge.</param>
         /// <returns>Alle gewünschten Einträge.</returns>
-        public Dictionary<SettingNames, SettingDescription> BeginUpdate(params SettingNames[] names) =>
-            names == null ? new() : names.ToDictionary(n => n, n => m_Settings[n].Clone());
+        public Dictionary<SettingNames, SettingDescription> BeginUpdate(params SettingNames[] names)
+        {
+            // Create empty
+            if (names == null)
+                return new();
+            else
+                return names.ToDictionary(n => n, n => m_Settings[n].Clone());
+        }
 
         /// <summary>
         /// Führt eine Aktualisierung aus.
         /// </summary>
         /// <param name="settings">Die eventuell veränderten Einstellungen.</param>
         /// <returns>Gesetzt, wenn ein Neustart erforderlich war.</returns>
-        internal bool CommitUpdate(IEnumerable<SettingDescription> settings)
+        internal static bool CommitUpdate(IEnumerable<SettingDescription> settings)
         {
             // Validate
             if (settings == null)
@@ -320,10 +367,35 @@ namespace JMS.DVB.NET.Recording
         }
 
         /// <summary>
+        /// Aktiviert eine bestimmte Konfiguration in der aktuellen <see cref="AppDomain"/>.
+        /// </summary>
+        /// <param name="configuration">Die gewünschte Konfiguration.</param>
+        internal static void Register(VCRConfigurationOriginal configuration)
+        {
+            // Validate
+            if (configuration == null)
+                throw new ArgumentNullException(nameof(configuration));
+            if (Current != null)
+                throw new InvalidOperationException();
+
+            // Remember
+            Current = configuration;
+        }
+
+        /// <summary>
+        /// Erzeugt eine neue Zugriffsinstanz auf die Konfiguration.
+        /// </summary>
+        private VCRConfigurationOriginal()
+        {
+            // Report
+            Tools.ExtendedLogging("New Configuration Instance Created");
+        }
+
+        /// <summary>
         /// Vermerkt eine Einstellung.
         /// </summary>
         /// <param name="name">Der Name der Einstellung.</param>
-        private void Add(SettingNames name) => Add(name, (string)null!);
+        private static void Add(SettingNames name) => Add(name, (string)null!);
 
         /// <summary>
         /// Vermerkt eine Einstellung.
@@ -331,15 +403,18 @@ namespace JMS.DVB.NET.Recording
         /// <typeparam name="TValueType">Der Datentyp des zugehörigen Wertes.</typeparam>
         /// <param name="name">Der Name der Einstellung.</param>
         /// <param name="defaultValue">Der voreingestellt Wert.</param>
-        private void Add<TValueType>(SettingNames name, TValueType defaultValue) => m_Settings[name] = new SettingDescription<TValueType>(name, defaultValue);
+        private static void Add<TValueType>(SettingNames name, TValueType defaultValue) => m_Settings[name] = new SettingDescription<TValueType>(name, defaultValue);
 
         /// <summary>
         /// Ermittelt eine einzelne Einstellung.
         /// </summary>
         /// <param name="name">Name der Einstellung.</param>
         /// <returns>Wert der Einstellung.</returns>
-        private object ReadSetting(SettingNames name) =>
-            m_Settings.TryGetValue(name, out var settings) ? settings.ReadValue() : null!;
+        private static object ReadSetting(SettingNames name)
+        {
+            // Find and forward
+            return m_Settings.TryGetValue(name, out var settings) ? settings.ReadValue() : null!;
+        }
 
         /// <summary>
         /// Meldet den Namen der Kontogruppe der Anwender, die Zugriff auf den
@@ -495,14 +570,14 @@ namespace JMS.DVB.NET.Recording
                 // Ask in the cheapest order
                 if (!ProgramGuideSources.Any())
                     return false;
-                if (ProgramGuideUpdateDuration < 1)
+                else if (ProgramGuideUpdateDuration < 1)
                     return false;
-                if (ProgramGuideUpdateHours.Any())
+                else if (ProgramGuideUpdateHours.Any())
                     return true;
-                if (ProgramGuideUpdateInterval.GetValueOrDefault(TimeSpan.Zero).TotalDays > 0)
+                else if (ProgramGuideUpdateInterval.GetValueOrDefault(TimeSpan.Zero).TotalDays > 0)
                     return true;
-
-                return false;
+                else
+                    return false;
             }
         }
 

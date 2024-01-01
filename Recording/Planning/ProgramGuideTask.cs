@@ -75,7 +75,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <summary>
         /// Meldet, ob die Ausführung grundsätzlich aktiviert ist.
         /// </summary>
-        public override bool IsEnabled => VCRConfiguration.Current.ProgramGuideUpdateEnabled;
+        public override bool IsEnabled => VCRConfigurationOriginal.Current.ProgramGuideUpdateEnabled;
 
         /// <summary>
         /// Meldet wenn möglich den Zeitpunkt, an dem letztmalig ein Durchlauf
@@ -86,23 +86,23 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <summary>
         /// Meldet die maximale Dauer einer Ausführung.
         /// </summary>
-        public override TimeSpan Duration => TimeSpan.FromMinutes(VCRConfiguration.Current.ProgramGuideUpdateDuration);
+        public override TimeSpan Duration => TimeSpan.FromMinutes(VCRConfigurationOriginal.Current.ProgramGuideUpdateDuration);
 
         /// <summary>
         /// Meldet die Zeitspanne nach der ein neuer Durchlauf gestartet werden darf,
         /// wenn der Computer sowieso gerade aktiv ist.
         /// </summary>
-        public override TimeSpan? JoinThreshold => VCRConfiguration.Current.HasRecordedSomething ? VCRConfiguration.Current.ProgramGuideJoinThreshold : null;
+        public override TimeSpan? JoinThreshold => VCRConfigurationOriginal.Current.HasRecordedSomething ? VCRConfigurationOriginal.Current.ProgramGuideJoinThreshold : null;
 
         /// <summary>
         /// Meldet die Zeitspanne, die mindestens zwischen zwei Durchläufen liegen soll.
         /// </summary>
-        public override TimeSpan DefaultInterval => VCRConfiguration.Current.ProgramGuideUpdateInterval ?? new TimeSpan(1);
+        public override TimeSpan DefaultInterval => VCRConfigurationOriginal.Current.ProgramGuideUpdateInterval ?? new TimeSpan(1);
 
         /// <summary>
         /// Meldet die bevorzugten Uhrzeiten für eine Ausführung. Die verwendeten Zeiten
         /// bezeichnen dabei Stunden in der lokalen Zeitzone.
         /// </summary>
-        public override uint[] PreferredHours => VCRConfiguration.Current.ProgramGuideUpdateHours;
+        public override uint[] PreferredHours => VCRConfigurationOriginal.Current.ProgramGuideUpdateHours;
     }
 }

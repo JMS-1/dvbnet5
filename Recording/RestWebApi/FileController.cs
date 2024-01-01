@@ -29,7 +29,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 throw new ArgumentException(path, nameof(path));
 
             // Check against VCR.NET recording directories
-            if (!VCRConfiguration.Current.IsValidTarget(path))
+            if (!VCRConfigurationOriginal.Current.IsValidTarget(path))
                 throw new ArgumentException(path, nameof(path));
 
             // Validate the slice

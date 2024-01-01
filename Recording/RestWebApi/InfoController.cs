@@ -101,8 +101,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 new InfoService
                 {
                     HasPendingExtensions = ServerRuntime.VCRServer.ExtensionProcessManager.HasActiveProcesses,
-                    SourceScanEnabled = (VCRConfiguration.Current.SourceListUpdateInterval != 0),
-                    GuideUpdateEnabled = VCRConfiguration.Current.ProgramGuideUpdateEnabled,
+                    SourceScanEnabled = (VCRConfigurationOriginal.Current.SourceListUpdateInterval != 0),
+                    GuideUpdateEnabled = VCRConfigurationOriginal.Current.ProgramGuideUpdateEnabled,
                     IsRunning = ServerRuntime.VCRServer.IsActive,
                     //ProfilesNames = settings.Profiles.ToArray(),
                     InstalledVersion = InstalledVersion,
@@ -116,7 +116,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="directories">Wird zur Unterscheidung der Methoden verwendet.</param>
         /// <returns>Die gewünschte Liste.</returns>
         [HttpGet]
-        public string[] GetRecordingDirectories(string directories) => VCRConfiguration.Current.TargetDirectoriesNames.SelectMany(ScanDirectory).ToArray();
+        public string[] GetRecordingDirectories(string directories) => VCRConfigurationOriginal.Current.TargetDirectoriesNames.SelectMany(ScanDirectory).ToArray();
 
         /// <summary>
         /// Meldet alle Aufträge.

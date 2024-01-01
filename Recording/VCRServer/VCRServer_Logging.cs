@@ -33,7 +33,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="reportLevel">Some logging level.</param>
         /// <returns>Set, if the logging level configured requires
         /// the event to be logged.</returns>
-        public static bool ShouldLog(LoggingLevel reportLevel) => (reportLevel >= VCRConfiguration.Current.LoggingLevel);
+        public static bool ShouldLog(LoggingLevel reportLevel) => (reportLevel >= VCRConfigurationOriginal.Current.LoggingLevel);
 
         /// <summary>
         /// Tr�gt eine Meldung ins Ereignisprotokoll ein, wenn die Schwere der Meldung

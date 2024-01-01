@@ -343,7 +343,7 @@ namespace JMS.DVB.NET.Recording
             m_nextArchiveCleanup = DateTime.UtcNow.AddDays(1);
 
             // Access limit
-            var firstValid = DateTime.UtcNow.AddDays(-7 * VCRConfiguration.Current.ArchiveLifeTime);
+            var firstValid = DateTime.UtcNow.AddDays(-7 * VCRConfigurationOriginal.Current.ArchiveLifeTime);
             var jobDirectory = ArchiveDirectory;
 
             // Protect to avoid parallel operations on the archive directory
@@ -441,7 +441,7 @@ namespace JMS.DVB.NET.Recording
             m_nextLogCleanup = DateTime.UtcNow.AddDays(1);
 
             // For cleanup
-            var firstValid = DateTime.Now.Date.AddDays(-7 * VCRConfiguration.Current.LogLifeTime).ToString(LogEntryDateFormat);
+            var firstValid = DateTime.Now.Date.AddDays(-7 * VCRConfigurationOriginal.Current.LogLifeTime).ToString(LogEntryDateFormat);
 
             // Load all jobs
             foreach (var file in LogDirectory.GetFiles("*" + VCRRecordingInfo.FileSuffix))

@@ -68,7 +68,7 @@
             var profiles = new List<Profile>();
 
             // Load the setting
-            var profileNames = VCRConfiguration.Current.ProfileNames;
+            var profileNames = VCRConfigurationOriginal.Current.ProfileNames;
             if (!string.IsNullOrEmpty(profileNames))
                 foreach (var profileName in profileNames.Split('|'))
                 {

@@ -66,7 +66,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public void SetServer(VCRServer server)
         {
             // Activate configuration from main domain
-            VCRConfiguration.Register(server.Configuration);
+            VCRConfigurationOriginal.Register(server.Configuration);
 
             // Add to permanent cache
             _VCRServer = server;
@@ -207,14 +207,14 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="settings">Die zu aktualisierenden Konfigurationswerte.</param>
         /// <param name="forceRestart">Erzwingt einen Neustart des Dienstes.</param>
         /// <returns>Gesetzt, wenn ein Neustart erforderlich ist.</returns>
-        public static bool? Update(IEnumerable<VCRConfiguration.SettingDescription> settings, bool forceRestart = false)
+        public static bool? Update(IEnumerable<VCRConfigurationOriginal.SettingDescription> settings, bool forceRestart = false)
         {
             // Check state
             if (VCRServer.IsActive)
                 return null;
 
             // Process
-            if (VCRConfiguration.CommitUpdate(settings) || forceRestart)
+            if (VCRConfigurationOriginal.CommitUpdate(settings) || forceRestart)
             {
                 // Do not restart in debug mode
                 if (VCRServer.InDebugMode)

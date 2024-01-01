@@ -373,7 +373,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             }
 
             // Prepare
-            var update = VCRConfiguration.Current.BeginUpdate(SettingNames.Profiles);
+            var update = VCRConfigurationOriginal.Current.BeginUpdate(SettingNames.Profiles);
 
             // Fill
             update[SettingNames.Profiles].NewValue = string.Join("|", profiles);
@@ -394,8 +394,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new DirectorySettings
                 {
-                    TargetDirectories = VCRConfiguration.Current.TargetDirectoriesNames.ToArray(),
-                    RecordingPattern = VCRConfiguration.Current.FileNamePattern,
+                    TargetDirectories = VCRConfigurationOriginal.Current.TargetDirectoriesNames.ToArray(),
+                    RecordingPattern = VCRConfigurationOriginal.Current.FileNamePattern,
                 };
         }
 
@@ -409,7 +409,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public bool? WriteDirectory(string directory, [FromBody] DirectorySettings settings)
         {
             // Prepare to update
-            var update = VCRConfiguration.Current.BeginUpdate(SettingNames.VideoRecorderDirectory, SettingNames.AdditionalRecorderPaths, SettingNames.FileNamePattern);
+            var update = VCRConfigurationOriginal.Current.BeginUpdate(SettingNames.VideoRecorderDirectory, SettingNames.AdditionalRecorderPaths, SettingNames.FileNamePattern);
 
             // Change settings
             update[SettingNames.AdditionalRecorderPaths].NewValue = string.Join(", ", settings.TargetDirectories.Skip(1));
@@ -429,17 +429,17 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public SourceScanSettings ReadSoureScan(string scan)
         {
             // Load
-            var interval = VCRConfiguration.Current.SourceListUpdateInterval;
-            var join = VCRConfiguration.Current.SourceListJoinThreshold;
+            var interval = VCRConfigurationOriginal.Current.SourceListUpdateInterval;
+            var join = VCRConfigurationOriginal.Current.SourceListJoinThreshold;
 
             // Report
             return
                 new SourceScanSettings
                 {
-                    Hours = VCRConfiguration.Current.SourceListUpdateHoursAsArray.OrderBy(hour => hour).ToArray(),
+                    Hours = VCRConfigurationOriginal.Current.SourceListUpdateHoursAsArray.OrderBy(hour => hour).ToArray(),
                     Threshold = join.HasValue ? (int)join.Value.TotalDays : default(int?),
-                    MergeLists = VCRConfiguration.Current.MergeSourceListUpdateResult,
-                    Duration = VCRConfiguration.Current.SourceListUpdateDuration,
+                    MergeLists = VCRConfigurationOriginal.Current.MergeSourceListUpdateResult,
+                    Duration = VCRConfigurationOriginal.Current.SourceListUpdateDuration,
                     Interval = (interval != 0) ? interval : default(int?),
                 };
         }
@@ -457,7 +457,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             if (settings.Interval.GetValueOrDefault(0) == 0)
             {
                 // Create settings
-                var disable = VCRConfiguration.Current.BeginUpdate(SettingNames.ScanInterval);
+                var disable = VCRConfigurationOriginal.Current.BeginUpdate(SettingNames.ScanInterval);
 
                 // Store
                 disable[SettingNames.ScanInterval].NewValue = "0";
@@ -470,7 +470,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             if (settings.Interval < 0)
             {
                 // Create settings
-                var manual = VCRConfiguration.Current.BeginUpdate(SettingNames.ScanDuration, SettingNames.MergeScanResult, SettingNames.ScanInterval);
+                var manual = VCRConfigurationOriginal.Current.BeginUpdate(SettingNames.ScanDuration, SettingNames.MergeScanResult, SettingNames.ScanInterval);
 
                 // Store
                 manual[SettingNames.MergeScanResult].NewValue = settings.MergeLists.ToString();
@@ -482,7 +482,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             }
 
             // Prepare to update
-            var update = VCRConfiguration.Current.BeginUpdate(SettingNames.ScanDuration, SettingNames.MergeScanResult, SettingNames.ScanInterval, SettingNames.ScanHours, SettingNames.ScanJoinThreshold);
+            var update = VCRConfigurationOriginal.Current.BeginUpdate(SettingNames.ScanDuration, SettingNames.MergeScanResult, SettingNames.ScanInterval, SettingNames.ScanHours, SettingNames.ScanJoinThreshold);
 
             // Fill it
             update[SettingNames.ScanHours].NewValue = string.Join(", ", settings.Hours.Select(hour => hour.ToString()));
@@ -504,19 +504,19 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public GuideSettings ReadGuide(string guide)
         {
             // Load
-            var interval = VCRConfiguration.Current.ProgramGuideUpdateInterval;
-            var join = VCRConfiguration.Current.ProgramGuideJoinThreshold;
+            var interval = VCRConfigurationOriginal.Current.ProgramGuideUpdateInterval;
+            var join = VCRConfigurationOriginal.Current.ProgramGuideJoinThreshold;
 
             // Report
             return
                 new GuideSettings
                 {
-                    Sources = VCRConfiguration.Current.ProgramGuideSourcesAsArray.OrderBy(name => name, StringComparer.InvariantCultureIgnoreCase).ToArray(),
-                    Hours = VCRConfiguration.Current.ProgramGuideUpdateHoursAsArray.OrderBy(hour => hour).ToArray(),
+                    Sources = VCRConfigurationOriginal.Current.ProgramGuideSourcesAsArray.OrderBy(name => name, StringComparer.InvariantCultureIgnoreCase).ToArray(),
+                    Hours = VCRConfigurationOriginal.Current.ProgramGuideUpdateHoursAsArray.OrderBy(hour => hour).ToArray(),
                     Interval = interval.HasValue ? (int)interval.Value.TotalHours : default(int?),
                     Threshold = join.HasValue ? (int)join.Value.TotalHours : default(int?),
-                    Duration = VCRConfiguration.Current.ProgramGuideUpdateDuration,
-                    WithUKGuide = VCRConfiguration.Current.EnableFreeSat,
+                    Duration = VCRConfigurationOriginal.Current.ProgramGuideUpdateDuration,
+                    WithUKGuide = VCRConfigurationOriginal.Current.EnableFreeSat,
                 };
         }
 
@@ -533,7 +533,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             if (settings.Duration < 1)
             {
                 // Create settings
-                var disable = VCRConfiguration.Current.BeginUpdate(SettingNames.EPGDuration);
+                var disable = VCRConfigurationOriginal.Current.BeginUpdate(SettingNames.EPGDuration);
 
                 // Store
                 disable[SettingNames.EPGDuration].NewValue = "0";
@@ -543,7 +543,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             }
 
             // Prepare to update
-            var update = VCRConfiguration.Current.BeginUpdate(SettingNames.EPGDuration, SettingNames.EPGStations, SettingNames.EPGHours, SettingNames.EPGIncludeFreeSat, SettingNames.EPGInterval, SettingNames.EPGJoinThreshold);
+            var update = VCRConfigurationOriginal.Current.BeginUpdate(SettingNames.EPGDuration, SettingNames.EPGStations, SettingNames.EPGHours, SettingNames.EPGIncludeFreeSat, SettingNames.EPGInterval, SettingNames.EPGJoinThreshold);
 
             // Fill it
             update[SettingNames.EPGHours].NewValue = string.Join(", ", settings.Hours.Select(hour => hour.ToString()));
@@ -569,8 +569,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new SecuritySettings
                 {
-                    AdminRole = VCRConfiguration.Current.AdminRole,
-                    UserRole = VCRConfiguration.Current.UserRole,
+                    AdminRole = VCRConfigurationOriginal.Current.AdminRole,
+                    UserRole = VCRConfigurationOriginal.Current.UserRole,
                 };
         }
 
@@ -584,7 +584,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public bool? WriteSecurity(string security, [FromBody] SecuritySettings settings)
         {
             // Prepare to update
-            var update = VCRConfiguration.Current.BeginUpdate(SettingNames.RequiredUserRole, SettingNames.RequiredAdminRole);
+            var update = VCRConfigurationOriginal.Current.BeginUpdate(SettingNames.RequiredUserRole, SettingNames.RequiredAdminRole);
 
             // Change settings
             update[SettingNames.RequiredAdminRole].NewValue = settings.AdminRole;
@@ -606,20 +606,20 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new OtherSettings
                 {
-                    DelayAfterForcedHibernation = (uint)VCRConfiguration.Current.DelayAfterForcedHibernation.TotalMinutes,
-                    SuppressDelayAfterForcedHibernation = VCRConfiguration.Current.SuppressDelayAfterForcedHibernation,
-                    DisablePCRFromMPEG2 = VCRConfiguration.Current.DisablePCRFromMPEG2Generation,
-                    DisablePCRFromH264 = VCRConfiguration.Current.DisablePCRFromH264Generation,
-                    AllowBasic = VCRConfiguration.Current.EnableBasicAuthentication,
-                    AllowHibernate = VCRConfiguration.Current.MayHibernateSystem,
-                    HibernationDelay = VCRConfiguration.Current.HibernationDelay,
-                    SSLPort = VCRConfiguration.Current.WebServerSecureTcpPort,
-                    UseSSL = VCRConfiguration.Current.EncryptWebCommunication,
-                    UseStandBy = VCRConfiguration.Current.UseS3ForHibernate,
-                    ArchiveTime = VCRConfiguration.Current.ArchiveLifeTime,
-                    ProtocolTime = VCRConfiguration.Current.LogLifeTime,
-                    WebPort = VCRConfiguration.Current.WebServerTcpPort,
-                    Logging = VCRConfiguration.Current.LoggingLevel,
+                    DelayAfterForcedHibernation = (uint)VCRConfigurationOriginal.Current.DelayAfterForcedHibernation.TotalMinutes,
+                    SuppressDelayAfterForcedHibernation = VCRConfigurationOriginal.Current.SuppressDelayAfterForcedHibernation,
+                    DisablePCRFromMPEG2 = VCRConfigurationOriginal.Current.DisablePCRFromMPEG2Generation,
+                    DisablePCRFromH264 = VCRConfigurationOriginal.Current.DisablePCRFromH264Generation,
+                    AllowBasic = VCRConfigurationOriginal.Current.EnableBasicAuthentication,
+                    AllowHibernate = VCRConfigurationOriginal.Current.MayHibernateSystem,
+                    HibernationDelay = VCRConfigurationOriginal.Current.HibernationDelay,
+                    SSLPort = VCRConfigurationOriginal.Current.WebServerSecureTcpPort,
+                    UseSSL = VCRConfigurationOriginal.Current.EncryptWebCommunication,
+                    UseStandBy = VCRConfigurationOriginal.Current.UseS3ForHibernate,
+                    ArchiveTime = VCRConfigurationOriginal.Current.ArchiveLifeTime,
+                    ProtocolTime = VCRConfigurationOriginal.Current.LogLifeTime,
+                    WebPort = VCRConfigurationOriginal.Current.WebServerTcpPort,
+                    Logging = VCRConfigurationOriginal.Current.LoggingLevel,
                 };
         }
 
@@ -634,7 +634,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Prepare to update
             var update =
-                VCRConfiguration.Current.BeginUpdate
+                VCRConfigurationOriginal.Current.BeginUpdate
                    (
                         SettingNames.SuppressDelayAfterForcedHibernation,
                         SettingNames.DisablePCRFromMPEG2Generation,

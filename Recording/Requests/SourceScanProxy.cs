@@ -28,7 +28,7 @@ namespace JMS.DVB.NET.Recording.Requests
             : base(state, recording)
         {
             // Finish
-            m_mergeSources = VCRConfiguration.Current.MergeSourceListUpdateResult;
+            m_mergeSources = VCRConfigurationOriginal.Current.MergeSourceListUpdateResult;
         }
 
         /// <summary>

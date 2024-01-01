@@ -80,9 +80,9 @@ namespace JMS.DVB.NET.Recording.Planning
             get
             {
                 // Report
-                if (VCRConfiguration.Current.SourceListUpdateDuration < 1)
+                if (VCRConfigurationOriginal.Current.SourceListUpdateDuration < 1)
                     return false;
-                else if (VCRConfiguration.Current.SourceListUpdateInterval == 0)
+                else if (VCRConfigurationOriginal.Current.SourceListUpdateInterval == 0)
                     return false;
                 else
                     return true;
@@ -92,7 +92,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <summary>
         /// Meldet die maximale Dauer einer Ausführung.
         /// </summary>
-        public override TimeSpan Duration => TimeSpan.FromMinutes(VCRConfiguration.Current.SourceListUpdateDuration);
+        public override TimeSpan Duration => TimeSpan.FromMinutes(VCRConfigurationOriginal.Current.SourceListUpdateDuration);
 
         /// <summary>
         /// Meldet wenn möglich den Zeitpunkt, an dem letztmalig ein Durchlauf
@@ -104,7 +104,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// Meldet die Zeitspanne nach der ein neuer Durchlauf gestartet werden darf,
         /// wenn der Computer sowieso gerade aktiv ist.
         /// </summary>
-        public override TimeSpan? JoinThreshold => VCRConfiguration.Current.HasRecordedSomething ? VCRConfiguration.Current.SourceListJoinThreshold : null;
+        public override TimeSpan? JoinThreshold => VCRConfigurationOriginal.Current.HasRecordedSomething ? VCRConfigurationOriginal.Current.SourceListJoinThreshold : null;
 
         /// <summary>
         /// Meldet die Zeitspanne, die mindestens zwischen zwei Durchläufen liegen soll.
@@ -114,12 +114,12 @@ namespace JMS.DVB.NET.Recording.Planning
             get
             {
                 // Check for manual update mode
-                var days = VCRConfiguration.Current.SourceListUpdateInterval;
+                var days = VCRConfigurationOriginal.Current.SourceListUpdateInterval;
                 if (days < 1)
                     return TimeSpan.MaxValue;
 
                 // There is exactly one hour we prefer do the best to match it
-                if (VCRConfiguration.Current.SourceListUpdateHours.Length == 1)
+                if (VCRConfigurationOriginal.Current.SourceListUpdateHours.Length == 1)
                     return TimeSpan.FromDays(days - 1) + new TimeSpan(1);
 
                 // There are none or multiple preferred hours so just use the full interval normally skipping the last hour choosen
@@ -131,6 +131,6 @@ namespace JMS.DVB.NET.Recording.Planning
         /// Meldet die bevorzugten Uhrzeiten für eine Ausführung. Die verwendeten Zeiten
         /// bezeichnen dabei Stunden in der lokalen Zeitzone.
         /// </summary>
-        public override uint[] PreferredHours => VCRConfiguration.Current.SourceListUpdateHours;
+        public override uint[] PreferredHours => VCRConfigurationOriginal.Current.SourceListUpdateHours;
     }
 }

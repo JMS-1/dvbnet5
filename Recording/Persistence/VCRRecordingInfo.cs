@@ -364,7 +364,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         internal void LoadDefaults()
         {
             // Construct file name
-            var pattern = VCRConfiguration.Current.FileNamePattern;
+            var pattern = VCRConfigurationOriginal.Current.FileNamePattern;
             var file = FileName;
 
             // Check for test recording
@@ -389,14 +389,14 @@ namespace JMS.DVB.NET.Recording.Persistence
 
             // Default directory
             if (string.IsNullOrEmpty(file))
-                file = VCRConfiguration.Current.PrimaryTargetDirectory.FullName;
+                file = VCRConfigurationOriginal.Current.PrimaryTargetDirectory.FullName;
 
             // Append pattern
             FileName = Path.Combine(file, pattern + ".ts");
 
             // Check for valid path - user can try to jump out of the allowed area but we will move back
-            if (!VCRConfiguration.Current.IsValidTarget(FileName))
-                FileName = Path.Combine(VCRConfiguration.Current.PrimaryTargetDirectory.FullName, pattern + ".ts");
+            if (!VCRConfigurationOriginal.Current.IsValidTarget(FileName))
+                FileName = Path.Combine(VCRConfigurationOriginal.Current.PrimaryTargetDirectory.FullName, pattern + ".ts");
         }
 
         /// <summary>
@@ -569,9 +569,9 @@ namespace JMS.DVB.NET.Recording.Persistence
             return
                 new ReceiveInformation
                 {
-                    HDTVFileBufferSize = VCRConfiguration.Current.HighDefinitionVideoBufferSize,
-                    SDTVFileBufferSize = VCRConfiguration.Current.StandardVideoBufferSize,
-                    AudioFileBufferSize = VCRConfiguration.Current.AudioBufferSize,
+                    HDTVFileBufferSize = VCRConfigurationOriginal.Current.HighDefinitionVideoBufferSize,
+                    SDTVFileBufferSize = VCRConfigurationOriginal.Current.StandardVideoBufferSize,
+                    AudioFileBufferSize = VCRConfigurationOriginal.Current.AudioBufferSize,
                     UniqueIdentifier = ScheduleUniqueID!.Value,
                     SelectionKey = source.SelectionKey,
                     RecordingPath = FileName,

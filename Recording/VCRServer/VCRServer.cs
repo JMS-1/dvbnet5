@@ -81,7 +81,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Meldet die aktuell zu verwendende Konfiguration.
         /// </summary>
-        public VCRConfiguration Configuration { get { return VCRConfiguration.Current; } }
+        public VCRConfigurationOriginal Configuration { get { return VCRConfigurationOriginal.Current; } }
 
         /// <summary>
         /// Instanzen dieser Klasse sind nicht zeitgebunden.

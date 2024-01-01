@@ -24,7 +24,7 @@ namespace JMS.DVB.NET.Recording
             Profiles.Suspend();
 
             // Make sure that we forget anything on recording after wake up
-            VCRConfiguration.Current.HasRecordedSomething = false;
+            VCRConfigurationOriginal.Current.HasRecordedSomething = false;
 
             // Get the final plan respecting the fact that we are now hibernating
             Profiles.EnsureNewPlan();
@@ -53,7 +53,7 @@ namespace JMS.DVB.NET.Recording
         {
             // Flag in volatile part of configuration
             if (realRecording)
-                VCRConfiguration.Current.HasRecordedSomething = true;
+                VCRConfigurationOriginal.Current.HasRecordedSomething = true;
         }
 
     }

@@ -34,7 +34,7 @@ namespace JMS.DVB.NET.Recording.Requests
             : base(state, recording)
         {
             // Reset fields
-            if (VCRConfiguration.Current.EnableFreeSat)
+            if (VCRConfigurationOriginal.Current.EnableFreeSat)
                 m_extensions = EPGExtensions.FreeSatUK;
             else
                 m_extensions = EPGExtensions.None;
@@ -53,7 +53,7 @@ namespace JMS.DVB.NET.Recording.Requests
             }
 
             // Fill in all
-            foreach (var legacyName in VCRConfiguration.Current.ProgramGuideSources)
+            foreach (var legacyName in VCRConfigurationOriginal.Current.ProgramGuideSources)
             {
                 // Skip if empty
                 if (string.IsNullOrEmpty(legacyName))

@@ -196,7 +196,7 @@ namespace JMS.DVB.NET.Recording.Requests
         private ServerImplementation CreateCardServerProxy()
         {
             // Create the server
-            if (VCRConfiguration.Current.UseExternalCardServer)
+            if (VCRConfigurationOriginal.Current.UseExternalCardServer)
                 return ServerImplementation.CreateOutOfProcess();
             else
                 return ServerImplementation.CreateInMemory();
@@ -353,8 +353,8 @@ namespace JMS.DVB.NET.Recording.Requests
                                 (
                                     ProfileName,
                                     mustWakeUp,
-                                    VCRConfiguration.Current.DisablePCRFromH264Generation,
-                                    VCRConfiguration.Current.DisablePCRFromMPEG2Generation
+                                    VCRConfigurationOriginal.Current.DisablePCRFromH264Generation,
+                                    VCRConfigurationOriginal.Current.DisablePCRFromMPEG2Generation
                                 ));
 
                         // Report
