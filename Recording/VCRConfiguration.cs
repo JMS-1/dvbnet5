@@ -1,8 +1,20 @@
-﻿using System.Reflection;
+﻿using System.Configuration;
+using System.Reflection;
 using Microsoft.Extensions.Logging;
 
 namespace JMS.DVB.NET.Recording
 {
+    /// <summary>
+    /// Schnittstelle zur Ermittelung des Pfades zum Dienst.
+    /// </summary>
+    public interface IVCRConfigurationExePathProvider
+    {
+        /// <summary>
+        /// Der zu verwendende Dateipfad.
+        /// </summary>
+        string Path { get; }
+    }
+
     /// <summary>
     /// Verwaltet die Konfiguration des VCR.NET Recording Service.
     /// </summary>
@@ -23,13 +35,16 @@ namespace JMS.DVB.NET.Recording
             /// </summary>
             public string NewValue { get; set; } = null!;
 
+            protected readonly VCRConfiguration VCRConfiguration;
+
             /// <summary>
             /// Erzeugt eine neue Beschreibung.
             /// </summary>
             /// <param name="name">Der Name der Beschreibung.</param>
-            internal SettingDescription(SettingNames name)
+            /// <param name="vcrConfiguration">Die zugehörige Konfiguration.</param>
+            internal SettingDescription(SettingNames name, VCRConfiguration vcrConfiguration)
             {
-                // Remember
+                VCRConfiguration = vcrConfiguration;
                 Name = name;
             }
 
@@ -43,7 +58,7 @@ namespace JMS.DVB.NET.Recording
             /// Liest den Namen der Einstellung.
             /// </summary>
             /// <returns>Der Wert der Einstellung als Zeichenkette.</returns>
-            public string GetCurrentValue() => ReadRawValue(Tools.ApplicationConfiguration)!;
+            public string GetCurrentValue() => ReadRawValue(VCRConfiguration._configuration)!;
 
             /// <summary>
             /// Liest den Namen der Einstellung.
@@ -124,8 +139,9 @@ namespace JMS.DVB.NET.Recording
             /// <param name="name">Der Name der Beschreibung.</param>
             /// <param name="defaultValue">Ein Wert für den Fall, dass der gewünschte Konfigurationswert
             /// nicht belegt ist.</param>
-            internal SettingDescription(SettingNames name, TValueType defaultValue)
-                : base(name)
+            /// <param name="vcrConfiguration">Die zugehörige Konfiguration.</param>
+            internal SettingDescription(SettingNames name, TValueType defaultValue, VCRConfiguration vcrConfiguration)
+                : base(name, vcrConfiguration)
             {
                 // Remember
                 m_Default = defaultValue;
@@ -135,7 +151,7 @@ namespace JMS.DVB.NET.Recording
             /// Erzeugt eine Kopie des Eintrags.
             /// </summary>
             /// <returns>Die gewünschte Kopie.</returns>
-            protected override SettingDescription CreateClone() => new SettingDescription<TValueType>(Name, m_Default);
+            protected override SettingDescription CreateClone() => new SettingDescription<TValueType>(Name, m_Default, VCRConfiguration);
 
             /// <summary>
             /// Erzeugt eine Kopie des Eintrags.
@@ -186,66 +202,85 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Beschreibt alle bekannten Konfigurationswerte.
         /// </summary>
-        private readonly Dictionary<SettingNames, SettingDescription> m_Settings = new();
+        private readonly Dictionary<SettingNames, SettingDescription> m_Settings = [];
 
         /// <summary>
         /// Enthält alle Konfigurationswerte, deren Veränderung einen Neustart des Dienstes erforderlich machen.
         /// </summary>
-        private readonly Dictionary<SettingNames, bool> m_Restart = new();
+        private readonly Dictionary<SettingNames, bool> m_Restart = [];
 
+        /// <summary>
+        /// Protokollierungshelfer.
+        /// </summary>
         private readonly ILogger<VCRConfiguration> _logger;
 
         /// <summary>
-        /// Initialisiert die statischen Fehler.
+        /// Pfad zum Dienst.
         /// </summary>
-        public VCRConfiguration(ILogger<VCRConfiguration> logger)
+        private readonly string _configurationExePath;
+
+        /// <summary>
+        /// Die aktuell gültige Konfiguration.
+        /// </summary>
+        private Configuration _configuration;
+
+        /// <summary>
+        /// Initialisiert eine neue Konfiguration.
+        /// </summary>
+        /// <param name="configurationExePath">Pfad zum Dienst.</param>
+        /// <param name="logger">Protokollierungshelfer.</param>
+        public VCRConfiguration(IVCRConfigurationExePathProvider configurationExePath, ILogger<VCRConfiguration> logger)
         {
+            logger.LogTrace("New Configuration Instance Created");
+
             _logger = logger;
 
-            _logger.LogTrace("New Configuration Instance Created");
+            // Get the path of the configuration and load the initial configuration.
+            _configurationExePath = configurationExePath.Path;
+            _configuration = ConfigurationManager.OpenExeConfiguration(_configurationExePath);
 
             // Remember all
-            Add(SettingNames.FileNamePattern, "%Job% - %Schedule% - %Start%");
-            Add(SettingNames.SuppressDelayAfterForcedHibernation, false);
-            Add(SettingNames.DelayAfterForcedHibernation, (uint)5);
-            Add(SettingNames.VideoRecorderDirectory, "Recordings");
-            Add(SettingNames.DisablePCRFromMPEG2Generation, false);
-            Add(SettingNames.DisablePCRFromH264Generation, false);
-            Add(SettingNames.UseStandByForHibernation, false);
-            Add(SettingNames.LoggingLevel, LoggingLevel.Full);
-            Add(SettingNames.ScanJoinThreshold, (uint?)null);
-            Add(SettingNames.EPGJoinThreshold, (uint?)null);
-            Add(SettingNames.UseExternalCardServer, true);
-            Add(SettingNames.HibernationDelay, (uint)60);
-            Add(SettingNames.EPGInterval, (uint?)null);
-            Add(SettingNames.MayHibernateSystem, false);
-            Add(SettingNames.ArchiveLifeTime, (uint)5);
-            Add(SettingNames.EPGIncludeFreeSat, false);
             Add(SettingNames.AdditionalRecorderPaths);
-            Add(SettingNames.ScanDuration, (uint)60);
-            Add(SettingNames.EPGDuration, (uint)15);
-            Add(SettingNames.TCPPort, (ushort)2909);
-            Add(SettingNames.SSLPort, (ushort)3909);
-            Add(SettingNames.LogLifeTime, (uint)5);
-            Add(SettingNames.MergeScanResult, true);
-            Add(SettingNames.TSAudioBufferSize, 0);
-            Add(SettingNames.TSSDTVBufferSize, 0);
-            Add(SettingNames.TSHDTVBufferSize, 0);
             Add(SettingNames.AllowBasic, false);
+            Add(SettingNames.ArchiveLifeTime, (uint)5);
+            Add(SettingNames.DelayAfterForcedHibernation, (uint)5);
+            Add(SettingNames.DisablePCRFromH264Generation, false);
+            Add(SettingNames.DisablePCRFromMPEG2Generation, false);
+            Add(SettingNames.EPGDuration, (uint)15);
+            Add(SettingNames.EPGHours);
+            Add(SettingNames.EPGIncludeFreeSat, false);
+            Add(SettingNames.EPGInterval, (uint?)null);
+            Add(SettingNames.EPGJoinThreshold, (uint?)null);
+            Add(SettingNames.EPGStations);
+            Add(SettingNames.FileNamePattern, "%Job% - %Schedule% - %Start%");
+            Add(SettingNames.HibernationDelay, (uint)60);
+            Add(SettingNames.LoggingLevel, LoggingLevel.Full);
+            Add(SettingNames.LogLifeTime, (uint)5);
+            Add(SettingNames.MayHibernateSystem, false);
+            Add(SettingNames.MergeScanResult, true);
+            Add(SettingNames.Profiles);
             Add(SettingNames.RequiredAdminRole);
             Add(SettingNames.RequiredUserRole);
-            Add(SettingNames.ScanInterval, 0);
-            Add(SettingNames.UseSSL, false);
-            Add(SettingNames.EPGStations);
+            Add(SettingNames.ScanDuration, (uint)60);
             Add(SettingNames.ScanHours);
-            Add(SettingNames.Profiles);
-            Add(SettingNames.EPGHours);
+            Add(SettingNames.ScanInterval, 0);
+            Add(SettingNames.ScanJoinThreshold, (uint?)null);
+            Add(SettingNames.SSLPort, (ushort)3909);
+            Add(SettingNames.SuppressDelayAfterForcedHibernation, false);
+            Add(SettingNames.TCPPort, (ushort)2909);
+            Add(SettingNames.TSAudioBufferSize, 0);
+            Add(SettingNames.TSHDTVBufferSize, 0);
+            Add(SettingNames.TSSDTVBufferSize, 0);
+            Add(SettingNames.UseExternalCardServer, true);
+            Add(SettingNames.UseSSL, false);
+            Add(SettingNames.UseStandByForHibernation, false);
+            Add(SettingNames.VideoRecorderDirectory, "Recordings");
 
             // Set restart items
             m_Restart[SettingNames.AllowBasic] = true;
             m_Restart[SettingNames.Profiles] = true;
-            m_Restart[SettingNames.TCPPort] = true;
             m_Restart[SettingNames.SSLPort] = true;
+            m_Restart[SettingNames.TCPPort] = true;
             m_Restart[SettingNames.UseSSL] = true;
         }
 
@@ -255,7 +290,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="names">Die zu aktualisierenden Einträge.</param>
         /// <returns>Alle gewünschten Einträge.</returns>
         public Dictionary<SettingNames, SettingDescription> BeginUpdate(params SettingNames[] names) =>
-            names == null ? new() : names.ToDictionary(n => n, n => m_Settings[n].Clone());
+            names == null ? [] : names.ToDictionary(n => n, n => m_Settings[n].Clone());
 
         /// <summary>
         /// Führt eine Aktualisierung aus.
@@ -269,7 +304,7 @@ namespace JMS.DVB.NET.Recording
                 return false;
 
             // Clone the current configuration
-            var newConfiguration = ConfigurationManager.OpenExeConfiguration();
+            var newConfiguration = ConfigurationManager.OpenExeConfiguration(_configurationExePath);
 
             // See if we changed at all
             bool changed = false, restart = false;
@@ -291,7 +326,7 @@ namespace JMS.DVB.NET.Recording
                 return false;
 
             // All names
-            string origName = Tools.ExecutablePath + ".config", tempName = origName + ".new";
+            string origName = _configurationExePath + ".config", tempName = origName + ".new";
 
             // Write back to primary
             newConfiguration.SaveAs(tempName);
@@ -307,7 +342,7 @@ namespace JMS.DVB.NET.Recording
 
                 // Force reload
                 if (!restart)
-                    Tools.RefreshConfiguration();
+                    _configuration = ConfigurationManager.OpenExeConfiguration(_configurationExePath);
 
                 // Report
                 return restart;
@@ -331,21 +366,29 @@ namespace JMS.DVB.NET.Recording
         /// <typeparam name="TValueType">Der Datentyp des zugehörigen Wertes.</typeparam>
         /// <param name="name">Der Name der Einstellung.</param>
         /// <param name="defaultValue">Der voreingestellt Wert.</param>
-        private void Add<TValueType>(SettingNames name, TValueType defaultValue) => m_Settings[name] = new SettingDescription<TValueType>(name, defaultValue);
+        private void Add<TValueType>(SettingNames name, TValueType defaultValue) => m_Settings[name] = new SettingDescription<TValueType>(name, defaultValue, this);
 
         /// <summary>
         /// Ermittelt eine einzelne Einstellung.
         /// </summary>
+        /// <typeparam name="T">Datentyp der Einstellung,</typeparam>
         /// <param name="name">Name der Einstellung.</param>
         /// <returns>Wert der Einstellung.</returns>
-        private object ReadSetting(SettingNames name) =>
-            m_Settings.TryGetValue(name, out var settings) ? settings.ReadValue() : null!;
+        private T ReadSetting<T>(SettingNames name) =>
+            m_Settings.TryGetValue(name, out var settings) ? (T)settings.ReadValue() : default!;
+
+        /// <summary>
+        /// Ermittelt eine einzelne Einstellung der Art Zeichenkette,
+        /// </summary>
+        /// <param name="name">Name der Einstellung.</param>
+        /// <returns>Wert der Einstellung.</returns>
+        private string ReadStringSetting(SettingNames name) => ReadSetting<string>(name);
 
         /// <summary>
         /// Meldet den Namen der Kontogruppe der Anwender, die Zugriff auf den
         /// VCR.NET Recording Service haben.
         /// </summary>
-        public string UserRole => (string)ReadSetting(SettingNames.RequiredUserRole);
+        public string UserRole => ReadStringSetting(SettingNames.RequiredUserRole);
 
         /// <summary>
         /// Meldet oder legt fest, ob bereits einmal eine Aufzeichnung ausgeführt wurde.
@@ -361,13 +404,13 @@ namespace JMS.DVB.NET.Recording
         /// Meldet den Namen der Kontogruppe der Anwender, die administrativen Zugriff auf den
         /// VCR.NET Recording Service haben.
         /// </summary>
-        public string AdminRole => (string)ReadSetting(SettingNames.RequiredAdminRole);
+        public string AdminRole => ReadStringSetting(SettingNames.RequiredAdminRole);
 
         /// <summary>
         /// Meldet, ob der Schlafzustand S3 (Standby) anstelle von S4 (Hibernate)
         /// verwenden soll.
         /// </summary>
-        public bool UseS3ForHibernate => (bool)ReadSetting(SettingNames.UseStandByForHibernation);
+        public bool UseS3ForHibernate => ReadSetting<bool>(SettingNames.UseStandByForHibernation);
 
         /// <summary>
         /// Meldet die Größe für die Zwischenspeicherung bei Radioaufnahmen.
@@ -377,11 +420,9 @@ namespace JMS.DVB.NET.Recording
             get
             {
                 // Process
-                var buffer = (int)ReadSetting(SettingNames.TSAudioBufferSize);
-                if (buffer < 1)
-                    return null;
-                else
-                    return Math.Max(1000, buffer);
+                var buffer = ReadSetting<int>(SettingNames.TSAudioBufferSize);
+
+                return (buffer < 1) ? null : Math.Max(1000, buffer);
             }
         }
 
@@ -393,11 +434,9 @@ namespace JMS.DVB.NET.Recording
             get
             {
                 // Process
-                var buffer = (int)ReadSetting(SettingNames.TSSDTVBufferSize);
-                if (buffer < 1)
-                    return null;
-                else
-                    return Math.Max(1000, buffer);
+                var buffer = ReadSetting<int>(SettingNames.TSSDTVBufferSize);
+
+                return (buffer < 1) ? null : Math.Max(1000, buffer);
             }
         }
 
@@ -409,11 +448,9 @@ namespace JMS.DVB.NET.Recording
             get
             {
                 // Process
-                var buffer = (int)ReadSetting(SettingNames.TSHDTVBufferSize);
-                if (buffer < 1)
-                    return null;
-                else
-                    return Math.Max(1000, buffer);
+                var buffer = ReadSetting<int>(SettingNames.TSHDTVBufferSize);
+
+                return (buffer < 1) ? null : Math.Max(1000, buffer);
             }
         }
 
@@ -421,41 +458,41 @@ namespace JMS.DVB.NET.Recording
         /// Meldet, ob der VCR.NET Recording Service den Rechner in einen Schlafzustand
         /// versetzten darf.
         /// </summary>
-        public bool MayHibernateSystem => (bool)ReadSetting(SettingNames.MayHibernateSystem);
+        public bool MayHibernateSystem => ReadSetting<bool>(SettingNames.MayHibernateSystem);
 
         /// <summary>
         /// Meldet die geschätzte Zeit, die dieses System maximal braucht, um aus dem
         /// Schlafzustand zu erwachen.
         /// </summary>
-        public uint HibernationDelay => (uint)ReadSetting(SettingNames.HibernationDelay);
+        public uint HibernationDelay => ReadSetting<uint>(SettingNames.HibernationDelay);
 
         /// <summary>
         /// Meldet, ob der <i>Card Server</i> als eigenständiger Prozess gestartet werden soll.
         /// </summary>
-        public bool UseExternalCardServer => (bool)ReadSetting(SettingNames.UseExternalCardServer);
+        public bool UseExternalCardServer => ReadSetting<bool>(SettingNames.UseExternalCardServer);
 
         /// <summary>
         /// Gesetzt wenn es nicht gestattet ist, aus einem H.264 Bildsignal die Zeitbasis (PCR)
         /// abzuleiten.
         /// </summary>
-        public bool DisablePCRFromH264Generation => (bool)ReadSetting(SettingNames.DisablePCRFromH264Generation);
+        public bool DisablePCRFromH264Generation => ReadSetting<bool>(SettingNames.DisablePCRFromH264Generation);
 
         /// <summary>
         /// Gesetzt wenn es nicht gestattet ist, aus einem MPEG2 Bildsignal die Zeitbasis (PCR)
         /// abzuleiten.
         /// </summary>
-        public bool DisablePCRFromMPEG2Generation => (bool)ReadSetting(SettingNames.DisablePCRFromMPEG2Generation);
+        public bool DisablePCRFromMPEG2Generation => ReadSetting<bool>(SettingNames.DisablePCRFromMPEG2Generation);
 
         /// <summary>
         /// Meldet, ob die Programmzeitschrift der englischen FreeSat Sender eingeschlossen 
         /// werden soll.
         /// </summary>
-        public bool EnableFreeSat => (bool)ReadSetting(SettingNames.EPGIncludeFreeSat);
+        public bool EnableFreeSat => ReadSetting<bool>(SettingNames.EPGIncludeFreeSat);
 
         /// <summary>
         /// Die Liste der Quellen, die in der Programmzeitschrift berücksichtigt werden sollen.
         /// </summary>
-        public string ProgramGuideSourcesRaw => (string)ReadSetting(SettingNames.EPGStations);
+        public string ProgramGuideSourcesRaw => ReadStringSetting(SettingNames.EPGStations);
 
         /// <summary>
         /// Meldet alle Quellen, für die Daten gesammelt werden sollen.
@@ -509,7 +546,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Meldet alle vollen Stunden, zu denen eine Sammlung stattfinden soll.
         /// </summary>
-        public uint[] ProgramGuideUpdateHours => Tools.GetHourList(ProgramGuideUpdateHoursRaw).ToArray();
+        public uint[] ProgramGuideUpdateHours => GetHourList(ProgramGuideUpdateHoursRaw).ToArray();
 
         /// <summary>
         /// Meldet alle vollen Stunden, zu denen eine Sammlung stattfinden soll.
@@ -519,7 +556,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Meldet die maximale Laufzeit einer Aktualisierung gemäß der Konfiguration.
         /// </summary>
-        public uint ProgramGuideUpdateDuration => (uint)ReadSetting(SettingNames.EPGDuration);
+        public uint ProgramGuideUpdateDuration => ReadSetting<uint>(SettingNames.EPGDuration);
 
         /// <summary>
         /// Meldet die minimale Zeitspanne zwischen zwei Aktualisierungen der Programmzeitschrift.
@@ -529,11 +566,9 @@ namespace JMS.DVB.NET.Recording
             get
             {
                 // Load
-                var interval = (uint?)ReadSetting(SettingNames.EPGInterval);
-                if (interval.HasValue)
-                    return TimeSpan.FromHours(interval.Value);
-                else
-                    return null;
+                var interval = ReadSetting<uint?>(SettingNames.EPGInterval);
+
+                return interval.HasValue ? TimeSpan.FromHours(interval.Value) : null;
             }
         }
 
@@ -546,11 +581,9 @@ namespace JMS.DVB.NET.Recording
             get
             {
                 // Load
-                var interval = (uint?)ReadSetting(SettingNames.EPGJoinThreshold);
-                if (interval.HasValue)
-                    return TimeSpan.FromHours(interval.Value);
-                else
-                    return null;
+                var interval = ReadSetting<uint?>(SettingNames.EPGJoinThreshold);
+
+                return interval.HasValue ? TimeSpan.FromHours(interval.Value) : null;
             }
         }
 
@@ -563,41 +596,39 @@ namespace JMS.DVB.NET.Recording
             get
             {
                 // Load
-                var interval = (uint?)ReadSetting(SettingNames.ScanJoinThreshold);
-                if (interval.HasValue)
-                    return TimeSpan.FromDays(interval.Value);
-                else
-                    return null;
+                var interval = ReadSetting<uint?>(SettingNames.ScanJoinThreshold);
+
+                return interval.HasValue ? TimeSpan.FromDays(interval.Value) : null;
             }
         }
 
         /// <summary>
         /// Meldet die maximale Laufzeit für die Aktualisierung der Quellen eines Geräteprofils.
         /// </summary>
-        public uint SourceListUpdateDuration => (uint)ReadSetting(SettingNames.ScanDuration);
+        public uint SourceListUpdateDuration => ReadSetting<uint>(SettingNames.ScanDuration);
 
         /// <summary>
         /// Meldet, wieviele Tage mindestens zwischen zwei Aktualisierungen der Liste
         /// der Quellen eines Geräteprofils liegen müssen.
         /// </summary>
-        public int SourceListUpdateInterval => (int)ReadSetting(SettingNames.ScanInterval);
+        public int SourceListUpdateInterval => ReadSetting<int>(SettingNames.ScanInterval);
 
         /// <summary>
         /// Meldet, ob nach Abschluss der Aktualisierung die Listen der Quellen zusammengeführt
         /// werden sollen.
         /// </summary>
-        public bool MergeSourceListUpdateResult => (bool)ReadSetting(SettingNames.MergeScanResult);
+        public bool MergeSourceListUpdateResult => ReadSetting<bool>(SettingNames.MergeScanResult);
 
         /// <summary>
         /// Meldet die Liste der Stunden, an denen eine Aktualisierung einer
         /// Liste von Quellen stattfinden darf.
         /// </summary>
-        public string SourceListUpdateHoursRaw => (string)ReadSetting(SettingNames.ScanHours);
+        public string SourceListUpdateHoursRaw => ReadStringSetting(SettingNames.ScanHours);
 
         /// <summary>
         /// Meldet alle vollen Stunden, zu denen eine Sammlung stattfinden soll.
         /// </summary>
-        public uint[] SourceListUpdateHours => Tools.GetHourList(SourceListUpdateHoursRaw).ToArray();
+        public uint[] SourceListUpdateHours => GetHourList(SourceListUpdateHoursRaw).ToArray();
 
         /// <summary>
         /// Meldet alle vollen Stunden, zu denen eine Sammlung stattfinden soll.
@@ -608,24 +639,24 @@ namespace JMS.DVB.NET.Recording
         /// Meldet die Liste der Stunden, an denen eine Aktualisierung einer
         /// Programmzeitschrift stattfinden darf.
         /// </summary>
-        public string ProgramGuideUpdateHoursRaw => (string)ReadSetting(SettingNames.EPGHours);
+        public string ProgramGuideUpdateHoursRaw => ReadStringSetting(SettingNames.EPGHours);
 
         /// <summary>
         /// Meldet die Zeit in Wochen, die ein Protokolleintrag vorgehalten wird.
         /// </summary>
-        public uint LogLifeTime { get { return (uint)ReadSetting(SettingNames.LogLifeTime); } }
+        public uint LogLifeTime => ReadSetting<uint>(SettingNames.LogLifeTime);
 
         /// <summary>
         /// Meldet die maximale Verweildauer eines archivierten Auftrags im Archiv, bevor
         /// er gelöscht wird.
         /// </summary>
-        public uint ArchiveLifeTime => (uint)ReadSetting(SettingNames.ArchiveLifeTime);
+        public uint ArchiveLifeTime => ReadSetting<uint>(SettingNames.ArchiveLifeTime);
 
         /// <summary>
         /// Meldet die Zeit die nach einem erzwungenen Schlafzustand verstreichen muss, bevor der
         /// Rechner für eine Aufzeichnung aufgweckt wird.
         /// </summary>
-        public uint RawDelayAfterForcedHibernation => (uint)ReadSetting(SettingNames.DelayAfterForcedHibernation);
+        public uint RawDelayAfterForcedHibernation => ReadSetting<uint>(SettingNames.DelayAfterForcedHibernation);
 
         /// <summary>
         /// Meldet die Zeit die nach einem erzwungenen Schlafzustand verstreichen muss, bevor der
@@ -636,54 +667,54 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Gesetzt, wenn beim Schlafzustand keine Sonderbehandlung erwünscht ist.
         /// </summary>
-        public bool SuppressDelayAfterForcedHibernation => (bool)ReadSetting(SettingNames.SuppressDelayAfterForcedHibernation);
+        public bool SuppressDelayAfterForcedHibernation => ReadSetting<bool>(SettingNames.SuppressDelayAfterForcedHibernation);
 
         /// <summary>
         /// Meldet den aktuellen Umfang der Protokollierung.
         /// </summary>
-        public LoggingLevel LoggingLevel => (LoggingLevel)ReadSetting(SettingNames.LoggingLevel);
+        public LoggingLevel LoggingLevel => ReadSetting<LoggingLevel>(SettingNames.LoggingLevel);
 
         /// <summary>
         /// Meldet den TCP/IP Port, an den der Web Server gebunden werden soll.
         /// </summary>
-        public ushort WebServerTcpPort => (ushort)ReadSetting(SettingNames.TCPPort);
+        public ushort WebServerTcpPort => ReadSetting<ushort>(SettingNames.TCPPort);
 
         /// <summary>
         /// Meldet den TCP/IP Port, an den der Web Server bei einer sichen Verbindung gebunden werden soll.
         /// </summary>
-        public ushort WebServerSecureTcpPort => (ushort)ReadSetting(SettingNames.SSLPort);
+        public ushort WebServerSecureTcpPort => ReadSetting<ushort>(SettingNames.SSLPort);
 
         /// <summary>
         /// Gesetzt, wenn die Verbindung zu den Web Diensten verschlüsselt werden soll.
         /// </summary>
-        public bool EncryptWebCommunication => (bool)ReadSetting(SettingNames.UseSSL);
+        public bool EncryptWebCommunication => ReadSetting<bool>(SettingNames.UseSSL);
 
         /// <summary>
         /// Gesetzt, wenn die Anwender sich auch über das Basic Prototokoll
         /// autorisieren dürfen.
         /// </summary>
-        public bool EnableBasicAuthentication => (bool)ReadSetting(SettingNames.AllowBasic);
+        public bool EnableBasicAuthentication => ReadSetting<bool>(SettingNames.AllowBasic);
 
         /// <summary>
         /// Ermittelt das Ersetzungsmuster für Dateinamen.
         /// </summary>
-        public string FileNamePattern => (string)ReadSetting(SettingNames.FileNamePattern);
+        public string FileNamePattern => ReadStringSetting(SettingNames.FileNamePattern);
 
         /// <summary>
         /// Ermittelt den Namen des primären Aufzeichnungsverzeichnisses
         /// </summary>
-        public string PrimaryRecordingDirectory => (string)ReadSetting(SettingNames.VideoRecorderDirectory);
+        public string PrimaryRecordingDirectory => ReadStringSetting(SettingNames.VideoRecorderDirectory);
 
         /// <summary>
         /// Meldet die zusätzlichen Aufzeichnungsverzeichnisse.
         /// </summary>
-        public string AlternateRecordingDirectories => (string)ReadSetting(SettingNames.AdditionalRecorderPaths);
+        public string AlternateRecordingDirectories => ReadStringSetting(SettingNames.AdditionalRecorderPaths);
 
         /// <summary>
         /// Meldet die Namen der DVB.NET Geräteprofile, die der VCR.NET Recording Service
         /// verwenden darf.
         /// </summary>
-        public string ProfileNames => (string)ReadSetting(SettingNames.Profiles);
+        public string ProfileNames => ReadStringSetting(SettingNames.Profiles);
 
         /// <summary>
         /// Meldet das primäre Aufzeichnungsverzeichnis.
@@ -693,11 +724,11 @@ namespace JMS.DVB.NET.Recording
             get
             {
                 // Get the path
-                var path = Path.Combine(Tools.ApplicationDirectory.Parent!.FullName, PrimaryRecordingDirectory);
+                var path = PrimaryRecordingDirectory;
 
                 // Extend it
                 if (!string.IsNullOrEmpty(path))
-                    if (path[path.Length - 1] != Path.DirectorySeparatorChar)
+                    if (path[^1] != Path.DirectorySeparatorChar)
                         path += Path.DirectorySeparatorChar;
 
                 // Create
@@ -798,6 +829,25 @@ namespace JMS.DVB.NET.Recording
 
             // No, not possible
             return false;
+        }
+
+
+        /// <summary>
+        /// Ermittelt eine Liste von vollen Stunden eines Tages aus der Konfiguration.
+        /// </summary>
+        /// <param name="hours">Die durch Komma getrennte Liste von vollen Stunden.</param>
+        /// <returns>Die Liste der Stunden.</returns>
+        public static IEnumerable<uint> GetHourList(string hours)
+        {
+            // None at all
+            if (string.IsNullOrEmpty(hours))
+                yield break;
+
+            // Process all
+            foreach (var hourAsString in hours.Split(','))
+                if (uint.TryParse(hourAsString.Trim(), out uint hour))
+                    if ((hour >= 0) && (hour <= 23))
+                        yield return hour;
         }
     }
 }

@@ -93,12 +93,12 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Meldet die aktuellen Einstellungen des VCR.NET Recording Service.
         /// </summary>
-        public Settings Settings
+        public _Settings Settings
         {
             get
             {
                 // Create a new instance
-                var result = new Settings { };
+                var result = new _Settings { };
 
                 // Load profile names
                 //result.Profiles.AddRange(VCRProfiles.ProfileNames);

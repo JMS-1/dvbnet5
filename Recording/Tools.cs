@@ -34,12 +34,12 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Die Konfiguration zur aktuellen Anwendung.
         /// </summary>
-        public static volatile Configuration m_ApplicationConfiguration = null!;
+        public static volatile _Configuration m_ApplicationConfiguration = null!;
 
         /// <summary>
         /// Die Konfiguration zur aktuellen Anwendung.
         /// </summary>
-        public static Configuration ApplicationConfiguration { get { return m_ApplicationConfiguration; } }
+        public static _Configuration ApplicationConfiguration { get { return m_ApplicationConfiguration; } }
 
         /// <summary>
         /// Synchronisiert Eintr�ge in das spezielle Protokoll.
@@ -189,14 +189,14 @@ namespace JMS.DVB.NET.Recording
         public static void RefreshConfiguration()
         {
             // Just load
-            RefreshConfiguration(ConfigurationManager.OpenExeConfiguration());
+            RefreshConfiguration(_ConfigurationManager.OpenExeConfiguration());
         }
 
         /// <summary>
         /// Aktiviert eine Konfiguration.
         /// </summary>
         /// <param name="configuration">Die zu verwendende Konfiguration.</param>
-        public static void RefreshConfiguration(Configuration configuration)
+        public static void RefreshConfiguration(_Configuration configuration)
         {
             // Just load
             m_ApplicationConfiguration = configuration;

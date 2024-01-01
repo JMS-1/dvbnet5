@@ -2,35 +2,40 @@
 
 namespace JMS.DVB.NET.Recording
 {
-    public class Setting
+
+}
+
+namespace JMS.DVB.NET.Recording
+{
+    public class _Setting
     {
         public string Value { get; set; } = null!;
     }
 
 
-    public class Settings
+    public class _Settings
     {
-        public Setting? this[string key] => throw new NotImplementedException("Configuration");
+        public _Setting? this[string key] => throw new NotImplementedException("Configuration");
 
         public void Add(string key, string value) => throw new NotImplementedException("Configuration");
     }
 
 
-    public class AppSettings
+    public class _AppSettings
     {
-        public readonly Settings Settings = new();
+        public readonly _Settings Settings = new();
     }
 
-    public class Configuration
+    public class _Configuration
     {
-        public readonly AppSettings AppSettings = new();
+        public readonly _AppSettings AppSettings = new();
 
         public void SaveAs(string path) => throw new NotImplementedException("Configuration");
     }
 
-    public static class ConfigurationManager
+    public static class _ConfigurationManager
     {
-        public static Configuration OpenExeConfiguration() => new();
+        public static _Configuration OpenExeConfiguration() => new();
     }
 
     /// <summary>
@@ -85,14 +90,14 @@ namespace JMS.DVB.NET.Recording
             /// </summary>
             /// <param name="configuration">Die zu verwendende Konfiguration.</param>
             /// <returns>Der Wert der Einstellung als Zeichenkette.</returns>
-            private string ReadRawValue(Configuration configuration) => configuration.AppSettings.Settings[Name.ToString()]?.Value?.Trim()!;
+            private string ReadRawValue(_Configuration configuration) => configuration.AppSettings.Settings[Name.ToString()]?.Value?.Trim()!;
 
             /// <summary>
             /// Aktualisiert einen Konfigurationswert.
             /// </summary>
             /// <param name="newConfiguration"></param>
             /// <returns></returns>
-            internal bool Update(Configuration newConfiguration)
+            internal bool Update(_Configuration newConfiguration)
             {
                 // Corret
                 var newValue = string.IsNullOrEmpty(NewValue) ? string.Empty : NewValue.Trim();
@@ -316,7 +321,7 @@ namespace JMS.DVB.NET.Recording
                 return false;
 
             // Clone the current configuration
-            var newConfiguration = ConfigurationManager.OpenExeConfiguration();
+            var newConfiguration = _ConfigurationManager.OpenExeConfiguration();
 
             // See if we changed at all
             bool changed = false, restart = false;
