@@ -53,9 +53,12 @@ public class ConfigurationTests
     }
 
     [Test]
-    public void Can_Update_Configuration_File()
+    public void Can_Update_Configuration_File_With_Restart()
     {
         var cut = Services.GetRequiredService<VCRConfiguration>();
+
+        Assert.That(cut.ProfileNames, Is.EqualTo("card1|card2"));
+
         var config = cut.BeginUpdate(SettingNames.Profiles);
 
         config[SettingNames.Profiles].NewValue = "card1|card3|card9";
@@ -66,5 +69,20 @@ public class ConfigurationTests
         cut = Services.GetRequiredService<VCRConfiguration>();
 
         Assert.That(cut.ProfileNames, Is.EqualTo("card1|card3|card9"));
+    }
+
+    [Test]
+    public void Can_Update_Configuration_File_Without_Restart()
+    {
+        var cut = Services.GetRequiredService<VCRConfiguration>();
+
+        Assert.That(cut.ProgramGuideUpdateDuration, Is.EqualTo(20));
+
+        var config = cut.BeginUpdate(SettingNames.EPGDuration);
+
+        config[SettingNames.EPGDuration].NewValue = "30";
+
+        Assert.That(cut.CommitUpdate(config.Values), Is.False);
+        Assert.That(cut.ProgramGuideUpdateDuration, Is.EqualTo(30));
     }
 }
