@@ -297,7 +297,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="settings">Die eventuell veränderten Einstellungen.</param>
         /// <returns>Gesetzt, wenn ein Neustart erforderlich war.</returns>
-        internal bool CommitUpdate(IEnumerable<SettingDescription> settings)
+        public bool CommitUpdate(IEnumerable<SettingDescription> settings)
         {
             // Validate
             if (settings == null)
