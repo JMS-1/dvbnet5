@@ -5,7 +5,7 @@ namespace JMS.DVB.NET.Recording
     /// <summary>
     /// Verwaltung aller Aufträge für alle DVB.NET Geräteprofile.
     /// </summary>
-    public partial class JobManager
+    public class JobManager
     {
         /// <summary>
         /// Das Format, in dem das reine Datum in den Dateinamen von Protokolleinträgen codiert wird.
@@ -20,17 +20,17 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Ermittelt das Protokollverzeichnis vom VCR.NET.
         /// </summary>
-        public DirectoryInfo LogDirectory => new DirectoryInfo(Path.Combine(RootDirectory.FullName, "Logs"));
+        public DirectoryInfo LogDirectory => new(Path.Combine(RootDirectory.FullName, "Logs"));
 
         /// <summary>
         /// Ermittelt das EPG und Sendersuchlaufverzeichnis vom VCR.NET.
         /// </summary>
-        public DirectoryInfo CollectorDirectory => new DirectoryInfo(Path.Combine(RootDirectory.FullName, "EPG"));
+        public DirectoryInfo CollectorDirectory => new(Path.Combine(RootDirectory.FullName, "EPG"));
 
         /// <summary>
         /// Ermittelt das Verzeichnis aller aktiven Aufträge vom VCR.NET.
         /// </summary>
-        public DirectoryInfo JobDirectory => new DirectoryInfo(Path.Combine(RootDirectory.FullName, "Active"));
+        public DirectoryInfo JobDirectory => new(Path.Combine(RootDirectory.FullName, "Active"));
 
         /// <summary>
         /// Meldet das Wurzelverzeichnis, unter dem Aufträge und Protokolle abgelegt werden.
@@ -45,7 +45,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Vorhaltung aller Aufträge.
         /// </summary>
-        private readonly Dictionary<Guid, VCRJob> m_Jobs = new Dictionary<Guid, VCRJob>();
+        private readonly Dictionary<Guid, VCRJob> m_Jobs = [];
 
         /// <summary>
         /// Erzeugt eine neue Verwaltungsinstanz und lädt die aktuellen Auftragsliste.
@@ -290,7 +290,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Ermittelt das Archivverzeichnis vom VCR.NET.
         /// </summary>
-        public DirectoryInfo ArchiveDirectory => new DirectoryInfo(Path.Combine(RootDirectory.FullName, "Archive"));
+        public DirectoryInfo ArchiveDirectory => new(Path.Combine(RootDirectory.FullName, "Archive"));
 
         /// <summary>
         /// Ermittelt alle archivierten Aufträge zu allen DVB.NET Geräteprofilen.
@@ -307,7 +307,7 @@ namespace JMS.DVB.NET.Recording
                     return
                         ArchiveDirectory
                         .GetFiles("*" + VCRJob.FileSuffix)
-                        .Select<FileInfo, VCRJob>(file =>
+                        .Select(file =>
                             {
                                 // Load
                                 var job = SerializationTools.Load<VCRJob>(file);

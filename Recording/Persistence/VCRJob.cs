@@ -6,29 +6,29 @@ namespace JMS.DVB.NET.Recording.Persistence
     /// Beschreibt einen Auftrag.
     /// </summary>
     /// <remarks>
-    /// Ein Auftrag enth�lt zumindest eine Aufzeichnung.
+    /// Ein Auftrag enthält zumindest eine Aufzeichnung.
     /// </remarks>
     [Serializable]
     public class VCRJob
     {
         /// <summary>
-        /// Der spezielle Name f�r die Aktualisierung der Quellen eines Ger�teprofils.
+        /// Der spezielle Name für die Aktualisierung der Quellen eines Geräteprofils.
         /// </summary>
         public const string SourceScanName = "PSI";
 
         /// <summary>
-        /// Der spezielle Name f�r die Aktualisierung der Programmzeitschrift.
+        /// Der spezielle Name für die Aktualisierung der Programmzeitschrift.
         /// </summary>
         public const string ProgramGuideName = "EPG";
 
         /// <summary>
-        /// Der spezielle Name f�r den LIVE Modus, der von <i>Zapping Clients</i> wie
+        /// Der spezielle Name für den LIVE Modus, der von <i>Zapping Clients</i> wie
         /// dem DVB.NET / VCR.NET Viewer verwendet werden.
         /// </summary>
         public const string ZappingName = "LIVE";
 
         /// <summary>
-        /// Dateiendung f�r Auftr�ge im XML Serialisierungsformat.
+        /// Dateiendung für Aufträge im XML Serialisierungsformat.
         /// </summary>
         public const string FileSuffix = ".j39";
 
@@ -36,7 +36,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Aufzeichnungen zu diesem Auftrag.
         /// </summary>        
         [XmlElement("Schedule")]
-        public readonly List<VCRSchedule> Schedules = new List<VCRSchedule>();
+        public readonly List<VCRSchedule> Schedules = [];
 
         /// <summary>
         /// Verzeichnis, in dem Aufzeichnungsdateien abgelegt werden sollen.
@@ -49,12 +49,12 @@ namespace JMS.DVB.NET.Recording.Persistence
         public Guid? UniqueID { get; set; }
 
         /// <summary>
-        /// Die gew�nschte Quelle.
+        /// Die gewünschte Quelle.
         /// </summary>
         public SourceSelection Source { get; set; } = null!;
 
         /// <summary>
-        /// Die Datenstr�me, die aufgezeichnet werden sollen.
+        /// Die Datenströme, die aufgezeichnet werden sollen.
         /// </summary>
         public StreamSelection Streams { get; set; } = null!;
 
@@ -64,7 +64,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         public string Name { get; set; } = null!;
 
         /// <summary>
-        /// Gesetzt, wenn es das Ger�t zur Aufzeichnung automatisch ausgew�hlt werden darf.
+        /// Gesetzt, wenn es das Gerät zur Aufzeichnung automatisch ausgewählt werden darf.
         /// </summary>
         public bool AutomaticResourceSelection { get; set; }
 
@@ -101,10 +101,10 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// L�schte diesen Auftrag.
+        /// Löschte diesen Auftrag.
         /// </summary>
         /// <param name="target">Der Pfad zu einem Zielverzeichnis.</param>
-        /// <returns>Gesetzt, wenn der L�schvorgang erfolgreich war. <i>null</i> wird gemeldet,
+        /// <returns>Gesetzt, wenn der Löschvorgang erfolgreich war. <i>null</i> wird gemeldet,
         /// wenn die Datei nicht existierte.</returns>
         public bool? Delete(DirectoryInfo target, VCRServer server)
         {
@@ -138,14 +138,14 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Ermittelt den Namen dieses Auftrags in einem Zielverzeichnis.
         /// </summary>
         /// <param name="target">Der Pfad zu einem Zielverzeichnis.</param>
-        /// <returns>Die zugeh�rige Datei.</returns>
+        /// <returns>Die zugehörige Datei.</returns>
         private FileInfo? GetFileName(DirectoryInfo target) => UniqueID.HasValue ? new FileInfo(Path.Combine(target.FullName, UniqueID.Value.ToString("N").ToUpper() + FileSuffix)) : null;
 
         /// <summary>
-        /// Ermittelt alle Auftr�ge in einem Verzeichnis.
+        /// Ermittelt alle Aufträge in einem Verzeichnis.
         /// </summary>
         /// <param name="directory">Das zu bearbeitende Verzeichnis.</param>
-        /// <returns>Alle Auftr�ge.</returns>
+        /// <returns>Alle Aufträge.</returns>
         public static IEnumerable<VCRJob> Load(DirectoryInfo directory)
         {
             // Process
@@ -157,17 +157,17 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// Pr�ft, ob dieser Auftrag noch einmal verwendet wird. Das ist der Fall, wenn mindestens
+        /// Prüft, ob dieser Auftrag noch einmal verwendet wird. Das ist der Fall, wenn mindestens
         /// eine Aufzeichnung noch vorhanden ist.
         /// </summary>
         [XmlIgnore]
         public bool IsActive => Schedules.Any(schedule => schedule.IsActive);
 
         /// <summary>
-        /// Pr�ft, ob ein Auftrag zul�ssig ist.
+        /// Prüft, ob ein Auftrag zulüssig ist.
         /// </summary>
-        /// <param name="scheduleIdentifier">Die eindeutige Kennung der ver�nderten Aufzeichnung.</param>
-        /// <exception cref="InvalidJobDataException">Die Konfiguration dieses Auftrags is ung�ltig.</exception>
+        /// <param name="scheduleIdentifier">Die eindeutige Kennung der veränderten Aufzeichnung.</param>
+        /// <exception cref="InvalidJobDataException">Die Konfiguration dieses Auftrags is ungültig.</exception>
         public void Validate(Guid? scheduleIdentifier)
         {
             // Identifier
@@ -222,7 +222,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         public void CleanupExceptions() => Schedules.ForEach(schedule => schedule.CleanupExceptions());
 
         /// <summary>
-        /// Stellt sicher, dass f�r diesen Auftrag ein Ger�teprprofil ausgew�hlt ist.
+        /// Stellt sicher, dass für diesen Auftrag ein Geräteprprofil ausgewählt ist.
         /// </summary>
         internal void SetProfile()
         {
@@ -243,9 +243,9 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// Stellt sicher, dass f�r diesen Auftrag ein Ger�teprprofil ausgew�hlt ist.
+        /// Stellt sicher, dass für diesen Auftrag ein Geräteprprofil ausgewählt ist.
         /// </summary>
-        /// <param name="defaultProfileName">Der Name des bevorzugten Ger�teprofils.</param>
+        /// <param name="defaultProfileName">Der Name des bevorzugten Geräteprofils.</param>
         internal void SetProfile(string defaultProfileName)
         {
             // No source at all
@@ -257,7 +257,7 @@ namespace JMS.DVB.NET.Recording.Persistence
     }
 
     /// <summary>
-    /// Hilfsmethoden zur Validierung von Auftr�gen und Aufzeichnungen.
+    /// Hilfsmethoden zur Validierung von Aufträgen und Aufzeichnungen.
     /// </summary>
     public static class ValidationExtension
     {
@@ -267,17 +267,17 @@ namespace JMS.DVB.NET.Recording.Persistence
         private static readonly char[] m_BadCharacters = Path.GetInvalidPathChars().Union(Path.GetInvalidFileNameChars()).Distinct().ToArray();
 
         /// <summary>
-        /// Pr�ft, ob eine Quelle g�ltig ist.
+        /// Prüft, ob eine Quelle gültig ist.
         /// </summary>
         /// <param name="source">Die Auswahl der Quelle oder <i>null</i>.</param>
-        /// <returns>Gesetzt, wenn die Auswahl g�ltig ist.</returns>
+        /// <returns>Gesetzt, wenn die Auswahl gültig ist.</returns>
         public static bool Validate(this SourceSelection source) => (VCRProfiles.FindSource(source) != null);
 
         /// <summary>
-        /// Pr�ft, ob eine Datenstromauswahl zul�ssig ist.
+        /// Prüft, ob eine Datenstromauswahl zulässig ist.
         /// </summary>
-        /// <param name="streams">Die Auswahl der Datenstr�me.</param>
-        /// <returns>Gesetzt, wenn die Auswahl g�ltig ist - und mindestens eine Tonspur enth�lt.</returns>
+        /// <param name="streams">Die Auswahl der Datenströme.</param>
+        /// <returns>Gesetzt, wenn die Auswahl gültig ist - und mindestens eine Tonspur enthält.</returns>
         public static bool Validate(this StreamSelection streams)
         {
             // Not possible
@@ -301,10 +301,10 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// Pr�ft, ob eine Zeichenkette als Name f�r einen Auftrag oder eine
+        /// Prüft, ob eine Zeichenkette als Name für einen Auftrag oder eine
         /// Aufzeichnung verwendet werden darf.
         /// </summary>
-        /// <param name="name">Der zu pr�fenden Name.</param>
+        /// <param name="name">Der zu prüfenden Name.</param>
         /// <returns>Gesetzt, wenn der Name verwendet werden darf.</returns>
         public static bool IsValidName(this string name) => string.IsNullOrEmpty(name) || (name.IndexOfAny(m_BadCharacters) < 0);
 
