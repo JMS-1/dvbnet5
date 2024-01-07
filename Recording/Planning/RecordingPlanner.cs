@@ -23,7 +23,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <summary>
         /// Alle aktuellen periodischen Aufgaben.
         /// </summary>
-        private readonly List<PeriodicScheduler> m_tasks = new List<PeriodicScheduler>();
+        private readonly List<PeriodicScheduler> m_tasks = [];
 
         /// <summary>
         /// Die Verwaltung der Geräteprofile.
@@ -35,16 +35,16 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         private readonly Dictionary<Guid, ScheduleInformation> m_started = new Dictionary<Guid, ScheduleInformation>();
 
-        private readonly VCRConfiguration m_configuration;
+        private readonly VCRServer m_server;
 
         /// <summary>
         /// Erstellt eine neue Planung.
         /// </summary>
         /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
-        private RecordingPlanner(IRecordingPlannerSite site, VCRConfiguration configuration)
+        private RecordingPlanner(IRecordingPlannerSite site, VCRServer server)
         {
             // Remember
-            m_configuration = configuration;
+            m_server = server;
             m_site = site;
 
             // Process all profiles
@@ -66,12 +66,12 @@ namespace JMS.DVB.NET.Recording.Planning
                     continue;
 
                 // See if we should process guide updates
-                var guideTask = site.CreateProgramGuideTask(profileResource, profile, m_configuration);
+                var guideTask = site.CreateProgramGuideTask(profileResource, profile, m_server);
                 if (guideTask != null)
                     m_tasks.Add(guideTask);
 
                 // See if we should update the source list
-                var scanTask = site.CreateSourceScanTask(profileResource, profile, m_configuration);
+                var scanTask = site.CreateSourceScanTask(profileResource, profile, m_server);
                 if (scanTask != null)
                     m_tasks.Add(scanTask);
             }
@@ -85,7 +85,7 @@ namespace JMS.DVB.NET.Recording.Planning
             catch (Exception e)
             {
                 // Report
-                VCRServer.LogError("Fehler beim Einlesen der Regeldatei für die Aufzeichnungsplanung: {0}", e.Message);
+                m_server.LogError("Fehler beim Einlesen der Regeldatei für die Aufzeichnungsplanung: {0}", e.Message);
 
                 // Use standard rules
                 m_manager = ResourceManager.Create(ProfileManager.ProfileNameComparer);
@@ -104,7 +104,7 @@ namespace JMS.DVB.NET.Recording.Planning
                 Dispose();
 
                 // Report
-                VCRServer.Log(e);
+                m_server.Log(e);
             }
         }
 
@@ -137,14 +137,14 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
         /// <returns>Die gewünschte Planungsumgebung.</returns>
-        public static RecordingPlanner Create(IRecordingPlannerSite site, VCRConfiguration configuration)
+        public static RecordingPlanner Create(IRecordingPlannerSite site, VCRServer server)
         {
             // Validate
             if (site == null)
                 throw new ArgumentNullException(nameof(site));
 
             // Forward
-            return new RecordingPlanner(site, configuration);
+            return new RecordingPlanner(site, server);
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace JMS.DVB.NET.Recording.Planning
                     }
 
                     // Forward to site
-                    m_site.Start(schedule, this, context!, m_configuration);
+                    m_site.Start(schedule, this, context!, m_server);
 
                     // Done
                     return;
@@ -230,7 +230,7 @@ namespace JMS.DVB.NET.Recording.Planning
         {
             // Validate
             if (item is ScheduleInformation)
-                VCRServer.LogError("Es wird versucht, die Aufzeichnung '{1}' ({0}) mehrfach zu starten", item.Definition.UniqueIdentifier, item.Definition.Name);
+                m_server.LogError("Es wird versucht, die Aufzeichnung '{1}' ({0}) mehrfach zu starten", item.Definition.UniqueIdentifier, item.Definition.Name);
 
             // Try start
             if (!m_manager.Start(item))

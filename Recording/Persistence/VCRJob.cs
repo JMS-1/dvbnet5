@@ -74,7 +74,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <param name="target">Der Pfad zu einem Zielverzeichnis.</param>
         /// <returns>Gesetzt, wenn der Speichervorgang erfolgreich war. <i>null</i> wird
         /// gemeldet, wenn diesem Auftrag keine Datei zugeordnet ist.</returns>
-        public bool? Save(DirectoryInfo target)
+        public bool? Save(DirectoryInfo target, VCRServer server)
         {
             // Get the file
             var file = GetFileName(target);
@@ -90,7 +90,7 @@ namespace JMS.DVB.NET.Recording.Persistence
             catch (Exception e)
             {
                 // Report
-                VCRServer.Log(e);
+                server.Log(e);
 
                 // Done
                 return false;
@@ -106,7 +106,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <param name="target">Der Pfad zu einem Zielverzeichnis.</param>
         /// <returns>Gesetzt, wenn der L�schvorgang erfolgreich war. <i>null</i> wird gemeldet,
         /// wenn die Datei nicht existierte.</returns>
-        public bool? Delete(DirectoryInfo target)
+        public bool? Delete(DirectoryInfo target, VCRServer server)
         {
             // Get the file
             var file = GetFileName(target);
@@ -124,7 +124,7 @@ namespace JMS.DVB.NET.Recording.Persistence
             catch (Exception e)
             {
                 // Report error
-                VCRServer.Log(e);
+                server.Log(e);
 
                 // Failed
                 return false;

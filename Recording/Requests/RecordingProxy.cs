@@ -11,7 +11,7 @@ namespace JMS.DVB.NET.Recording.Requests
     /// </summary>
     /// <param name="state">Der Zustands des zugehörigen Geräteprofils.</param>
     /// <param name="firstRecording">Die erste Aufzeichnung, auf Grund derer dieser Zugriff angelegt wurde.</param>
-    public class RecordingProxy(ProfileState state, VCRRecordingInfo firstRecording, VCRConfiguration configuration) : CardServerProxy(state, firstRecording, configuration)
+    public class RecordingProxy(ProfileState state, VCRRecordingInfo firstRecording, VCRServer server) : CardServerProxy(state, firstRecording, server)
     {
         #region Felder zur Steuerung der asynchronen Aufrufe an den Aufzeichnungsprozess
 
@@ -162,7 +162,7 @@ namespace JMS.DVB.NET.Recording.Requests
             }
 
             // Enqueue
-            m_startPending = Server.BeginAddSources(new[] { recording.ToReceiveInformation(Configuration) });
+            m_startPending = Server.BeginAddSources(new[] { recording.ToReceiveInformation(VCRServer.Configuration) });
         }
 
         /// <summary>
@@ -440,7 +440,7 @@ namespace JMS.DVB.NET.Recording.Requests
                         .Where(e => e.EndTime > from));
 
                 // Write it out
-                SerializationTools.SafeSave(entries, Path.ChangeExtension(recording.FileName, "epginfo"));
+                SerializationTools.SafeSave(entries, Path.ChangeExtension(recording.FileName, "epginfo"), VCRServer);
             }
 
             // Detect all files related to the recordings

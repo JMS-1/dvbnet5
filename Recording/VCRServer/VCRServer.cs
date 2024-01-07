@@ -1,5 +1,6 @@
 using System.Text;
 using JMS.DVB.Algorithms.Scheduler;
+using Microsoft.Extensions.Logging;
 
 namespace JMS.DVB.NET.Recording
 {
@@ -66,9 +67,10 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Erzeugt eine neue Instanz.
         /// </summary>
-        public VCRServer(VCRConfiguration configuration)
+        public VCRServer(VCRConfiguration configuration, ILogger<VCRServer> logger)
         {
             _configuration = configuration;
+            Logger = logger;
 
             var rootDirectory = RunTimeLoader.GetDirectory("Recording");
 
@@ -76,7 +78,7 @@ namespace JMS.DVB.NET.Recording
             Tools.ExtendedLogging("Using Root Directory {0}", rootDirectory.FullName);
 
             // Prepare profiles
-            VCRProfiles.Reset(_configuration);
+            VCRProfiles.Reset(this);
 
             // Create job manager and start it up
             JobManager = new JobManager(new DirectoryInfo(Path.Combine(rootDirectory.FullName, "Jobs")), this);

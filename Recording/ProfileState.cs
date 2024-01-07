@@ -93,7 +93,7 @@ namespace JMS.DVB.NET.Recording
             else if (!string.IsNullOrEmpty(connectTo))
             {
                 // Activate 
-                ZappingProxy.Create(this, connectTo, Server.Configuration).Start();
+                ZappingProxy.Create(this, connectTo, Server).Start();
             }
             else if (source != null)
             {
@@ -305,7 +305,7 @@ namespace JMS.DVB.NET.Recording
                     if (ReferenceEquals(current, null))
                     {
                         // Create a brand new regular recording request
-                        var request = new RecordingProxy(this, recording, Server.Configuration);
+                        var request = new RecordingProxy(this, recording, Server);
 
                         // Activate the request
                         request.Start();
@@ -348,7 +348,7 @@ namespace JMS.DVB.NET.Recording
                 if (ReferenceEquals(current, null))
                 {
                     // Report
-                    VCRServer.Log(LoggingLevel.Errors, "Request to end Recording '{0}' but there is no active Recording Process", scheduleIdentifier);
+                    Server.Log(LoggingLevel.Errors, "Request to end Recording '{0}' but there is no active Recording Process", scheduleIdentifier);
 
                     // Better do it ourselves
                     Collection.ConfirmOperation(scheduleIdentifier, false);
@@ -431,8 +431,8 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         internal DateTime? LastSourceUpdateTime
         {
-            get { return Tools.GetRegistryTime(SourceUpdateRegistryName); }
-            set { Tools.SetRegistryTime(SourceUpdateRegistryName, value); }
+            get { return Tools.GetRegistryTime(SourceUpdateRegistryName, Server); }
+            set { Tools.SetRegistryTime(SourceUpdateRegistryName, value, Server); }
         }
 
         #endregion

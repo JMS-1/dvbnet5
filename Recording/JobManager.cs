@@ -115,13 +115,13 @@ namespace JMS.DVB.NET.Recording
                 if (internalJob != null)
                 {
                     // Delete it
-                    internalJob.Delete(JobDirectory);
+                    internalJob.Delete(JobDirectory, Server);
 
                     // Remove from map
                     m_Jobs.Remove(internalJob.UniqueID!.Value);
 
                     // Save to file
-                    internalJob.Save(ArchiveDirectory);
+                    internalJob.Save(ArchiveDirectory, Server);
                 }
                 else
                 {
@@ -129,7 +129,7 @@ namespace JMS.DVB.NET.Recording
                     Tools.ExtendedLogging("Job not found in Active Directory - trying Archive");
 
                     // Must be archived               
-                    job.Delete(ArchiveDirectory);
+                    job.Delete(ArchiveDirectory, Server);
                 }
             }
         }
@@ -175,11 +175,11 @@ namespace JMS.DVB.NET.Recording
             job.CleanupExceptions();
 
             // Remove from archive - if job has been recovered
-            job.Delete(ArchiveDirectory);
+            job.Delete(ArchiveDirectory, Server);
 
             // Try to store to disk - actually this is inside the lock because the directory virtually is part of our map
             lock (m_Jobs)
-                if (job.Save(JobDirectory).GetValueOrDefault())
+                if (job.Save(JobDirectory, Server).GetValueOrDefault())
                     m_Jobs[job.UniqueID!.Value] = job;
                 else
                     throw new ArgumentException(string.Format("Die Datei zum Auftrag {0} kann nicht geschrieben werden", job.UniqueID), nameof(job));
@@ -358,7 +358,7 @@ namespace JMS.DVB.NET.Recording
                         catch (Exception e)
                         {
                             // Report error
-                            VCRServer.Log(e);
+                            Server.Log(e);
                         }
         }
 
@@ -371,7 +371,11 @@ namespace JMS.DVB.NET.Recording
             // Store
             if (logEntry.Source != null)
                 if (!string.IsNullOrEmpty(logEntry.Source.ProfileName))
-                    SerializationTools.SafeSave(logEntry, Path.Combine(LogDirectory.FullName, DateTime.UtcNow.ToString(LogEntryDateFormat + LogEntryTimeFormat) + logEntry.Source.ProfileName + VCRRecordingInfo.FileSuffix));
+                    SerializationTools.SafeSave(
+                        logEntry,
+                        Path.Combine(LogDirectory.FullName, DateTime.UtcNow.ToString(LogEntryDateFormat + LogEntryTimeFormat) + logEntry.Source.ProfileName + VCRRecordingInfo.FileSuffix),
+                        Server
+                    );
         }
 
         /// <summary>
@@ -454,7 +458,7 @@ namespace JMS.DVB.NET.Recording
                     catch (Exception e)
                     {
                         // Report error
-                        VCRServer.Log(e);
+                        Server.Log(e);
                     }
         }
     }

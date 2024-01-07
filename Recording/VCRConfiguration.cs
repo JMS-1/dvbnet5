@@ -786,7 +786,7 @@ namespace JMS.DVB.NET.Recording
                         catch (Exception e)
                         {
                             // Report as error
-                            VCRServer.Log(e);
+                            _logger.LogError(e.Message);
 
                             // Just ignore
                             continue;
@@ -825,7 +825,7 @@ namespace JMS.DVB.NET.Recording
                     catch (Exception e)
                     {
                         // Report
-                        VCRServer.Log(e);
+                        _logger.LogError(e.Message);
 
                         // Done
                         return false;

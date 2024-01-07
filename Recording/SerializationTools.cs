@@ -90,7 +90,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="instance">Das zu speichernde Objekt.</param>
         /// <param name="path">Der Pfad zur Datei.</param>
         /// <returns>Gesetzt, wenn kein Fehler aufgetreten ist.</returns>
-        public static bool SafeSave(object instance, string path)
+        public static bool SafeSave(object instance, string path, VCRServer server)
         {
             // Be safe
             try
@@ -104,7 +104,7 @@ namespace JMS.DVB.NET.Recording
             catch (Exception e)
             {
                 // Report
-                VCRServer.Log(e);
+                server.Log(e);
 
                 // Failed
                 return false;

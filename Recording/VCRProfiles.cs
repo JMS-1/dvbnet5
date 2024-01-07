@@ -55,7 +55,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Lädt alle Profile erneut.
         /// </summary>
-        internal static void Reset(VCRConfiguration configuration)
+        internal static void Reset(VCRServer server)
         {
             // Report
             Tools.ExtendedLogging("Reloading Profile List");
@@ -70,7 +70,7 @@ namespace JMS.DVB.NET.Recording
             var profiles = new List<Profile>();
 
             // Load the setting
-            var profileNames = configuration.ProfileNames;
+            var profileNames = server.Configuration.ProfileNames;
             if (!string.IsNullOrEmpty(profileNames))
                 foreach (var profileName in profileNames.Split('|'))
                 {
@@ -79,7 +79,7 @@ namespace JMS.DVB.NET.Recording
                     if (profile == null)
                     {
                         // This is not goot
-                        VCRServer.LogError("DVB.NET Geräteprofil '{0}' nicht gefunden", profileName.Trim());
+                        server.LogError("DVB.NET Geräteprofil '{0}' nicht gefunden", profileName.Trim());
 
                         // Next
                         continue;

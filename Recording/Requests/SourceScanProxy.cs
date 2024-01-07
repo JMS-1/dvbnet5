@@ -24,11 +24,11 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="state">Das zugehörige Geräteprofil.</param>
         /// <param name="recording">Die Beschreibung der Aufgabe.</param>
-        private SourceScanProxy(ProfileState state, VCRRecordingInfo recording, VCRConfiguration configuration)
-            : base(state, recording, configuration)
+        private SourceScanProxy(ProfileState state, VCRRecordingInfo recording, VCRServer server)
+            : base(state, recording, server)
         {
             // Finish
-            m_mergeSources = Configuration.MergeSourceListUpdateResult;
+            m_mergeSources = VCRServer.Configuration.MergeSourceListUpdateResult;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="state">Das zugehörige Geräteprofil.</param>
         /// <param name="recording">Die Beschreibung der Aufgabe.</param>
         /// <returns>Die gewünschte Steuerung.</returns>
-        public static SourceScanProxy Create(ProfileState state, VCRRecordingInfo recording, VCRConfiguration configuration)
+        public static SourceScanProxy Create(ProfileState state, VCRRecordingInfo recording, VCRServer server)
         {
             // Validate
             if (state == null)
@@ -46,7 +46,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 throw new ArgumentNullException(nameof(recording));
 
             // Forward
-            return new SourceScanProxy(state, recording, configuration);
+            return new SourceScanProxy(state, recording, server);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace JMS.DVB.NET.Recording.Requests
             Tools.ExtendedLogging("Card Server has updated Profile {0} - VCR.NET will reload all Profiles now", ProfileName);
 
             // Time to refresh our lists
-            VCRProfiles.Reset(Configuration);
+            VCRProfiles.Reset(VCRServer);
         }
 
         /// <summary>

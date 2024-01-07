@@ -32,10 +32,10 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="extensionName">Der Name der Erweiterung.</param>
         /// <param name="environment">Die für die Erweiterung zu verwendenden Umgebungsvariablen.</param>
-        public void AddWithCleanup(string extensionName, Dictionary<string, string> environment)
+        public void AddWithCleanup(string extensionName, Dictionary<string, string> environment, VCRServer server)
         {
             // Lookup, start and forward
-            AddWithCleanup(Tools.RunExtensions(extensionName, environment).ToArray());
+            AddWithCleanup(Tools.RunExtensions(extensionName, environment, server).ToArray());
         }
 
         /// <summary>

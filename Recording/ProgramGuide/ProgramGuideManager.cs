@@ -67,7 +67,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             }
 
             // Report
-            VCRServer.Log(LoggingLevel.Errors, "Die Datei '{0}' zur Programmzeitschrift ist ungültig", ProgramGuideFile.FullName);
+            JobManager.Server.Log(LoggingLevel.Errors, "Die Datei '{0}' zur Programmzeitschrift ist ungültig", ProgramGuideFile.FullName);
 
             // Save delete
             try
@@ -78,7 +78,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             catch
             {
                 // Discard any error
-                VCRServer.Log(LoggingLevel.Errors, "Die Datei '{0}' zur Programmzeitschrift kann nicht gelöscht werden", ProgramGuideFile.FullName);
+                JobManager.Server.Log(LoggingLevel.Errors, "Die Datei '{0}' zur Programmzeitschrift kann nicht gelöscht werden", ProgramGuideFile.FullName);
             }
         }
 
@@ -150,8 +150,8 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         internal DateTime? LastUpdateTime
         {
-            get { return Tools.GetRegistryTime(UpdateRegistryName); }
-            set { Tools.SetRegistryTime(UpdateRegistryName, value); }
+            get { return Tools.GetRegistryTime(UpdateRegistryName, JobManager.Server); }
+            set { Tools.SetRegistryTime(UpdateRegistryName, value, JobManager.Server); }
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             catch (Exception e)
             {
                 // Report
-                VCRServer.Log(LoggingLevel.Errors, "Fehler beim Aktualisieren der Programmzeitschrift: {0}", e);
+                JobManager.Server.Log(LoggingLevel.Errors, "Fehler beim Aktualisieren der Programmzeitschrift: {0}", e);
             }
         }
 

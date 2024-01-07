@@ -23,7 +23,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="resource">Die zugehörige Ressource.</param>
         /// <param name="profile">Die vollen Informationen zum Geräteprofil.</param>
         /// <returns>Die Beschreibung der Aufgabe oder <i>null</i>.</returns>
-        PeriodicScheduler CreateProgramGuideTask(IScheduleResource resource, Profile profile, VCRConfiguration configuration);
+        PeriodicScheduler CreateProgramGuideTask(IScheduleResource resource, Profile profile, VCRServer server);
 
         /// <summary>
         /// Erstellt eine periodische Aufgabe zum Aktualisieren der Quellen.
@@ -31,7 +31,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="resource">Die zugehörige Ressource.</param>
         /// <param name="profile">Die vollen Informationen zum Geräteprofil.</param>
         /// <returns>Die Beschreibung der Aufgabe oder <i>null</i>.</returns>
-        PeriodicScheduler CreateSourceScanTask(IScheduleResource resource, Profile profile, VCRConfiguration configuration);
+        PeriodicScheduler CreateSourceScanTask(IScheduleResource resource, Profile profile, VCRServer server);
 
         /// <summary>
         /// Überträgt alle Aufträge in einen Ablaufplanung.
@@ -67,6 +67,6 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="item">Die Beschreibung der Aufgabe.</param>
         /// <param name="planner">Die zugehörige Aufzeichnungsplanung.</param>
         /// <param name="context">Zusatzinformationen zur Aufzeichnungsplanung.</param>
-        void Start(IScheduleInformation item, RecordingPlanner planner, PlanContext context, VCRConfiguration configuration);
+        void Start(IScheduleInformation item, RecordingPlanner planner, PlanContext context, VCRServer server);
     }
 }

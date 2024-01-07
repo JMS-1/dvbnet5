@@ -34,7 +34,7 @@ namespace JMS.DVB.NET.Recording
             var nameReport = string.Join(", ", profileNames);
 
             // Log
-            VCRServer.Log(LoggingLevel.Full, "Die Geräteprofile werden geladen: {0}", nameReport);
+            Server.Log(LoggingLevel.Full, "Die Geräteprofile werden geladen: {0}", nameReport);
 
             // Report
             Tools.ExtendedLogging("Loading Profile Collection: {0}", nameReport);
@@ -43,7 +43,7 @@ namespace JMS.DVB.NET.Recording
             m_profiles = profileNames.ToDictionary(profileName => profileName, profileName => new ProfileState(this, profileName), ProfileManager.ProfileNameComparer);
 
             // Now we can create the planner
-            m_planner = RecordingPlanner.Create(this, Server.Configuration);
+            m_planner = RecordingPlanner.Create(this, Server);
             m_planThread = new Thread(PlanThread) { Name = "Recording Planner", IsBackground = true };
 
             // Start planner
@@ -139,7 +139,7 @@ namespace JMS.DVB.NET.Recording
                 catch (Exception e)
                 {
                     // Report
-                    VCRServer.Log(e);
+                    Server.Log(e);
 
                     // See if we are allowed to ignore
                     if (!ignoreErrors)
@@ -356,7 +356,7 @@ namespace JMS.DVB.NET.Recording
                 catch (Exception e)
                 {
                     // Report and ignore - we do not expect any error to occur
-                    VCRServer.Log(e);
+                    Server.Log(e);
                 }
 
                 // New plan is now available - beside termination this will do nothing at all but briefly aquiring an idle lock
@@ -465,21 +465,21 @@ namespace JMS.DVB.NET.Recording
                 if (m_pendingSchedule == null)
                 {
                     // Report
-                    VCRServer.Log(LoggingLevel.Errors, "There is no outstanding asynchronous Recording Request for Schedule '{0}'", scheduleIdentifier);
+                    Server.Log(LoggingLevel.Errors, "There is no outstanding asynchronous Recording Request for Schedule '{0}'", scheduleIdentifier);
                 }
                 else if (m_pendingSchedule.Definition.UniqueIdentifier != scheduleIdentifier)
                 {
                     // Report
-                    VCRServer.Log(LoggingLevel.Errors, "Confirmed asynchronous Recording Request for Schedule '{0}' but waiting for '{1}'", scheduleIdentifier, m_pendingSchedule.Definition.UniqueIdentifier);
+                    Server.Log(LoggingLevel.Errors, "Confirmed asynchronous Recording Request for Schedule '{0}' but waiting for '{1}'", scheduleIdentifier, m_pendingSchedule.Definition.UniqueIdentifier);
                 }
                 else
                 {
                     // Report
-                    VCRServer.Log(LoggingLevel.Schedules, "Confirmed asynchronous Recording Request for Schedule '{0}'", scheduleIdentifier);
+                    Server.Log(LoggingLevel.Schedules, "Confirmed asynchronous Recording Request for Schedule '{0}'", scheduleIdentifier);
 
                     // Check mode
                     if (isStart != m_pendingStart)
-                        VCRServer.Log(LoggingLevel.Errors, "Recording Request confirmed wrong Type of Operation");
+                        Server.Log(LoggingLevel.Errors, "Recording Request confirmed wrong Type of Operation");
 
                     // Finish
                     if (m_pendingStart)
@@ -515,11 +515,11 @@ namespace JMS.DVB.NET.Recording
         /// <param name="resource">Die zu verwendende Ressource.</param>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
         /// <returns>Der gewünschte Auftrag.</returns>
-        PeriodicScheduler IRecordingPlannerSite.CreateProgramGuideTask(IScheduleResource resource, Profile profile, VCRConfiguration configuration)
+        PeriodicScheduler IRecordingPlannerSite.CreateProgramGuideTask(IScheduleResource resource, Profile profile, VCRServer server)
         {
             // Protect against misuse
             if (m_profiles.TryGetValue(profile.Name, out var state))
-                return new ProgramGuideTask(resource, state, configuration);
+                return new ProgramGuideTask(resource, state, server.Configuration);
             else
                 return null!;
         }
@@ -530,11 +530,11 @@ namespace JMS.DVB.NET.Recording
         /// <param name="resource">Die zu verwendende Ressource.</param>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
         /// <returns>Der gewünschte Auftrag.</returns>
-        PeriodicScheduler IRecordingPlannerSite.CreateSourceScanTask(IScheduleResource resource, Profile profile, VCRConfiguration configuration)
+        PeriodicScheduler IRecordingPlannerSite.CreateSourceScanTask(IScheduleResource resource, Profile profile, VCRServer server)
         {
             // Protect against misuse
             if (m_profiles.TryGetValue(profile.Name, out var state))
-                return new SourceListTask(resource, state, configuration);
+                return new SourceListTask(resource, state, server.Configuration);
             else
                 return null!;
         }
@@ -589,7 +589,7 @@ namespace JMS.DVB.NET.Recording
         void IRecordingPlannerSite.Discard(IScheduleDefinition item)
         {
             // Report
-            VCRServer.Log(LoggingLevel.Schedules, "Could not record '{0}'", item.Name);
+            Server.Log(LoggingLevel.Schedules, "Could not record '{0}'", item.Name);
         }
 
         /// <summary>
@@ -600,7 +600,7 @@ namespace JMS.DVB.NET.Recording
         void IRecordingPlannerSite.Stop(IScheduleInformation item, RecordingPlanner planner)
         {
             // Report
-            VCRServer.Log(LoggingLevel.Schedules, "Done recording '{0}'", item.Definition.Name);
+            Server.Log(LoggingLevel.Schedules, "Done recording '{0}'", item.Definition.Name);
 
             // Locate the profile - if we don't find it we are in big trouble!
             if (!m_profiles.TryGetValue(item.Resource.Name, out var profile))
@@ -620,7 +620,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="item">Die zu startende Aufzeichnung.</param>
         /// <param name="planner">Die Planungsinstanz.</param>
         /// <param name="context">Zusatzinformationen zur Aufzeichnungsplanung.</param>
-        void IRecordingPlannerSite.Start(IScheduleInformation item, RecordingPlanner planner, PlanContext context, VCRConfiguration configuration)
+        void IRecordingPlannerSite.Start(IScheduleInformation item, RecordingPlanner planner, PlanContext context, VCRServer server)
         {
             // We are no longer active - simulate start and do nothing
             if (!m_plannerActive)
@@ -633,7 +633,7 @@ namespace JMS.DVB.NET.Recording
             }
 
             // Report
-            VCRServer.Log(LoggingLevel.Schedules, "Start recording '{0}'", item.Definition.Name);
+            Server.Log(LoggingLevel.Schedules, "Start recording '{0}'", item.Definition.Name);
 
             // Locate the profile - if we don't find it we are in big trouble!
             if (!m_profiles.TryGetValue(item.Resource.Name, out var profile))
@@ -644,14 +644,14 @@ namespace JMS.DVB.NET.Recording
             m_pendingStart = true;
 
             // Create the recording
-            var recording = VCRRecordingInfo.Create(item, context, configuration)!;
+            var recording = VCRRecordingInfo.Create(item, context, server.Configuration)!;
 
             // Check for EPG
             var guideUpdate = item.Definition as ProgramGuideTask;
             if (guideUpdate != null)
             {
                 // Start a new guide collector
-                m_pendingActions += ProgramGuideProxy.Create(profile, recording, configuration).Start;
+                m_pendingActions += ProgramGuideProxy.Create(profile, recording, server).Start;
             }
             else
             {
@@ -660,7 +660,7 @@ namespace JMS.DVB.NET.Recording
                 if (sourceUpdate != null)
                 {
                     // Start a new update
-                    m_pendingActions += SourceScanProxy.Create(profile, recording, configuration).Start;
+                    m_pendingActions += SourceScanProxy.Create(profile, recording, server).Start;
                 }
                 else
                 {
