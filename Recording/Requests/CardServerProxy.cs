@@ -30,6 +30,8 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         protected Dictionary<string, string> ExtensionEnvironment { get; private set; } = null!;
 
+        protected readonly VCRConfiguration Configuration;
+
         /// <summary>
         /// Verhindert, dass der Rechner während der Aufzeichnung in den Schlafzustand wechselt.
         /// </summary>
@@ -41,7 +43,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="state">Der Zustands des zugehörigen Geräteprofils.</param>
         /// <param name="primary">Die primäre Aufzeichnung, auf Grund derer der Aufzeichnungsprozeß aktiviert wurde.</param>
         /// <exception cref="ArgumentNullException">Es wurde kein Profil angegeben.</exception>
-        protected CardServerProxy(ProfileState state, VCRRecordingInfo primary)
+        protected CardServerProxy(ProfileState state, VCRRecordingInfo primary, VCRConfiguration configuration)
         {
             // Validate
             if (state == null)
@@ -51,6 +53,7 @@ namespace JMS.DVB.NET.Recording.Requests
             RequestFinished = new ManualResetEvent(false);
 
             // Remember
+            Configuration = configuration;
             Representative = primary.Clone();
             ProfileState = state;
 
@@ -196,7 +199,7 @@ namespace JMS.DVB.NET.Recording.Requests
         private ServerImplementation CreateCardServerProxy()
         {
             // Create the server
-            if (VCRConfigurationOriginal.Current.UseExternalCardServer)
+            if (Configuration.UseExternalCardServer)
                 return ServerImplementation.CreateOutOfProcess();
             else
                 return ServerImplementation.CreateInMemory();
@@ -353,8 +356,8 @@ namespace JMS.DVB.NET.Recording.Requests
                                 (
                                     ProfileName,
                                     mustWakeUp,
-                                    VCRConfigurationOriginal.Current.DisablePCRFromH264Generation,
-                                    VCRConfigurationOriginal.Current.DisablePCRFromMPEG2Generation
+                                    Configuration.DisablePCRFromH264Generation,
+                                    Configuration.DisablePCRFromMPEG2Generation
                                 ));
 
                         // Report

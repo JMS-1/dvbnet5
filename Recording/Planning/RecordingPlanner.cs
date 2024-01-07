@@ -35,13 +35,16 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         private readonly Dictionary<Guid, ScheduleInformation> m_started = new Dictionary<Guid, ScheduleInformation>();
 
+        private readonly VCRConfiguration m_configuration;
+
         /// <summary>
         /// Erstellt eine neue Planung.
         /// </summary>
         /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
-        private RecordingPlanner(IRecordingPlannerSite site)
+        private RecordingPlanner(IRecordingPlannerSite site, VCRConfiguration configuration)
         {
             // Remember
+            m_configuration = configuration;
             m_site = site;
 
             // Process all profiles
@@ -63,12 +66,12 @@ namespace JMS.DVB.NET.Recording.Planning
                     continue;
 
                 // See if we should process guide updates
-                var guideTask = site.CreateProgramGuideTask(profileResource, profile);
+                var guideTask = site.CreateProgramGuideTask(profileResource, profile, m_configuration);
                 if (guideTask != null)
                     m_tasks.Add(guideTask);
 
                 // See if we should update the source list
-                var scanTask = site.CreateSourceScanTask(profileResource, profile);
+                var scanTask = site.CreateSourceScanTask(profileResource, profile, m_configuration);
                 if (scanTask != null)
                     m_tasks.Add(scanTask);
             }
@@ -134,14 +137,14 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
         /// <returns>Die gewünschte Planungsumgebung.</returns>
-        public static RecordingPlanner Create(IRecordingPlannerSite site)
+        public static RecordingPlanner Create(IRecordingPlannerSite site, VCRConfiguration configuration)
         {
             // Validate
             if (site == null)
                 throw new ArgumentNullException(nameof(site));
 
             // Forward
-            return new RecordingPlanner(site);
+            return new RecordingPlanner(site, configuration);
         }
 
         /// <summary>
@@ -192,7 +195,7 @@ namespace JMS.DVB.NET.Recording.Planning
                     }
 
                     // Forward to site
-                    m_site.Start(schedule, this, context!);
+                    m_site.Start(schedule, this, context!, m_configuration);
 
                     // Done
                     return;

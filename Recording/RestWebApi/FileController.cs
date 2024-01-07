@@ -8,8 +8,10 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Versendet Dateien.
     /// </summary>
-    public class FileController : ControllerBase
+    public class FileController(VCRServer server) : ControllerBase
     {
+        private readonly VCRServer _server = server;
+
         /// <summary>
         /// Fordert ein Stück einer Datei an.
         /// </summary>
@@ -29,7 +31,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 throw new ArgumentException(path, nameof(path));
 
             // Check against VCR.NET recording directories
-            if (!VCRConfigurationOriginal.Current.IsValidTarget(path))
+            if (!_server.Configuration.IsValidTarget(path))
                 throw new ArgumentException(path, nameof(path));
 
             // Validate the slice

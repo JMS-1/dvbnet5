@@ -30,11 +30,11 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="state">Das zugehörige Geräteprofil.</param>
         /// <param name="recording">Daten der primären Aufzeichnung.</param>
-        private ProgramGuideProxy(ProfileState state, VCRRecordingInfo recording)
-            : base(state, recording)
+        private ProgramGuideProxy(ProfileState state, VCRRecordingInfo recording, VCRConfiguration configuration)
+            : base(state, recording, configuration)
         {
             // Reset fields
-            if (VCRConfigurationOriginal.Current.EnableFreeSat)
+            if (Configuration.EnableFreeSat)
                 m_extensions = EPGExtensions.FreeSatUK;
             else
                 m_extensions = EPGExtensions.None;
@@ -53,7 +53,7 @@ namespace JMS.DVB.NET.Recording.Requests
             }
 
             // Fill in all
-            foreach (var legacyName in VCRConfigurationOriginal.Current.ProgramGuideSources)
+            foreach (var legacyName in Configuration.ProgramGuideSources)
             {
                 // Skip if empty
                 if (string.IsNullOrEmpty(legacyName))
@@ -74,7 +74,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="recording">Beschreibt die Aufzeichnung.</param>
         /// <returns>Die gewünschte Steuerung.</returns>
         /// <exception cref="ArgumentNullException">Es wurden nicht alle Parameter angegeben.</exception>
-        public static ProgramGuideProxy Create(ProfileState state, VCRRecordingInfo recording)
+        public static ProgramGuideProxy Create(ProfileState state, VCRRecordingInfo recording, VCRConfiguration configuration)
         {
             // Validate
             if (state == null)
@@ -83,7 +83,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 throw new ArgumentNullException(nameof(recording));
 
             // Forward
-            return new ProgramGuideProxy(state, recording);
+            return new ProgramGuideProxy(state, recording, configuration);
         }
 
         /// <summary>

@@ -76,7 +76,7 @@ namespace JMS.DVB.NET.Recording
             Tools.ExtendedLogging("Using Root Directory {0}", rootDirectory.FullName);
 
             // Prepare profiles
-            VCRProfiles.Reset();
+            VCRProfiles.Reset(_configuration);
 
             // Create job manager and start it up
             JobManager = new JobManager(new DirectoryInfo(Path.Combine(rootDirectory.FullName, "Jobs")), this);
@@ -96,6 +96,18 @@ namespace JMS.DVB.NET.Recording
         /// <returns>Die Antwort muss immer <i>null</i> sein.</returns>
         [Obsolete]
         public override object InitializeLifetimeService() => null!;
+
+        public class _Setting
+        {
+            public string Value { get; set; } = null!;
+        }
+
+        public class _Settings
+        {
+            public _Setting? this[string key] => throw new NotImplementedException("Configuration");
+
+            public void Add(string key, string value) => throw new NotImplementedException("Configuration");
+        }
 
         /// <summary>
         /// Meldet die aktuellen Einstellungen des VCR.NET Recording Service.

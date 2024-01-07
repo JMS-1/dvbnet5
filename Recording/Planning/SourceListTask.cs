@@ -17,13 +17,15 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         public DirectoryInfo CollectorDirectory { get; private set; } = null!;
 
+        private readonly VCRConfiguration m_configuration;
+
         /// <summary>
         /// Erzeugt eine neue Verwaltung.
         /// </summary>
         /// <param name="forResource">Das Geräteprofil, auf dem der Lauf erfolgen soll.</param>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
-        public SourceListTask(IScheduleResource forResource, ProfileState profile)
-            : this(forResource, profile, () => profile.LastSourceUpdateTime)
+        public SourceListTask(IScheduleResource forResource, ProfileState profile, VCRConfiguration configuration)
+            : this(forResource, profile, () => profile.LastSourceUpdateTime, configuration)
         {
         }
 
@@ -32,8 +34,8 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="forResource">Das Geräteprofil, auf dem der Lauf erfolgen soll.</param>
         /// <param name="lastUpdate">Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.</param>
-        public SourceListTask(IScheduleResource forResource, Func<DateTime?> lastUpdate)
-            : this(forResource, null!, lastUpdate)
+        public SourceListTask(IScheduleResource forResource, Func<DateTime?> lastUpdate, VCRConfiguration configuration)
+            : this(forResource, null!, lastUpdate, configuration)
         {
         }
 
@@ -44,7 +46,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
         /// <param name="lastUpdate">Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.</param>
         /// <exception cref="ArgumentNullException">Der letzte Aktualisierungszeitpunkt ist nicht gesetzt.</exception>
-        private SourceListTask(IScheduleResource forResource, ProfileState profile, Func<DateTime?> lastUpdate)
+        private SourceListTask(IScheduleResource forResource, ProfileState profile, Func<DateTime?> lastUpdate, VCRConfiguration configuration)
             : base("Sendersuchlauf", Guid.NewGuid())
         {
             // Validate
@@ -54,7 +56,8 @@ namespace JMS.DVB.NET.Recording.Planning
                 throw new ArgumentNullException(nameof(lastUpdate));
 
             // Remember
-            m_Resources = new[] { forResource };
+            m_configuration = configuration;
+            m_Resources = [forResource];
             m_LastUpdate = lastUpdate;
 
             // Set the job directory
@@ -80,9 +83,9 @@ namespace JMS.DVB.NET.Recording.Planning
             get
             {
                 // Report
-                if (VCRConfigurationOriginal.Current.SourceListUpdateDuration < 1)
+                if (m_configuration.SourceListUpdateDuration < 1)
                     return false;
-                else if (VCRConfigurationOriginal.Current.SourceListUpdateInterval == 0)
+                else if (m_configuration.SourceListUpdateInterval == 0)
                     return false;
                 else
                     return true;
@@ -92,7 +95,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <summary>
         /// Meldet die maximale Dauer einer Ausführung.
         /// </summary>
-        public override TimeSpan Duration => TimeSpan.FromMinutes(VCRConfigurationOriginal.Current.SourceListUpdateDuration);
+        public override TimeSpan Duration => TimeSpan.FromMinutes(m_configuration.SourceListUpdateDuration);
 
         /// <summary>
         /// Meldet wenn möglich den Zeitpunkt, an dem letztmalig ein Durchlauf
@@ -104,7 +107,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// Meldet die Zeitspanne nach der ein neuer Durchlauf gestartet werden darf,
         /// wenn der Computer sowieso gerade aktiv ist.
         /// </summary>
-        public override TimeSpan? JoinThreshold => VCRConfigurationOriginal.Current.HasRecordedSomething ? VCRConfigurationOriginal.Current.SourceListJoinThreshold : null;
+        public override TimeSpan? JoinThreshold => m_configuration.HasRecordedSomething ? m_configuration.SourceListJoinThreshold : null;
 
         /// <summary>
         /// Meldet die Zeitspanne, die mindestens zwischen zwei Durchläufen liegen soll.
@@ -114,12 +117,12 @@ namespace JMS.DVB.NET.Recording.Planning
             get
             {
                 // Check for manual update mode
-                var days = VCRConfigurationOriginal.Current.SourceListUpdateInterval;
+                var days = m_configuration.SourceListUpdateInterval;
                 if (days < 1)
                     return TimeSpan.MaxValue;
 
                 // There is exactly one hour we prefer do the best to match it
-                if (VCRConfigurationOriginal.Current.SourceListUpdateHours.Length == 1)
+                if (m_configuration.SourceListUpdateHours.Length == 1)
                     return TimeSpan.FromDays(days - 1) + new TimeSpan(1);
 
                 // There are none or multiple preferred hours so just use the full interval normally skipping the last hour choosen
@@ -131,6 +134,6 @@ namespace JMS.DVB.NET.Recording.Planning
         /// Meldet die bevorzugten Uhrzeiten für eine Ausführung. Die verwendeten Zeiten
         /// bezeichnen dabei Stunden in der lokalen Zeitzone.
         /// </summary>
-        public override uint[] PreferredHours => VCRConfigurationOriginal.Current.SourceListUpdateHours;
+        public override uint[] PreferredHours => m_configuration.SourceListUpdateHours;
     }
 }

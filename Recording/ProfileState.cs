@@ -93,7 +93,7 @@ namespace JMS.DVB.NET.Recording
             else if (!string.IsNullOrEmpty(connectTo))
             {
                 // Activate 
-                ZappingProxy.Create(this, connectTo).Start();
+                ZappingProxy.Create(this, connectTo, Server.Configuration).Start();
             }
             else if (source != null)
             {
@@ -305,7 +305,7 @@ namespace JMS.DVB.NET.Recording
                     if (ReferenceEquals(current, null))
                     {
                         // Create a brand new regular recording request
-                        var request = new RecordingProxy(this, recording);
+                        var request = new RecordingProxy(this, recording, Server.Configuration);
 
                         // Activate the request
                         request.Start();

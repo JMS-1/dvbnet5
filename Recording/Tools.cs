@@ -32,16 +32,6 @@ namespace JMS.DVB.NET.Recording
         public static string ExecutablePath { get { return RunTimeLoader.GetDirectory("Recording").FullName; } }
 
         /// <summary>
-        /// Die Konfiguration zur aktuellen Anwendung.
-        /// </summary>
-        public static volatile _Configuration m_ApplicationConfiguration = null!;
-
-        /// <summary>
-        /// Die Konfiguration zur aktuellen Anwendung.
-        /// </summary>
-        public static _Configuration ApplicationConfiguration { get { return m_ApplicationConfiguration; } }
-
-        /// <summary>
         /// Synchronisiert Eintr�ge in das spezielle Protokoll.
         /// </summary>
         public static object m_LoggingLock = new object();
@@ -60,15 +50,6 @@ namespace JMS.DVB.NET.Recording
         /// Eine Kurzbezeichnung f�r die aktuelle Laufzeitumgebung f�r Protokolleintr�ge.
         /// </summary>
         public static string DomainName = null!;
-
-        /// <summary>
-        /// Initialisiert die statischen Variablen.
-        /// </summary>
-        static Tools()
-        {
-            // Time to load configuration
-            RefreshConfiguration();
-        }
 
         /// <summary>
         /// Gibt eine Fehlermeldung in eine Datei aus.
@@ -181,25 +162,6 @@ namespace JMS.DVB.NET.Recording
                 // Report
                 LogException("ExtendedLogging", e);
             }
-        }
-
-        /// <summary>
-        /// L�dt die Konfigurationsdatei dieser Anwendung.
-        /// </summary>
-        public static void RefreshConfiguration()
-        {
-            // Just load
-            RefreshConfiguration(_ConfigurationManager.OpenExeConfiguration());
-        }
-
-        /// <summary>
-        /// Aktiviert eine Konfiguration.
-        /// </summary>
-        /// <param name="configuration">Die zu verwendende Konfiguration.</param>
-        public static void RefreshConfiguration(_Configuration configuration)
-        {
-            // Just load
-            m_ApplicationConfiguration = configuration;
         }
 
         /// <summary>

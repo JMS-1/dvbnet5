@@ -1,4 +1,6 @@
-﻿namespace JMS.DVB.NET.Recording
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+namespace JMS.DVB.NET.Recording
 {
     /// <summary>
     /// Verwaltet die Geräteprofile des VCR.NET Recording Service.
@@ -53,7 +55,7 @@
         /// <summary>
         /// Lädt alle Profile erneut.
         /// </summary>
-        internal static void Reset()
+        internal static void Reset(VCRConfiguration configuration)
         {
             // Report
             Tools.ExtendedLogging("Reloading Profile List");
@@ -68,7 +70,7 @@
             var profiles = new List<Profile>();
 
             // Load the setting
-            var profileNames = VCRConfigurationOriginal.Current.ProfileNames;
+            var profileNames = configuration.ProfileNames;
             if (!string.IsNullOrEmpty(profileNames))
                 foreach (var profileName in profileNames.Split('|'))
                 {

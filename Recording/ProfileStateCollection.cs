@@ -43,7 +43,7 @@ namespace JMS.DVB.NET.Recording
             m_profiles = profileNames.ToDictionary(profileName => profileName, profileName => new ProfileState(this, profileName), ProfileManager.ProfileNameComparer);
 
             // Now we can create the planner
-            m_planner = RecordingPlanner.Create(this);
+            m_planner = RecordingPlanner.Create(this, Server.Configuration);
             m_planThread = new Thread(PlanThread) { Name = "Recording Planner", IsBackground = true };
 
             // Start planner
@@ -515,11 +515,11 @@ namespace JMS.DVB.NET.Recording
         /// <param name="resource">Die zu verwendende Ressource.</param>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
         /// <returns>Der gewünschte Auftrag.</returns>
-        PeriodicScheduler IRecordingPlannerSite.CreateProgramGuideTask(IScheduleResource resource, Profile profile)
+        PeriodicScheduler IRecordingPlannerSite.CreateProgramGuideTask(IScheduleResource resource, Profile profile, VCRConfiguration configuration)
         {
             // Protect against misuse
             if (m_profiles.TryGetValue(profile.Name, out var state))
-                return new ProgramGuideTask(resource, state);
+                return new ProgramGuideTask(resource, state, configuration);
             else
                 return null!;
         }
@@ -530,11 +530,11 @@ namespace JMS.DVB.NET.Recording
         /// <param name="resource">Die zu verwendende Ressource.</param>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
         /// <returns>Der gewünschte Auftrag.</returns>
-        PeriodicScheduler IRecordingPlannerSite.CreateSourceScanTask(IScheduleResource resource, Profile profile)
+        PeriodicScheduler IRecordingPlannerSite.CreateSourceScanTask(IScheduleResource resource, Profile profile, VCRConfiguration configuration)
         {
             // Protect against misuse
             if (m_profiles.TryGetValue(profile.Name, out var state))
-                return new SourceListTask(resource, state);
+                return new SourceListTask(resource, state, configuration);
             else
                 return null!;
         }
@@ -620,7 +620,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="item">Die zu startende Aufzeichnung.</param>
         /// <param name="planner">Die Planungsinstanz.</param>
         /// <param name="context">Zusatzinformationen zur Aufzeichnungsplanung.</param>
-        void IRecordingPlannerSite.Start(IScheduleInformation item, RecordingPlanner planner, PlanContext context)
+        void IRecordingPlannerSite.Start(IScheduleInformation item, RecordingPlanner planner, PlanContext context, VCRConfiguration configuration)
         {
             // We are no longer active - simulate start and do nothing
             if (!m_plannerActive)
@@ -644,14 +644,14 @@ namespace JMS.DVB.NET.Recording
             m_pendingStart = true;
 
             // Create the recording
-            var recording = VCRRecordingInfo.Create(item, context)!;
+            var recording = VCRRecordingInfo.Create(item, context, configuration)!;
 
             // Check for EPG
             var guideUpdate = item.Definition as ProgramGuideTask;
             if (guideUpdate != null)
             {
                 // Start a new guide collector
-                m_pendingActions += ProgramGuideProxy.Create(profile, recording).Start;
+                m_pendingActions += ProgramGuideProxy.Create(profile, recording, configuration).Start;
             }
             else
             {
@@ -660,7 +660,7 @@ namespace JMS.DVB.NET.Recording
                 if (sourceUpdate != null)
                 {
                     // Start a new update
-                    m_pendingActions += SourceScanProxy.Create(profile, recording).Start;
+                    m_pendingActions += SourceScanProxy.Create(profile, recording, configuration).Start;
                 }
                 else
                 {

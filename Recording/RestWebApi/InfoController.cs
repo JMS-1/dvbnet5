@@ -9,8 +9,10 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Web Service für allgemeine Informationen.
     /// </summary>
-    public class InfoController : ControllerBase
+    public class InfoController(VCRServer server) : ControllerBase
     {
+        private readonly VCRServer _server = server;
+
         /// <summary>
         /// Ermittelt zu einer Komponente das Produkt.
         /// </summary>
@@ -94,16 +96,16 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public InfoService VersionInformation()
         {
             // Load
-            var settings = ServerRuntime.VCRServer.Settings;
+            var settings = _server.Settings;
 
             // Report
             return
                 new InfoService
                 {
-                    HasPendingExtensions = ServerRuntime.VCRServer.ExtensionProcessManager.HasActiveProcesses,
-                    SourceScanEnabled = (VCRConfigurationOriginal.Current.SourceListUpdateInterval != 0),
-                    GuideUpdateEnabled = VCRConfigurationOriginal.Current.ProgramGuideUpdateEnabled,
-                    IsRunning = ServerRuntime.VCRServer.IsActive,
+                    HasPendingExtensions = _server.ExtensionProcessManager.HasActiveProcesses,
+                    SourceScanEnabled = _server.Configuration.SourceListUpdateInterval != 0,
+                    GuideUpdateEnabled = _server.Configuration.ProgramGuideUpdateEnabled,
+                    IsRunning = _server.IsActive,
                     //ProfilesNames = settings.Profiles.ToArray(),
                     InstalledVersion = InstalledVersion,
                     Version = VCRServer.CurrentVersion,
@@ -116,7 +118,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="directories">Wird zur Unterscheidung der Methoden verwendet.</param>
         /// <returns>Die gewünschte Liste.</returns>
         [HttpGet]
-        public string[] GetRecordingDirectories(string directories) => VCRConfigurationOriginal.Current.TargetDirectoriesNames.SelectMany(ScanDirectory).ToArray();
+        public string[] GetRecordingDirectories(string directories) => _server.Configuration.TargetDirectoriesNames.SelectMany(ScanDirectory).ToArray();
 
         /// <summary>
         /// Meldet alle Aufträge.

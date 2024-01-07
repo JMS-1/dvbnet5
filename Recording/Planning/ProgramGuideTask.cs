@@ -17,13 +17,15 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         public DirectoryInfo CollectorDirectory { get; private set; } = null!;
 
+        private readonly VCRConfiguration m_configuration;
+
         /// <summary>
         /// Erzeugt eine neue Verwaltung.
         /// </summary>
         /// <param name="forResource">Das Gerät, für das die Sammlung erfolgt.</param>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
-        public ProgramGuideTask(IScheduleResource forResource, ProfileState profile)
-            : this(forResource, profile, () => profile.ProgramGuide.LastUpdateTime)
+        public ProgramGuideTask(IScheduleResource forResource, ProfileState profile, VCRConfiguration configuration)
+            : this(forResource, profile, () => profile.ProgramGuide.LastUpdateTime, configuration)
         {
         }
 
@@ -32,8 +34,8 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="forResource">Das Gerät, für das die Sammlung erfolgt.</param>
         /// <param name="lastUpdate">Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.</param>
-        public ProgramGuideTask(IScheduleResource forResource, Func<DateTime?> lastUpdate)
-            : this(forResource, null!, lastUpdate)
+        public ProgramGuideTask(IScheduleResource forResource, Func<DateTime?> lastUpdate, VCRConfiguration configuration)
+            : this(forResource, null!, lastUpdate, configuration)
         {
         }
 
@@ -44,7 +46,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
         /// <param name="lastUpdate">Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.</param>
         /// <exception cref="ArgumentNullException">Der letzte Aktualisierungszeitpunkt ist nicht gesetzt.</exception>
-        private ProgramGuideTask(IScheduleResource forResource, ProfileState profile, Func<DateTime?> lastUpdate)
+        private ProgramGuideTask(IScheduleResource forResource, ProfileState profile, Func<DateTime?> lastUpdate, VCRConfiguration configuration)
             : base("Programmzeitschrift", Guid.NewGuid())
         {
             // Validate
@@ -54,7 +56,8 @@ namespace JMS.DVB.NET.Recording.Planning
                 throw new ArgumentNullException(nameof(lastUpdate));
 
             // Remember
-            m_Resources = new[] { forResource };
+            m_configuration = configuration;
+            m_Resources = [forResource];
             m_LastUpdate = lastUpdate;
 
             // Set the job directory
@@ -75,7 +78,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <summary>
         /// Meldet, ob die Ausführung grundsätzlich aktiviert ist.
         /// </summary>
-        public override bool IsEnabled => VCRConfigurationOriginal.Current.ProgramGuideUpdateEnabled;
+        public override bool IsEnabled => m_configuration.ProgramGuideUpdateEnabled;
 
         /// <summary>
         /// Meldet wenn möglich den Zeitpunkt, an dem letztmalig ein Durchlauf
@@ -86,23 +89,23 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <summary>
         /// Meldet die maximale Dauer einer Ausführung.
         /// </summary>
-        public override TimeSpan Duration => TimeSpan.FromMinutes(VCRConfigurationOriginal.Current.ProgramGuideUpdateDuration);
+        public override TimeSpan Duration => TimeSpan.FromMinutes(m_configuration.ProgramGuideUpdateDuration);
 
         /// <summary>
         /// Meldet die Zeitspanne nach der ein neuer Durchlauf gestartet werden darf,
         /// wenn der Computer sowieso gerade aktiv ist.
         /// </summary>
-        public override TimeSpan? JoinThreshold => VCRConfigurationOriginal.Current.HasRecordedSomething ? VCRConfigurationOriginal.Current.ProgramGuideJoinThreshold : null;
+        public override TimeSpan? JoinThreshold => m_configuration.HasRecordedSomething ? m_configuration.ProgramGuideJoinThreshold : null;
 
         /// <summary>
         /// Meldet die Zeitspanne, die mindestens zwischen zwei Durchläufen liegen soll.
         /// </summary>
-        public override TimeSpan DefaultInterval => VCRConfigurationOriginal.Current.ProgramGuideUpdateInterval ?? new TimeSpan(1);
+        public override TimeSpan DefaultInterval => m_configuration.ProgramGuideUpdateInterval ?? new TimeSpan(1);
 
         /// <summary>
         /// Meldet die bevorzugten Uhrzeiten für eine Ausführung. Die verwendeten Zeiten
         /// bezeichnen dabei Stunden in der lokalen Zeitzone.
         /// </summary>
-        public override uint[] PreferredHours => VCRConfigurationOriginal.Current.ProgramGuideUpdateHours;
+        public override uint[] PreferredHours => m_configuration.ProgramGuideUpdateHours;
     }
 }

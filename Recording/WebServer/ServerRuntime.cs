@@ -172,66 +172,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             else
                 return job[scheduleID];
         }
-
-        /// <summary>
-        /// Aktualisiert die Regeln f�r die Aufzeichnungsplanung.
-        /// </summary>
-        /// <param name="newRules">Die ab nun zu verwendenden Regeln.</param>
-        /// <returns>Meldet, ob ein Neustart erforderlich ist.</returns>
-        public static bool? UpdateSchedulerRules(string newRules)
-        {
-            // Check state
-            if (VCRServer.IsActive)
-                return null;
-
-            // Process
-            VCRServer.SchedulerRules = newRules;
-
-            // Do not restart in debug mode
-            if (VCRServer.InDebugMode)
-                return null;
-
-            // Create new process to restart the service
-            Process.Start(Tools.ExecutablePath, "Restart").Dispose();
-
-            // Finally back to the administration page
-            return true;
-        }
-
-        /// <summary>
-        /// F�hrt eine Aktualisierung von Konfigurationswerten durch.
-        /// </summary>
-        /// <param name="settings">Die zu aktualisierenden Konfigurationswerte.</param>
-        /// <param name="forceRestart">Erzwingt einen Neustart des Dienstes.</param>
-        /// <returns>Gesetzt, wenn ein Neustart erforderlich ist.</returns>
-        public static bool? Update(IEnumerable<VCRConfigurationOriginal.SettingDescription> settings, bool forceRestart = false)
-        {
-            // Check state
-            if (VCRServer.IsActive)
-                return null;
-
-            // Process
-            if (VCRConfigurationOriginal.CommitUpdate(settings) || forceRestart)
-            {
-                // Do not restart in debug mode
-                if (VCRServer.InDebugMode)
-                    return null;
-
-                // Create new process to restart the service
-                Process.Start(Tools.ExecutablePath, "Restart").Dispose();
-
-                // Finally back to the administration page
-                return true;
-            }
-            else
-            {
-                // Check for new tasks
-                _VCRServer.BeginNewPlan();
-
-                // Finally back to the administration page
-                return false;
-            }
-        }
     }
 
     /// <summary>
@@ -253,7 +193,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             else if (streams.AC3Tracks.LanguageMode != LanguageModes.Selection)
                 return true;
             else
-                return (streams.AC3Tracks.Languages.Count > 0);
+                return streams.AC3Tracks.Languages.Count > 0;
         }
 
         /// <summary>

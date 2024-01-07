@@ -361,10 +361,10 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Bef�llt vor allem den Dateinamen mit Vorgabewerten.
         /// </summary>
-        internal void LoadDefaults()
+        internal void LoadDefaults(VCRConfiguration configuration)
         {
             // Construct file name
-            var pattern = VCRConfigurationOriginal.Current.FileNamePattern;
+            var pattern = configuration.FileNamePattern;
             var file = FileName;
 
             // Check for test recording
@@ -389,14 +389,14 @@ namespace JMS.DVB.NET.Recording.Persistence
 
             // Default directory
             if (string.IsNullOrEmpty(file))
-                file = VCRConfigurationOriginal.Current.PrimaryTargetDirectory.FullName;
+                file = configuration.PrimaryTargetDirectory.FullName;
 
             // Append pattern
             FileName = Path.Combine(file, pattern + ".ts");
 
             // Check for valid path - user can try to jump out of the allowed area but we will move back
-            if (!VCRConfigurationOriginal.Current.IsValidTarget(FileName))
-                FileName = Path.Combine(VCRConfigurationOriginal.Current.PrimaryTargetDirectory.FullName, pattern + ".ts");
+            if (!configuration.IsValidTarget(FileName))
+                FileName = Path.Combine(configuration.PrimaryTargetDirectory.FullName, pattern + ".ts");
         }
 
         /// <summary>
@@ -451,7 +451,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <param name="planItem">Die zugeh�rige Beschreibung der geplanten Aktivit�t.</param>
         /// <param name="context">Die Abbildung auf die Auftr�ge.</param>
         /// <returns>Die angeforderte Repr�sentation.</returns>
-        public static VCRRecordingInfo? Create(IScheduleInformation planItem, PlanContext context)
+        public static VCRRecordingInfo? Create(IScheduleInformation planItem, PlanContext context, VCRConfiguration configuration)
         {
             // Validate
             ArgumentNullException.ThrowIfNull(planItem, nameof(planItem));
@@ -543,7 +543,7 @@ namespace JMS.DVB.NET.Recording.Persistence
                 }
 
             // Finish
-            recording.LoadDefaults();
+            recording.LoadDefaults(configuration);
 
             // Report
             return recording;
@@ -553,7 +553,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Wandelt eine Aufzeichnung in die Beschreibung eines Empfangsdatenstroms.
         /// </summary>
         /// <returns>Die passende Beschreibung.</returns>
-        public ReceiveInformation ToReceiveInformation()
+        public ReceiveInformation ToReceiveInformation(VCRConfiguration configuration)
         {
             // Attach to the station and the profile
             var source = Source;
@@ -569,9 +569,9 @@ namespace JMS.DVB.NET.Recording.Persistence
             return
                 new ReceiveInformation
                 {
-                    HDTVFileBufferSize = VCRConfigurationOriginal.Current.HighDefinitionVideoBufferSize,
-                    SDTVFileBufferSize = VCRConfigurationOriginal.Current.StandardVideoBufferSize,
-                    AudioFileBufferSize = VCRConfigurationOriginal.Current.AudioBufferSize,
+                    HDTVFileBufferSize = configuration.HighDefinitionVideoBufferSize,
+                    SDTVFileBufferSize = configuration.StandardVideoBufferSize,
+                    AudioFileBufferSize = configuration.AudioBufferSize,
                     UniqueIdentifier = ScheduleUniqueID!.Value,
                     SelectionKey = source.SelectionKey,
                     RecordingPath = FileName,
