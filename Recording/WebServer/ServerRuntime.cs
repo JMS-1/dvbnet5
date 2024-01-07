@@ -65,9 +65,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="server">Die aktive VCR.NET Instanz.</param>
         public void SetServer(VCRServer server)
         {
-            // Activate configuration from main domain
-            VCRConfigurationOriginal.Register(server.Configuration);
-
             // Add to permanent cache
             _VCRServer = server;
         }

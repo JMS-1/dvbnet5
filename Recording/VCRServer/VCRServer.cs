@@ -44,6 +44,11 @@ namespace JMS.DVB.NET.Recording
         public readonly ExtensionManager ExtensionProcessManager = new ExtensionManager();
 
         /// <summary>
+        /// Die aktive Konfiguration.
+        /// </summary>
+        private readonly VCRConfiguration _configuration;
+
+        /// <summary>
         /// L?dt Verwaltungsinstanzen f?r alle freigeschalteten DVB.NET Ger?teprofile.
         /// </summary>
         static VCRServer()
@@ -61,8 +66,10 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Erzeugt eine neue Instanz.
         /// </summary>
-        public VCRServer()
+        public VCRServer(VCRConfiguration configuration)
         {
+            _configuration = configuration;
+
             var rootDirectory = RunTimeLoader.GetDirectory("Recording");
 
             // Report
@@ -81,7 +88,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Meldet die aktuell zu verwendende Konfiguration.
         /// </summary>
-        public VCRConfigurationOriginal Configuration { get { return VCRConfigurationOriginal.Current; } }
+        public VCRConfiguration Configuration { get { return _configuration; } }
 
         /// <summary>
         /// Instanzen dieser Klasse sind nicht zeitgebunden.

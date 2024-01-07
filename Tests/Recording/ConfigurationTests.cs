@@ -66,7 +66,7 @@ public class ConfigurationTests
         Assert.That(cut.CommitUpdate(config.Values), Is.True);
         Assert.That(cut.ProfileNames, Is.EqualTo("card1|card2"));
 
-        cut = Services.GetRequiredService<VCRConfiguration>();
+        cut.Reload();
 
         Assert.That(cut.ProfileNames, Is.EqualTo("card1|card3|card9"));
     }

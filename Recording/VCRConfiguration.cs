@@ -222,7 +222,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Die aktuell gültige Konfiguration.
         /// </summary>
-        private Configuration _configuration;
+        private Configuration _configuration = null!;
 
         /// <summary>
         /// Initialisiert eine neue Konfiguration.
@@ -237,7 +237,8 @@ namespace JMS.DVB.NET.Recording
 
             // Get the path of the configuration and load the initial configuration.
             _configurationExePath = configurationExePath.Path;
-            _configuration = ConfigurationManager.OpenExeConfiguration(_configurationExePath);
+
+            Reload();
 
             // Remember all
             Add(SettingNames.AdditionalRecorderPaths);
@@ -283,6 +284,11 @@ namespace JMS.DVB.NET.Recording
             m_Restart[SettingNames.TCPPort] = true;
             m_Restart[SettingNames.UseSSL] = true;
         }
+
+        /// <summary>
+        /// Load the configuration from the provided file.
+        /// </summary>
+        public void Reload() => _configuration = ConfigurationManager.OpenExeConfiguration(_configurationExePath);
 
         /// <summary>
         /// Bereitet eine Aktualisierung vor.
@@ -341,8 +347,7 @@ namespace JMS.DVB.NET.Recording
                 File.Copy(tempName, origName + ".cpy", true);
 
                 // Force reload
-                if (!restart)
-                    _configuration = ConfigurationManager.OpenExeConfiguration(_configurationExePath);
+                if (!restart) Reload();
 
                 // Report
                 return restart;
