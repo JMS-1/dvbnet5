@@ -1,4 +1,5 @@
 using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.RestWebApi;
 
 namespace JMS.DVB.NET.Recording
 {
@@ -49,5 +50,26 @@ namespace JMS.DVB.NET.Recording
             // Recalculate
             BeginNewPlan();
         }
+
+        /// <summary>
+        /// Rekonstruiert einen Auftrag und eine Aufzeichnung aus einer Textdarstellung.
+        /// </summary>
+        /// <param name="id">Die Textdarstellung.</param>
+        /// <param name="job">Der ermittelte Auftrag.</param>
+        /// <returns>Die zugeh�rige Aufzeichnung im Auftrag.</returns>
+        public VCRSchedule? ParseUniqueWebId(string id, out VCRJob job)
+        {
+            ServerRuntime.ParseUniqueWebId(id, out Guid jobID, out Guid scheduleID);
+
+            // Find the job
+            job = FindJob(jobID)!;
+
+            // Report schedule if job exists
+            if (job == null)
+                return null;
+            else
+                return job[scheduleID];
+        }
+
     }
 }

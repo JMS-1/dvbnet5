@@ -5,7 +5,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Ändert Ausnahmeregelungen.
     /// </summary>
-    public class ExceptionController : ControllerBase
+    public class ExceptionController(VCRServer server) : ControllerBase
     {
         /// <summary>
         /// Verändert eine Ausnahme.
@@ -22,7 +22,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             ServerRuntime.ParseUniqueWebId(detail, out Guid jobIdentifier, out Guid scheduleIdentifier);
 
             // Forward
-            ServerRuntime.VCRServer.ChangeException(jobIdentifier, scheduleIdentifier, date, startDelta, durationDelta);
+            server.ChangeException(jobIdentifier, scheduleIdentifier, date, startDelta, durationDelta);
         }
     }
 }

@@ -10,8 +10,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     public class ConfigurationController(VCRServer server) : ControllerBase
     {
-        private readonly VCRServer _server = server;
-
         /// <summary>
         /// Die Einstellungen der Sicherheit.
         /// </summary>
@@ -313,7 +311,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="rules">Wird zur Unterscheidung der Methoden verwendet.</param>
         /// <returns>Die aktuellen Regeln.</returns>
         [HttpGet]
-        public SchedulerRules ReadSchedulerRules(string rules) => new SchedulerRules { RuleFileContents = _server.SchedulerRules };
+        public SchedulerRules ReadSchedulerRules(string rules) => new SchedulerRules { RuleFileContents = server.SchedulerRules };
 
         /// <summary>
         /// Aktualisiert das Regelwerk für die Aufzeichnungsplanung.
@@ -322,7 +320,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="settings">Die ab sofort zu verwendenden Regeln.</param>
         /// <returns>Meldet, ob ein Neustart erforderlich ist.</returns>
         [HttpPut]
-        public bool? WriteSchedulerRules(string rules, [FromBody] SchedulerRules settings) => _server.UpdateSchedulerRules(settings.RuleFileContents);
+        public bool? WriteSchedulerRules(string rules, [FromBody] SchedulerRules settings) => server.UpdateSchedulerRules(settings.RuleFileContents);
 
         /// <summary>
         /// Meldet die Konfigurationsdaten der Geräte.
@@ -335,16 +333,14 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             // Helper
 
             // Create response
-            var settings =
-                new ProfileSettings
-                {
-                    SystemProfiles =
-                        ServerRuntime
-                            .VCRServer
+            var settings = new ProfileSettings
+            {
+                SystemProfiles =
+                        server
                             .GetProfiles(ConfigurationProfile.Create, out string defaultName)
                             .OrderBy(profile => profile.Name, ProfileManager.ProfileNameComparer)
                             .ToArray()
-                };
+            };
 
             // Merge default
             settings.DefaultProfile = defaultName;
@@ -375,13 +371,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             }
 
             // Prepare
-            var update = _server.Configuration.BeginUpdate(SettingNames.Profiles);
+            var update = server.Configuration.BeginUpdate(SettingNames.Profiles);
 
             // Fill
             update[SettingNames.Profiles].NewValue = string.Join("|", profiles);
 
             // Process
-            return _server.UpdateConfiguration(update.Values, _server.UpdateProfiles(settings.SystemProfiles, profile => profile.Name, (profile, device) => profile.WriteBack(device)));
+            return server.UpdateConfiguration(update.Values, server.UpdateProfiles(settings.SystemProfiles, profile => profile.Name, (profile, device) => profile.WriteBack(device)));
         }
 
         /// <summary>
@@ -396,8 +392,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new DirectorySettings
                 {
-                    TargetDirectories = _server.Configuration.TargetDirectoriesNames.ToArray(),
-                    RecordingPattern = _server.Configuration.FileNamePattern,
+                    TargetDirectories = server.Configuration.TargetDirectoriesNames.ToArray(),
+                    RecordingPattern = server.Configuration.FileNamePattern,
                 };
         }
 
@@ -411,7 +407,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public bool? WriteDirectory(string directory, [FromBody] DirectorySettings settings)
         {
             // Prepare to update
-            var update = _server.Configuration.BeginUpdate(SettingNames.VideoRecorderDirectory, SettingNames.AdditionalRecorderPaths, SettingNames.FileNamePattern);
+            var update = server.Configuration.BeginUpdate(SettingNames.VideoRecorderDirectory, SettingNames.AdditionalRecorderPaths, SettingNames.FileNamePattern);
 
             // Change settings
             update[SettingNames.AdditionalRecorderPaths].NewValue = string.Join(", ", settings.TargetDirectories.Skip(1));
@@ -419,7 +415,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             update[SettingNames.FileNamePattern].NewValue = settings.RecordingPattern;
 
             // Process
-            return _server.UpdateConfiguration(update.Values);
+            return server.UpdateConfiguration(update.Values);
         }
 
         /// <summary>
@@ -431,17 +427,17 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public SourceScanSettings ReadSoureScan(string scan)
         {
             // Load
-            var interval = _server.Configuration.SourceListUpdateInterval;
-            var join = _server.Configuration.SourceListJoinThreshold;
+            var interval = server.Configuration.SourceListUpdateInterval;
+            var join = server.Configuration.SourceListJoinThreshold;
 
             // Report
             return
                 new SourceScanSettings
                 {
-                    Hours = _server.Configuration.SourceListUpdateHoursAsArray.OrderBy(hour => hour).ToArray(),
+                    Hours = server.Configuration.SourceListUpdateHoursAsArray.OrderBy(hour => hour).ToArray(),
                     Threshold = join.HasValue ? (int)join.Value.TotalDays : default(int?),
-                    MergeLists = _server.Configuration.MergeSourceListUpdateResult,
-                    Duration = _server.Configuration.SourceListUpdateDuration,
+                    MergeLists = server.Configuration.MergeSourceListUpdateResult,
+                    Duration = server.Configuration.SourceListUpdateDuration,
                     Interval = (interval != 0) ? interval : default(int?),
                 };
         }
@@ -459,20 +455,20 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             if (settings.Interval.GetValueOrDefault(0) == 0)
             {
                 // Create settings
-                var disable = _server.Configuration.BeginUpdate(SettingNames.ScanInterval);
+                var disable = server.Configuration.BeginUpdate(SettingNames.ScanInterval);
 
                 // Store
                 disable[SettingNames.ScanInterval].NewValue = "0";
 
                 // Process
-                return _server.UpdateConfiguration(disable.Values);
+                return server.UpdateConfiguration(disable.Values);
             }
 
             // Check mode
             if (settings.Interval < 0)
             {
                 // Create settings
-                var manual = _server.Configuration.BeginUpdate(SettingNames.ScanDuration, SettingNames.MergeScanResult, SettingNames.ScanInterval);
+                var manual = server.Configuration.BeginUpdate(SettingNames.ScanDuration, SettingNames.MergeScanResult, SettingNames.ScanInterval);
 
                 // Store
                 manual[SettingNames.MergeScanResult].NewValue = settings.MergeLists.ToString();
@@ -480,11 +476,11 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 manual[SettingNames.ScanInterval].NewValue = "-1";
 
                 // Process
-                return _server.UpdateConfiguration(manual.Values);
+                return server.UpdateConfiguration(manual.Values);
             }
 
             // Prepare to update
-            var update = _server.Configuration.BeginUpdate(SettingNames.ScanDuration, SettingNames.MergeScanResult, SettingNames.ScanInterval, SettingNames.ScanHours, SettingNames.ScanJoinThreshold);
+            var update = server.Configuration.BeginUpdate(SettingNames.ScanDuration, SettingNames.MergeScanResult, SettingNames.ScanInterval, SettingNames.ScanHours, SettingNames.ScanJoinThreshold);
 
             // Fill it
             update[SettingNames.ScanHours].NewValue = string.Join(", ", settings.Hours.Select(hour => hour.ToString()));
@@ -494,7 +490,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             update[SettingNames.ScanDuration].NewValue = settings.Duration.ToString();
 
             // Process
-            return _server.UpdateConfiguration(update.Values);
+            return server.UpdateConfiguration(update.Values);
         }
 
         /// <summary>
@@ -506,19 +502,19 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public GuideSettings ReadGuide(string guide)
         {
             // Load
-            var interval = _server.Configuration.ProgramGuideUpdateInterval;
-            var join = _server.Configuration.ProgramGuideJoinThreshold;
+            var interval = server.Configuration.ProgramGuideUpdateInterval;
+            var join = server.Configuration.ProgramGuideJoinThreshold;
 
             // Report
             return
                 new GuideSettings
                 {
-                    Sources = _server.Configuration.ProgramGuideSourcesAsArray.OrderBy(name => name, StringComparer.InvariantCultureIgnoreCase).ToArray(),
-                    Hours = _server.Configuration.ProgramGuideUpdateHoursAsArray.OrderBy(hour => hour).ToArray(),
+                    Sources = server.Configuration.ProgramGuideSourcesAsArray.OrderBy(name => name, StringComparer.InvariantCultureIgnoreCase).ToArray(),
+                    Hours = server.Configuration.ProgramGuideUpdateHoursAsArray.OrderBy(hour => hour).ToArray(),
                     Interval = interval.HasValue ? (int)interval.Value.TotalHours : default(int?),
                     Threshold = join.HasValue ? (int)join.Value.TotalHours : default(int?),
-                    Duration = _server.Configuration.ProgramGuideUpdateDuration,
-                    WithUKGuide = _server.Configuration.EnableFreeSat,
+                    Duration = server.Configuration.ProgramGuideUpdateDuration,
+                    WithUKGuide = server.Configuration.EnableFreeSat,
                 };
         }
 
@@ -535,17 +531,17 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             if (settings.Duration < 1)
             {
                 // Create settings
-                var disable = _server.Configuration.BeginUpdate(SettingNames.EPGDuration);
+                var disable = server.Configuration.BeginUpdate(SettingNames.EPGDuration);
 
                 // Store
                 disable[SettingNames.EPGDuration].NewValue = "0";
 
                 // Process
-                return _server.UpdateConfiguration(disable.Values);
+                return server.UpdateConfiguration(disable.Values);
             }
 
             // Prepare to update
-            var update = _server.Configuration.BeginUpdate(SettingNames.EPGDuration, SettingNames.EPGStations, SettingNames.EPGHours, SettingNames.EPGIncludeFreeSat, SettingNames.EPGInterval, SettingNames.EPGJoinThreshold);
+            var update = server.Configuration.BeginUpdate(SettingNames.EPGDuration, SettingNames.EPGStations, SettingNames.EPGHours, SettingNames.EPGIncludeFreeSat, SettingNames.EPGInterval, SettingNames.EPGJoinThreshold);
 
             // Fill it
             update[SettingNames.EPGHours].NewValue = string.Join(", ", settings.Hours.Select(hour => hour.ToString()));
@@ -556,7 +552,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             update[SettingNames.EPGDuration].NewValue = settings.Duration.ToString();
 
             // Process
-            return _server.UpdateConfiguration(update.Values);
+            return server.UpdateConfiguration(update.Values);
         }
 
         /// <summary>
@@ -571,8 +567,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new SecuritySettings
                 {
-                    AdminRole = _server.Configuration.AdminRole,
-                    UserRole = _server.Configuration.UserRole,
+                    AdminRole = server.Configuration.AdminRole,
+                    UserRole = server.Configuration.UserRole,
                 };
         }
 
@@ -586,14 +582,14 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public bool? WriteSecurity(string security, [FromBody] SecuritySettings settings)
         {
             // Prepare to update
-            var update = _server.Configuration.BeginUpdate(SettingNames.RequiredUserRole, SettingNames.RequiredAdminRole);
+            var update = server.Configuration.BeginUpdate(SettingNames.RequiredUserRole, SettingNames.RequiredAdminRole);
 
             // Change settings
             update[SettingNames.RequiredAdminRole].NewValue = settings.AdminRole;
             update[SettingNames.RequiredUserRole].NewValue = settings.UserRole;
 
             // Process
-            return _server.UpdateConfiguration(update.Values);
+            return server.UpdateConfiguration(update.Values);
         }
 
         /// <summary>
@@ -608,20 +604,20 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new OtherSettings
                 {
-                    DelayAfterForcedHibernation = (uint)_server.Configuration.DelayAfterForcedHibernation.TotalMinutes,
-                    SuppressDelayAfterForcedHibernation = _server.Configuration.SuppressDelayAfterForcedHibernation,
-                    DisablePCRFromMPEG2 = _server.Configuration.DisablePCRFromMPEG2Generation,
-                    DisablePCRFromH264 = _server.Configuration.DisablePCRFromH264Generation,
-                    AllowBasic = _server.Configuration.EnableBasicAuthentication,
-                    AllowHibernate = _server.Configuration.MayHibernateSystem,
-                    HibernationDelay = _server.Configuration.HibernationDelay,
-                    SSLPort = _server.Configuration.WebServerSecureTcpPort,
-                    UseSSL = _server.Configuration.EncryptWebCommunication,
-                    UseStandBy = _server.Configuration.UseS3ForHibernate,
-                    ArchiveTime = _server.Configuration.ArchiveLifeTime,
-                    ProtocolTime = _server.Configuration.LogLifeTime,
-                    WebPort = _server.Configuration.WebServerTcpPort,
-                    Logging = _server.Configuration.LoggingLevel,
+                    DelayAfterForcedHibernation = (uint)server.Configuration.DelayAfterForcedHibernation.TotalMinutes,
+                    SuppressDelayAfterForcedHibernation = server.Configuration.SuppressDelayAfterForcedHibernation,
+                    DisablePCRFromMPEG2 = server.Configuration.DisablePCRFromMPEG2Generation,
+                    DisablePCRFromH264 = server.Configuration.DisablePCRFromH264Generation,
+                    AllowBasic = server.Configuration.EnableBasicAuthentication,
+                    AllowHibernate = server.Configuration.MayHibernateSystem,
+                    HibernationDelay = server.Configuration.HibernationDelay,
+                    SSLPort = server.Configuration.WebServerSecureTcpPort,
+                    UseSSL = server.Configuration.EncryptWebCommunication,
+                    UseStandBy = server.Configuration.UseS3ForHibernate,
+                    ArchiveTime = server.Configuration.ArchiveLifeTime,
+                    ProtocolTime = server.Configuration.LogLifeTime,
+                    WebPort = server.Configuration.WebServerTcpPort,
+                    Logging = server.Configuration.LoggingLevel,
                 };
         }
 
@@ -636,7 +632,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Prepare to update
             var update =
-                _server.Configuration.BeginUpdate
+                server.Configuration.BeginUpdate
                    (
                         SettingNames.SuppressDelayAfterForcedHibernation,
                         SettingNames.DisablePCRFromMPEG2Generation,
@@ -671,7 +667,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             update[SettingNames.UseSSL].NewValue = settings.UseSSL.ToString();
 
             // Process
-            return _server.UpdateConfiguration(update.Values);
+            return server.UpdateConfiguration(update.Values);
         }
     }
 }

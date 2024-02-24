@@ -187,10 +187,10 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="job">Der zugehörige Auftrag.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public VCRSchedule CreateSchedule(VCRJob job)
+        public VCRSchedule CreateSchedule(VCRJob job, VCRServer server)
         {
             // Forward
-            return CreateSchedule(Guid.NewGuid(), job);
+            return CreateSchedule(Guid.NewGuid(), job, server);
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="scheduleIdentifier">Die eindeutige Kennung der Aufzeichnung.</param>
         /// <param name="job">Der zugehörige Auftrag.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public VCRSchedule CreateSchedule(Guid scheduleIdentifier, VCRJob job)
+        public VCRSchedule CreateSchedule(Guid scheduleIdentifier, VCRJob job, VCRServer server)
         {
             // Create
             var schedule =
@@ -224,7 +224,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 return schedule;
 
             // Locate the source
-            schedule.Source = ServerRuntime.VCRServer.FindSource(jobSource.ProfileName, sourceName)!;
+            schedule.Source = server.FindSource(jobSource.ProfileName, sourceName)!;
             if (schedule.Source == null)
                 return schedule;
 

@@ -10,8 +10,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     [Route("api/plan")]
     public class PlanController(VCRServer server) : ControllerBase
     {
-        private readonly VCRServer _server = server;
-
         /// <summary>
         /// Meldet den aktuellen Aufzeichnungsplan.
         /// </summary>
@@ -30,7 +28,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 endTime = DateTime.MaxValue;
 
             // Route from Web AppDomain into service AppDomain
-            var activities = _server.GetPlan(endTime, maximum, PlanActivity.Create);
+            var activities = server.GetPlan(endTime, maximum, PlanActivity.Create);
 
             // Must resort to correct for running entries
             Array.Sort(activities, PlanActivity.ByStartComparer);
@@ -70,8 +68,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Forward
             return
-                ServerRuntime
-                    .VCRServer
+                server
                     .GetCurrentRecordings(PlanCurrent.Create, PlanCurrent.Create, PlanCurrent.Create)
                     .OrderBy(current => current.StartTime)
                     .ThenBy(current => current.Duration)
@@ -88,8 +85,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Forward
             return
-                ServerRuntime
-                    .VCRServer
+                server
                     .GetCurrentRecordings(PlanCurrent.Create)
                     .Where(current => !string.IsNullOrEmpty(current.SourceName))
                     .Select(PlanCurrentMobile.Create)
@@ -103,14 +99,14 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="sourceScan">Wird zur Unterscheidung der Methoden verwendet.</param>
         [HttpPost("scan")]
-        public void StartSourceScan(string sourceScan) => _server.ForceSoureListUpdate();
+        public void StartSourceScan(string sourceScan) => server.ForceSoureListUpdate();
 
         /// <summary>
         /// Fordert die Aktualisierung der Programmzeitschrift an.
         /// </summary>
         /// <param name="guideUpdate">Wird zur Unterscheidung der Methoden verwendet.</param>
         [HttpPost("guide")]
-        public void StartGuideUpdate(string guideUpdate) => _server.ForceProgramGuideUpdate();
+        public void StartGuideUpdate(string guideUpdate) => server.ForceProgramGuideUpdate();
 
         /// <summary>
         /// Ändert den Netzwerkversand.
@@ -126,7 +122,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var sourceIdentifier = SourceIdentifier.Parse(source);
 
             // Process
-            _server.SetStreamTarget(detail, sourceIdentifier, scheduleIdentifier, target);
+            server.SetStreamTarget(detail, sourceIdentifier, scheduleIdentifier, target);
         }
     }
 }

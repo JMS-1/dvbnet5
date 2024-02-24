@@ -11,8 +11,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     public class InfoController(VCRServer server) : ControllerBase
     {
-        private readonly VCRServer _server = server;
-
         /// <summary>
         /// Ermittelt zu einer Komponente das Produkt.
         /// </summary>
@@ -96,16 +94,16 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public InfoService VersionInformation()
         {
             // Load
-            var settings = _server.Settings;
+            var settings = server.Settings;
 
             // Report
             return
                 new InfoService
                 {
-                    HasPendingExtensions = _server.ExtensionProcessManager.HasActiveProcesses,
-                    SourceScanEnabled = _server.Configuration.SourceListUpdateInterval != 0,
-                    GuideUpdateEnabled = _server.Configuration.ProgramGuideUpdateEnabled,
-                    IsRunning = _server.IsActive,
+                    HasPendingExtensions = server.ExtensionProcessManager.HasActiveProcesses,
+                    SourceScanEnabled = server.Configuration.SourceListUpdateInterval != 0,
+                    GuideUpdateEnabled = server.Configuration.ProgramGuideUpdateEnabled,
+                    IsRunning = server.IsActive,
                     //ProfilesNames = settings.Profiles.ToArray(),
                     InstalledVersion = InstalledVersion,
                     Version = VCRServer.CurrentVersion,
@@ -118,7 +116,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="directories">Wird zur Unterscheidung der Methoden verwendet.</param>
         /// <returns>Die gewünschte Liste.</returns>
         [HttpGet]
-        public string[] GetRecordingDirectories(string directories) => _server.Configuration.TargetDirectoriesNames.SelectMany(ScanDirectory).ToArray();
+        public string[] GetRecordingDirectories(string directories) => server.Configuration.TargetDirectoriesNames.SelectMany(ScanDirectory).ToArray();
 
         /// <summary>
         /// Meldet alle Aufträge.
@@ -130,8 +128,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Report
             return
-                ServerRuntime
-                    .VCRServer
+                server
                     .GetJobs(InfoJob.Create)
                     .OrderBy(job => job.Name ?? string.Empty, StringComparer.InvariantCulture)
                     .ToArray();

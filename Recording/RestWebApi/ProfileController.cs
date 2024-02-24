@@ -7,7 +7,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// Erlaubt den Zurgiff auf die Geräteprofile, die der <i>VCR.NET Recording Service</i>
     /// verwaltet.
     /// </summary>
-    public class ProfileController : ControllerBase
+    public class ProfileController(VCRServer server) : ControllerBase
     {
         /// <summary>
         /// Meldet alle Geräteprofile, die der <i>VCR.NET Recording Service</i> verwenden darf.
@@ -18,8 +18,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Forward
             return
-                ServerRuntime
-                    .VCRServer
+                server
                     .GetProfiles(ProfileInfo.Create)
                     .OrderBy(profile => profile.Name, ProfileManager.ProfileNameComparer)
                     .ToArray();
@@ -31,7 +30,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="detail">Der Name des zu verwendenden Geräteprofils.</param>
         /// <returns>Die gewünschte Liste von Sendern.</returns>
         [HttpGet]
-        public ProfileSource[] FindSources(string detail) => ServerRuntime.VCRServer.GetSources(detail, true, true, ProfileSource.Create);
+        public ProfileSource[] FindSources(string detail) => server.GetSources(detail, true, true, ProfileSource.Create);
 
         /// <summary>
         /// Verändert den Endzeitpunkt.
@@ -48,7 +47,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var end = DateTime.Parse(endTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
             // Forward
-            ServerRuntime.VCRServer.ChangeRecordingStreamEndTime(detail, scheduleIdentifier, end, disableHibernate);
+            server.ChangeRecordingStreamEndTime(detail, scheduleIdentifier, end, disableHibernate);
         }
 
         /// <summary>
@@ -62,8 +61,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Request jobs
             return
-                ServerRuntime
-                    .VCRServer
+                server
                     .GetJobs(ProfileJobInfo.Create)
                     .Where(job => job != null && ProfileManager.ProfileNameComparer.Equals(job.Profile, detail))
                     .Cast<ProfileJobInfo>()

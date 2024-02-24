@@ -5,7 +5,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Erlaubt den Zugriff auf die Programmzeitschrift.
     /// </summary>
-    public class GuideController : ControllerBase
+    public class GuideController(VCRServer server) : ControllerBase
     {
         /// <summary>
         /// Ermittelt einen einzelnen Eintrag der Programmzeitschrift.
@@ -27,7 +27,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var end = new DateTime(long.Parse(pattern.Substring(split + 1)) * Tools.UnixTimeFactor + Tools.UnixTimeBias, DateTimeKind.Utc);
 
             // Forward
-            return ServerRuntime.VCRServer.FindProgramGuideEntry(profile, SourceIdentifier.Parse(source), start, end, GuideItem.Create)!;
+            return server.FindProgramGuideEntry(profile, SourceIdentifier.Parse(source), start, end, GuideItem.Create)!;
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="filter">Die Beschreibung des Filters.</param>
         /// <returns>Die Liste aller passenden Einträge.</returns>
         [HttpPost]
-        public GuideItem[] Find([FromBody] GuideFilter filter) => ServerRuntime.VCRServer.GetProgramGuideEntries(filter, GuideFilter.Translate, GuideItem.Create);
+        public GuideItem[] Find([FromBody] GuideFilter filter) => server.GetProgramGuideEntries(filter, GuideFilter.Translate, GuideItem.Create);
 
         /// <summary>
         /// Meldet alle Einträge der Programmzeitschrift zu einem Geräteprofil.
@@ -45,7 +45,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="filter">Die Beschreibung des Filters.</param>
         /// <returns>Die Anzahl aller passenden Einträge.</returns>
         [HttpPost]
-        public int Count(string countOnly, [FromBody] GuideFilter filter) => ServerRuntime.VCRServer.GetProgramGuideEntries(filter, GuideFilter.Translate);
+        public int Count(string countOnly, [FromBody] GuideFilter filter) => server.GetProgramGuideEntries(filter, GuideFilter.Translate);
 
 
         /// <summary>
@@ -54,6 +54,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="detail">Der Name des Profils.</param>
         /// <returns>Die gewünschten Informationen.</returns>
         [HttpGet]
-        public GuideInfo GetInfo(string detail) => ServerRuntime.VCRServer.GetProgramGuideInformation(detail, GuideInfo.Create);
+        public GuideInfo GetInfo(string detail) => server.GetProgramGuideInformation(detail, GuideInfo.Create);
     }
 }

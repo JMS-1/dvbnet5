@@ -44,11 +44,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        private static VCRServer _VCRServer = null!;
-
-        /// <summary>
         /// Erzeugt eine ASP.NET Laufzeitumgebung.
         /// </summary>
         public ServerRuntime()
@@ -56,17 +51,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             // Check for active debugger
             Tools.EnableTracing = Debugger.IsAttached;
             Tools.DomainName = "Virtual Directory";
-        }
-
-        /// <summary>
-        /// Verbindet die ASP.NET Laufzeitumgebung des aktuellen virtuellen Verzeichnisses
-        /// mit der aktiven VCR.NET Instanz.
-        /// </summary>
-        /// <param name="server">Die aktive VCR.NET Instanz.</param>
-        public void SetServer(VCRServer server)
-        {
-            // Add to permanent cache
-            _VCRServer = server;
         }
 
         /// <summary>
@@ -78,20 +62,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </remarks>
         public void Stop()
         {
-            // Reset
-            _VCRServer = null!;
-        }
-
-        /// <summary>
-        /// Referenz auf die <see cref="AppDomain"/> des Dienstes melden.
-        /// </summary>
-        public static VCRServer VCRServer
-        {
-            get
-            {
-                // Report
-                return _VCRServer;
-            }
         }
 
         /// <summary>
@@ -151,26 +121,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             // Read all
             schedule = new Guid(id.Substring(32, 32));
             job = new Guid(id.Substring(0, 32));
-        }
-
-        /// <summary>
-        /// Rekonstruiert einen Auftrag und eine Aufzeichnung aus einer Textdarstellung.
-        /// </summary>
-        /// <param name="id">Die Textdarstellung.</param>
-        /// <param name="job">Der ermittelte Auftrag.</param>
-        /// <returns>Die zugeh�rige Aufzeichnung im Auftrag.</returns>
-        public static VCRSchedule? ParseUniqueWebId(string id, out VCRJob job)
-        {
-            ParseUniqueWebId(id, out Guid jobID, out Guid scheduleID);
-
-            // Find the job
-            job = VCRServer.FindJob(jobID)!;
-
-            // Report schedule if job exists
-            if (job == null)
-                return null;
-            else
-                return job[scheduleID];
         }
     }
 

@@ -6,7 +6,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Dieser Webdienst erlaubt den Zugriff auf Protokolldaten.
     /// </summary>
-    public class ProtocolController : ControllerBase
+    public class ProtocolController(VCRServer server) : ControllerBase
     {
         /// <summary>
         /// Ermittelt einen Auszug aus dem Protokoll eines Gerätes.
@@ -23,7 +23,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var endTime = DateTime.Parse(end, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
             // Forward
-            return ServerRuntime.VCRServer.QueryLog(detail, startTime.Date, endTime.Date, ProtocolEntry.Create);
+            return server.QueryLog(detail, startTime.Date, endTime.Date, ProtocolEntry.Create);
         }
     }
 }
