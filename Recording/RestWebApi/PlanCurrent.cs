@@ -326,7 +326,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 var current =
                     new PlanCurrent
                     {
-                        Identifier = (schedule == null) ? null! : ServerRuntime.GetUniqueWebId(job!, schedule),
+                        Identifier = (schedule == null) ? null! : ServerTools.GetUniqueWebId(job!, schedule),
                         PlanIdentifier = scheduleInfo.ScheduleUniqueID,
                         Files = scheduleInfo.Files ?? _NoFiles,
                         StreamTarget = stream.StreamsTo,
@@ -366,7 +366,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var planned =
                 new PlanCurrent
                 {
-                    Identifier = (schedule == null) ? null! : ServerRuntime.GetUniqueWebId(job!, schedule),
+                    Identifier = (schedule == null) ? null! : ServerTools.GetUniqueWebId(job!, schedule),
                     ProfileName = plan.Resource.Name,
                     Duration = plan.Time.Duration,
                     StartTime = plan.Time.Start,

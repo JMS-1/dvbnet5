@@ -1,6 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
 using JMS.DVB;
-using JMS.DVB.EPG.Descriptors;
 
 namespace DVBNETTests.HardwareAbstraction;
 

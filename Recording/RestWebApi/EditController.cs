@@ -36,7 +36,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             UserProfileSettings.AddRecentChannel(data.Schedule.Source);
 
             // Report
-            return ServerRuntime.GetUniqueWebId(job, schedule);
+            return ServerTools.GetUniqueWebId(job, schedule);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             UserProfileSettings.AddRecentChannel(data.Schedule.Source);
 
             // Report
-            return ServerRuntime.GetUniqueWebId(newJob, newSchedule);
+            return ServerTools.GetUniqueWebId(newJob, newSchedule);
         }
     }
 }

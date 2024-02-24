@@ -78,7 +78,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 new InfoSchedule
                 {
                     Source = (schedule.Source ?? job.Source).GetUniqueName(),
-                    WebId = ServerRuntime.GetUniqueWebId(job, schedule),
+                    WebId = ServerTools.GetUniqueWebId(job, schedule),
                     StartTime = schedule.FirstStart,
                     RepeatPattern = schedule.Days,
                     Duration = schedule.Duration,

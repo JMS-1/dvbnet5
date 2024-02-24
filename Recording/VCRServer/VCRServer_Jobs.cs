@@ -59,7 +59,7 @@ namespace JMS.DVB.NET.Recording
         /// <returns>Die zugeh�rige Aufzeichnung im Auftrag.</returns>
         public VCRSchedule? ParseUniqueWebId(string id, out VCRJob job)
         {
-            ServerRuntime.ParseUniqueWebId(id, out Guid jobID, out Guid scheduleID);
+            ServerTools.ParseUniqueWebId(id, out Guid jobID, out Guid scheduleID);
 
             // Find the job
             job = FindJob(jobID)!;

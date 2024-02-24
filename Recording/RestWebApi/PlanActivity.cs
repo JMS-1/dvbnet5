@@ -308,7 +308,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             {
                 // See if we have a job
                 if (vcrJob != null)
-                    activity.LegacyReference = ServerRuntime.GetUniqueWebId(vcrJob, vcrSchedule);
+                    activity.LegacyReference = ServerTools.GetUniqueWebId(vcrJob, vcrSchedule);
 
                 // Find the source to use - stream selection is always bound to the context of the source
                 var streams = vcrSchedule.Streams;

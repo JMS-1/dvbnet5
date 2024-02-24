@@ -19,7 +19,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Parse the date
             var date = new DateTime(long.Parse(when), DateTimeKind.Utc);
-            ServerRuntime.ParseUniqueWebId(detail, out Guid jobIdentifier, out Guid scheduleIdentifier);
+            ServerTools.ParseUniqueWebId(detail, out Guid jobIdentifier, out Guid scheduleIdentifier);
 
             // Forward
             server.ChangeException(jobIdentifier, scheduleIdentifier, date, startDelta, durationDelta);

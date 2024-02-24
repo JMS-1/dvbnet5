@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace JMS.DVB.Provider.Ubuntu
+﻿namespace JMS.DVB.Provider.Ubuntu
 {
     [Flags]
     public enum FeStatus

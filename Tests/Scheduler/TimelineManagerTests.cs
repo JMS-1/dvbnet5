@@ -1,5 +1,4 @@
 ﻿using JMS.DVB.Algorithms.Scheduler;
-using NUnit.Framework.Legacy;
 
 namespace JMS.DVB.SchedulerTests
 {
