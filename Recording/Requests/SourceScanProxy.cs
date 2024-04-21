@@ -24,8 +24,8 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="state">Das zugehörige Geräteprofil.</param>
         /// <param name="recording">Die Beschreibung der Aufgabe.</param>
-        private SourceScanProxy(ProfileState state, VCRRecordingInfo recording, VCRServer server, VCRProfiles profiles, Logger logger)
-            : base(state, recording, server, profiles, logger)
+        private SourceScanProxy(ProfileState state, VCRRecordingInfo recording, ServiceFactory factory)
+            : base(state, recording, factory)
         {
             // Finish
             m_mergeSources = Server.Configuration.MergeSourceListUpdateResult;
@@ -37,7 +37,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="state">Das zugehörige Geräteprofil.</param>
         /// <param name="recording">Die Beschreibung der Aufgabe.</param>
         /// <returns>Die gewünschte Steuerung.</returns>
-        public static SourceScanProxy Create(ProfileState state, VCRRecordingInfo recording, VCRServer server, VCRProfiles profiles, Logger logger)
+        public static SourceScanProxy Create(ProfileState state, VCRRecordingInfo recording, ServiceFactory factory)
         {
             // Validate
             if (state == null)
@@ -46,7 +46,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 throw new ArgumentNullException(nameof(recording));
 
             // Forward
-            return new SourceScanProxy(state, recording, server, profiles, logger);
+            return new SourceScanProxy(state, recording, factory);
         }
 
         /// <summary>

@@ -27,13 +27,16 @@ namespace JMS.DVB.NET.Recording
 
         private readonly Logger _logger;
 
+        private readonly ServiceFactory _factory;
+
         /// <summary>
         /// Erzeugt eine neue Verwaltungsinstanz.
         /// </summary>
         /// <param name="server">Die primäre VCR.NET Instanz.</param>
-        internal ProfileStateCollection(VCRServer server, VCRProfiles profiles, Logger logger, JobManager jobs)
+        internal ProfileStateCollection(VCRServer server, VCRProfiles profiles, Logger logger, JobManager jobs, ServiceFactory factory)
         {
             // Remember
+            _factory = factory;
             _logger = logger;
             _profiles = profiles;
             _server = server;
@@ -49,7 +52,10 @@ namespace JMS.DVB.NET.Recording
             Tools.ExtendedLogging("Loading Profile Collection: {0}", nameReport);
 
             // Load current profiles
-            _stateMap = profileNames.ToDictionary(profileName => profileName, profileName => new ProfileState(this, profileName, _server, _profiles, _logger), ProfileManager.ProfileNameComparer);
+            _stateMap = profileNames.ToDictionary(
+                profileName => profileName,
+                profileName => new ProfileState(this, profileName, _server, _profiles, _logger, _factory), ProfileManager.ProfileNameComparer
+            );
 
             // Now we can create the planner
             m_planner = RecordingPlanner.Create(this, _server, _profiles, _logger, jobs);
@@ -662,7 +668,7 @@ namespace JMS.DVB.NET.Recording
             if (guideUpdate != null)
             {
                 // Start a new guide collector
-                m_pendingActions += ProgramGuideProxy.Create(profile, recording, _server, _profiles, _logger).Start;
+                m_pendingActions += ProgramGuideProxy.Create(profile, recording, _factory).Start;
             }
             else
             {
@@ -671,7 +677,7 @@ namespace JMS.DVB.NET.Recording
                 if (sourceUpdate != null)
                 {
                     // Start a new update
-                    m_pendingActions += SourceScanProxy.Create(profile, recording, _server, _profiles, _logger).Start;
+                    m_pendingActions += SourceScanProxy.Create(profile, recording, _factory).Start;
                 }
                 else
                 {

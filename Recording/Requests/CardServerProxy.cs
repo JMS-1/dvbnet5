@@ -1,9 +1,15 @@
 ﻿using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Status;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace JMS.DVB.NET.Recording.Requests
 {
+    public class ServiceFactory(IServiceProvider di)
+    {
+        public T Create<T>() where T : notnull => di.GetRequiredService<T>();
+    }
+
     /// <summary>
     /// Beschreibt Zugriffe auf eine DVB.NET Hardware.
     /// </summary>
@@ -30,6 +36,11 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         protected Dictionary<string, string> ExtensionEnvironment { get; private set; } = null!;
 
+        /// <summary>
+        /// Verhindert, dass der Rechner während der Aufzeichnung in den Schlafzustand wechselt.
+        /// </summary>
+        private IDisposable m_HibernateBlock = null!;
+
         protected readonly VCRServer Server;
 
         protected readonly VCRProfiles Profiles;
@@ -37,17 +48,12 @@ namespace JMS.DVB.NET.Recording.Requests
         protected readonly Logger Logger;
 
         /// <summary>
-        /// Verhindert, dass der Rechner während der Aufzeichnung in den Schlafzustand wechselt.
-        /// </summary>
-        private IDisposable m_HibernateBlock = null!;
-
-        /// <summary>
         /// Erzeugt eine neue Zugriffsinstanz.
         /// </summary>
         /// <param name="state">Der Zustands des zugehörigen Geräteprofils.</param>
         /// <param name="primary">Die primäre Aufzeichnung, auf Grund derer der Aufzeichnungsprozeß aktiviert wurde.</param>
         /// <exception cref="ArgumentNullException">Es wurde kein Profil angegeben.</exception>
-        protected CardServerProxy(ProfileState state, VCRRecordingInfo primary, VCRServer server, VCRProfiles profiles, Logger logger)
+        protected CardServerProxy(ProfileState state, VCRRecordingInfo primary, ServiceFactory factory)
         {
             // Validate
             if (state == null)
@@ -57,11 +63,11 @@ namespace JMS.DVB.NET.Recording.Requests
             RequestFinished = new ManualResetEvent(false);
 
             // Remember
-            Logger = logger;
-            Profiles = profiles;
+            Logger = factory.Create<Logger>();
+            Profiles = factory.Create<VCRProfiles>();
             ProfileState = state;
             Representative = primary.Clone();
-            Server = server;
+            Server = factory.Create<VCRServer>();
 
             // Make sure that we report the start
             m_start = primary;

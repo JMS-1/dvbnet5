@@ -1,4 +1,5 @@
 using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.Requests;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JMS.DVB.NET.Recording;
@@ -15,6 +16,7 @@ public static class RecordingExtensions
     public static void UseRecording(this IServiceCollection services)
     {
         services.AddTransient<Logger>();
+        services.AddTransient<ServiceFactory>();
 
         services.AddSingleton<IVCRConfigurationExePathProvider>((ctx) => new ConfigurationPathProvider());
 

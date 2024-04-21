@@ -30,8 +30,8 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="state">Das zugehörige Geräteprofil.</param>
         /// <param name="recording">Daten der primären Aufzeichnung.</param>
-        private ProgramGuideProxy(ProfileState state, VCRRecordingInfo recording, VCRServer server, VCRProfiles profiles, Logger logger)
-            : base(state, recording, server, profiles, logger)
+        private ProgramGuideProxy(ProfileState state, VCRRecordingInfo recording, ServiceFactory factory)
+            : base(state, recording, factory)
         {
             // Reset fields
             if (Server.Configuration.EnableFreeSat)
@@ -74,7 +74,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="recording">Beschreibt die Aufzeichnung.</param>
         /// <returns>Die gewünschte Steuerung.</returns>
         /// <exception cref="ArgumentNullException">Es wurden nicht alle Parameter angegeben.</exception>
-        public static ProgramGuideProxy Create(ProfileState state, VCRRecordingInfo recording, VCRServer server, VCRProfiles profiles, Logger logger)
+        public static ProgramGuideProxy Create(ProfileState state, VCRRecordingInfo recording, ServiceFactory factory)
         {
             // Validate
             if (state == null)
@@ -83,7 +83,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 throw new ArgumentNullException(nameof(recording));
 
             // Forward
-            return new ProgramGuideProxy(state, recording, server, profiles, logger);
+            return new ProgramGuideProxy(state, recording, factory);
         }
 
         /// <summary>

@@ -1,6 +1,6 @@
 using System.Text;
 using JMS.DVB.Algorithms.Scheduler;
-using Microsoft.Extensions.Logging;
+using JMS.DVB.NET.Recording.Requests;
 
 namespace JMS.DVB.NET.Recording
 {
@@ -77,7 +77,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Erzeugt eine neue Instanz.
         /// </summary>
-        public VCRServer(VCRConfiguration configuration, Logger logger, VCRProfiles profiles, JobManager jobManager)
+        public VCRServer(VCRConfiguration configuration, Logger logger, VCRProfiles profiles, JobManager jobManager, ServiceFactory factory)
         {
             _configuration = configuration;
             _logger = logger;
@@ -89,7 +89,7 @@ namespace JMS.DVB.NET.Recording
             _profiles.Reset(this);
 
             // Create profile state manager and start it up
-            Profiles = new ProfileStateCollection(this, _profiles, logger, JobManager);
+            Profiles = new ProfileStateCollection(this, _profiles, logger, JobManager, factory);
         }
 
         /// <summary>

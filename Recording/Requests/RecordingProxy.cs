@@ -14,10 +14,8 @@ namespace JMS.DVB.NET.Recording.Requests
     public class RecordingProxy(
         ProfileState state,
         VCRRecordingInfo firstRecording,
-        VCRServer server,
-        VCRProfiles profiles,
-        Logger logger
-    ) : CardServerProxy(state, firstRecording, server, profiles, logger)
+        ServiceFactory factory
+    ) : CardServerProxy(state, firstRecording, factory)
     {
         #region Felder zur Steuerung der asynchronen Aufrufe an den Aufzeichnungsprozess
 

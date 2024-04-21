@@ -35,19 +35,19 @@ namespace JMS.DVB.NET.Recording
 
         private readonly VCRProfiles _profiles;
 
-        private readonly VCRServer _server;
+        private readonly ServiceFactory _factory;
 
         /// <summary>
         /// Erzeugt eine neue Beschreibung.
         /// </summary>
         /// <param name="collection">Die zugehörige Verwaltung der aktiven Geräteprofile.</param>
         /// <param name="profileName">Der Name des zugehörigen Geräteprofils.</param>
-        public ProfileState(ProfileStateCollection collection, string profileName, VCRServer server, VCRProfiles profiles, Logger logger)
+        public ProfileState(ProfileStateCollection collection, string profileName, VCRServer server, VCRProfiles profiles, Logger logger, ServiceFactory factory)
         {
             // Remember
+            _factory = factory;
             _logger = logger;
             _profiles = profiles;
-            _server = server;
             Collection = collection;
             ProfileName = profileName;
 
@@ -84,7 +84,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="factory">Methode zum Erstellen einer neuen Zustandsinformation.</param>
         /// <returns>Der aktuelle Zustand des Zapping Modus oder <i>null</i>, wenn dieser nicht ermittelt
         /// werden kann.</returns>
-        public TStatus LiveModeOperation<TStatus>(bool active, string connectTo, SourceIdentifier source, Func<string, ServerInformation, TStatus> factory)
+        public TStatus LiveModeOperation<TStatus>(bool active, string connectTo, SourceIdentifier source, Func<string, ServerInformation, TStatus> factory, ServiceFactory services)
         {
             // Check mode of operation
             if (!active)
@@ -97,7 +97,7 @@ namespace JMS.DVB.NET.Recording
             else if (!string.IsNullOrEmpty(connectTo))
             {
                 // Activate 
-                ZappingProxy.Create(this, connectTo, _server, _profiles, _logger).Start();
+                ZappingProxy.Create(this, connectTo, services).Start();
             }
             else if (source != null)
             {
@@ -309,7 +309,7 @@ namespace JMS.DVB.NET.Recording
                     if (ReferenceEquals(current, null))
                     {
                         // Create a brand new regular recording request
-                        var request = new RecordingProxy(this, recording, _server, _profiles, _logger);
+                        var request = new RecordingProxy(this, recording, _factory);
 
                         // Activate the request
                         request.Start();
