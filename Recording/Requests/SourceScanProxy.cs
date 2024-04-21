@@ -28,7 +28,7 @@ namespace JMS.DVB.NET.Recording.Requests
             : base(state, recording, server, profiles, logger)
         {
             // Finish
-            m_mergeSources = VCRServer.Configuration.MergeSourceListUpdateResult;
+            m_mergeSources = Server.Configuration.MergeSourceListUpdateResult;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace JMS.DVB.NET.Recording.Requests
             Tools.ExtendedLogging("Starting Source List Update for {0}", ProfileName);
 
             // Just start
-            m_startPending = Server.BeginStartScan();
+            m_startPending = CardServer.BeginStartScan();
         }
 
         /// <summary>
@@ -103,13 +103,13 @@ namespace JMS.DVB.NET.Recording.Requests
             Logger.Log(LoggingLevel.Full, "Die Liste der Quellen wird ersetzt");
 
             // Finish
-            ServerImplementation.EndRequest(Server.BeginEndScan(m_mergeSources));
+            ServerImplementation.EndRequest(CardServer.BeginEndScan(m_mergeSources));
 
             // Report
             Tools.ExtendedLogging("Card Server has updated Profile {0} - VCR.NET will reload all Profiles now", ProfileName);
 
             // Time to refresh our lists
-            Profiles.Reset(VCRServer);
+            Profiles.Reset(Server);
         }
 
         /// <summary>

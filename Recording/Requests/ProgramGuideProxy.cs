@@ -34,7 +34,7 @@ namespace JMS.DVB.NET.Recording.Requests
             : base(state, recording, server, profiles, logger)
         {
             // Reset fields
-            if (VCRServer.Configuration.EnableFreeSat)
+            if (Server.Configuration.EnableFreeSat)
                 m_extensions = EPGExtensions.FreeSatUK;
             else
                 m_extensions = EPGExtensions.None;
@@ -53,7 +53,7 @@ namespace JMS.DVB.NET.Recording.Requests
             }
 
             // Fill in all
-            foreach (var legacyName in VCRServer.Configuration.ProgramGuideSources)
+            foreach (var legacyName in Server.Configuration.ProgramGuideSources)
             {
                 // Skip if empty
                 if (string.IsNullOrEmpty(legacyName))
@@ -103,7 +103,7 @@ namespace JMS.DVB.NET.Recording.Requests
             Tools.ExtendedLogging("Start Program Guide Update for {0} with {1} Source(s) and Mode {2}", ProfileName, sources.Length, m_extensions);
 
             // Start
-            m_startPending = Server.BeginStartEPGCollection(sources, m_extensions);
+            m_startPending = CardServer.BeginStartEPGCollection(sources, m_extensions);
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace JMS.DVB.NET.Recording.Requests
             var result = new ProgramGuideEntries();
 
             // Fill it
-            foreach (var item in Server.BeginEndEPGCollection().Result)
+            foreach (var item in CardServer.BeginEndEPGCollection().Result)
             {
                 // Create event
                 var epg =

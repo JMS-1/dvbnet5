@@ -172,7 +172,7 @@ namespace JMS.DVB.NET.Recording.Requests
             Tools.ExtendedLogging("Will now zap to Source {0}", selection.Source);
 
             // Process and remember
-            m_lastState = EnqueueActionAndWait(() => ServerImplementation.EndRequest(Server.BeginSetZappingSource(selection.SelectionKey, m_target)))!;
+            m_lastState = EnqueueActionAndWait(() => ServerImplementation.EndRequest(CardServer.BeginSetZappingSource(selection.SelectionKey, m_target)))!;
 
             // Report
             return CreateStatus(factory);

@@ -91,7 +91,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// Wird einmalig nach dem Starten des Aufzeichnungsprozesses aufgerufen. Dieser
         /// ist zu diesem Zeitpunkt im Leerlauf.
         /// </summary>
-        protected override void OnStart() => m_groupPending = Server.BeginSelect(Representative.Source.SelectionKey);
+        protected override void OnStart() => m_groupPending = CardServer.BeginSelect(Representative.Source.SelectionKey);
 
         /// <summary>
         /// Bearbeitet neue Daten vom Aufzeichnungsprozess. Dieser Aufruf erfolgt immer,
@@ -168,7 +168,7 @@ namespace JMS.DVB.NET.Recording.Requests
             }
 
             // Enqueue
-            m_startPending = Server.BeginAddSources([recording.ToReceiveInformation(VCRServer.Configuration, Profiles)]);
+            m_startPending = CardServer.BeginAddSources([recording.ToReceiveInformation(Server.Configuration, Profiles)]);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace JMS.DVB.NET.Recording.Requests
                     m_recordings.RemoveAt(i);
 
                     // Enqueue
-                    m_stopPending = Server.BeginRemoveSource(recording.Source.Source, scheduleIdentifier);
+                    m_stopPending = CardServer.BeginRemoveSource(recording.Source.Source, scheduleIdentifier);
 
                     // Update guide extraction
                     RecordingPostProcessing(recording);
@@ -216,7 +216,7 @@ namespace JMS.DVB.NET.Recording.Requests
             WaitForEnd(ref m_stopPending);
 
             // Detach sources
-            var request = Server.BeginRemoveAllSources();
+            var request = CardServer.BeginRemoveAllSources();
 
             // Use wait method to end request - will never throw an exception
             WaitForEnd(ref request);
@@ -277,7 +277,7 @@ namespace JMS.DVB.NET.Recording.Requests
         public override void SetRestartThreshold(Guid? scheduleIdentifier)
         {
             // Attach to job manager
-            var jobs = VCRServer.JobManager;
+            var jobs = Server.JobManager;
 
             // All active recordings
             lock (m_recordings)
@@ -358,7 +358,7 @@ namespace JMS.DVB.NET.Recording.Requests
             Tools.ExtendedLogging("Changing Streaming for {0} [{1}] to {2}", source, uniqueIdentifier, streamingTarget);
 
             // Process
-            EnqueueActionAndWait(() => ServerImplementation.EndRequest(Server.BeginSetStreamTarget(source, uniqueIdentifier, streamingTarget)));
+            EnqueueActionAndWait(() => ServerImplementation.EndRequest(CardServer.BeginSetStreamTarget(source, uniqueIdentifier, streamingTarget)));
         }
 
         #endregion

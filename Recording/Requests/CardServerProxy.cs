@@ -12,7 +12,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <summary>
         /// Der zugehörige <i>DVB.NET Card Server</i>.
         /// </summary>
-        protected ServerImplementation Server { get; private set; } = null!;
+        protected ServerImplementation CardServer { get; private set; } = null!;
 
         /// <summary>
         /// Meldet den zugehörigen Zustand des Geräteprofils.
@@ -30,7 +30,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         protected Dictionary<string, string> ExtensionEnvironment { get; private set; } = null!;
 
-        protected readonly VCRServer VCRServer;
+        protected readonly VCRServer Server;
 
         protected readonly VCRProfiles Profiles;
 
@@ -61,7 +61,7 @@ namespace JMS.DVB.NET.Recording.Requests
             Profiles = profiles;
             ProfileState = state;
             Representative = primary.Clone();
-            VCRServer = server;
+            Server = server;
 
             // Make sure that we report the start
             m_start = primary;
@@ -205,7 +205,7 @@ namespace JMS.DVB.NET.Recording.Requests
         private ServerImplementation CreateCardServerProxy()
         {
             // Create the server
-            if (VCRServer.Configuration.UseExternalCardServer)
+            if (Server.Configuration.UseExternalCardServer)
                 return ServerImplementation.CreateOutOfProcess();
             else
                 return ServerImplementation.CreateInMemory();
@@ -340,10 +340,10 @@ namespace JMS.DVB.NET.Recording.Requests
                     Tools.ExtendedLogging("Started Recording Control Thread for {0}", ProfileName);
 
                     // Fire all extensions
-                    Tools.RunSynchronousExtensions("BeforeProfileAccess", coreEnvironment, VCRServer, Logger);
+                    Tools.RunSynchronousExtensions("BeforeProfileAccess", coreEnvironment, Server, Logger);
 
                     // Use it
-                    using (Server = CreateCardServerProxy())
+                    using (CardServer = CreateCardServerProxy())
                     {
                         // Check mode
                         var mustWakeUp = ProfileState.WakeUpRequired;
@@ -358,12 +358,12 @@ namespace JMS.DVB.NET.Recording.Requests
 
                         // Start synchronously
                         ServerImplementation.EndRequest(
-                            Server.BeginSetProfile
+                            CardServer.BeginSetProfile
                                 (
                                     ProfileName,
                                     mustWakeUp,
-                                    VCRServer.Configuration.DisablePCRFromH264Generation,
-                                    VCRServer.Configuration.DisablePCRFromMPEG2Generation
+                                    Server.Configuration.DisablePCRFromH264Generation,
+                                    Server.Configuration.DisablePCRFromMPEG2Generation
                                 ));
 
                         // Report
@@ -408,7 +408,7 @@ namespace JMS.DVB.NET.Recording.Requests
                             // If we are still idle fire a new state request
                             if (!HasPendingServerRequest)
                                 if (m_running)
-                                    stateRequest = Server.BeginGetState();
+                                    stateRequest = CardServer.BeginGetState();
                                 else
                                     break;
                         }
@@ -458,19 +458,19 @@ namespace JMS.DVB.NET.Recording.Requests
                 finally
                 {
                     // Detach from server - is already disposed and shut down
-                    Server = null!;
+                    CardServer = null!;
 
                     // Fire all extensions
-                    Tools.RunSynchronousExtensions("AfterProfileAccess", coreEnvironment, VCRServer, Logger);
+                    Tools.RunSynchronousExtensions("AfterProfileAccess", coreEnvironment, Server, Logger);
 
                     // Detach from profile
                     ProfileState.EndRequest(this);
 
                     // Write recording
-                    VCRServer.JobManager.CreateLogEntry(Representative);
+                    Server.JobManager.CreateLogEntry(Representative);
 
                     // May go to sleep after job is finished
-                    VCRServer.ReportRecordingDone(Representative.DisableHibernation, IsRealRecording);
+                    Server.ReportRecordingDone(Representative.DisableHibernation, IsRealRecording);
 
                     // Check for next job on all profiles
                     ProfileState.Collection.BeginNewPlan();
@@ -825,18 +825,18 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="environment">Die Umgebungsvariablen für die Erweiterung.</param>
         protected void FireRecordingStartedExtensions(Dictionary<string, string> environment)
-        => VCRServer
+        => Server
             .ExtensionProcessManager
-            .AddWithCleanup("RecordingStarted", environment, VCRServer, Logger);
+            .AddWithCleanup("RecordingStarted", environment, Server, Logger);
 
         /// <summary>
         /// Aktiviert eine VCR.NET Erweiterung.
         /// </summary>
         /// <param name="environment">Die Umgebungsvariablen für die Erweiterung.</param>
         protected void FireRecordingFinishedExtensions(Dictionary<string, string> environment)
-            => VCRServer
+            => Server
                 .ExtensionProcessManager
-                .AddWithCleanup("RecordingFinished", environment, VCRServer, Logger);
+                .AddWithCleanup("RecordingFinished", environment, Server, Logger);
 
         #endregion
     }
