@@ -1,6 +1,4 @@
 using System.Xml.Serialization;
-using JMS.DVB.Algorithms.Scheduler;
-using JMS.DVB.NET.Recording.Planning;
 
 namespace JMS.DVB.NET.Recording.Persistence
 {
@@ -31,18 +29,18 @@ namespace JMS.DVB.NET.Recording.Persistence
             };
 
         /// <summary>
-        /// F�r sich wiederholende Aufzeichnungen das fr�heste Datum, an dem die
-        /// n�chste Aufzeichnung stattfinden darf.
+        /// Für sich wiederholende Aufzeichnungen das früheste Datum, an dem die
+        /// nächste Aufzeichnung stattfinden darf.
         /// </summary>
         public DateTime? NoStartBefore { get; set; }
 
         /// <summary>
-        /// Datum und Uhrzeit, wann die Aufzeichnung das erste Mal ausgef�hrt werden soll.
+        /// Datum und Uhrzeit, wann die Aufzeichnung das erste Mal ausgeführt werden soll.
         /// </summary>
         public DateTime FirstStart { get; set; }
 
         /// <summary>
-        /// Datum, an dem die Aufzeichnung das letzte Mal ausgef�hrt werden soll.
+        /// Datum, an dem die Aufzeichnung das letzte Mal ausgeführt werden soll.
         /// </summary>
         /// <remarks>
         /// Das Datum wird ignoriert, wenn die Aufzeichnung keine Wiederholungen verwendet.
@@ -55,12 +53,12 @@ namespace JMS.DVB.NET.Recording.Persistence
         public Guid? UniqueID { get; set; }
 
         /// <summary>
-        /// Die gew�nschte Quelle.
+        /// Die gewünschte Quelle.
         /// </summary>
         public SourceSelection Source { get; set; } = null!;
 
         /// <summary>
-        /// Die Datenstr�me, die aufgezeichnet werden sollen.
+        /// Die Datenströme, die aufgezeichnet werden sollen.
         /// </summary>
         public StreamSelection Streams { get; set; } = null!;
 
@@ -83,74 +81,13 @@ namespace JMS.DVB.NET.Recording.Persistence
         public VCRDay? Days { get; set; }
 
         /// <summary>
-        /// Alle Ausnahmeregeln f�r eine sich wiederholende Aufzeichnung.
+        /// Alle Ausnahmeregeln für eine sich wiederholende Aufzeichnung.
         /// </summary>
         [XmlElement("Exception")]
-        public readonly List<VCRScheduleException> Exceptions = new List<VCRScheduleException>();
+        public readonly List<VCRScheduleException> Exceptions = [];
 
         /// <summary>
-        /// Pr�ft, ob die Daten zur Aufzeichnung zul�ssig sind.
-        /// </summary>
-        /// <param name="job">Der zugeh�rige Auftrag.</param>
-        /// <exception cref="InvalidJobDataException">Es wurde keine eindeutige Kennung angegeben.</exception>
-        /// <exception cref="InvalidJobDataException">Die Daten der Aufzeichnung sind fehlerhaft.</exception>
-        public void Validate(VCRJob job, VCRProfiles profiles)
-        {
-            // Identifier
-            if (!UniqueID.HasValue)
-                throw new InvalidJobDataException("Die eindeutige Kennung ist ung�ltig");
-
-            // Check for termination date
-            if (LastDay.HasValue)
-            {
-                // Must be a date
-                if (LastDay.Value != LastDay.Value.Date)
-                    throw new InvalidJobDataException("Das Enddatum darf keine Uhrzeit enthalten");
-                if (FirstStart.Date > LastDay.Value.Date)
-                    throw new InvalidJobDataException("Der Endzeitpunkt darf nicht vor dem Startzeitpunkt liegen");
-            }
-
-            // Duration
-            if ((Duration < 1) || (Duration > 9999))
-                throw new InvalidJobDataException("Ung�ltige Dauer");
-
-            // Repetition
-            if (Days.HasValue)
-                if (0 != (~0x7f & (int)Days.Value))
-                    throw new InvalidJobDataException("Die Aufzeichnungstage sind ung�ltig");
-
-            // Test the station
-            if (Source != null)
-            {
-                // Match profile
-                if (job != null)
-                    if (job.Source != null)
-                        if (!string.Equals(job.Source.ProfileName, Source.ProfileName, StringComparison.InvariantCultureIgnoreCase))
-                            throw new InvalidJobDataException("Die Aufzeichnungstage sind ung�ltig");
-
-                // Source
-                if (!Source.Validate(profiles))
-                    throw new InvalidJobDataException("Eine Quelle ist ung�ltig");
-
-                // Streams
-                if (!Streams.Validate())
-                    throw new InvalidJobDataException("Die Aufzeichnungsoptionen sind ung�ltig");
-            }
-            else if (Streams != null)
-                throw new InvalidJobDataException("Die Aufzeichnungsoptionen sind ung�ltig");
-
-            // Station
-            if (!job!.HasSource)
-                if (Source == null)
-                    throw new InvalidJobDataException("Wenn einem Auftrag keine Quelle zugeordnet ist, so m�ssen alle Aufzeichnungen eine solche festlegen");
-
-            // Name
-            if (!Name.IsValidName())
-                throw new InvalidJobDataException("Der Name enth�lt ung�ltige Zeichen");
-        }
-
-        /// <summary>
-        /// Setzt den n�chsten m�glichen Zeitpunkt f�r eine Wiederholung der Aufzeichnung.
+        /// Setzt den nächsten möglichen Zeitpunkt für eine Wiederholung der Aufzeichnung.
         /// </summary>
         [XmlIgnore]
         public DateTime DoNotRestartBefore
@@ -168,7 +105,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// Pr�ft, ob diese Aufzeichnung noch einmal verwendet wird.
+        /// Prüft, ob diese Aufzeichnung noch einmal verwendet wird.
         /// </summary>
         [XmlIgnore]
         public bool IsActive
@@ -234,13 +171,13 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// Meldet, ob f�r diese Aufzeichnung eine Wiederholung definiert ist.
+        /// Meldet, ob für diese Aufzeichnung eine Wiederholung definiert ist.
         /// </summary>
         [XmlIgnore]
         private bool IsRepeatable => Days.HasValue && ((int)Days.Value != 0);
 
         /// <summary>
-        /// Pr�ft, ob eine Aufzeichnung an dem angegebenen Wochentag erlaubt ist.
+        /// Prüft, ob eine Aufzeichnung an dem angegebenen Wochentag erlaubt ist.
         /// </summary>
         /// <param name="day">Der genaue Aufzeichnungszeitpunkt in der lokalen Zeitzone.</param>
         /// <returns>Gesetzt, wenn eine Aufzeichnung erlaubt ist.</returns>
@@ -250,14 +187,14 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Wandelt einen Wochentag in eine VCR.NET Kennzeichnung des Wochentags.
         /// </summary>
         /// <param name="day">Ein beliebiger Wochentag.</param>
-        /// <returns>Die zugeh�rige Kennzeichnung.</returns>
+        /// <returns>Die zugehörige Kennzeichnung.</returns>
         public static VCRDay GetDay(DayOfWeek day) => m_DayMapper[day];
 
         /// <summary>
-        /// Ermittelt, ob f�r einen bestimmten Tag eine Ausnahme definiert ist.
+        /// Ermittelt, ob für einen bestimmten Tag eine Ausnahme definiert ist.
         /// </summary>
-        /// <param name="day">Der gew�nschte Tag.</param>
-        /// <returns>Die Ausnahme f�r diesen Tag oder <i>null</i>, wenn eine regul�re Aufzeichnung ausgef�hrt
+        /// <param name="day">Der gewünschte Tag.</param>
+        /// <returns>Die Ausnahme für diesen Tag oder <i>null</i>, wenn eine reguläre Aufzeichnung ausgeführt
         /// werden soll.</returns>
         public VCRScheduleException? GetException(DateTime day)
         {
@@ -267,10 +204,10 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// Ermittelt die Ausnahmeregel f�r einen bestimmten Tag.
+        /// Ermittelt die Ausnahmeregel für einen bestimmten Tag.
         /// </summary>
         /// <param name="recordingEnd">Der Endzeitpunkt einer Aufzeichnung.</param>
-        /// <returns>Die zugeh�rige Ausnahmeregel.</returns>
+        /// <returns>Die zugehörige Ausnahmeregel.</returns>
         public VCRScheduleException? FindException(DateTime recordingEnd)
         {
             // Not repeating
@@ -310,10 +247,10 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// Tr�gt eine Ausnahmeregelung f�r einen bestimmten Tag ein.
+        /// Trägt eine Ausnahmeregelung für einen bestimmten Tag ein.
         /// </summary>
-        /// <param name="day">Der gew�nschte Tag.</param>
-        /// <param name="exception">Die Ausnahmeregel oder <i>null</i>, wenn f�r den Tag keine Ausnahme
+        /// <param name="day">Der gewünschte Tag.</param>
+        /// <param name="exception">Die Ausnahmeregel oder <i>null</i>, wenn für den Tag keine Ausnahme
         /// definiert werden soll.</param>
         public void SetException(DateTime day, VCRScheduleException exception)
         {
@@ -340,8 +277,8 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Erstellt die Liste der Tage, an denen eine Aufzeichnung wiederholt werden soll.
         /// </summary>
-        /// <returns>Die gew�nschte Liste oder <i>null</i>, falls keinerlei Wiederholung erw�nscht ist.</returns>
-        private DayOfWeek[]? CreateRepeatPattern()
+        /// <returns>Die gewünschte Liste oder <i>null</i>, falls keinerlei Wiederholung erwünscht ist.</returns>
+        public DayOfWeek[]? CreateRepeatPattern()
         {
             // Load pattern
             if (!IsRepeatable)
@@ -360,111 +297,5 @@ namespace JMS.DVB.NET.Recording.Persistence
                 return repeatPattern.ToArray();
         }
 
-        /// <summary>
-        /// Registriert diese Aufzeichnung in einer Planungsinstanz.
-        /// </summary>
-        /// <param name="scheduler">Die zu verwendende Planungsinstanz.</param>
-        /// <param name="job">Der zugeh�rige Auftrag.</param>
-        /// <param name="devices">Die Liste der Ger�te, auf denen die Aufzeichnung ausgef�hrt werden darf.</param>
-        /// <param name="findSource">Dient zum Pr�fen einer Quelle.</param>
-        /// <param name="disabled">Alle deaktivierten Auftr�ge.</param>
-        /// <param name="context">Die aktuelle Planungsumgebung.</param>
-        /// <exception cref="ArgumentNullException">Es wurden nicht alle Parameter angegeben.</exception>
-        public void AddToScheduler(
-            RecordingScheduler scheduler,
-            VCRJob job,
-            IScheduleResource[] devices,
-            Func<SourceSelection, VCRProfiles, SourceSelection?> findSource,
-            Func<Guid, bool> disabled,
-            PlanContext context,
-            VCRProfiles profiles
-        )
-        {
-            // Validate
-            if (scheduler == null)
-                throw new ArgumentNullException(nameof(scheduler));
-            if (job == null)
-                throw new ArgumentNullException(nameof(job));
-            if (findSource == null)
-                throw new ArgumentNullException(nameof(findSource));
-
-            // Let VCR.NET choose a profile to do the work
-            if (job.AutomaticResourceSelection)
-                devices = null!;
-
-            // Create the source selection
-            var persistedSource = Source ?? job.Source;
-            var selection = findSource(persistedSource, profiles);
-
-            // Station no longer available
-            if (selection == null)
-                if (persistedSource != null)
-                    selection =
-                        new SourceSelection
-                        {
-                            DisplayName = persistedSource.DisplayName,
-                            ProfileName = persistedSource.ProfileName,
-                            Location = persistedSource.Location,
-                            Group = persistedSource.Group,
-                            Source =
-                                new Station
-                                {
-                                    TransportStream = persistedSource.Source?.TransportStream ?? 0,
-                                    Network = persistedSource.Source?.Network ?? 0,
-                                    Service = persistedSource.Source?.Service ?? 0,
-                                    Name = persistedSource.DisplayName,
-                                },
-                        };
-
-            // See if we are allowed to process
-            var identifier = UniqueID!.Value;
-            if (disabled != null)
-                if (disabled(identifier))
-                    return;
-
-            // Load all
-            var name = string.IsNullOrEmpty(Name) ? job.Name : $"{job.Name} ({Name})";
-            var source = ProfileScheduleResource.CreateSource(selection!);
-            var duration = TimeSpan.FromMinutes(Duration);
-            var noStartBefore = NoStartBefore;
-            var start = FirstStart;
-
-            // Check repetition
-            var repeat = CreateRepeatPattern();
-            if (repeat == null)
-            {
-                // Only if not being recorded
-                if (!noStartBefore.HasValue)
-                    scheduler.Add(RecordingDefinition.Create(this, name, identifier, devices, source, start, duration));
-            }
-            else
-            {
-                // See if we have to adjust the start day
-                if (noStartBefore.HasValue)
-                {
-                    // Attach to the limit - actually we shift it a bit further assuming that we did have no large exception towards the past and the duration is moderate
-                    var startAfter = noStartBefore.Value.AddHours(12);
-                    var startAfterDay = startAfter.ToLocalTime().Date;
-
-                    // Localize the start time
-                    var startTime = start.ToLocalTime().TimeOfDay;
-
-                    // First adjust
-                    start = (startAfterDay + startTime).ToUniversalTime();
-
-                    // One more day
-                    if (start < startAfter)
-                        start = (startAfterDay.AddDays(1) + startTime).ToUniversalTime();
-                }
-
-                // Read the rest
-                var exceptions = Exceptions.Select(e => e.ToPlanException(duration)).ToArray();
-                var endDay = LastDay.GetValueOrDefault(MaxMovableDay);
-
-                // A bit more complex
-                if (start.Date <= endDay.Date)
-                    scheduler.Add(RecordingDefinition.Create(this, name, identifier, devices, source, start, duration, endDay, repeat), exceptions);
-            }
-        }
     }
 }

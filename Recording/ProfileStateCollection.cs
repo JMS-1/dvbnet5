@@ -573,7 +573,7 @@ namespace JMS.DVB.NET.Recording
                         continue;
 
                     // Register single item
-                    schedule.AddToScheduler(scheduler, job, [resource], (s, p) => p.FindSource(s), disabled, context, Profiles);
+                    schedule.AddToScheduler(scheduler, job, [resource], (s, p) => p.FindSource(s), disabled);
 
                     // Remember - even if we skipped it
                     context.RegisterSchedule(schedule, job);

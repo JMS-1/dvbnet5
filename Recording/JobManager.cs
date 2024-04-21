@@ -121,13 +121,13 @@ namespace JMS.DVB.NET.Recording
                 if (internalJob != null)
                 {
                     // Delete it
-                    internalJob.Delete(JobDirectory, Server);
+                    internalJob.Delete(JobDirectory);
 
                     // Remove from map
                     m_Jobs.Remove(internalJob.UniqueID!.Value);
 
                     // Save to file
-                    internalJob.Save(ArchiveDirectory, Server);
+                    internalJob.Save(ArchiveDirectory);
                 }
                 else
                 {
@@ -135,7 +135,7 @@ namespace JMS.DVB.NET.Recording
                     Tools.ExtendedLogging("Job not found in Active Directory - trying Archive");
 
                     // Must be archived               
-                    job.Delete(ArchiveDirectory, Server);
+                    job.Delete(ArchiveDirectory);
                 }
             }
         }
@@ -172,20 +172,20 @@ namespace JMS.DVB.NET.Recording
             Tools.ExtendedLogging("Updating Job {0}", job.UniqueID!);
 
             // Load default profile name
-            job.SetProfile(Profiles);
+            job.SetProfile();
 
             // Validate
-            job.Validate(scheduleIdentifier, Profiles);
+            job.Validate(scheduleIdentifier);
 
             // Cleanup schedules
             job.CleanupExceptions();
 
             // Remove from archive - if job has been recovered
-            job.Delete(ArchiveDirectory, Server);
+            job.Delete(ArchiveDirectory);
 
             // Try to store to disk - actually this is inside the lock because the directory virtually is part of our map
             lock (m_Jobs)
-                if (job.Save(JobDirectory, Server).GetValueOrDefault())
+                if (job.Save(JobDirectory).GetValueOrDefault())
                     m_Jobs[job.UniqueID!.Value] = job;
                 else
                     throw new ArgumentException(string.Format("Die Datei zum Auftrag {0} kann nicht geschrieben werden", job.UniqueID), nameof(job));
@@ -227,7 +227,7 @@ namespace JMS.DVB.NET.Recording
                 return null;
 
             // Finish
-            result.SetProfile(Profiles);
+            result.SetProfile();
 
             // Found in archive
             return result;

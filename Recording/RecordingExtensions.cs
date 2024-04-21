@@ -1,3 +1,4 @@
+using JMS.DVB.NET.Recording.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JMS.DVB.NET.Recording;
@@ -17,10 +18,18 @@ public static class RecordingExtensions
         services.AddSingleton<VCRConfiguration>();
         services.AddSingleton<VCRProfiles>();
         services.AddSingleton<VCRServer>();
+
+        /* Vorläufig Lösung für das 'static-Problem', da muss noch deutlich mehr passieren. */
+        services.AddSingleton<VCRScheduleExtensions.Initializer>();
+        services.AddSingleton<VCRJobExtensions.Initializer>();
     }
 
     public static void StartRecording(this IServiceProvider services, CancellationToken restart)
     {
+        /* Vorläufig Lösung für das 'static-Problem', da muss noch deutlich mehr passieren. */
+        services.GetRequiredService<VCRScheduleExtensions.Initializer>();
+        services.GetRequiredService<VCRJobExtensions.Initializer>();
+
         services.GetRequiredService<VCRServer>().RestartToken = restart;
     }
 }

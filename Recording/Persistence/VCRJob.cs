@@ -69,79 +69,6 @@ namespace JMS.DVB.NET.Recording.Persistence
         public bool AutomaticResourceSelection { get; set; }
 
         /// <summary>
-        /// Speichert diesen Auftrag ab.
-        /// </summary>
-        /// <param name="target">Der Pfad zu einem Zielverzeichnis.</param>
-        /// <returns>Gesetzt, wenn der Speichervorgang erfolgreich war. <i>null</i> wird
-        /// gemeldet, wenn diesem Auftrag keine Datei zugeordnet ist.</returns>
-        public bool? Save(DirectoryInfo target, VCRServer server)
-        {
-            // Get the file
-            var file = GetFileName(target);
-            if (file == null)
-                return null;
-
-            // Be safe
-            try
-            {
-                // Process
-                SerializationTools.Save(this, file);
-            }
-            catch (Exception e)
-            {
-                // Report
-                server.Log(e);
-
-                // Done
-                return false;
-            }
-
-            // Done
-            return true;
-        }
-
-        /// <summary>
-        /// Löschte diesen Auftrag.
-        /// </summary>
-        /// <param name="target">Der Pfad zu einem Zielverzeichnis.</param>
-        /// <returns>Gesetzt, wenn der Löschvorgang erfolgreich war. <i>null</i> wird gemeldet,
-        /// wenn die Datei nicht existierte.</returns>
-        public bool? Delete(DirectoryInfo target, VCRServer server)
-        {
-            // Get the file
-            var file = GetFileName(target);
-            if (file == null)
-                return null;
-            if (!file.Exists)
-                return null;
-
-            // Be safe
-            try
-            {
-                // Process
-                file.Delete();
-            }
-            catch (Exception e)
-            {
-                // Report error
-                server.Log(e);
-
-                // Failed
-                return false;
-            }
-
-            // Did it
-            return true;
-        }
-
-        /// <summary>
-        /// Ermittelt den Namen dieses Auftrags in einem Zielverzeichnis.
-        /// </summary>
-        /// <param name="target">Der Pfad zu einem Zielverzeichnis.</param>
-        /// <returns>Die zugehörige Datei.</returns>
-        private FileInfo? GetFileName(DirectoryInfo target) => UniqueID.HasValue ? new FileInfo(Path.Combine(target.FullName, UniqueID.Value.ToString("N").ToUpper() + FileSuffix)) : null;
-
-        /// <summary>
         /// Ermittelt alle Aufträge in einem Verzeichnis.
         /// </summary>
         /// <param name="directory">Das zu bearbeitende Verzeichnis.</param>
@@ -164,46 +91,6 @@ namespace JMS.DVB.NET.Recording.Persistence
         public bool IsActive => Schedules.Any(schedule => schedule.IsActive);
 
         /// <summary>
-        /// Prüft, ob ein Auftrag zulüssig ist.
-        /// </summary>
-        /// <param name="scheduleIdentifier">Die eindeutige Kennung der veränderten Aufzeichnung.</param>
-        /// <exception cref="InvalidJobDataException">Die Konfiguration dieses Auftrags is ungültig.</exception>
-        public void Validate(Guid? scheduleIdentifier, VCRProfiles profiles)
-        {
-            // Identifier
-            if (!UniqueID.HasValue)
-                throw new InvalidJobDataException("Die eindeutige Kennung ist ungültig");
-
-            // Name
-            if (!Name.IsValidName())
-                throw new InvalidJobDataException("Der Name enthält ungültige Zeichen");
-
-            // Test the station
-            if (HasSource)
-            {
-                // Source
-                if (!Source.Validate(profiles))
-                    throw new InvalidJobDataException("Eine Quelle ist ungültig");
-
-                // Streams
-                if (!Streams.Validate())
-                    throw new InvalidJobDataException("Die Aufzeichnungsoptionen sind ungültig");
-            }
-            else if (Streams != null)
-                throw new InvalidJobDataException("Die Aufzeichnungsoptionen sind ungültig");
-
-            // List of schedules
-            if (Schedules.Count < 1)
-                throw new InvalidJobDataException("Keine Aufzeichnungen vorhanden");
-
-            // Only validate the schedule we updated
-            if (scheduleIdentifier.HasValue)
-                foreach (var schedule in Schedules)
-                    if (!schedule.UniqueID.HasValue || schedule.UniqueID.Value.Equals(scheduleIdentifier))
-                        schedule.Validate(this, profiles);
-        }
-
-        /// <summary>
         /// Meldet, ob diesem Auftrag eine Quelle zugeordnet ist.
         /// </summary>
         [XmlIgnore]
@@ -220,27 +107,6 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Entfernt alle Ausnahmeregelungen, die bereits verstrichen sind.
         /// </summary>
         public void CleanupExceptions() => Schedules.ForEach(schedule => schedule.CleanupExceptions());
-
-        /// <summary>
-        /// Stellt sicher, dass für diesen Auftrag ein Geräteprprofil ausgewählt ist.
-        /// </summary>
-        internal void SetProfile(VCRProfiles profiles)
-        {
-            // No need
-            if (!string.IsNullOrEmpty(Source?.ProfileName))
-                return;
-
-            // Attach to the default profile
-            var defaultProfile = profiles.DefaultProfile;
-            if (defaultProfile == null)
-                return;
-
-            // Process
-            if (Source == null)
-                Source = new SourceSelection { ProfileName = defaultProfile.Name };
-            else
-                Source.ProfileName = defaultProfile.Name;
-        }
 
         /// <summary>
         /// Stellt sicher, dass für diesen Auftrag ein Geräteprprofil ausgewählt ist.
@@ -265,13 +131,6 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Alle in Dateinamen nicht erlaubten Zeichen.
         /// </summary>
         private static readonly char[] m_BadCharacters = Path.GetInvalidPathChars().Union(Path.GetInvalidFileNameChars()).Distinct().ToArray();
-
-        /// <summary>
-        /// Prüft, ob eine Quelle gültig ist.
-        /// </summary>
-        /// <param name="source">Die Auswahl der Quelle oder <i>null</i>.</param>
-        /// <returns>Gesetzt, wenn die Auswahl gültig ist.</returns>
-        public static bool Validate(this SourceSelection source, VCRProfiles profiles) => (profiles.FindSource(source) != null);
 
         /// <summary>
         /// Prüft, ob eine Datenstromauswahl zulässig ist.
