@@ -125,7 +125,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="job">Der bereits vorhandene Auftrag.</param>
         /// <param name="guide">Ein Eintrag aus der Programmzeitschrift.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public static EditSchedule? Create(VCRSchedule schedule, VCRJob job, ProgramGuideEntry guide)
+        public static EditSchedule? Create(VCRSchedule schedule, VCRJob job, ProgramGuideEntry guide, VCRProfiles profiles)
         {
             // None
             if (schedule == null)
@@ -146,7 +146,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 return
                     new EditSchedule
                     {
-                        Source = VCRServer.GetUniqueName(new SourceSelection { ProfileName = job.Source.ProfileName, Source = guide.Source }),
+                        Source = profiles.GetUniqueName(new SourceSelection { ProfileName = job.Source.ProfileName, Source = guide.Source }),
                         DVBSubtitles = UserProfileSettings.UseSubTitles,
                         DolbyDigital = UserProfileSettings.UseAC3,
                         AllLanguages = UserProfileSettings.UseMP2,
@@ -162,7 +162,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
             // Optionen ermitteln
             var streams = schedule.Streams;
-            var sourceName = VCRServer.GetUniqueName(schedule.Source);
+            var sourceName = profiles.GetUniqueName(schedule.Source);
 
             // Create
             return

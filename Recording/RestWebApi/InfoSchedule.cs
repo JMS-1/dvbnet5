@@ -71,13 +71,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="schedule">Die Aufzeichnung.</param>
         /// <param name="job">Der zugehörige Auftrag.</param>
         /// <returns></returns>
-        public static InfoSchedule Create(VCRSchedule schedule, VCRJob job)
+        public static InfoSchedule Create(VCRSchedule schedule, VCRJob job, VCRProfiles profiles)
         {
             // Create
             return
                 new InfoSchedule
                 {
-                    Source = (schedule.Source ?? job.Source).GetUniqueName(),
+                    Source = profiles.GetUniqueName(schedule.Source ?? job.Source),
                     WebId = ServerTools.GetUniqueWebId(job, schedule),
                     StartTime = schedule.FirstStart,
                     RepeatPattern = schedule.Days,

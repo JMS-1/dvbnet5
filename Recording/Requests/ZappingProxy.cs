@@ -25,8 +25,8 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="profile">Das zu verwendende Geräteprofil.</param>
         /// <param name="primary">Informationen zur Aufzeichnung als Ganzes.</param>
         /// <param name="target">Die aktuelle Zieladresse für die Nutzdaten.</param>
-        private ZappingProxy(ProfileState profile, VCRRecordingInfo primary, string target, VCRServer server)
-            : base(profile, primary, server)
+        private ZappingProxy(ProfileState profile, VCRRecordingInfo primary, string target, VCRServer server, VCRProfiles profiles)
+            : base(profile, primary, server, profiles)
         {
             // Remember
             m_target = target;
@@ -39,7 +39,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="target">Die aktuelle Zieladresse für die Nutzdaten.</param>
         /// <returns>Die gewünschte Steuerung.</returns>
         /// <exception cref="ArgumentNullException">Mindestens ein Parameter wurde nicht angegeben.</exception>
-        public static ZappingProxy Create(ProfileState profile, string target, VCRServer server)
+        public static ZappingProxy Create(ProfileState profile, string target, VCRServer server, VCRProfiles profiles)
         {
             // Validate
             if (profile == null)
@@ -64,7 +64,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 };
 
             // Forward
-            return new ZappingProxy(profile, primary, target, server);
+            return new ZappingProxy(profile, primary, target, server, profiles);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace JMS.DVB.NET.Recording.Requests
             Stamp();
 
             // Remap to real source
-            var selection = VCRProfiles.FindSource(ProfileName, source);
+            var selection = Profiles.FindSource(ProfileName, source);
             if (selection == null)
                 throw new ArgumentNullException(nameof(source));
 

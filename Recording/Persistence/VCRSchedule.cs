@@ -94,7 +94,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <param name="job">Der zugeh�rige Auftrag.</param>
         /// <exception cref="InvalidJobDataException">Es wurde keine eindeutige Kennung angegeben.</exception>
         /// <exception cref="InvalidJobDataException">Die Daten der Aufzeichnung sind fehlerhaft.</exception>
-        public void Validate(VCRJob job)
+        public void Validate(VCRJob job, VCRProfiles profiles)
         {
             // Identifier
             if (!UniqueID.HasValue)
@@ -129,7 +129,7 @@ namespace JMS.DVB.NET.Recording.Persistence
                             throw new InvalidJobDataException("Die Aufzeichnungstage sind ung�ltig");
 
                 // Source
-                if (!Source.Validate())
+                if (!Source.Validate(profiles))
                     throw new InvalidJobDataException("Eine Quelle ist ung�ltig");
 
                 // Streams
@@ -370,7 +370,15 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <param name="disabled">Alle deaktivierten Auftr�ge.</param>
         /// <param name="context">Die aktuelle Planungsumgebung.</param>
         /// <exception cref="ArgumentNullException">Es wurden nicht alle Parameter angegeben.</exception>
-        public void AddToScheduler(RecordingScheduler scheduler, VCRJob job, IScheduleResource[] devices, Func<SourceSelection, SourceSelection?> findSource, Func<Guid, bool> disabled, PlanContext context)
+        public void AddToScheduler(
+            RecordingScheduler scheduler,
+            VCRJob job,
+            IScheduleResource[] devices,
+            Func<SourceSelection, VCRProfiles, SourceSelection?> findSource,
+            Func<Guid, bool> disabled,
+            PlanContext context,
+            VCRProfiles profiles
+        )
         {
             // Validate
             if (scheduler == null)
@@ -386,7 +394,7 @@ namespace JMS.DVB.NET.Recording.Persistence
 
             // Create the source selection
             var persistedSource = Source ?? job.Source;
-            var selection = findSource(persistedSource);
+            var selection = findSource(persistedSource, profiles);
 
             // Station no longer available
             if (selection == null)

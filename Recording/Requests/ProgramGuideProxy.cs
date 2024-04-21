@@ -30,8 +30,8 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="state">Das zugehörige Geräteprofil.</param>
         /// <param name="recording">Daten der primären Aufzeichnung.</param>
-        private ProgramGuideProxy(ProfileState state, VCRRecordingInfo recording, VCRServer server)
-            : base(state, recording, server)
+        private ProgramGuideProxy(ProfileState state, VCRRecordingInfo recording, VCRServer server, VCRProfiles profiles)
+            : base(state, recording, server, profiles)
         {
             // Reset fields
             if (VCRServer.Configuration.EnableFreeSat)
@@ -43,7 +43,7 @@ namespace JMS.DVB.NET.Recording.Requests
             var allSources = new Dictionary<string, SourceSelection>(StringComparer.InvariantCultureIgnoreCase);
 
             // Load all sources of this profile
-            foreach (var source in VCRProfiles.GetSources(ProfileName))
+            foreach (var source in Profiles.GetSources(ProfileName))
             {
                 // Remember by direct name
                 allSources[source.DisplayName] = source;
@@ -74,7 +74,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="recording">Beschreibt die Aufzeichnung.</param>
         /// <returns>Die gewünschte Steuerung.</returns>
         /// <exception cref="ArgumentNullException">Es wurden nicht alle Parameter angegeben.</exception>
-        public static ProgramGuideProxy Create(ProfileState state, VCRRecordingInfo recording, VCRServer server)
+        public static ProgramGuideProxy Create(ProfileState state, VCRRecordingInfo recording, VCRServer server, VCRProfiles profiles)
         {
             // Validate
             if (state == null)
@@ -83,7 +83,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 throw new ArgumentNullException(nameof(recording));
 
             // Forward
-            return new ProgramGuideProxy(state, recording, server);
+            return new ProgramGuideProxy(state, recording, server, profiles);
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace JMS.DVB.NET.Recording.Requests
                     epg.Ratings.AddRange(item.Ratings);
 
                 // Resolve
-                var source = VCRProfiles.FindSource(ProfileName, item.Source);
+                var source = Profiles.FindSource(ProfileName, item.Source);
                 if (source == null)
                 {
                     // Load default

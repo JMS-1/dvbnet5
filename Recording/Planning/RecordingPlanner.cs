@@ -37,13 +37,16 @@ namespace JMS.DVB.NET.Recording.Planning
 
         private readonly VCRServer m_server;
 
+        private readonly VCRProfiles m_profiles;
+
         /// <summary>
         /// Erstellt eine neue Planung.
         /// </summary>
         /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
-        private RecordingPlanner(IRecordingPlannerSite site, VCRServer server)
+        private RecordingPlanner(IRecordingPlannerSite site, VCRServer server, VCRProfiles profiles)
         {
             // Remember
+            m_profiles = profiles;
             m_server = server;
             m_site = site;
 
@@ -137,14 +140,14 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
         /// <returns>Die gewünschte Planungsumgebung.</returns>
-        public static RecordingPlanner Create(IRecordingPlannerSite site, VCRServer server)
+        public static RecordingPlanner Create(IRecordingPlannerSite site, VCRServer server, VCRProfiles profiles)
         {
             // Validate
             if (site == null)
                 throw new ArgumentNullException(nameof(site));
 
             // Forward
-            return new RecordingPlanner(site, server);
+            return new RecordingPlanner(site, server, profiles);
         }
 
         /// <summary>
@@ -195,7 +198,7 @@ namespace JMS.DVB.NET.Recording.Planning
                     }
 
                     // Forward to site
-                    m_site.Start(schedule, this, context!, m_server);
+                    m_site.Start(schedule, this, context!, m_server, m_profiles);
 
                     // Done
                     return;
@@ -308,7 +311,7 @@ namespace JMS.DVB.NET.Recording.Planning
             var context = new PlanContext(m_started.Values);
 
             // Configure it
-            m_site.AddRegularJobs(scheduler, disabled, this, context);
+            m_site.AddRegularJobs(scheduler, disabled, this, context, m_profiles);
 
             // Enable all
             if (disabled == null)

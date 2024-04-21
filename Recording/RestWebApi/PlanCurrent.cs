@@ -209,7 +209,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="active">Die Daten zur aktiven Aufzeichnung.</param>
         /// <param name="server">Der zugehörige Dienst.</param>
         /// <returns>Die gewünschten Beschreibungen.</returns>
-        public static PlanCurrent[] Create(FullInfo active, VCRServer server)
+        public static PlanCurrent[] Create(FullInfo active, VCRServer server, VCRProfiles profiles)
         {
             // Validate
             if (active == null)
@@ -224,7 +224,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var streams = active.Streams;
             if (streams != null)
                 if (streams.Count > 0)
-                    return streams.SelectMany((stream, index) => Create(active, stream, index, server)).ToArray();
+                    return streams.SelectMany((stream, index) => Create(active, stream, index, server, profiles)).ToArray();
 
             // Single recording - typically a task
             var start = RoundToSecond(active.Recording.PhysicalStart.GetValueOrDefault(DateTime.UtcNow));
@@ -255,17 +255,17 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             else if (VCRJob.ZappingName.Equals(sourceName))
                 current.SizeHint = GetSizeHint(recording.TotalSize);
             else
-                current.Complete(server);
+                current.Complete(server, profiles);
 
             // Report
-            return new[] { current };
+            return [current];
         }
 
         /// <summary>
         /// Schließt die Konfiguration einer Beschreibung ab.
         /// </summary>
         /// <param name="server">Der zugehörige Dienst.</param>
-        private void Complete(VCRServer server)
+        private void Complete(VCRServer server, VCRProfiles profiles)
         {
             // No source
             if (m_source == null)
@@ -281,7 +281,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
             // Load the profile
             HasGuideEntry = profile.ProgramGuide.HasEntry(m_source.Source, StartTime, StartTime + Duration);
-            SourceName = m_source.GetUniqueName();
+            SourceName = profiles.GetUniqueName(m_source);
         }
 
         /// <summary>
@@ -306,7 +306,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="streamIndex">Die laufende Nummer dieses Datenstroms.</param>
         /// <param name="server">Der zugehörige Dienst.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        private static IEnumerable<PlanCurrent> Create(FullInfo active, StreamInfo stream, int streamIndex, VCRServer server)
+        private static IEnumerable<PlanCurrent> Create(FullInfo active, StreamInfo stream, int streamIndex, VCRServer server, VCRProfiles profiles)
         {
             // Static data
             var recording = active.Recording;
@@ -340,7 +340,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                     };
 
                 // Finish
-                current.Complete(server);
+                current.Complete(server, profiles);
 
                 // Report
                 yield return current;
@@ -354,7 +354,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="context">Die aktuelle Analyseumgebung.</param>
         /// <param name="server">Der zugehörige Dienst.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public static PlanCurrent Create(IScheduleInformation plan, PlanContext context, VCRServer server)
+        public static PlanCurrent Create(IScheduleInformation plan, PlanContext context, VCRServer server, VCRProfiles profiles)
         {
             // Attach to the definition
             var definition = (IScheduleDefinition<VCRSchedule>)plan.Definition;
@@ -379,7 +379,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 };
 
             // Finish
-            planned.Complete(server);
+            planned.Complete(server, profiles);
 
             // Report
             return planned;

@@ -32,6 +32,8 @@ namespace JMS.DVB.NET.Recording.Requests
 
         protected readonly VCRServer VCRServer;
 
+        protected readonly VCRProfiles Profiles;
+
         /// <summary>
         /// Verhindert, dass der Rechner während der Aufzeichnung in den Schlafzustand wechselt.
         /// </summary>
@@ -43,7 +45,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="state">Der Zustands des zugehörigen Geräteprofils.</param>
         /// <param name="primary">Die primäre Aufzeichnung, auf Grund derer der Aufzeichnungsprozeß aktiviert wurde.</param>
         /// <exception cref="ArgumentNullException">Es wurde kein Profil angegeben.</exception>
-        protected CardServerProxy(ProfileState state, VCRRecordingInfo primary, VCRServer server)
+        protected CardServerProxy(ProfileState state, VCRRecordingInfo primary, VCRServer server, VCRProfiles profiles)
         {
             // Validate
             if (state == null)
@@ -53,6 +55,7 @@ namespace JMS.DVB.NET.Recording.Requests
             RequestFinished = new ManualResetEvent(false);
 
             // Remember
+            Profiles = profiles;
             VCRServer = server;
             Representative = primary.Clone();
             ProfileState = state;
@@ -367,7 +370,7 @@ namespace JMS.DVB.NET.Recording.Requests
                         Representative.PhysicalStart = DateTime.UtcNow;
 
                         // Create fresh environment and fire extensions - with no files so far
-                        FireRecordingStartedExtensions(ExtensionEnvironment = Representative.GetReplacementPatterns());
+                        FireRecordingStartedExtensions(ExtensionEnvironment = Representative.GetReplacementPatterns(Profiles));
 
                         // Time to allow derived class to start up
                         OnStart();

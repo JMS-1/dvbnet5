@@ -5,38 +5,39 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "args": [],
+      "console": "internalConsole",
+      "cwd": "${workspaceFolder}",
       "name": "Tests",
-      "type": "coreclr",
-      "request": "launch",
       "preLaunchTask": "build",
       "program": "${workspaceFolder}/TestApp/bin/Debug/net8.0/TestApp.dll",
-      "args": [],
-      "cwd": "${workspaceFolder}",
+      "request": "launch",
       "stopAtEntry": false,
-      "console": "internalConsole"
+      "type": "coreclr"
     },
     {
       "name": "Server",
       "processName": "JMS.VCR.NET",
-      "type": "coreclr",
-      "request": "attach"
+      "request": "attach",
+      "type": "coreclr"
     },
     {
-      "name": "Startup",
-      "type": "coreclr",
-      "request": "launch",
-      "preLaunchTask": "build-server",
-      "program": "${workspaceFolder}/WebServer/bin/Debug/net8.0/JMS.VCR.NET.dll",
       "args": [],
       "cwd": "${workspaceFolder}/WebServer",
-      "stopAtEntry": true,
-      "serverReadyAction": {
-        "action": "openExternally",
-        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-      },
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "name": "Startup",
+      "preLaunchTask": "build-server",
+      "program": "${workspaceFolder}/WebServer/bin/Debug/net8.0/JMS.VCR.NET.dll",
+      "request": "launch",
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s/swagger"
+      },
+      "stopAtEntry": false,
+      "type": "coreclr"
     }
   ]
 }

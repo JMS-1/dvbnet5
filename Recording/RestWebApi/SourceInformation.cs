@@ -33,7 +33,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="source">Die volle Beschreibung der Quelle.</param>
         /// <returns>Das Transferformat.</returns>
-        public static TReal Create(SourceSelection source)
+        public static TReal Create(SourceSelection source, VCRProfiles profiles)
         {
             // Attach to the station
             var station = (Station)source.Source;
@@ -42,7 +42,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var info = new TReal
             {
                 IsEncrypted = station.IsEncrypted || station.IsService,
-                Name = source.GetUniqueName(),
+                Name = profiles.GetUniqueName(source),
             };
 
             // Finish setup

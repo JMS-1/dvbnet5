@@ -101,21 +101,21 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="entry">Der originale Eintrag aus der Verwaltung.</param>
         /// <param name="profileName">Der Name des zugehörigen Geräteprofils.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public static GuideItem Create(ProgramGuideEntry entry, string profileName)
+        public static GuideItem Create(ProgramGuideEntry entry, string profileName, VCRProfiles profiles)
         {
             // Validate
             if (entry == null)
                 throw new ArgumentNullException(nameof(entry));
 
             // Default name of the station
-            var source = VCRProfiles.FindSource(profileName, entry.Source);
+            var source = profiles.FindSource(profileName, entry.Source);
 
             // Create
             return
                 new GuideItem
                 {
                     Identifier = $"{entry.StartTime.Ticks}:{profileName}:{SourceIdentifier.ToString(entry.Source)!.Replace(" ", "")}",
-                    Station = (source == null) ? entry.StationName : source.GetUniqueName(),
+                    Station = (source == null) ? entry.StationName : profiles.GetUniqueName(source),
                     Duration = TimeSpan.FromSeconds(entry.Duration),
                     Categories = entry.Categories.ToArray(),
                     Ratings = entry.Ratings.ToArray(),

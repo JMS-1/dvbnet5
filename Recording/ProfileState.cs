@@ -43,13 +43,13 @@ namespace JMS.DVB.NET.Recording
             Collection = collection;
 
             // Create program guide manager
-            ProgramGuide = new ProgramGuideManager(Collection.Server.JobManager, profileName);
+            ProgramGuide = new ProgramGuideManager(Collection.Server.JobManager, profileName, Collection.Profiles);
         }
 
         /// <summary>
         /// Meldet das zugehörige Geräteprofil.
         /// </summary>
-        public Profile? Profile { get { return VCRProfiles.FindProfile(ProfileName); } }
+        public Profile? Profile => Collection.Profiles.FindProfile(ProfileName);
 
         /// <summary>
         /// Meldet die zugehörige VCR.NET Instanz.
@@ -93,7 +93,7 @@ namespace JMS.DVB.NET.Recording
             else if (!string.IsNullOrEmpty(connectTo))
             {
                 // Activate 
-                ZappingProxy.Create(this, connectTo, Server).Start();
+                ZappingProxy.Create(this, connectTo, Server, Collection.Profiles).Start();
             }
             else if (source != null)
             {
@@ -305,7 +305,7 @@ namespace JMS.DVB.NET.Recording
                     if (ReferenceEquals(current, null))
                     {
                         // Create a brand new regular recording request
-                        var request = new RecordingProxy(this, recording, Server);
+                        var request = new RecordingProxy(this, recording, Server, Collection.Profiles);
 
                         // Activate the request
                         request.Start();

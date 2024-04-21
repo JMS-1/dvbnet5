@@ -15,6 +15,12 @@ public static class RecordingExtensions
     {
         services.AddSingleton<IVCRConfigurationExePathProvider>((ctx) => new ConfigurationPathProvider());
         services.AddSingleton<VCRConfiguration>();
+        services.AddSingleton<VCRProfiles>();
         services.AddSingleton<VCRServer>();
+    }
+
+    public static void StartRecording(this IServiceProvider services, CancellationToken restart)
+    {
+        services.GetRequiredService<VCRServer>().RestartToken = restart;
     }
 }

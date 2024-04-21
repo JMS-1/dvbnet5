@@ -168,7 +168,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// </summary>
         /// <param name="scheduleIdentifier">Die eindeutige Kennung der veränderten Aufzeichnung.</param>
         /// <exception cref="InvalidJobDataException">Die Konfiguration dieses Auftrags is ungültig.</exception>
-        public void Validate(Guid? scheduleIdentifier)
+        public void Validate(Guid? scheduleIdentifier, VCRProfiles profiles)
         {
             // Identifier
             if (!UniqueID.HasValue)
@@ -182,7 +182,7 @@ namespace JMS.DVB.NET.Recording.Persistence
             if (HasSource)
             {
                 // Source
-                if (!Source.Validate())
+                if (!Source.Validate(profiles))
                     throw new InvalidJobDataException("Eine Quelle ist ungültig");
 
                 // Streams
@@ -200,7 +200,7 @@ namespace JMS.DVB.NET.Recording.Persistence
             if (scheduleIdentifier.HasValue)
                 foreach (var schedule in Schedules)
                     if (!schedule.UniqueID.HasValue || schedule.UniqueID.Value.Equals(scheduleIdentifier))
-                        schedule.Validate(this);
+                        schedule.Validate(this, profiles);
         }
 
         /// <summary>
@@ -224,14 +224,14 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Stellt sicher, dass für diesen Auftrag ein Geräteprprofil ausgewählt ist.
         /// </summary>
-        internal void SetProfile()
+        internal void SetProfile(VCRProfiles profiles)
         {
             // No need
             if (!string.IsNullOrEmpty(Source?.ProfileName))
                 return;
 
             // Attach to the default profile
-            var defaultProfile = VCRProfiles.DefaultProfile;
+            var defaultProfile = profiles.DefaultProfile;
             if (defaultProfile == null)
                 return;
 
@@ -271,7 +271,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// </summary>
         /// <param name="source">Die Auswahl der Quelle oder <i>null</i>.</param>
         /// <returns>Gesetzt, wenn die Auswahl gültig ist.</returns>
-        public static bool Validate(this SourceSelection source) => (VCRProfiles.FindSource(source) != null);
+        public static bool Validate(this SourceSelection source, VCRProfiles profiles) => (profiles.FindSource(source) != null);
 
         /// <summary>
         /// Prüft, ob eine Datenstromauswahl zulässig ist.

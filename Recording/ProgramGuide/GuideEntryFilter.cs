@@ -165,11 +165,11 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         /// <param name="entries">Eine Liste von Eintr�gen.</param>
         /// <returns>Die gefilterte Liste.</returns>
-        public IEnumerable<ProgramGuideEntry> Filter(IEnumerable<ProgramGuideEntry> entries)
+        public IEnumerable<ProgramGuideEntry> Filter(IEnumerable<ProgramGuideEntry> entries, VCRProfiles profiles)
         {
             // Only use sources available to the target profile
             var entrySet = entries
-                .Select(entry => new { e = entry, s = VCRProfiles.FindSource(ProfileName, entry.Source) })
+                .Select(entry => new { e = entry, s = profiles.FindSource(ProfileName, entry.Source) })
                 .Where(entry => entry.s != null)
                 .Select(entry => new { e = entry.e, s = (Station)entry.s!.Source });
 

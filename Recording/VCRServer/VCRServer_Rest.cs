@@ -58,14 +58,19 @@ namespace JMS.DVB.NET.Recording
         /// <param name="to">Das Ende eines Zeitraums.</param>
         /// <param name="factory">Name der Metjode zum Erzeugen eines externen Eintrags.</param>
         /// <returns>Der am besten passende Eintrag.</returns>
-        public TTarget? FindProgramGuideEntry<TTarget>(string profileName, SourceIdentifier source, DateTime from, DateTime to, Func<ProgramGuideEntry, string, TTarget> factory)
+        public TTarget? FindProgramGuideEntry<TTarget>(
+            string profileName,
+            SourceIdentifier source,
+            DateTime from,
+            DateTime to,
+            Func<ProgramGuideEntry, string, VCRProfiles, TTarget> factory)
         {
             // See if profile exists
             var profile = Profiles[profileName];
             if (profile == null)
                 return default;
             else
-                return profile.ProgramGuide.FindBestEntry(source, from, to, factory);
+                return profile.ProgramGuide.FindBestEntry(source, from, to, factory, _profiles);
         }
 
         /// <summary>
@@ -132,14 +137,14 @@ namespace JMS.DVB.NET.Recording
         /// <typeparam name="TJob">Die Art der externen Darstellung.</typeparam>
         /// <param name="factory">Methode zum Erstellen der externen Darstellung.</param>
         /// <returns>Die Liste der Auftr�ge.</returns>
-        public TJob[] GetJobs<TJob>(Func<VCRJob, bool, TJob> factory)
+        public TJob[] GetJobs<TJob>(Func<VCRJob, bool, VCRProfiles, TJob> factory, VCRProfiles profiles)
         {
             // Report
             return
                 JobManager
                     .GetActiveJobs()
-                    .Select(job => factory(job, true))
-                    .Concat(JobManager.ArchivedJobs.Select(job => factory(job, false)))
+                    .Select(job => factory(job, true, profiles))
+                    .Concat(JobManager.ArchivedJobs.Select(job => factory(job, false, profiles)))
                     .ToArray();
         }
 
@@ -152,7 +157,10 @@ namespace JMS.DVB.NET.Recording
         /// <param name="fromPlan">Erstellt eine einzelne Beschreibung zu einer Aufzeichnung aus dem Aufzeichnungsplan.</param>
         /// <param name="forIdle">Erstellt eine Beschreibung f�r ein Ger�t, f�r das keine Aufzeichnungen geplant sind.</param>
         /// <returns>Die Liste aller Informationen.</returns>
-        public TInfo[] GetCurrentRecordings<TInfo>(Func<FullInfo, VCRServer, TInfo[]> fromActive, Func<IScheduleInformation, PlanContext, VCRServer, TInfo> fromPlan = null!, Func<string, TInfo> forIdle = null!)
+        public TInfo[] GetCurrentRecordings<TInfo>(
+            Func<FullInfo, VCRServer, VCRProfiles, TInfo[]> fromActive,
+            Func<IScheduleInformation, PlanContext, VCRServer, VCRProfiles, TInfo> fromPlan = null!,
+            Func<string, TInfo> forIdle = null!)
         {
             // Validate
             if (fromActive == null)
@@ -166,7 +174,7 @@ namespace JMS.DVB.NET.Recording
                 Profiles
                     .InspectProfiles(profile => profile.CurrentRecording)
                     .Where(current => current != null)
-                    .ToDictionary(current => current!.Recording.Source.ProfileName, current => fromActive(current!, this), idleProfiles.Comparer);
+                    .ToDictionary(current => current!.Recording.Source.ProfileName, current => fromActive(current!, this, _profiles), idleProfiles.Comparer);
 
             // Check for idle profiles
             idleProfiles.ExceptWith(perProfile.Keys);
@@ -204,7 +212,7 @@ namespace JMS.DVB.NET.Recording
 
                         // Add entry
                         if (fromPlan != null)
-                            perProfile.Add(profileName, new[] { fromPlan(schedule, context, this) });
+                            perProfile.Add(profileName, new[] { fromPlan(schedule, context, this, _profiles) });
 
                         // Did it
                         if (idleProfiles.Count < 1)
@@ -230,24 +238,29 @@ namespace JMS.DVB.NET.Recording
         /// <param name="filterConverter">Methode zur Wandlung des Filters in die interne Darstellung.</param>
         /// <param name="factory">Erstellt die externe Repr�sentation eines Eintrags.</param>
         /// <returns>Die Liste aller passenden Eintr�ge.</returns>
-        public TEntry[] GetProgramGuideEntries<TFilter, TEntry>(TFilter filter, Func<TFilter, GuideEntryFilter?> filterConverter, Func<ProgramGuideEntry, string, TEntry> factory) where TFilter : class
+        public TEntry[] GetProgramGuideEntries<TFilter, TEntry>(
+            TFilter filter,
+            Func<TFilter, VCRProfiles, GuideEntryFilter?> filterConverter,
+            Func<ProgramGuideEntry, string, VCRProfiles, TEntry> factory
+        ) where TFilter : class
         {
             // Validate filter
             if (filter == null)
-                return new TEntry[0];
+                return [];
 
             // Convert filter
-            var filterIntern = filterConverter(filter);
+            var filterIntern = filterConverter(filter, _profiles);
 
             // Locate profile and forward call
             var profileName = filterIntern!.ProfileName;
             if (string.IsNullOrEmpty(profileName))
-                return new TEntry[0];
+                return [];
+
             var profile = FindProfile(profileName);
             if (profile == null)
-                return new TEntry[0];
-            else
-                return profile.ProgramGuide.GetProgramGuideEntries(filterIntern, factory);
+                return [];
+
+            return profile.ProgramGuide.GetProgramGuideEntries(filterIntern, factory, _profiles);
         }
 
         /// <summary>
@@ -257,14 +270,17 @@ namespace JMS.DVB.NET.Recording
         /// <param name="filter">Der Filter in der externen Darstellung.</param>
         /// <param name="filterConverter">Methode zur Wandlung des Filters in die interne Darstellung.</param>
         /// <returns>Die Anzahl der passenden Eintr�ge.</returns>
-        public int GetProgramGuideEntries<TFilter>(TFilter filter, Func<TFilter, GuideEntryFilter?> filterConverter) where TFilter : class
+        public int GetProgramGuideEntries<TFilter>(
+            TFilter filter,
+            Func<TFilter, VCRProfiles, GuideEntryFilter?> filterConverter
+        ) where TFilter : class
         {
             // Validate filter
             if (filter == null)
                 return 0;
 
             // Convert filter
-            var filterIntern = filterConverter(filter);
+            var filterIntern = filterConverter(filter, _profiles);
 
             // Locate profile and forward call
             var profileName = filterIntern!.ProfileName;
@@ -274,7 +290,7 @@ namespace JMS.DVB.NET.Recording
             if (profile == null)
                 return 0;
             else
-                return profile.ProgramGuide.GetProgramGuideEntries(filterIntern);
+                return profile.ProgramGuide.GetProgramGuideEntries(filterIntern, _profiles);
         }
 
         /// <summary>
@@ -284,7 +300,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="profileName">Der Name des Ger�teprofils.</param>
         /// <param name="factory">Methode zur Erstellung der Informationen.</param>
         /// <returns>Die gew�nschten Informationen.</returns>
-        public TInfo GetProgramGuideInformation<TInfo>(string profileName, Func<ProgramGuideManager, TInfo> factory)
+        public TInfo GetProgramGuideInformation<TInfo>(string profileName, Func<ProgramGuideManager, VCRProfiles, TInfo> factory)
         {
             // Locate profile and forward call
             if (string.IsNullOrEmpty(profileName))
@@ -293,7 +309,7 @@ namespace JMS.DVB.NET.Recording
             if (profile == null)
                 return default!;
             else
-                return factory(profile.ProgramGuide);
+                return factory(profile.ProgramGuide, _profiles);
         }
 
         /// <summary>
@@ -306,7 +322,7 @@ namespace JMS.DVB.NET.Recording
         public TProfile[] GetProfiles<TProfile>(Func<Profile, bool, TProfile> factory, out string defaultProfile)
         {
             // Create map            
-            var profiles = VCRProfiles.ProfileNames.ToArray();
+            var profiles = _profiles.ProfileNames.ToArray();
             var active = new HashSet<string>(profiles, ProfileManager.ProfileNameComparer);
 
             // Set default

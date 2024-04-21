@@ -7,7 +7,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Der Web Service zur Pflege von Aufzeichnungen und Aufträgen.
     /// </summary>
-    public class EditController(VCRServer server) : ControllerBase
+    public class EditController(VCRServer server, VCRProfiles profiles) : ControllerBase
     {
         /// <summary>
         /// Wird zum Anlegen einer neuen Aufzeichnung verwendet.
@@ -71,7 +71,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             }
 
             // Information erzeugen
-            return JobScheduleInfo.Create(job, schedule!, epgEntry!, profile);
+            return JobScheduleInfo.Create(job, schedule!, epgEntry!, profile, profiles);
         }
 
         /// <summary>

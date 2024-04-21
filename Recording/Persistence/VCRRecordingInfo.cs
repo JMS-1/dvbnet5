@@ -6,7 +6,7 @@ using JMS.DVB.NET.Recording.Planning;
 namespace JMS.DVB.NET.Recording.Persistence
 {
     /// <summary>
-    /// Enth�lt alle Informationen zur Durchf�hrung einer Aufzeichnung.
+    /// Enthält alle Informationen zur Durchführung einer Aufzeichnung.
     /// </summary>
     [Serializable]
     public class VCRRecordingInfo
@@ -45,27 +45,27 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// Instanz der Vergleichshilfsklasse auf den tats�chlichen Startzeitpunkt.
+        /// Instanz der Vergleichshilfsklasse auf den tatsächlichen Startzeitpunkt.
         /// </summary>
         public static readonly IComparer<VCRRecordingInfo> ComparerByStarted = new _CompareByPhysicalStart();
 
         /// <summary>
-        /// Dateiendung f�r Protokolleintr�ge im XML Serialisierungsformat.
+        /// Dateiendung für Protokolleinträge im XML Serialisierungsformat.
         /// </summary>
         public const string FileSuffix = ".l39";
 
         /// <summary>
-        /// Eindeutige Kennung der zugeh�rigen Aufzeichnung.
+        /// Eindeutige Kennung der zugehörigen Aufzeichnung.
         /// </summary>
         public Guid? ScheduleUniqueID { get; set; }
 
         /// <summary>
-        /// Tats�chlicher Startzeitpunkt.
+        /// Tatsächlicher Startzeitpunkt.
         /// </summary>
         private object m_physicalStart = null!;
 
         /// <summary>
-        /// Tats�chlicher Startzeitpunkt.
+        /// Tatsächlicher Startzeitpunkt.
         /// </summary>
         public DateTime? PhysicalStart
         {
@@ -82,22 +82,22 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// Eindeutige Kennung des zugeh�rigen Auftrags.
+        /// Eindeutige Kennung des zugehörigen Auftrags.
         /// </summary>
         public Guid? JobUniqueID { get; set; }
 
         /// <summary>
-        /// Vom Anwender gew�nschter Startzeitpunkt.
+        /// Vom Anwender gewünschter Startzeitpunkt.
         /// </summary>
         public DateTime? StartsAt { get; set; }
 
         /// <summary>
-        /// Vom Anwender gew�nschtes Ende der Aufzeichnung und nach der Aufzeichnung das tats�chliche Ende.
+        /// Vom Anwender gewünschtes Ende der Aufzeichnung und nach der Aufzeichnung das tatsächliche Ende.
         /// </summary>
         private long m_endsAt = DateTime.MinValue.Ticks;
 
         /// <summary>
-        /// Vom Anwender gew�nschtes Ende der Aufzeichnung und nach der Aufzeichnung das tats�chliche Ende.
+        /// Vom Anwender gewünschtes Ende der Aufzeichnung und nach der Aufzeichnung das tatsächliche Ende.
         /// </summary>
         public DateTime EndsAt
         {
@@ -119,7 +119,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         public uint TotalSize { get; set; }
 
         /// <summary>
-        /// Dateiname f�r die aufgezeichneten Daten.
+        /// Dateiname für die aufgezeichneten Daten.
         /// </summary>
         public string FileName { get; set; } = null!;
 
@@ -129,59 +129,59 @@ namespace JMS.DVB.NET.Recording.Persistence
         public string Name { get; set; } = null!;
 
         /// <summary>
-        /// Alle w�hrend der Aufzeichnung entstandenen Dateien.
+        /// Alle während der Aufzeichnung entstandenen Dateien.
         /// </summary>
         [XmlElement("File")]
         public readonly List<FileInformation> RecordingFiles = new List<FileInformation>();
 
         /// <summary>
-        /// Die zugeh�rige Quelle.
+        /// Die zugehörige Quelle.
         /// </summary>
         public SourceSelection Source { get; set; } = null!;
 
         /// <summary>
-        /// Die aktuelle Auswahl der aufgezeichneten Datenstr�me.
+        /// Die aktuelle Auswahl der aufgezeichneten Datenströme.
         /// </summary>
-        public StreamSelection Streams { get; set; }
-= null!;
+        public StreamSelection Streams { get; set; } = null!;
+
         /// <summary>
-        /// Die zugeh�rige Aufzeichnung.
+        /// Die zugehörige Aufzeichnung.
         /// </summary>
         [XmlIgnore]
         public VCRSchedule RelatedSchedule { get { return m_RelatedSchedule; } set { m_RelatedSchedule = value; } }
 
         /// <summary>
-        /// Die zugeh�rige Aufzeichnung.
+        /// Die zugehörige Aufzeichnung.
         /// </summary>
         [NonSerialized]
         private VCRSchedule m_RelatedSchedule = null!;
 
         /// <summary>
-        /// Der zugeh�rige Auftrag.
+        /// Der zugehörige Auftrag.
         /// </summary>
         [XmlIgnore]
         public VCRJob RelatedJob { get { return m_RelatedJob; } set { m_RelatedJob = value; } }
 
         /// <summary>
-        /// Der zugeh�rige Auftrag.
+        /// Der zugehörige Auftrag.
         /// </summary>
         [NonSerialized]
         private VCRJob m_RelatedJob = null!;
 
         /// <summary>
-        /// Verhindert, dass nach der Ausf�hrung dieses Auftrags der Schlafzustand eingeleitet wird.
+        /// Verhindert, dass nach der Ausführung dieses Auftrags der Schlafzustand eingeleitet wird.
         /// </summary>
         [XmlIgnore]
         public bool DisableHibernation { get { return m_DisableHibernation; } set { m_DisableHibernation = value; } }
 
         /// <summary>
-        /// Verhindert, dass nach der Ausf�hrung dieses Auftrags der Schlafzustand eingeleitet wird.
+        /// Verhindert, dass nach der Ausführung dieses Auftrags der Schlafzustand eingeleitet wird.
         /// </summary>
         [NonSerialized]
         private bool m_DisableHibernation;
 
         /// <summary>
-        /// Ein eindeutiger Name f�r den Fall, dass es sich um einen Protokolleintrag handelt.
+        /// Ein eindeutiger Name für den Fall, dass es sich um einen Protokolleintrag handelt.
         /// </summary>
         [XmlIgnore]
         public string LogIdentifier { get; set; } = null!;
@@ -192,15 +192,14 @@ namespace JMS.DVB.NET.Recording.Persistence
         public bool IsHidden { get; set; }
 
         /// <summary>
-        /// Gesetzt, wenn diese Aufzeichnung versp�tet beginnt.
+        /// Gesetzt, wenn diese Aufzeichnung verspätet beginnt.
         /// </summary>
         public bool StartsLate { get; set; }
 
         /// <summary>
-        /// Meldet die zugeh�rige Quelle, so wie sie im aktuellen Ger�teprofil bekannt ist.
+        /// Meldet die zugehörige Quelle, so wie sie im aktuellen Geräteprofil bekannt ist.
         /// </summary>
-        [XmlIgnore]
-        public SourceSelection? CurrentSource => VCRProfiles.FindSource(Source);
+        public SourceSelection? GetCurrentSource(VCRProfiles profiles) => profiles.FindSource(Source);
 
         /// <summary>
         /// Erstellt eine exakte Kopie dieser Aufzeichnungsinformation.
@@ -235,10 +234,10 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// Ermittelt die Ersetzungsmuster f�r Dateinamen gem�� den Daten dieser Aufzeichnung.
+        /// Ermittelt die Ersetzungsmuster für Dateinamen gemäß den Daten dieser Aufzeichnung.
         /// </summary>
-        /// <returns>Die konkreten Ersetzungswertes f�r diesen Auftrag.</returns>
-        public Dictionary<string, string> GetReplacementPatterns()
+        /// <returns>Die konkreten Ersetzungswertes für diesen Auftrag.</returns>
+        public Dictionary<string, string> GetReplacementPatterns(VCRProfiles profiles)
         {
             // Pattern map static parts
             var localNow = DateTime.Now;
@@ -287,7 +286,7 @@ namespace JMS.DVB.NET.Recording.Persistence
                 patterns["%Duration%"] = ((int)(end - StartsAt.Value).TotalMinutes).ToString();
 
             // Check station
-            var source = CurrentSource;
+            var source = GetCurrentSource(profiles);
             if (source != null)
             {
                 // Attach to the station
@@ -359,9 +358,9 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// Bef�llt vor allem den Dateinamen mit Vorgabewerten.
+        /// Befüllt vor allem den Dateinamen mit Vorgabewerten.
         /// </summary>
-        internal void LoadDefaults(VCRConfiguration configuration)
+        internal void LoadDefaults(VCRConfiguration configuration, VCRProfiles profiles)
         {
             // Construct file name
             var pattern = configuration.FileNamePattern;
@@ -371,7 +370,7 @@ namespace JMS.DVB.NET.Recording.Persistence
             if ((RelatedJob != null) && (RelatedSchedule != null))
             {
                 // Enter placeholders
-                pattern = UpdatePlaceHolders(pattern);
+                pattern = UpdatePlaceHolders(pattern, profiles);
             }
             else if (!string.IsNullOrEmpty(file))
             {
@@ -402,12 +401,13 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Setzt die Platzhalter in die Aufzeichnungsdatei ein.
         /// </summary>
-        /// <param name="withPatterns">Der urspr�ngliche Dateiname mit Platzhaltern.</param>
+        /// <param name="withPatterns">Der ursprüngliche Dateiname mit Platzhaltern.</param>
         /// <returns>Der Dateiname mit den ausgetauschten Platzhaltern.</returns>
-        private string UpdatePlaceHolders(string withPatterns) => GetReplacementPatterns().Aggregate(withPatterns, (current, rule) => current.Replace(rule.Key, rule.Value.MakeValid()));
+        private string UpdatePlaceHolders(string withPatterns, VCRProfiles profiles) =>
+            GetReplacementPatterns(profiles).Aggregate(withPatterns, (current, rule) => current.Replace(rule.Key, rule.Value.MakeValid()));
 
         /// <summary>
-        /// Pr�ft, ob diese Aufzeichnung zu einem gerade aufgezeichneten Datenstrom geh�rt.
+        /// Prüft, ob diese Aufzeichnung zu einem gerade aufgezeichneten Datenstrom gehört.
         /// </summary>
         /// <param name="stream">Ein beliebiger Datenstrom.</param>
         /// <returns>Gesetzt, wenn diese die Aufzeichnung zum Datenstrom ist.</returns>
@@ -425,7 +425,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// Pr�ft, ob diese Instanz zu einer bestimmten Aufzeichnung geh�rt.
+        /// Prüft, ob diese Instanz zu einer bestimmten Aufzeichnung gehört.
         /// </summary>
         /// <param name="scheduleIdentifier">Die eindeutige Kennung der Aufzeichnung.</param>
         /// <returns>Gesetzt, wenn entweder keine Kennung angeben wurde oder die bezeichnete Aufzeichnung
@@ -448,10 +448,10 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Erstellt einen neuen Eintrag.
         /// </summary>
-        /// <param name="planItem">Die zugeh�rige Beschreibung der geplanten Aktivit�t.</param>
-        /// <param name="context">Die Abbildung auf die Auftr�ge.</param>
-        /// <returns>Die angeforderte Repr�sentation.</returns>
-        public static VCRRecordingInfo? Create(IScheduleInformation planItem, PlanContext context, VCRConfiguration configuration)
+        /// <param name="planItem">Die zugehörige Beschreibung der geplanten Aktivität.</param>
+        /// <param name="context">Die Abbildung auf die Aufträge.</param>
+        /// <returns>Die angeforderte Repräsentation.</returns>
+        public static VCRRecordingInfo? Create(IScheduleInformation planItem, PlanContext context, VCRConfiguration configuration, VCRProfiles profiles)
         {
             // Validate
             ArgumentNullException.ThrowIfNull(planItem, nameof(planItem));
@@ -543,7 +543,7 @@ namespace JMS.DVB.NET.Recording.Persistence
                 }
 
             // Finish
-            recording.LoadDefaults(configuration);
+            recording.LoadDefaults(configuration, profiles);
 
             // Report
             return recording;
@@ -553,11 +553,11 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Wandelt eine Aufzeichnung in die Beschreibung eines Empfangsdatenstroms.
         /// </summary>
         /// <returns>Die passende Beschreibung.</returns>
-        public ReceiveInformation ToReceiveInformation(VCRConfiguration configuration)
+        public ReceiveInformation ToReceiveInformation(VCRConfiguration configuration, VCRProfiles profiles)
         {
             // Attach to the station and the profile
             var source = Source;
-            var profile = VCRProfiles.FindProfile(source.ProfileName);
+            var profile = profiles.FindProfile(source.ProfileName);
 
             // May want to disable the program guide
             var streams = Streams.Clone();

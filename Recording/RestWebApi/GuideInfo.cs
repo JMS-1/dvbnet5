@@ -52,7 +52,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="guide">Die zugehörige Programmzeitschrift.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public static GuideInfo Create(ProgramGuideManager guide)
+        public static GuideInfo Create(ProgramGuideManager guide, VCRProfiles profiles)
         {
             // Collectors
             var sources = new HashSet<SourceIdentifier>();
@@ -76,10 +76,10 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
                 // Add the source name
                 var source = entry.Source;
-                var sourceInfo = VCRProfiles.FindSource(guide.ProfileName, source);
+                var sourceInfo = profiles.FindSource(guide.ProfileName, source);
                 if (sourceInfo != null)
                     if (sources.Add(source))
-                        stations.Add(sourceInfo.GetUniqueName());
+                        stations.Add(profiles.GetUniqueName(sourceInfo));
             }
 
             // Report

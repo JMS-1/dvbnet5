@@ -7,7 +7,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// Erlaubt den Zurgiff auf die Geräteprofile, die der <i>VCR.NET Recording Service</i>
     /// verwaltet.
     /// </summary>
-    public class ProfileController(VCRServer server) : ControllerBase
+    public class ProfileController(VCRServer server, VCRProfiles profiles) : ControllerBase
     {
         /// <summary>
         /// Meldet alle Geräteprofile, die der <i>VCR.NET Recording Service</i> verwenden darf.
@@ -62,7 +62,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             // Request jobs
             return
                 server
-                    .GetJobs(ProfileJobInfo.Create)
+                    .GetJobs(ProfileJobInfo.Create, profiles)
                     .Where(job => job != null && ProfileManager.ProfileNameComparer.Equals(job.Profile, detail))
                     .Cast<ProfileJobInfo>()
                     .OrderBy(job => job.Name, StringComparer.InvariantCultureIgnoreCase)

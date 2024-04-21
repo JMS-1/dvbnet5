@@ -1,15 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using JMS.DVB.NET.Recording;
 
 namespace JMS.VCR.NET;
-
-[ApiController]
-[Route("api/it")]
-public class TheController : ControllerBase
-{
-    [HttpGet]
-    public string Info() => "Running";
-}
 
 public class Startup(IConfiguration configuration)
 {

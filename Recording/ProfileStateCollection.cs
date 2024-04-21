@@ -16,6 +16,11 @@ namespace JMS.DVB.NET.Recording
         public VCRServer Server { get; private set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public VCRProfiles Profiles { get; private set; }
+
+        /// <summary>
         /// Alle von dieser Instanz verwalteten Geräteprofile.
         /// </summary>
         private readonly Dictionary<string, ProfileState> m_profiles;
@@ -24,13 +29,14 @@ namespace JMS.DVB.NET.Recording
         /// Erzeugt eine neue Verwaltungsinstanz.
         /// </summary>
         /// <param name="server">Die primäre VCR.NET Instanz.</param>
-        internal ProfileStateCollection(VCRServer server)
+        internal ProfileStateCollection(VCRServer server, VCRProfiles profiles)
         {
             // Remember
             Server = server;
+            Profiles = profiles;
 
             // Profiles to use
-            var profileNames = VCRProfiles.ProfileNames.ToArray();
+            var profileNames = Profiles.ProfileNames.ToArray();
             var nameReport = string.Join(", ", profileNames);
 
             // Log
@@ -43,7 +49,7 @@ namespace JMS.DVB.NET.Recording
             m_profiles = profileNames.ToDictionary(profileName => profileName, profileName => new ProfileState(this, profileName), ProfileManager.ProfileNameComparer);
 
             // Now we can create the planner
-            m_planner = RecordingPlanner.Create(this, Server);
+            m_planner = RecordingPlanner.Create(this, Server, Profiles);
             m_planThread = new Thread(PlanThread) { Name = "Recording Planner", IsBackground = true };
 
             // Start planner
@@ -76,7 +82,7 @@ namespace JMS.DVB.NET.Recording
                 if (string.IsNullOrEmpty(profileName) || profileName.Equals("*"))
                 {
                     // Attach to the default profile
-                    var defaultProfile = VCRProfiles.DefaultProfile;
+                    var defaultProfile = Profiles.DefaultProfile;
                     if (defaultProfile == null)
                         return null;
 
@@ -546,7 +552,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="disabled">Alle nicht zu verwendenden Aufzeichnungen.</param>
         /// <param name="planner">Die Gesamtplanung.</param>
         /// <param name="context">Zusätzliche Informationen zur aktuellen Planung.</param>
-        void IRecordingPlannerSite.AddRegularJobs(RecordingScheduler scheduler, Func<Guid, bool> disabled, RecordingPlanner planner, PlanContext context)
+        void IRecordingPlannerSite.AddRegularJobs(RecordingScheduler scheduler, Func<Guid, bool> disabled, RecordingPlanner planner, PlanContext context, VCRProfiles profiles)
         {
             // Retrieve all jobs related to this profile
             foreach (var job in Server.JobManager.GetActiveJobs())
@@ -567,7 +573,7 @@ namespace JMS.DVB.NET.Recording
                         continue;
 
                     // Register single item
-                    schedule.AddToScheduler(scheduler, job, [resource], VCRProfiles.FindSource, disabled, context);
+                    schedule.AddToScheduler(scheduler, job, [resource], (s, p) => p.FindSource(s), disabled, context, Profiles);
 
                     // Remember - even if we skipped it
                     context.RegisterSchedule(schedule, job);
@@ -620,7 +626,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="item">Die zu startende Aufzeichnung.</param>
         /// <param name="planner">Die Planungsinstanz.</param>
         /// <param name="context">Zusatzinformationen zur Aufzeichnungsplanung.</param>
-        void IRecordingPlannerSite.Start(IScheduleInformation item, RecordingPlanner planner, PlanContext context, VCRServer server)
+        void IRecordingPlannerSite.Start(IScheduleInformation item, RecordingPlanner planner, PlanContext context, VCRServer server, VCRProfiles profiles)
         {
             // We are no longer active - simulate start and do nothing
             if (!m_plannerActive)
@@ -644,14 +650,14 @@ namespace JMS.DVB.NET.Recording
             m_pendingStart = true;
 
             // Create the recording
-            var recording = VCRRecordingInfo.Create(item, context, server.Configuration)!;
+            var recording = VCRRecordingInfo.Create(item, context, server.Configuration, profiles)!;
 
             // Check for EPG
             var guideUpdate = item.Definition as ProgramGuideTask;
             if (guideUpdate != null)
             {
                 // Start a new guide collector
-                m_pendingActions += ProgramGuideProxy.Create(profile, recording, server).Start;
+                m_pendingActions += ProgramGuideProxy.Create(profile, recording, server, profiles).Start;
             }
             else
             {
@@ -660,7 +666,7 @@ namespace JMS.DVB.NET.Recording
                 if (sourceUpdate != null)
                 {
                     // Start a new update
-                    m_pendingActions += SourceScanProxy.Create(profile, recording, server).Start;
+                    m_pendingActions += SourceScanProxy.Create(profile, recording, server, profiles).Start;
                 }
                 else
                 {

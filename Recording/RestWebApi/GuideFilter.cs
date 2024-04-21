@@ -79,14 +79,14 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="filter">Die externe Darstellung des Filters.</param>
         /// <returns>Die gewünschte Repräsentation.</returns>
-        public static GuideEntryFilter? Translate(GuideFilter filter)
+        public static GuideEntryFilter? Translate(GuideFilter filter, VCRProfiles profiles)
         {
             // None
             if (filter == null)
                 return null;
 
             // Lookup source by unique name
-            var source = (filter.Source == null) ? null : VCRProfiles.FindSource(filter.ProfileName, filter.Source);
+            var source = (filter.Source == null) ? null : profiles.FindSource(filter.ProfileName, filter.Source);
 
             // Process
             return

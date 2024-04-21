@@ -52,13 +52,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="job">Ein Auftrag.</param>
         /// <param name="active">Gesetzt, wenn es sich um einen aktiven Auftrag handelt.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public static InfoJob Create(VCRJob job, bool active)
+        public static InfoJob Create(VCRJob job, bool active, VCRProfiles profiles)
         {
             // Report
             return
                 new InfoJob
                 {
-                    Schedules = job.Schedules.Select(schedule => InfoSchedule.Create(schedule, job)).OrderBy(schedule => schedule.Name ?? string.Empty, StringComparer.InvariantCultureIgnoreCase).ToArray(),
+                    Schedules = job.Schedules.Select(schedule => InfoSchedule.Create(schedule, job, profiles)).OrderBy(schedule => schedule.Name ?? string.Empty, StringComparer.InvariantCultureIgnoreCase).ToArray(),
                     WebId = ServerTools.GetUniqueWebId(job, null!),
                     ProfileName = job.Source.ProfileName,
                     SourceName = job.Source.DisplayName,

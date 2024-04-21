@@ -27,16 +27,19 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         private volatile ProgramGuideEntries m_Events = new ProgramGuideEntries();
 
+        private readonly VCRProfiles _profiles;
+
         /// <summary>
         /// Erzeugt eine neue Verwaltungsinstanz.
         /// </summary>
         /// <param name="jobs">Die zugehörige Auftragsverwaltung.</param>
         /// <param name="profileName">Der Name des verwalteten DVB.NET Geräteprofils.</param>
-        public ProgramGuideManager(JobManager jobs, string profileName)
+        public ProgramGuideManager(JobManager jobs, string profileName, VCRProfiles profiles)
         {
             // Remember
             ProfileName = profileName;
             JobManager = jobs;
+            _profiles = profiles;
 
             // Calculate file
             ProgramGuideFile = new FileInfo(Path.Combine(JobManager.CollectorDirectory.FullName, $"EPGData for {ProfileName}.xml"));
@@ -108,7 +111,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
                         return me;
 
                     // See if this is active
-                    if (VCRProfiles.FindProfile(test.Name) != null)
+                    if (_profiles.FindProfile(test.Name) != null)
                         if (string.IsNullOrEmpty(test.UseSourcesFrom))
                             return test;
 
@@ -137,7 +140,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Meldet das zugehörige Geräteprofil.
         /// </summary>
-        public Profile? Profile => VCRProfiles.FindProfile(ProfileName);
+        public Profile? Profile => _profiles.FindProfile(ProfileName);
 
         /// <summary>
         /// Meldet den Namen des Wertes in der Registrierung von Windows, wo der Zeitpunkt
@@ -220,14 +223,20 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <param name="end">Das Ende des Zeitraums.</param>
         /// <param name="factory">Methode zum Erzeugen eines Rückgabewertes.</param>
         /// <returns>Der am besten passende Eintrag.</returns>
-        public TTarget FindBestEntry<TTarget>(SourceIdentifier source, DateTime start, DateTime end, Func<ProgramGuideEntry, string, TTarget> factory)
+        public TTarget FindBestEntry<TTarget>(
+            SourceIdentifier source,
+            DateTime start,
+            DateTime end,
+            Func<ProgramGuideEntry, string, VCRProfiles, TTarget> factory,
+            VCRProfiles profiles
+        )
         {
             // Forward
             var entries = LeafEntries;
             if (entries == null)
                 return default!;
             else
-                return entries.FindBestEntry(source, start, end, entry => factory(entry, ProfileName));
+                return entries.FindBestEntry(source, start, end, entry => factory(entry, ProfileName, profiles));
         }
 
         /// <summary>
@@ -245,14 +254,14 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <param name="filter">Der Filter in der internen Darstellung.</param>
         /// <param name="factory">Erstellt die externe Repräsentation eines Eintrags.</param>
         /// <returns>Die Liste aller passenden Einträge.</returns>
-        public TEntry[] GetProgramGuideEntries<TEntry>(GuideEntryFilter filter, Func<ProgramGuideEntry, string, TEntry> factory)
+        public TEntry[] GetProgramGuideEntries<TEntry>(GuideEntryFilter filter, Func<ProgramGuideEntry, string, VCRProfiles, TEntry> factory, VCRProfiles profiles)
         {
             // See if there is a guide
             var entries = LeafEntries;
             if (entries == null)
-                return new TEntry[0];
+                return [];
             else
-                return filter.Filter(entries.Events).Select(entry => factory(entry, ProfileName)).ToArray();
+                return filter.Filter(entries.Events, profiles).Select(entry => factory(entry, ProfileName, profiles)).ToArray();
         }
 
         /// <summary>
@@ -260,14 +269,14 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         /// <param name="filter">Der Filter in der internen Darstellung.</param>
         /// <returns>Die Anzahl der passenden Einträge.</returns>
-        public int GetProgramGuideEntries(GuideEntryFilter filter)
+        public int GetProgramGuideEntries(GuideEntryFilter filter, VCRProfiles profiles)
         {
             // See if there is a guide
             var entries = LeafEntries;
             if (entries == null)
                 return 0;
-            else
-                return filter.Filter(entries.Events).Count();
+
+            return filter.Filter(entries.Events, profiles).Count();
         }
 
         /// <summary>

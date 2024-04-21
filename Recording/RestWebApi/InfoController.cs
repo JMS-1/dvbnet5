@@ -9,7 +9,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Web Service für allgemeine Informationen.
     /// </summary>
-    public class InfoController(VCRServer server) : ControllerBase
+    public class InfoController(VCRServer server, VCRProfiles profiles) : ControllerBase
     {
         /// <summary>
         /// Ermittelt zu einer Komponente das Produkt.
@@ -129,7 +129,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             // Report
             return
                 server
-                    .GetJobs(InfoJob.Create)
+                    .GetJobs(InfoJob.Create, profiles)
                     .OrderBy(job => job.Name ?? string.Empty, StringComparer.InvariantCulture)
                     .ToArray();
         }

@@ -43,6 +43,11 @@ namespace JMS.DVB.NET.Recording
         public VCRServer Server { get; private set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public VCRProfiles Profiles { get; private set; }
+
+        /// <summary>
         /// Vorhaltung aller Aufträge.
         /// </summary>
         private readonly Dictionary<Guid, VCRJob> m_Jobs = [];
@@ -53,11 +58,12 @@ namespace JMS.DVB.NET.Recording
         /// <param name="rootDirectory">Meldet das Verzeichnis, unterhalb dessen alle
         /// Aufträge und Protokolle angelegt werden.</param>
         /// <param name="server">Die VCR.NET Instanz, der diese Verwaltung zugeordnet ist.</param>
-        internal JobManager(DirectoryInfo rootDirectory, VCRServer server)
+        internal JobManager(DirectoryInfo rootDirectory, VCRServer server, VCRProfiles profiles)
         {
             // Remember
             RootDirectory = rootDirectory;
             Server = server;
+            Profiles = profiles;
 
             // Create root directory
             RootDirectory.Create();
@@ -166,10 +172,10 @@ namespace JMS.DVB.NET.Recording
             Tools.ExtendedLogging("Updating Job {0}", job.UniqueID!);
 
             // Load default profile name
-            job.SetProfile();
+            job.SetProfile(Profiles);
 
             // Validate
-            job.Validate(scheduleIdentifier);
+            job.Validate(scheduleIdentifier, Profiles);
 
             // Cleanup schedules
             job.CleanupExceptions();
@@ -221,7 +227,7 @@ namespace JMS.DVB.NET.Recording
                 return null;
 
             // Finish
-            result.SetProfile();
+            result.SetProfile(Profiles);
 
             // Found in archive
             return result;
@@ -300,7 +306,7 @@ namespace JMS.DVB.NET.Recording
             get
             {
                 // For legacy updates
-                var profile = VCRProfiles.DefaultProfile;
+                var profile = Profiles.DefaultProfile;
 
                 // Process
                 lock (m_Jobs)

@@ -40,7 +40,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="disabled">Alle deaktivierten Aufträge.</param>
         /// <param name="planner">Die zugehörige Aufzeichnungsplanung.</param>
         /// <param name="context">Eine neue Umgebung für die Erstellung des aktuellen Plans.</param>
-        void AddRegularJobs(RecordingScheduler scheduler, Func<Guid, bool> disabled, RecordingPlanner planner, PlanContext context);
+        void AddRegularJobs(RecordingScheduler scheduler, Func<Guid, bool> disabled, RecordingPlanner planner, PlanContext context, VCRProfiles profiles);
 
         /// <summary>
         /// Meldet eine Warteperiode.
@@ -67,6 +67,6 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="item">Die Beschreibung der Aufgabe.</param>
         /// <param name="planner">Die zugehörige Aufzeichnungsplanung.</param>
         /// <param name="context">Zusatzinformationen zur Aufzeichnungsplanung.</param>
-        void Start(IScheduleInformation item, RecordingPlanner planner, PlanContext context, VCRServer server);
+        void Start(IScheduleInformation item, RecordingPlanner planner, PlanContext context, VCRServer server, VCRProfiles profiles);
     }
 }

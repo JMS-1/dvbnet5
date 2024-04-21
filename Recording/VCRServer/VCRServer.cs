@@ -20,9 +20,14 @@ namespace JMS.DVB.NET.Recording
     public partial class VCRServer : MarshalByRefObject, IDisposable
     {
         /// <summary>
+        /// Wird zum Neustart des Dienstes ausgelöst.
+        /// </summary>
+        public CancellationToken? RestartToken;
+
+        /// <summary>
         /// Wird beim Bauen automatisch eingemischt.
         /// </summary>
-        private const string CURRENTDATE = "2024/02/24";
+        private const string CURRENTDATE = "2024/04/21";
 
         /// <summary>
         /// Aktuelle Version des VCR.NET Recording Service.
@@ -49,6 +54,8 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         private readonly VCRConfiguration _configuration;
 
+        private readonly VCRProfiles _profiles;
+
         /// <summary>
         /// L?dt Verwaltungsinstanzen f?r alle freigeschalteten DVB.NET Ger?teprofile.
         /// </summary>
@@ -67,10 +74,12 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Erzeugt eine neue Instanz.
         /// </summary>
-        public VCRServer(VCRConfiguration configuration, ILogger<VCRServer> logger)
+        public VCRServer(VCRConfiguration configuration, ILogger<VCRServer> logger, VCRProfiles profiles)
         {
-            _configuration = configuration;
             Logger = logger;
+
+            _configuration = configuration;
+            _profiles = profiles;
 
             var rootDirectory = RunTimeLoader.GetDirectory("Recording");
 
@@ -78,13 +87,13 @@ namespace JMS.DVB.NET.Recording
             Tools.ExtendedLogging("Using Root Directory {0}", rootDirectory.FullName);
 
             // Prepare profiles
-            VCRProfiles.Reset(this);
+            _profiles.Reset(this);
 
             // Create job manager and start it up
-            JobManager = new JobManager(new DirectoryInfo(Path.Combine(rootDirectory.FullName, "Jobs")), this);
+            JobManager = new JobManager(new DirectoryInfo(Path.Combine(rootDirectory.FullName, "Jobs")), this, _profiles);
 
             // Create profile state manager and start it up
-            Profiles = new ProfileStateCollection(this);
+            Profiles = new ProfileStateCollection(this, _profiles);
         }
 
         /// <summary>
@@ -159,7 +168,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="withRadio">Gesetzt, wenn Radiosender zu ber?cksichtigen sind.</param>
         /// <param name="factory">Eine Methode zum Erzeugen der Zielelemente aus den Daten einer einzelnen Quelle.</param>
         /// <returns></returns>
-        public TTarget[] GetSources<TTarget>(string profileName, bool withTV, bool withRadio, Func<SourceSelection, TTarget> factory)
+        public TTarget[] GetSources<TTarget>(string profileName, bool withTV, bool withRadio, Func<SourceSelection, VCRProfiles, TTarget> factory)
         {
             // Find the profile
             var profile = FindProfile(profileName);
@@ -181,9 +190,9 @@ namespace JMS.DVB.NET.Recording
 
             // Filter all we want
             return
-                VCRProfiles
+                _profiles
                     .GetSources(profile.ProfileName, matchStation)
-                    .Select(factory)
+                    .Select(s => factory(s, _profiles))
                     .ToArray();
         }
 
@@ -193,15 +202,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="profile">Das zu verwendende Ger?teprofil.</param>
         /// <param name="name">Der (hoffentlicH) eindeutige Name der Quelle.</param>
         /// <returns>Die Beschreibung der Quelle.</returns>
-        public SourceSelection? FindSource(string profile, string name) => VCRProfiles.FindSource(profile, name);
-
-        /// <summary>
-        /// Ermittelt den eindeutigen Namen einer Quelle.
-        /// </summary>
-        /// <param name="source">Die gew?nschte Quelle.</param>
-        /// <returns>Der eindeutige Name oder <i>null</i>, wenn die Quelle nicht
-        /// bekannt ist.</returns>
-        public static string GetUniqueName(SourceSelection source) => source.GetUniqueName();
+        public SourceSelection? FindSource(string profile, string name) => _profiles.FindSource(profile, name);
 
         /// <summary>
         /// Meldet die aktuellen Regeln f?r die Aufzeichnungsplanung.

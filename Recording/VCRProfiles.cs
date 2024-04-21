@@ -3,7 +3,7 @@
     /// <summary>
     /// Verwaltet die Geräteprofile des VCR.NET Recording Service.
     /// </summary>
-    public static class VCRProfiles
+    public class VCRProfiles
     {
         /// <summary>
         /// Der aktuelle Konfigurationsbestand.
@@ -48,12 +48,12 @@
         /// <summary>
         /// Beschreibt die aktuell gültige Konfiguration.
         /// </summary>
-        private static volatile _State CurrentState = new _State();
+        private volatile _State CurrentState = new _State();
 
         /// <summary>
         /// Lädt alle Profile erneut.
         /// </summary>
-        internal static void Reset(VCRServer server)
+        internal void Reset(VCRServer server)
         {
             // Report
             Tools.ExtendedLogging("Reloading Profile List");
@@ -143,7 +143,7 @@
         /// <summary>
         /// Meldet das erste zu verwendende Geräteprofil.
         /// </summary>
-        public static Profile? DefaultProfile
+        public Profile? DefaultProfile
         {
             get
             {
@@ -162,7 +162,7 @@
         /// <param name="profileName">Das zu verwendende Geräteprofil.</param>
         /// <param name="name">Der Anzeigename der Quelle.</param>
         /// <returns>Die eidneutige Auswahl der Quelle oder <i>null</i>.</returns>
-        public static SourceSelection? FindSource(string profileName, string name)
+        public SourceSelection? FindSource(string profileName, string name)
         {
             // No source
             if (string.IsNullOrEmpty(name))
@@ -194,7 +194,7 @@
         /// <param name="profileName">Das zu verwendende Geräteprofil.</param>
         /// <param name="source">Die gewünschte Kennung.</param>
         /// <returns>Die eidneutige Auswahl der Quelle oder <i>null</i>.</returns>
-        public static SourceSelection? FindSource(string profileName, SourceIdentifier source)
+        public SourceSelection? FindSource(string profileName, SourceIdentifier source)
         {
             // No source
             if (source == null)
@@ -224,7 +224,7 @@
         /// </summary>
         /// <param name="source">Die gewünschte Quelle.</param>
         /// <returns>Die aktuelle Auswahl oder <i>null</i>.</returns>
-        public static SourceSelection? FindSource(SourceSelection source)
+        public SourceSelection? FindSource(SourceSelection source)
         {
             // Never
             if (source == null)
@@ -241,14 +241,14 @@
         /// </summary>
         /// <param name="profileName">Der Name des Geräteprofils.</param>
         /// <returns>Alle Quellen zum Profil.</returns>
-        public static IEnumerable<SourceSelection> GetSources(string profileName) => GetSources(profileName, (Func<SourceSelection, bool>)null!);
+        public IEnumerable<SourceSelection> GetSources(string profileName) => GetSources(profileName, (Func<SourceSelection, bool>)null!);
 
         /// <summary>
         /// Ermittelt alle Quellen zu einem DVB.NET Geräteprofil.
         /// </summary>
         /// <param name="profile">Der Name des Geräteprofils.</param>
         /// <returns>Alle Quellen zum Profil.</returns>
-        public static IEnumerable<SourceSelection> GetSources(Profile profile) => GetSources(profile, (Func<SourceSelection, bool>)null!);
+        public IEnumerable<SourceSelection> GetSources(Profile profile) => GetSources(profile, (Func<SourceSelection, bool>)null!);
 
         /// <summary>
         /// Ermittelt alle Quellen zu einem DVB.NET Geräteprofil.
@@ -256,7 +256,7 @@
         /// <param name="profileName">Der Name des Geräteprofils.</param>
         /// <param name="predicate">Methode, die prüft, ob eine Quelle gemeldet werden soll.</param>
         /// <returns>Alle Quellen zum Profil.</returns>
-        public static IEnumerable<SourceSelection> GetSources(string profileName, Func<SourceSelection, bool> predicate) => GetSources(FindProfile(profileName)!, predicate);
+        public IEnumerable<SourceSelection> GetSources(string profileName, Func<SourceSelection, bool> predicate) => GetSources(FindProfile(profileName)!, predicate);
 
         /// <summary>
         /// Ermittelt alle Quellen zu einem DVB.NET Geräteprofil.
@@ -264,7 +264,7 @@
         /// <param name="profileName">Der Name des Geräteprofils.</param>
         /// <param name="predicate">Methode, die prüft, ob eine Quelle gemeldet werden soll.</param>
         /// <returns>Alle Quellen zum Profil.</returns>
-        public static IEnumerable<SourceSelection> GetSources(string profileName, Func<Station, bool> predicate)
+        public IEnumerable<SourceSelection> GetSources(string profileName, Func<Station, bool> predicate)
         {
             // Forward
             if (predicate == null)
@@ -279,7 +279,7 @@
         /// <param name="profile">Das zu verwendende Geräteprofil.</param>
         /// <param name="predicate">Methode, die prüft, ob eine Quelle gemeldet werden soll.</param>
         /// <returns>Alle Quellen zum Profil.</returns>
-        public static IEnumerable<SourceSelection> GetSources(Profile profile, Func<SourceSelection, bool> predicate)
+        public IEnumerable<SourceSelection> GetSources(Profile profile, Func<SourceSelection, bool> predicate)
         {
             // Resolve
             if (profile == null)
@@ -301,7 +301,7 @@
         /// <param name="name">Der Name des Geräteprofils oder <i>null</i> für das
         /// bevorzugte Profil.</param>
         /// <returns>Das gewünschte Geräteprofil.</returns>
-        public static Profile? FindProfile(string name)
+        public Profile? FindProfile(string name)
         {
             // Use default
             if (string.IsNullOrEmpty(name))
@@ -314,7 +314,7 @@
         /// <summary>
         /// Meldet die Namen alle aktivierten Geräteprofile, das bevorzugte Profil immer zuerst.
         /// </summary>
-        public static IEnumerable<string> ProfileNames { get { return CurrentState.Profiles.Select(p => p.Name); } }
+        public IEnumerable<string> ProfileNames { get { return CurrentState.Profiles.Select(p => p.Name); } }
 
         /// <summary>
         /// Ermittelt den eindeutigen Namen einer Quelle.
@@ -322,7 +322,7 @@
         /// <param name="source">Die gewünschte Quelle.</param>
         /// <returns>Der eindeutige Name oder <i>null</i>, wenn die Quelle nicht
         /// bekannt ist..</returns>
-        public static string GetUniqueName(SourceSelection source)
+        public string GetUniqueName(SourceSelection source)
         {
             // Map to current
             var active = FindSource(source);
@@ -335,24 +335,6 @@
 
             // Report it
             return name;
-        }
-    }
-
-    /// <summary>
-    /// Einige Hilfsmethoden zum Arbeiten mit Listen von Quellen.
-    /// </summary>
-    public static class ProfileExtensions
-    {
-        /// <summary>
-        /// Ermittelt den eindeutigen Namen einer Quelle.
-        /// </summary>
-        /// <param name="source">Die gewünschte Quelle.</param>
-        /// <returns>Der eindeutige Name oder <i>null</i>, wenn die Quelle nicht
-        /// bekannt ist.</returns>
-        public static string GetUniqueName(this SourceSelection source)
-        {
-            // Forward
-            return VCRProfiles.GetUniqueName(source);
         }
     }
 }
