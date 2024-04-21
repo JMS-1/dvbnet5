@@ -23,7 +23,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Wird zum Neustart des Dienstes ausgelöst.
         /// </summary>
-        public CancellationToken? RestartToken;
+        public Action? Restart;
 
         /// <summary>
         /// Wird beim Bauen automatisch eingemischt.

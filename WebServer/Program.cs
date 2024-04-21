@@ -12,7 +12,7 @@ public class Program
 
             var restart = new CancellationTokenSource();
 
-            host.Services.StartRecording(restart.Token);
+            host.Services.StartRecording(restart);
 
             host.RunAsync(restart.Token).Wait();
 

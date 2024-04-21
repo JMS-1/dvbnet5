@@ -30,12 +30,12 @@ public static class RecordingExtensions
         services.AddSingleton<VCRJobExtensions.Initializer>();
     }
 
-    public static void StartRecording(this IServiceProvider services, CancellationToken restart)
+    public static void StartRecording(this IServiceProvider services, CancellationTokenSource restart)
     {
         /* Vorläufig Lösung für das 'static-Problem', da muss noch deutlich mehr passieren. */
         services.GetRequiredService<VCRScheduleExtensions.Initializer>();
         services.GetRequiredService<VCRJobExtensions.Initializer>();
 
-        services.GetRequiredService<VCRServer>().RestartToken = restart;
+        services.GetRequiredService<VCRServer>().Restart = () => restart.Cancel();
     }
 }

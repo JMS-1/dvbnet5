@@ -24,7 +24,7 @@ partial class VCRServer
                 return null;
 
             // Create new process to restart the service
-            Process.Start(Tools.ExecutablePath, "Restart").Dispose();
+            Restart?.Invoke();
 
             // Finally back to the administration page
             return true;
@@ -58,7 +58,7 @@ partial class VCRServer
             return null;
 
         // Create new process to restart the service
-        Process.Start(Tools.ExecutablePath, "Restart").Dispose();
+        Restart?.Invoke();
 
         // Finally back to the administration page
         return true;
