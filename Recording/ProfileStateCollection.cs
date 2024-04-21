@@ -29,6 +29,8 @@ namespace JMS.DVB.NET.Recording
 
         private readonly ServiceFactory _factory;
 
+        private readonly JobManager _jobs;
+
         /// <summary>
         /// Erzeugt eine neue Verwaltungsinstanz.
         /// </summary>
@@ -37,6 +39,7 @@ namespace JMS.DVB.NET.Recording
         {
             // Remember
             _factory = factory;
+            _jobs = jobs;
             _logger = logger;
             _profiles = profiles;
             _server = server;
@@ -54,7 +57,7 @@ namespace JMS.DVB.NET.Recording
             // Load current profiles
             _stateMap = profileNames.ToDictionary(
                 profileName => profileName,
-                profileName => new ProfileState(this, profileName, _server, _profiles, _logger, _factory), ProfileManager.ProfileNameComparer
+                profileName => new ProfileState(this, profileName, _server, _profiles, _logger, _jobs, _factory), ProfileManager.ProfileNameComparer
             );
 
             // Now we can create the planner
@@ -530,11 +533,11 @@ namespace JMS.DVB.NET.Recording
         /// <param name="resource">Die zu verwendende Ressource.</param>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
         /// <returns>Der gewünschte Auftrag.</returns>
-        PeriodicScheduler IRecordingPlannerSite.CreateProgramGuideTask(IScheduleResource resource, Profile profile, VCRServer server)
+        PeriodicScheduler IRecordingPlannerSite.CreateProgramGuideTask(IScheduleResource resource, Profile profile, VCRServer server, JobManager jobs)
         {
             // Protect against misuse
             if (_stateMap.TryGetValue(profile.Name, out var state))
-                return new ProgramGuideTask(resource, state, server.Configuration, server.JobManager);
+                return new ProgramGuideTask(resource, state, server.Configuration, jobs);
             else
                 return null!;
         }
@@ -569,7 +572,7 @@ namespace JMS.DVB.NET.Recording
         void IRecordingPlannerSite.AddRegularJobs(RecordingScheduler scheduler, Func<Guid, bool> disabled, RecordingPlanner planner, PlanContext context, VCRProfiles profiles)
         {
             // Retrieve all jobs related to this profile
-            foreach (var job in _server.JobManager.GetActiveJobs())
+            foreach (var job in _jobs.GetActiveJobs())
                 foreach (var schedule in job.Schedules)
                 {
                     // No longer in use

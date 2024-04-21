@@ -93,7 +93,7 @@ namespace JMS.DVB.NET.Recording
         public void ChangeException(Guid jobIdentifier, Guid scheduleIdentifier, DateTime when, int startDelta, int durationDelta)
         {
             // Locate the job
-            var job = JobManager[jobIdentifier];
+            var job = _jobs[jobIdentifier];
             if (job == null)
                 return;
             var schedule = job[scheduleIdentifier];
@@ -117,7 +117,7 @@ namespace JMS.DVB.NET.Recording
             schedule.SetException(exception.When, exception);
 
             // Store
-            JobManager.Update(job, null);
+            _jobs.Update(job, null);
 
             // Recalculate plan
             BeginNewPlan();
@@ -141,10 +141,10 @@ namespace JMS.DVB.NET.Recording
         {
             // Report
             return
-                JobManager
+                _jobs
                     .GetActiveJobs()
                     .Select(job => factory(job, true, profiles))
-                    .Concat(JobManager.ArchivedJobs.Select(job => factory(job, false, profiles)))
+                    .Concat(_jobs.ArchivedJobs.Select(job => factory(job, false, profiles)))
                     .ToArray();
         }
 
@@ -158,9 +158,10 @@ namespace JMS.DVB.NET.Recording
         /// <param name="forIdle">Erstellt eine Beschreibung f�r ein Ger�t, f�r das keine Aufzeichnungen geplant sind.</param>
         /// <returns>Die Liste aller Informationen.</returns>
         public TInfo[] GetCurrentRecordings<TInfo>(
-            Func<FullInfo, VCRServer, VCRProfiles, TInfo[]> fromActive,
+            Func<FullInfo, VCRServer, VCRProfiles, JobManager, TInfo[]> fromActive,
             Func<IScheduleInformation, PlanContext, VCRServer, VCRProfiles, TInfo> fromPlan = null!,
-            Func<string, TInfo> forIdle = null!)
+            Func<string, TInfo> forIdle = null!
+        )
         {
             // Validate
             if (fromActive == null)
@@ -174,7 +175,7 @@ namespace JMS.DVB.NET.Recording
                 Profiles
                     .InspectProfiles(profile => profile.CurrentRecording)
                     .Where(current => current != null)
-                    .ToDictionary(current => current!.Recording.Source.ProfileName, current => fromActive(current!, this, _profiles), idleProfiles.Comparer);
+                    .ToDictionary(current => current!.Recording.Source.ProfileName, current => fromActive(current!, this, _profiles, _jobs), idleProfiles.Comparer);
 
             // Check for idle profiles
             idleProfiles.ExceptWith(perProfile.Keys);
@@ -212,7 +213,7 @@ namespace JMS.DVB.NET.Recording
 
                         // Add entry
                         if (fromPlan != null)
-                            perProfile.Add(profileName, new[] { fromPlan(schedule, context, this, _profiles) });
+                            perProfile.Add(profileName, [fromPlan(schedule, context, this, _profiles)]);
 
                         // Did it
                         if (idleProfiles.Count < 1)
@@ -222,7 +223,7 @@ namespace JMS.DVB.NET.Recording
                     // Idle stuff
                     if (forIdle != null)
                         foreach (var idleProfile in idleProfiles)
-                            perProfile.Add(idleProfile, new[] { forIdle(idleProfile) });
+                            perProfile.Add(idleProfile, [forIdle(idleProfile)]);
                 }
 
             // Report
@@ -365,12 +366,12 @@ namespace JMS.DVB.NET.Recording
         {
             // Locate profile and forward call
             if (string.IsNullOrEmpty(profileName))
-                return new TEntry[0];
+                return [];
             var profile = FindProfile(profileName);
             if (profile == null)
-                return new TEntry[0];
+                return [];
             else
-                return JobManager.FindLogEntries(start, end, profile).Select(factory).ToArray();
+                return _jobs.FindLogEntries(start, end, profile).Select(factory).ToArray();
         }
     }
 }

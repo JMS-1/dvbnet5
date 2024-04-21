@@ -5,6 +5,7 @@ namespace JMS.DVB.NET.Recording
     /// <summary>
     /// Verwaltung aller Aufträge für alle DVB.NET Geräteprofile.
     /// </summary>
+    /// <remarks>LEAF SERVICE</remarks>
     public class JobManager
     {
         /// <summary>

@@ -72,7 +72,7 @@ namespace JMS.DVB.NET.Recording.Planning
                     continue;
 
                 // See if we should process guide updates
-                var guideTask = site.CreateProgramGuideTask(profileResource, profile, _server);
+                var guideTask = site.CreateProgramGuideTask(profileResource, profile, _server, jobs);
                 if (guideTask != null)
                     m_tasks.Add(guideTask);
 

@@ -3,6 +3,7 @@
     /// <summary>
     /// Verwaltet die Geräteprofile des VCR.NET Recording Service.
     /// </summary>
+    /// <remarks>LEAF SERVICE</remarks>
     public class VCRProfiles(Logger logger)
     {
         /// <summary>
@@ -48,7 +49,7 @@
         /// <summary>
         /// Beschreibt die aktuell gültige Konfiguration.
         /// </summary>
-        private volatile _State CurrentState = new _State();
+        private volatile _State CurrentState = new();
 
         /// <summary>
         /// Lädt alle Profile erneut.

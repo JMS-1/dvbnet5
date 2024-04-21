@@ -83,13 +83,13 @@ namespace JMS.DVB.NET.Recording
             _logger = logger;
             _profiles = profiles;
 
-            JobManager = jobManager;
+            _jobs = jobManager;
 
             // Prepare profiles
             _profiles.Reset(this);
 
             // Create profile state manager and start it up
-            Profiles = new ProfileStateCollection(this, _profiles, logger, JobManager, factory);
+            Profiles = new ProfileStateCollection(this, _profiles, logger, _jobs, factory);
         }
 
         /// <summary>
@@ -252,8 +252,8 @@ namespace JMS.DVB.NET.Recording
         public void PeriodicCleanup()
         {
             // Forward
-            JobManager.CleanupArchivedJobs();
-            JobManager.CleanupLogEntries();
+            _jobs.CleanupArchivedJobs();
+            _jobs.CleanupLogEntries();
         }
 
         #region IDisposable Members
@@ -268,7 +268,7 @@ namespace JMS.DVB.NET.Recording
                 Profiles = null!;
 
             // Detach from jobs
-            JobManager = null!;
+            _jobs = null!;
         }
 
         #endregion

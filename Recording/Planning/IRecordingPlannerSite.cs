@@ -23,7 +23,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="resource">Die zugehörige Ressource.</param>
         /// <param name="profile">Die vollen Informationen zum Geräteprofil.</param>
         /// <returns>Die Beschreibung der Aufgabe oder <i>null</i>.</returns>
-        PeriodicScheduler CreateProgramGuideTask(IScheduleResource resource, Profile profile, VCRServer server);
+        PeriodicScheduler CreateProgramGuideTask(IScheduleResource resource, Profile profile, VCRServer server, JobManager jobs);
 
         /// <summary>
         /// Erstellt eine periodische Aufgabe zum Aktualisieren der Quellen.

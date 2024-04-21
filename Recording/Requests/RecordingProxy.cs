@@ -275,7 +275,7 @@ namespace JMS.DVB.NET.Recording.Requests
         public override void SetRestartThreshold(Guid? scheduleIdentifier)
         {
             // Attach to job manager
-            var jobs = Server.JobManager;
+            var jobs = JobManager;
 
             // All active recordings
             lock (m_recordings)

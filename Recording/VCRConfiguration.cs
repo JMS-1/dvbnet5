@@ -7,6 +7,9 @@ namespace JMS.DVB.NET.Recording
     /// <summary>
     /// Schnittstelle zur Ermittelung des Pfades zum Dienst.
     /// </summary>
+    /// <remarks>
+    /// Wird ausschließlich für die Tests benötigt.
+    /// </remarks>
     public interface IVCRConfigurationExePathProvider
     {
         /// <summary>
@@ -18,6 +21,7 @@ namespace JMS.DVB.NET.Recording
     /// <summary>
     /// Verwaltet die Konfiguration des VCR.NET Recording Service.
     /// </summary>
+    /// <remarks>LEAF SINGLETON SERVICE.</remarks>
     public class VCRConfiguration
     {
         /// <summary>
@@ -288,7 +292,8 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Load the configuration from the provided file.
         /// </summary>
-        public void Reload() => _configuration = ConfigurationManager.OpenExeConfiguration(_configurationExePath);
+        public void Reload()
+            => _configuration = ConfigurationManager.OpenExeConfiguration(_configurationExePath);
 
         /// <summary>
         /// Bereitet eine Aktualisierung vor.

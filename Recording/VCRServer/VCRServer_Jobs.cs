@@ -8,14 +8,14 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Die Verwaltung der Auftr�ge.
         /// </summary>
-        internal JobManager JobManager { get; private set; }
+        private JobManager _jobs = null!;
 
         /// <summary>
         /// Ermittelt einen Auftrag.
         /// </summary>
         /// <param name="uniqueIdentifier">Die eindeutige Kennung des Auftrags.</param>
         /// <returns>Der gew�nschte Auftrag oder <i>null</i>.</returns>
-        public VCRJob? FindJob(Guid uniqueIdentifier) => JobManager.FindJob(uniqueIdentifier);
+        public VCRJob? FindJob(Guid uniqueIdentifier) => _jobs.FindJob(uniqueIdentifier);
 
         /// <summary>
         /// Aktualisiert einen Auftrag oder legt einen neue an.
@@ -32,7 +32,7 @@ namespace JMS.DVB.NET.Recording
                             schedule.NoStartBefore = null;
 
             // Add to job manager
-            JobManager.Update(job, scheduleIdentifier);
+            _jobs.Update(job, scheduleIdentifier);
 
             // Recalculate
             BeginNewPlan();
@@ -45,7 +45,7 @@ namespace JMS.DVB.NET.Recording
         public void DeleteJob(VCRJob job)
         {
             // Remove from job manager
-            JobManager.Delete(job);
+            _jobs.Delete(job);
 
             // Recalculate
             BeginNewPlan();

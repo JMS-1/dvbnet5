@@ -209,7 +209,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="active">Die Daten zur aktiven Aufzeichnung.</param>
         /// <param name="server">Der zugehörige Dienst.</param>
         /// <returns>Die gewünschten Beschreibungen.</returns>
-        public static PlanCurrent[] Create(FullInfo active, VCRServer server, VCRProfiles profiles)
+        public static PlanCurrent[] Create(FullInfo active, VCRServer server, VCRProfiles profiles, JobManager jobs)
         {
             // Validate
             if (active == null)
@@ -224,7 +224,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var streams = active.Streams;
             if (streams != null)
                 if (streams.Count > 0)
-                    return streams.SelectMany((stream, index) => Create(active, stream, index, server, profiles)).ToArray();
+                    return streams.SelectMany((stream, index) => Create(active, stream, index, server, profiles, jobs)).ToArray();
 
             // Single recording - typically a task
             var start = RoundToSecond(active.Recording.PhysicalStart.GetValueOrDefault(DateTime.UtcNow));
@@ -306,7 +306,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="streamIndex">Die laufende Nummer dieses Datenstroms.</param>
         /// <param name="server">Der zugehörige Dienst.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        private static IEnumerable<PlanCurrent> Create(FullInfo active, StreamInfo stream, int streamIndex, VCRServer server, VCRProfiles profiles)
+        private static IEnumerable<PlanCurrent> Create(FullInfo active, StreamInfo stream, int streamIndex, VCRServer server, VCRProfiles profiles, JobManager jobs)
         {
             // Static data
             var recording = active.Recording;
@@ -317,7 +317,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             foreach (var scheduleInfo in stream.Schedules)
             {
                 // Try to locate the context
-                var job = string.IsNullOrEmpty(scheduleInfo.JobUniqueID) ? null : server.JobManager[new Guid(scheduleInfo.JobUniqueID)];
+                var job = string.IsNullOrEmpty(scheduleInfo.JobUniqueID) ? null : jobs[new Guid(scheduleInfo.JobUniqueID)];
                 var schedule = ((job == null) || string.IsNullOrEmpty(scheduleInfo.ScheduleUniqueID)) ? null : job[new Guid(scheduleInfo.ScheduleUniqueID)];
 
                 // Create

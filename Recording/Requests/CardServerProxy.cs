@@ -47,6 +47,8 @@ namespace JMS.DVB.NET.Recording.Requests
 
         protected readonly Logger Logger;
 
+        protected readonly JobManager JobManager;
+
         /// <summary>
         /// Erzeugt eine neue Zugriffsinstanz.
         /// </summary>
@@ -63,6 +65,7 @@ namespace JMS.DVB.NET.Recording.Requests
             RequestFinished = new ManualResetEvent(false);
 
             // Remember
+            JobManager = factory.Create<JobManager>();
             Logger = factory.Create<Logger>();
             Profiles = factory.Create<VCRProfiles>();
             ProfileState = state;
@@ -473,7 +476,7 @@ namespace JMS.DVB.NET.Recording.Requests
                     ProfileState.EndRequest(this);
 
                     // Write recording
-                    Server.JobManager.CreateLogEntry(Representative);
+                    JobManager.CreateLogEntry(Representative);
 
                     // May go to sleep after job is finished
                     Server.ReportRecordingDone(Representative.DisableHibernation, IsRealRecording);

@@ -2,6 +2,12 @@ using Microsoft.Extensions.Logging;
 
 namespace JMS.DVB.NET.Recording
 {
+    /// <summary>
+    /// Global logging helper.
+    /// </summary>
+    /// <remarks>LEAF SERVICE</remarks>
+    /// <param name="configuration"></param>
+    /// <param name="logger"></param>
     public class Logger(VCRConfiguration configuration, ILogger<VCRServer> logger)
     {
         /// <summary>

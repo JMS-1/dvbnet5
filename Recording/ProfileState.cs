@@ -42,7 +42,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="collection">Die zugehörige Verwaltung der aktiven Geräteprofile.</param>
         /// <param name="profileName">Der Name des zugehörigen Geräteprofils.</param>
-        public ProfileState(ProfileStateCollection collection, string profileName, VCRServer server, VCRProfiles profiles, Logger logger, ServiceFactory factory)
+        public ProfileState(ProfileStateCollection collection, string profileName, VCRServer server, VCRProfiles profiles, Logger logger, JobManager jobs, ServiceFactory factory)
         {
             // Remember
             _factory = factory;
@@ -52,7 +52,7 @@ namespace JMS.DVB.NET.Recording
             ProfileName = profileName;
 
             // Create program guide manager
-            ProgramGuide = new ProgramGuideManager(server.JobManager, profileName, profiles, server, logger);
+            ProgramGuide = new ProgramGuideManager(jobs, profileName, profiles, server, logger);
         }
 
         /// <summary>
