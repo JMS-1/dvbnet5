@@ -2,13 +2,8 @@ using Microsoft.Extensions.Logging;
 
 namespace JMS.DVB.NET.Recording
 {
-    partial class VCRServer
+    public class Logger(VCRConfiguration configuration, ILogger<VCRServer> logger)
     {
-        /// <summary>
-        /// Ereignisprotokoll für alle Meldungen, die mit Aufzeichnungen in Verbindung stehen.
-        /// </summary>
-        public readonly ILogger<VCRServer> Logger;
-
         /// <summary>
         /// Trägt eine <see cref="Exception"/> ins Ereignisprotokoll ein, wenn die Konfiguration
         /// des VCR.NET Recording Service die Protokollierung von Fehlern gestattet.
@@ -32,7 +27,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="reportLevel">Some logging level.</param>
         /// <returns>Set, if the logging level configured requires
         /// the event to be logged.</returns>
-        public bool ShouldLog(LoggingLevel reportLevel) => reportLevel >= Configuration.LoggingLevel;
+        public bool ShouldLog(LoggingLevel reportLevel) => reportLevel >= configuration.LoggingLevel;
 
         /// <summary>
         /// Trägt eine Meldung ins Ereignisprotokoll ein, wenn die Schwere der Meldung
@@ -49,7 +44,7 @@ namespace JMS.DVB.NET.Recording
                 return;
 
             // Report
-            Logger.LogInformation(string.Format(format, args));
+            logger.LogInformation(string.Format(format, args));
         }
     }
 }

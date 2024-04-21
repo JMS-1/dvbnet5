@@ -13,7 +13,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <summary>
         /// Die zugehörige Arbeitsumgebung.
         /// </summary>
-        private readonly IRecordingPlannerSite m_site;
+        private readonly IRecordingPlannerSite _site;
 
         /// <summary>
         /// Verwaltet alle verwendeten Geräteprofile.
@@ -35,20 +35,23 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         private readonly Dictionary<Guid, ScheduleInformation> m_started = new Dictionary<Guid, ScheduleInformation>();
 
-        private readonly VCRServer m_server;
+        private readonly VCRServer _server;
 
-        private readonly VCRProfiles m_profiles;
+        private readonly VCRProfiles _profiles;
+
+        private readonly Logger _logger;
 
         /// <summary>
         /// Erstellt eine neue Planung.
         /// </summary>
         /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
-        private RecordingPlanner(IRecordingPlannerSite site, VCRServer server, VCRProfiles profiles)
+        private RecordingPlanner(IRecordingPlannerSite site, VCRServer server, VCRProfiles profiles, Logger logger, JobManager jobs)
         {
             // Remember
-            m_profiles = profiles;
-            m_server = server;
-            m_site = site;
+            _logger = logger;
+            _profiles = profiles;
+            _server = server;
+            _site = site;
 
             // Process all profiles
             foreach (var profileName in site.ProfileNames)
@@ -69,12 +72,12 @@ namespace JMS.DVB.NET.Recording.Planning
                     continue;
 
                 // See if we should process guide updates
-                var guideTask = site.CreateProgramGuideTask(profileResource, profile, m_server);
+                var guideTask = site.CreateProgramGuideTask(profileResource, profile, _server);
                 if (guideTask != null)
                     m_tasks.Add(guideTask);
 
                 // See if we should update the source list
-                var scanTask = site.CreateSourceScanTask(profileResource, profile, m_server);
+                var scanTask = site.CreateSourceScanTask(profileResource, profile, _server, jobs);
                 if (scanTask != null)
                     m_tasks.Add(scanTask);
             }
@@ -88,7 +91,7 @@ namespace JMS.DVB.NET.Recording.Planning
             catch (Exception e)
             {
                 // Report
-                m_server.LogError("Fehler beim Einlesen der Regeldatei für die Aufzeichnungsplanung: {0}", e.Message);
+                _logger.LogError("Fehler beim Einlesen der Regeldatei für die Aufzeichnungsplanung: {0}", e.Message);
 
                 // Use standard rules
                 m_manager = ResourceManager.Create(ProfileManager.ProfileNameComparer);
@@ -107,7 +110,7 @@ namespace JMS.DVB.NET.Recording.Planning
                 Dispose();
 
                 // Report
-                m_server.Log(e);
+                _logger.Log(e);
             }
         }
 
@@ -140,14 +143,14 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
         /// <returns>Die gewünschte Planungsumgebung.</returns>
-        public static RecordingPlanner Create(IRecordingPlannerSite site, VCRServer server, VCRProfiles profiles)
+        public static RecordingPlanner Create(IRecordingPlannerSite site, VCRServer server, VCRProfiles profiles, Logger logger, JobManager jobs)
         {
             // Validate
             if (site == null)
                 throw new ArgumentNullException(nameof(site));
 
             // Forward
-            return new RecordingPlanner(site, server, profiles);
+            return new RecordingPlanner(site, server, profiles, logger, jobs);
         }
 
         /// <summary>
@@ -172,7 +175,7 @@ namespace JMS.DVB.NET.Recording.Planning
                 if (wait != null)
                 {
                     // Report to site
-                    m_site.Idle(wait.RetestTime);
+                    _site.Idle(wait.RetestTime);
 
                     // Done
                     return;
@@ -188,7 +191,7 @@ namespace JMS.DVB.NET.Recording.Planning
                     if (schedule.Resource == null)
                     {
                         // Report to site
-                        m_site.Discard(definition);
+                        _site.Discard(definition);
 
                         // Add to exclusion list
                         skipped.Add(definition.UniqueIdentifier);
@@ -198,7 +201,7 @@ namespace JMS.DVB.NET.Recording.Planning
                     }
 
                     // Forward to site
-                    m_site.Start(schedule, this, context!, m_server, m_profiles);
+                    _site.Start(schedule, this, context!);
 
                     // Done
                     return;
@@ -213,7 +216,7 @@ namespace JMS.DVB.NET.Recording.Planning
                         return;
 
                     // Report to site
-                    m_site.Stop(schedule.Schedule, this);
+                    _site.Stop(schedule.Schedule, this);
 
                     // Done
                     return;
@@ -233,7 +236,7 @@ namespace JMS.DVB.NET.Recording.Planning
         {
             // Validate
             if (item is ScheduleInformation)
-                m_server.LogError("Es wird versucht, die Aufzeichnung '{1}' ({0}) mehrfach zu starten", item.Definition.UniqueIdentifier, item.Definition.Name);
+                _logger.LogError("Es wird versucht, die Aufzeichnung '{1}' ({0}) mehrfach zu starten", item.Definition.UniqueIdentifier, item.Definition.Name);
 
             // Try start
             if (!m_manager.Start(item))
@@ -311,7 +314,7 @@ namespace JMS.DVB.NET.Recording.Planning
             var context = new PlanContext(m_started.Values);
 
             // Configure it
-            m_site.AddRegularJobs(scheduler, disabled, this, context, m_profiles);
+            _site.AddRegularJobs(scheduler, disabled, this, context, _profiles);
 
             // Enable all
             if (disabled == null)

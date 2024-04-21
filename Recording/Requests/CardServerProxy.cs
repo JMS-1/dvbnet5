@@ -34,6 +34,8 @@ namespace JMS.DVB.NET.Recording.Requests
 
         protected readonly VCRProfiles Profiles;
 
+        protected readonly Logger Logger;
+
         /// <summary>
         /// Verhindert, dass der Rechner während der Aufzeichnung in den Schlafzustand wechselt.
         /// </summary>
@@ -45,7 +47,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="state">Der Zustands des zugehörigen Geräteprofils.</param>
         /// <param name="primary">Die primäre Aufzeichnung, auf Grund derer der Aufzeichnungsprozeß aktiviert wurde.</param>
         /// <exception cref="ArgumentNullException">Es wurde kein Profil angegeben.</exception>
-        protected CardServerProxy(ProfileState state, VCRRecordingInfo primary, VCRServer server, VCRProfiles profiles)
+        protected CardServerProxy(ProfileState state, VCRRecordingInfo primary, VCRServer server, VCRProfiles profiles, Logger logger)
         {
             // Validate
             if (state == null)
@@ -55,10 +57,11 @@ namespace JMS.DVB.NET.Recording.Requests
             RequestFinished = new ManualResetEvent(false);
 
             // Remember
+            Logger = logger;
             Profiles = profiles;
-            VCRServer = server;
-            Representative = primary.Clone();
             ProfileState = state;
+            Representative = primary.Clone();
+            VCRServer = server;
 
             // Make sure that we report the start
             m_start = primary;
@@ -331,13 +334,13 @@ namespace JMS.DVB.NET.Recording.Requests
                 try
                 {
                     // Log it
-                    VCRServer.Log(LoggingLevel.Schedules, "Aufzeichnung oder Aktualisierung {0} wird gestartet", TypeName);
+                    Logger.Log(LoggingLevel.Schedules, "Aufzeichnung oder Aktualisierung {0} wird gestartet", TypeName);
 
                     // Report
                     Tools.ExtendedLogging("Started Recording Control Thread for {0}", ProfileName);
 
                     // Fire all extensions
-                    Tools.RunSynchronousExtensions("BeforeProfileAccess", coreEnvironment, VCRServer);
+                    Tools.RunSynchronousExtensions("BeforeProfileAccess", coreEnvironment, VCRServer, Logger);
 
                     // Use it
                     using (Server = CreateCardServerProxy())
@@ -347,7 +350,7 @@ namespace JMS.DVB.NET.Recording.Requests
                         if (mustWakeUp)
                         {
                             // Log
-                            VCRServer.Log(LoggingLevel.Full, "Das DVB.NETGerät wird neu gestartet");
+                            Logger.Log(LoggingLevel.Full, "Das DVB.NETGerät wird neu gestartet");
 
                             // Report
                             Tools.ExtendedLogging("Will restart Hardware for {0} if Restart Device is configured in Profile", ProfileName);
@@ -438,7 +441,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 catch (Exception e)
                 {
                     // Report
-                    VCRServer.Log(e);
+                    Logger.Log(e);
 
                     // Try to make sure that job is not restarted
                     try
@@ -449,7 +452,7 @@ namespace JMS.DVB.NET.Recording.Requests
                     catch (Exception ex)
                     {
                         // Report
-                        VCRServer.Log(ex);
+                        Logger.Log(ex);
                     }
                 }
                 finally
@@ -458,16 +461,16 @@ namespace JMS.DVB.NET.Recording.Requests
                     Server = null!;
 
                     // Fire all extensions
-                    Tools.RunSynchronousExtensions("AfterProfileAccess", coreEnvironment, VCRServer);
+                    Tools.RunSynchronousExtensions("AfterProfileAccess", coreEnvironment, VCRServer, Logger);
 
                     // Detach from profile
                     ProfileState.EndRequest(this);
 
                     // Write recording
-                    ProfileState.Server.JobManager.CreateLogEntry(Representative);
+                    VCRServer.JobManager.CreateLogEntry(Representative);
 
                     // May go to sleep after job is finished
-                    ProfileState.Server.ReportRecordingDone(Representative.DisableHibernation, IsRealRecording);
+                    VCRServer.ReportRecordingDone(Representative.DisableHibernation, IsRealRecording);
 
                     // Check for next job on all profiles
                     ProfileState.Collection.BeginNewPlan();
@@ -476,13 +479,13 @@ namespace JMS.DVB.NET.Recording.Requests
                     Tools.ExtendedLogging("Recording finished for {0}", ProfileName);
 
                     // Log it
-                    VCRServer.Log(LoggingLevel.Schedules, "Aufzeichnung oder Aktualisierung {0} abgeschlossen", TypeName);
+                    Logger.Log(LoggingLevel.Schedules, "Aufzeichnung oder Aktualisierung {0} abgeschlossen", TypeName);
                 }
             }
             catch (Exception e)
             {
                 // Report
-                VCRServer.Log(e);
+                Logger.Log(e);
             }
             finally
             {
@@ -696,7 +699,7 @@ namespace JMS.DVB.NET.Recording.Requests
             catch (Exception e)
             {
                 // Report only!
-                VCRServer.Log(LoggingLevel.Errors, "Failed Operation for '{0}': {1}", ProfileName, e.Message);
+                Logger.Log(LoggingLevel.Errors, "Failed Operation for '{0}': {1}", ProfileName, e.Message);
             }
             finally
             {
@@ -821,13 +824,19 @@ namespace JMS.DVB.NET.Recording.Requests
         /// Aktiviert eine VCR.NET Erweiterung.
         /// </summary>
         /// <param name="environment">Die Umgebungsvariablen für die Erweiterung.</param>
-        protected void FireRecordingStartedExtensions(Dictionary<string, string> environment) => ProfileState.Server.ExtensionProcessManager.AddWithCleanup("RecordingStarted", environment, VCRServer);
+        protected void FireRecordingStartedExtensions(Dictionary<string, string> environment)
+        => VCRServer
+            .ExtensionProcessManager
+            .AddWithCleanup("RecordingStarted", environment, VCRServer, Logger);
 
         /// <summary>
         /// Aktiviert eine VCR.NET Erweiterung.
         /// </summary>
         /// <param name="environment">Die Umgebungsvariablen für die Erweiterung.</param>
-        protected void FireRecordingFinishedExtensions(Dictionary<string, string> environment) => ProfileState.Server.ExtensionProcessManager.AddWithCleanup("RecordingFinished", environment, VCRServer);
+        protected void FireRecordingFinishedExtensions(Dictionary<string, string> environment)
+            => VCRServer
+                .ExtensionProcessManager
+                .AddWithCleanup("RecordingFinished", environment, VCRServer, Logger);
 
         #endregion
     }

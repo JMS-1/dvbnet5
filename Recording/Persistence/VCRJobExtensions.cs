@@ -2,15 +2,15 @@ namespace JMS.DVB.NET.Recording.Persistence
 {
     public static class VCRJobExtensions
     {
-        private static VCRServer _server = null!;
-
         private static VCRProfiles _profiles = null!;
+
+        private static Logger _logger = null!;
 
         public class Initializer
         {
-            public Initializer(VCRServer server, VCRProfiles profiles)
+            public Initializer(VCRProfiles profiles, Logger logger)
             {
-                _server = server;
+                _logger = logger;
                 _profiles = profiles;
             }
         }
@@ -37,7 +37,7 @@ namespace JMS.DVB.NET.Recording.Persistence
             catch (Exception e)
             {
                 // Report
-                _server.Log(e);
+                _logger.Log(e);
 
                 // Done
                 return false;
@@ -71,7 +71,7 @@ namespace JMS.DVB.NET.Recording.Persistence
             catch (Exception e)
             {
                 // Report error
-                _server.Log(e);
+                _logger.Log(e);
 
                 // Failed
                 return false;

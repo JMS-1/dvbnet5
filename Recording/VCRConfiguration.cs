@@ -231,9 +231,9 @@ namespace JMS.DVB.NET.Recording
         /// <param name="logger">Protokollierungshelfer.</param>
         public VCRConfiguration(IVCRConfigurationExePathProvider configurationExePath, ILogger<VCRConfiguration> logger)
         {
-            logger.LogTrace("New Configuration Instance Created");
-
             _logger = logger;
+
+            _logger.LogTrace("New Configuration Instance Created");
 
             // Get the path of the configuration and load the initial configuration.
             _configurationExePath = configurationExePath.Path;
@@ -371,7 +371,8 @@ namespace JMS.DVB.NET.Recording
         /// <typeparam name="TValueType">Der Datentyp des zugehörigen Wertes.</typeparam>
         /// <param name="name">Der Name der Einstellung.</param>
         /// <param name="defaultValue">Der voreingestellt Wert.</param>
-        private void Add<TValueType>(SettingNames name, TValueType defaultValue) => m_Settings[name] = new SettingDescription<TValueType>(name, defaultValue, this);
+        private void Add<TValueType>(SettingNames name, TValueType defaultValue)
+            => m_Settings[name] = new SettingDescription<TValueType>(name, defaultValue, this);
 
         /// <summary>
         /// Ermittelt eine einzelne Einstellung.
@@ -379,8 +380,8 @@ namespace JMS.DVB.NET.Recording
         /// <typeparam name="T">Datentyp der Einstellung,</typeparam>
         /// <param name="name">Name der Einstellung.</param>
         /// <returns>Wert der Einstellung.</returns>
-        private T ReadSetting<T>(SettingNames name) =>
-            m_Settings.TryGetValue(name, out var settings) ? (T)settings.ReadValue() : default!;
+        private T ReadSetting<T>(SettingNames name)
+            => m_Settings.TryGetValue(name, out var settings) ? (T)settings.ReadValue() : default!;
 
         /// <summary>
         /// Ermittelt eine einzelne Einstellung der Art Zeichenkette,

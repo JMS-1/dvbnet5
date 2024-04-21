@@ -11,7 +11,13 @@ namespace JMS.DVB.NET.Recording.Requests
     /// </summary>
     /// <param name="state">Der Zustands des zugehörigen Geräteprofils.</param>
     /// <param name="firstRecording">Die erste Aufzeichnung, auf Grund derer dieser Zugriff angelegt wurde.</param>
-    public class RecordingProxy(ProfileState state, VCRRecordingInfo firstRecording, VCRServer server, VCRProfiles profiles) : CardServerProxy(state, firstRecording, server, profiles)
+    public class RecordingProxy(
+        ProfileState state,
+        VCRRecordingInfo firstRecording,
+        VCRServer server,
+        VCRProfiles profiles,
+        Logger logger
+    ) : CardServerProxy(state, firstRecording, server, profiles, logger)
     {
         #region Felder zur Steuerung der asynchronen Aufrufe an den Aufzeichnungsprozess
 
@@ -271,7 +277,7 @@ namespace JMS.DVB.NET.Recording.Requests
         public override void SetRestartThreshold(Guid? scheduleIdentifier)
         {
             // Attach to job manager
-            var jobs = ProfileState.Server.JobManager;
+            var jobs = VCRServer.JobManager;
 
             // All active recordings
             lock (m_recordings)
@@ -440,7 +446,7 @@ namespace JMS.DVB.NET.Recording.Requests
                         .Where(e => e.EndTime > from));
 
                 // Write it out
-                SerializationTools.SafeSave(entries, Path.ChangeExtension(recording.FileName, "epginfo"), VCRServer);
+                SerializationTools.SafeSave(entries, Path.ChangeExtension(recording.FileName, "epginfo"), Logger);
             }
 
             // Detect all files related to the recordings

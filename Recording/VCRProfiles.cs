@@ -3,7 +3,7 @@
     /// <summary>
     /// Verwaltet die Geräteprofile des VCR.NET Recording Service.
     /// </summary>
-    public class VCRProfiles
+    public class VCRProfiles(Logger logger)
     {
         /// <summary>
         /// Der aktuelle Konfigurationsbestand.
@@ -18,24 +18,24 @@
             /// <summary>
             /// Die Geräteprofile zum schnellen Zugriff über den Namen.
             /// </summary>
-            public Dictionary<string, Profile> ProfileMap = new Dictionary<string, Profile>(ProfileManager.ProfileNameComparer);
+            public Dictionary<string, Profile> ProfileMap = new(ProfileManager.ProfileNameComparer);
 
             /// <summary>
             /// Verwaltet alle Quellen aller zur Verfügung stehenden Geräteprofile nach dem eindeutigen
             /// Bezeichner der Quelle.
             /// </summary>
-            public Dictionary<string, Dictionary<string, SourceSelection>> SourceBySelectionMap = new Dictionary<string, Dictionary<string, SourceSelection>>(StringComparer.InvariantCultureIgnoreCase);
+            public Dictionary<string, Dictionary<string, SourceSelection>> SourceBySelectionMap = new(StringComparer.InvariantCultureIgnoreCase);
 
             /// <summary>
             /// Ermittelt zu einer Quelle den aktuellen eindeutigen Namen.
             /// </summary>
-            public Dictionary<string, string> UniqueNameBySelectionMap = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            public Dictionary<string, string> UniqueNameBySelectionMap = new(StringComparer.InvariantCultureIgnoreCase);
 
             /// <summary>
             /// Verwaltet alle Quellen aller zur Verfügung stehenden Geräteprofile nach der DVB
             /// Kennung.
             /// </summary>
-            public Dictionary<string, Dictionary<SourceIdentifier, SourceSelection>> SourceByIdentifierMap = new Dictionary<string, Dictionary<SourceIdentifier, SourceSelection>>(StringComparer.InvariantCultureIgnoreCase);
+            public Dictionary<string, Dictionary<SourceIdentifier, SourceSelection>> SourceByIdentifierMap = new(StringComparer.InvariantCultureIgnoreCase);
 
             /// <summary>
             /// Erzeugt einen neuen Bestand.
@@ -77,7 +77,7 @@
                     if (profile == null)
                     {
                         // This is not goot
-                        server.LogError("DVB.NET Geräteprofil '{0}' nicht gefunden", profileName.Trim());
+                        logger.LogError("DVB.NET Geräteprofil '{0}' nicht gefunden", profileName.Trim());
 
                         // Next
                         continue;

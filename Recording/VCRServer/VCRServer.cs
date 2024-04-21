@@ -13,11 +13,12 @@ namespace JMS.DVB.NET.Recording
         public void DeleteValue(string name, bool throwOnMissingValue) { }
     }
 
+
     /// <summary>
     /// Von dieser Klasse existiert im Allgemeinen nur eine einzige Instanz. Sie
-    /// realisiert die fachliche Logik des VCR.NET Recording Service.
+    /// realisiert die fachlische Logik des VCR.NET Recording Service.
     /// </summary>
-    public partial class VCRServer : MarshalByRefObject, IDisposable
+    public partial class VCRServer : IDisposable
     {
         /// <summary>
         /// Wird zum Neustart des Dienstes ausgelöst.
@@ -71,42 +72,30 @@ namespace JMS.DVB.NET.Recording
             Tools.ExtendedLogging("VCRServer static Initialisation completed");
         }
 
+        public readonly Logger _logger;
+
         /// <summary>
         /// Erzeugt eine neue Instanz.
         /// </summary>
-        public VCRServer(VCRConfiguration configuration, ILogger<VCRServer> logger, VCRProfiles profiles)
+        public VCRServer(VCRConfiguration configuration, Logger logger, VCRProfiles profiles, JobManager jobManager)
         {
-            Logger = logger;
-
             _configuration = configuration;
+            _logger = logger;
             _profiles = profiles;
 
-            var rootDirectory = RunTimeLoader.GetDirectory("Recording");
-
-            // Report
-            Tools.ExtendedLogging("Using Root Directory {0}", rootDirectory.FullName);
+            JobManager = jobManager;
 
             // Prepare profiles
             _profiles.Reset(this);
 
-            // Create job manager and start it up
-            JobManager = new JobManager(new DirectoryInfo(Path.Combine(rootDirectory.FullName, "Jobs")), this, _profiles);
-
             // Create profile state manager and start it up
-            Profiles = new ProfileStateCollection(this, _profiles);
+            Profiles = new ProfileStateCollection(this, _profiles, logger, JobManager);
         }
 
         /// <summary>
         /// Meldet die aktuell zu verwendende Konfiguration.
         /// </summary>
         public VCRConfiguration Configuration { get { return _configuration; } }
-
-        /// <summary>
-        /// Instanzen dieser Klasse sind nicht zeitgebunden.
-        /// </summary>
-        /// <returns>Die Antwort muss immer <i>null</i> sein.</returns>
-        [Obsolete]
-        public override object InitializeLifetimeService() => null!;
 
         public class _Setting
         {
@@ -153,7 +142,7 @@ namespace JMS.DVB.NET.Recording
             // Forward
             var state = Profiles[profileName];
             if (state == null)
-                LogError("Es gibt kein Geräteprofil '{0}'", profileName);
+                _logger.LogError("Es gibt kein Geräteprofil '{0}'", profileName);
 
             // Report
             return state;
@@ -173,7 +162,7 @@ namespace JMS.DVB.NET.Recording
             // Find the profile
             var profile = FindProfile(profileName);
             if (profile == null)
-                return new TTarget[0];
+                return [];
 
             // Create matcher
             Func<Station, bool> matchStation;
@@ -186,7 +175,7 @@ namespace JMS.DVB.NET.Recording
                 if (withRadio)
                 matchStation = station => station.SourceType == SourceTypes.Radio;
             else
-                return new TTarget[0];
+                return [];
 
             // Filter all we want
             return

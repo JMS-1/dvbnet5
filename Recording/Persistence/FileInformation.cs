@@ -21,16 +21,16 @@ namespace JMS.DVB.NET.Recording.Persistence
         public VideoTypes VideoType { get; set; }
 
         /// <summary>
-        /// Die eindeutige Kennung der zugeh�rigen Aufzeichnung.
+        /// Die eindeutige Kennung der zugehörigen Aufzeichnung.
         /// </summary>
         [XmlAttribute("schedule")]
         public string ScheduleIdentifier { get; set; } = null!;
 
         /// <summary>
-        /// Erzeugt eine Beschreibung aus der DVB.NET Repr�sentation.
+        /// Erzeugt eine Beschreibung aus der DVB.NET Repräsentation.
         /// </summary>
-        /// <param name="file">Die DVB.NET Repr�sentation.</param>
-        /// <param name="scheduleIdentifier">Die zugeh�rige Aufzeichnung.</param>
+        /// <param name="file">Die DVB.NET Repräsentation.</param>
+        /// <param name="scheduleIdentifier">Die zugehörige Aufzeichnung.</param>
         /// <exception cref="ArgumentNullException">Es wurde keine Information angegeben.</exception>
         public static FileInformation Create(FileStreamInformation file, Guid scheduleIdentifier)
         {
@@ -42,9 +42,9 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// Ermittelt einen Schl�ssel zu dieser Beschreibung.
+        /// Ermittelt einen Schlüssel zu dieser Beschreibung.
         /// </summary>
-        /// <returns>Der gew�nschte Schl�ssel.</returns>
+        /// <returns>Der gewünschte Schlüssel.</returns>
         public override int GetHashCode()
         {
             // Core
@@ -58,7 +58,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Vergleicht zwei Beschreibungen.
         /// </summary>
         /// <param name="obj">Eine andere Beschreibung.</param>
-        /// <returns>Gesetzt, wenn die Beschreibungen v�llig identisch sind.</returns>
+        /// <returns>Gesetzt, wenn die Beschreibungen völlig identisch sind.</returns>
         public override bool Equals(object? obj)
         {
             // Check type
@@ -84,7 +84,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         }
 
         /// <summary>
-        /// Meldet die Gr��e der zugeh�rigen Datei.
+        /// Meldet die Größe der zugehörigen Datei.
         /// </summary>
         [XmlIgnore]
         public long? FileSize

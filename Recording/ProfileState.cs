@@ -31,30 +31,34 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         internal volatile bool WakeUpRequired;
 
+        private readonly Logger _logger;
+
+        private readonly VCRProfiles _profiles;
+
+        private readonly VCRServer _server;
+
         /// <summary>
         /// Erzeugt eine neue Beschreibung.
         /// </summary>
         /// <param name="collection">Die zugehörige Verwaltung der aktiven Geräteprofile.</param>
         /// <param name="profileName">Der Name des zugehörigen Geräteprofils.</param>
-        public ProfileState(ProfileStateCollection collection, string profileName)
+        public ProfileState(ProfileStateCollection collection, string profileName, VCRServer server, VCRProfiles profiles, Logger logger)
         {
             // Remember
-            ProfileName = profileName;
+            _logger = logger;
+            _profiles = profiles;
+            _server = server;
             Collection = collection;
+            ProfileName = profileName;
 
             // Create program guide manager
-            ProgramGuide = new ProgramGuideManager(Collection.Server.JobManager, profileName, Collection.Profiles);
+            ProgramGuide = new ProgramGuideManager(server.JobManager, profileName, profiles, server, logger);
         }
 
         /// <summary>
         /// Meldet das zugehörige Geräteprofil.
         /// </summary>
-        public Profile? Profile => Collection.Profiles.FindProfile(ProfileName);
-
-        /// <summary>
-        /// Meldet die zugehörige VCR.NET Instanz.
-        /// </summary>
-        public VCRServer Server { get { return Collection.Server; } }
+        public Profile? Profile => _profiles.FindProfile(ProfileName);
 
         /// <summary>
         /// Prüft, ob eine bestimmte Quelle zu diesem Geräteprofil gehört.
@@ -93,7 +97,7 @@ namespace JMS.DVB.NET.Recording
             else if (!string.IsNullOrEmpty(connectTo))
             {
                 // Activate 
-                ZappingProxy.Create(this, connectTo, Server, Collection.Profiles).Start();
+                ZappingProxy.Create(this, connectTo, _server, _profiles, _logger).Start();
             }
             else if (source != null)
             {
@@ -305,7 +309,7 @@ namespace JMS.DVB.NET.Recording
                     if (ReferenceEquals(current, null))
                     {
                         // Create a brand new regular recording request
-                        var request = new RecordingProxy(this, recording, Server, Collection.Profiles);
+                        var request = new RecordingProxy(this, recording, _server, _profiles, _logger);
 
                         // Activate the request
                         request.Start();
@@ -348,7 +352,7 @@ namespace JMS.DVB.NET.Recording
                 if (ReferenceEquals(current, null))
                 {
                     // Report
-                    Server.Log(LoggingLevel.Errors, "Request to end Recording '{0}' but there is no active Recording Process", scheduleIdentifier);
+                    _logger.Log(LoggingLevel.Errors, "Request to end Recording '{0}' but there is no active Recording Process", scheduleIdentifier);
 
                     // Better do it ourselves
                     Collection.ConfirmOperation(scheduleIdentifier, false);
@@ -431,8 +435,8 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         internal DateTime? LastSourceUpdateTime
         {
-            get { return Tools.GetRegistryTime(SourceUpdateRegistryName, Server); }
-            set { Tools.SetRegistryTime(SourceUpdateRegistryName, value, Server); }
+            get { return Tools.GetRegistryTime(SourceUpdateRegistryName, _logger); }
+            set { Tools.SetRegistryTime(SourceUpdateRegistryName, value, _logger); }
         }
 
         #endregion

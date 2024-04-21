@@ -13,43 +13,46 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Meldet die primäre VCR.NET Instanz.
         /// </summary>
-        public VCRServer Server { get; private set; }
+        private readonly VCRServer _server;
 
         /// <summary>
         /// 
         /// </summary>
-        public VCRProfiles Profiles { get; private set; }
+        private readonly VCRProfiles _profiles;
 
         /// <summary>
         /// Alle von dieser Instanz verwalteten Geräteprofile.
         /// </summary>
-        private readonly Dictionary<string, ProfileState> m_profiles;
+        private readonly Dictionary<string, ProfileState> _stateMap;
+
+        private readonly Logger _logger;
 
         /// <summary>
         /// Erzeugt eine neue Verwaltungsinstanz.
         /// </summary>
         /// <param name="server">Die primäre VCR.NET Instanz.</param>
-        internal ProfileStateCollection(VCRServer server, VCRProfiles profiles)
+        internal ProfileStateCollection(VCRServer server, VCRProfiles profiles, Logger logger, JobManager jobs)
         {
             // Remember
-            Server = server;
-            Profiles = profiles;
+            _logger = logger;
+            _profiles = profiles;
+            _server = server;
 
             // Profiles to use
-            var profileNames = Profiles.ProfileNames.ToArray();
+            var profileNames = _profiles.ProfileNames.ToArray();
             var nameReport = string.Join(", ", profileNames);
 
             // Log
-            Server.Log(LoggingLevel.Full, "Die Geräteprofile werden geladen: {0}", nameReport);
+            _logger.Log(LoggingLevel.Full, "Die Geräteprofile werden geladen: {0}", nameReport);
 
             // Report
             Tools.ExtendedLogging("Loading Profile Collection: {0}", nameReport);
 
             // Load current profiles
-            m_profiles = profileNames.ToDictionary(profileName => profileName, profileName => new ProfileState(this, profileName), ProfileManager.ProfileNameComparer);
+            _stateMap = profileNames.ToDictionary(profileName => profileName, profileName => new ProfileState(this, profileName, _server, _profiles, _logger), ProfileManager.ProfileNameComparer);
 
             // Now we can create the planner
-            m_planner = RecordingPlanner.Create(this, Server, Profiles);
+            m_planner = RecordingPlanner.Create(this, _server, _profiles, _logger, jobs);
             m_planThread = new Thread(PlanThread) { Name = "Recording Planner", IsBackground = true };
 
             // Start planner
@@ -62,12 +65,12 @@ namespace JMS.DVB.NET.Recording
         /// <typeparam name="TInfo">Die Art der gemeldeten Informationen.</typeparam>
         /// <param name="factory">Methode zum Erstellen der Information zu einem einzelnen Geräteprofil.</param>
         /// <returns>Die Informationen zu den Profilen.</returns>
-        public IEnumerable<TInfo> InspectProfiles<TInfo>(Func<ProfileState, TInfo> factory) => m_profiles.Values.Select(factory);
+        public IEnumerable<TInfo> InspectProfiles<TInfo>(Func<ProfileState, TInfo> factory) => _stateMap.Values.Select(factory);
 
         /// <summary>
         /// Meldet die Anzahl der aktiven Aufzeichnungen.
         /// </summary>
-        public int NumberOfActiveRecordings => (m_profiles.Count < 1) ? 0 : m_profiles.Values.Sum(profile => profile.NumberOfActiveRecordings);
+        public int NumberOfActiveRecordings => (_stateMap.Count < 1) ? 0 : _stateMap.Values.Sum(profile => profile.NumberOfActiveRecordings);
 
         /// <summary>
         /// Ermittelt den Zustand eines einzelnen Geräteprofils.
@@ -82,7 +85,7 @@ namespace JMS.DVB.NET.Recording
                 if (string.IsNullOrEmpty(profileName) || profileName.Equals("*"))
                 {
                     // Attach to the default profile
-                    var defaultProfile = Profiles.DefaultProfile;
+                    var defaultProfile = _profiles.DefaultProfile;
                     if (defaultProfile == null)
                         return null;
 
@@ -91,7 +94,7 @@ namespace JMS.DVB.NET.Recording
                 }
 
                 // Load
-                if (m_profiles.TryGetValue(profileName, out var profile))
+                if (_stateMap.TryGetValue(profileName, out var profile))
                     return profile;
                 else
                     return null;
@@ -126,7 +129,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Meldet, ob auf irgendeinem Geräteprofil ein Zugriff aktiv ist.
         /// </summary>
-        public bool IsActive { get { return m_profiles.Values.Any(s => s.IsActive); } }
+        public bool IsActive { get { return _stateMap.Values.Any(s => s.IsActive); } }
 
         /// <summary>
         /// Wendet eine Methode auf alle verwalteten Profile an.
@@ -136,7 +139,7 @@ namespace JMS.DVB.NET.Recording
         private void ForEachProfile(Action<ProfileState> method, bool ignoreErrors = false)
         {
             // Forward to all
-            foreach (var state in m_profiles.Values)
+            foreach (var state in _stateMap.Values)
                 try
                 {
                     // Forward
@@ -145,7 +148,7 @@ namespace JMS.DVB.NET.Recording
                 catch (Exception e)
                 {
                     // Report
-                    Server.Log(e);
+                    _logger.Log(e);
 
                     // See if we are allowed to ignore
                     if (!ignoreErrors)
@@ -192,7 +195,7 @@ namespace JMS.DVB.NET.Recording
             finally
             {
                 // Forget
-                m_profiles.Clear();
+                _stateMap.Clear();
             }
         }
 
@@ -362,7 +365,7 @@ namespace JMS.DVB.NET.Recording
                 catch (Exception e)
                 {
                     // Report and ignore - we do not expect any error to occur
-                    Server.Log(e);
+                    _logger.Log(e);
                 }
 
                 // New plan is now available - beside termination this will do nothing at all but briefly aquiring an idle lock
@@ -471,21 +474,21 @@ namespace JMS.DVB.NET.Recording
                 if (m_pendingSchedule == null)
                 {
                     // Report
-                    Server.Log(LoggingLevel.Errors, "There is no outstanding asynchronous Recording Request for Schedule '{0}'", scheduleIdentifier);
+                    _logger.Log(LoggingLevel.Errors, "There is no outstanding asynchronous Recording Request for Schedule '{0}'", scheduleIdentifier);
                 }
                 else if (m_pendingSchedule.Definition.UniqueIdentifier != scheduleIdentifier)
                 {
                     // Report
-                    Server.Log(LoggingLevel.Errors, "Confirmed asynchronous Recording Request for Schedule '{0}' but waiting for '{1}'", scheduleIdentifier, m_pendingSchedule.Definition.UniqueIdentifier);
+                    _logger.Log(LoggingLevel.Errors, "Confirmed asynchronous Recording Request for Schedule '{0}' but waiting for '{1}'", scheduleIdentifier, m_pendingSchedule.Definition.UniqueIdentifier);
                 }
                 else
                 {
                     // Report
-                    Server.Log(LoggingLevel.Schedules, "Confirmed asynchronous Recording Request for Schedule '{0}'", scheduleIdentifier);
+                    _logger.Log(LoggingLevel.Schedules, "Confirmed asynchronous Recording Request for Schedule '{0}'", scheduleIdentifier);
 
                     // Check mode
                     if (isStart != m_pendingStart)
-                        Server.Log(LoggingLevel.Errors, "Recording Request confirmed wrong Type of Operation");
+                        _logger.Log(LoggingLevel.Errors, "Recording Request confirmed wrong Type of Operation");
 
                     // Finish
                     if (m_pendingStart)
@@ -513,7 +516,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Meldet die Namen der verwendeten Geräteprofile.
         /// </summary>
-        IEnumerable<string> IRecordingPlannerSite.ProfileNames { get { return m_profiles.Keys; } }
+        IEnumerable<string> IRecordingPlannerSite.ProfileNames { get { return _stateMap.Keys; } }
 
         /// <summary>
         /// Erstellt einen periodischen Auftrag für die Aktualisierung der Programmzeitschrift.
@@ -524,8 +527,8 @@ namespace JMS.DVB.NET.Recording
         PeriodicScheduler IRecordingPlannerSite.CreateProgramGuideTask(IScheduleResource resource, Profile profile, VCRServer server)
         {
             // Protect against misuse
-            if (m_profiles.TryGetValue(profile.Name, out var state))
-                return new ProgramGuideTask(resource, state, server.Configuration);
+            if (_stateMap.TryGetValue(profile.Name, out var state))
+                return new ProgramGuideTask(resource, state, server.Configuration, server.JobManager);
             else
                 return null!;
         }
@@ -536,11 +539,16 @@ namespace JMS.DVB.NET.Recording
         /// <param name="resource">Die zu verwendende Ressource.</param>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
         /// <returns>Der gewünschte Auftrag.</returns>
-        PeriodicScheduler IRecordingPlannerSite.CreateSourceScanTask(IScheduleResource resource, Profile profile, VCRServer server)
+        PeriodicScheduler IRecordingPlannerSite.CreateSourceScanTask(
+            IScheduleResource resource,
+            Profile profile,
+            VCRServer server,
+            JobManager jobs
+        )
         {
             // Protect against misuse
-            if (m_profiles.TryGetValue(profile.Name, out var state))
-                return new SourceListTask(resource, state, server.Configuration);
+            if (_stateMap.TryGetValue(profile.Name, out var state))
+                return new SourceListTask(resource, state, server.Configuration, jobs);
             else
                 return null!;
         }
@@ -555,7 +563,7 @@ namespace JMS.DVB.NET.Recording
         void IRecordingPlannerSite.AddRegularJobs(RecordingScheduler scheduler, Func<Guid, bool> disabled, RecordingPlanner planner, PlanContext context, VCRProfiles profiles)
         {
             // Retrieve all jobs related to this profile
-            foreach (var job in Server.JobManager.GetActiveJobs())
+            foreach (var job in _server.JobManager.GetActiveJobs())
                 foreach (var schedule in job.Schedules)
                 {
                     // No longer in use
@@ -592,11 +600,8 @@ namespace JMS.DVB.NET.Recording
         /// Meldet, dass eine Aufzeichnung nicht ausgeführt werden kann.
         /// </summary>
         /// <param name="item">Die nicht ausgeführte Aufzeichnung.</param>
-        void IRecordingPlannerSite.Discard(IScheduleDefinition item)
-        {
-            // Report
-            Server.Log(LoggingLevel.Schedules, "Could not record '{0}'", item.Name);
-        }
+        void IRecordingPlannerSite.Discard(IScheduleDefinition item) =>
+            _logger.Log(LoggingLevel.Schedules, "Could not record '{0}'", item.Name);
 
         /// <summary>
         /// Meldet, dass eine Aufzeichnung nun beendet werden kann.
@@ -606,10 +611,10 @@ namespace JMS.DVB.NET.Recording
         void IRecordingPlannerSite.Stop(IScheduleInformation item, RecordingPlanner planner)
         {
             // Report
-            Server.Log(LoggingLevel.Schedules, "Done recording '{0}'", item.Definition.Name);
+            _logger.Log(LoggingLevel.Schedules, "Done recording '{0}'", item.Definition.Name);
 
             // Locate the profile - if we don't find it we are in big trouble!
-            if (!m_profiles.TryGetValue(item.Resource.Name, out var profile))
+            if (!_stateMap.TryGetValue(item.Resource.Name, out var profile))
                 return;
 
             // Mark as pending
@@ -626,7 +631,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="item">Die zu startende Aufzeichnung.</param>
         /// <param name="planner">Die Planungsinstanz.</param>
         /// <param name="context">Zusatzinformationen zur Aufzeichnungsplanung.</param>
-        void IRecordingPlannerSite.Start(IScheduleInformation item, RecordingPlanner planner, PlanContext context, VCRServer server, VCRProfiles profiles)
+        void IRecordingPlannerSite.Start(IScheduleInformation item, RecordingPlanner planner, PlanContext context)
         {
             // We are no longer active - simulate start and do nothing
             if (!m_plannerActive)
@@ -639,10 +644,10 @@ namespace JMS.DVB.NET.Recording
             }
 
             // Report
-            Server.Log(LoggingLevel.Schedules, "Start recording '{0}'", item.Definition.Name);
+            _logger.Log(LoggingLevel.Schedules, "Start recording '{0}'", item.Definition.Name);
 
             // Locate the profile - if we don't find it we are in big trouble!
-            if (!m_profiles.TryGetValue(item.Resource.Name, out var profile))
+            if (!_stateMap.TryGetValue(item.Resource.Name, out var profile))
                 return;
 
             // Mark as pending
@@ -650,14 +655,14 @@ namespace JMS.DVB.NET.Recording
             m_pendingStart = true;
 
             // Create the recording
-            var recording = VCRRecordingInfo.Create(item, context, server.Configuration, profiles)!;
+            var recording = VCRRecordingInfo.Create(item, context, _server.Configuration, _profiles)!;
 
             // Check for EPG
             var guideUpdate = item.Definition as ProgramGuideTask;
             if (guideUpdate != null)
             {
                 // Start a new guide collector
-                m_pendingActions += ProgramGuideProxy.Create(profile, recording, server, profiles).Start;
+                m_pendingActions += ProgramGuideProxy.Create(profile, recording, _server, _profiles, _logger).Start;
             }
             else
             {
@@ -666,7 +671,7 @@ namespace JMS.DVB.NET.Recording
                 if (sourceUpdate != null)
                 {
                     // Start a new update
-                    m_pendingActions += SourceScanProxy.Create(profile, recording, server, profiles).Start;
+                    m_pendingActions += SourceScanProxy.Create(profile, recording, _server, _profiles, _logger).Start;
                 }
                 else
                 {

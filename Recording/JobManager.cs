@@ -38,11 +38,6 @@ namespace JMS.DVB.NET.Recording
         public DirectoryInfo RootDirectory { get; private set; }
 
         /// <summary>
-        /// Meldet die zugehörige VCR.NET Instanz.
-        /// </summary>
-        public VCRServer Server { get; private set; }
-
-        /// <summary>
         /// 
         /// </summary>
         public VCRProfiles Profiles { get; private set; }
@@ -52,20 +47,30 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         private readonly Dictionary<Guid, VCRJob> m_Jobs = [];
 
+        private readonly VCRConfiguration _configuration;
+
+        private readonly Logger _logger;
+
         /// <summary>
         /// Erzeugt eine neue Verwaltungsinstanz und lädt die aktuellen Auftragsliste.
         /// </summary>
         /// <param name="rootDirectory">Meldet das Verzeichnis, unterhalb dessen alle
         /// Aufträge und Protokolle angelegt werden.</param>
-        /// <param name="server">Die VCR.NET Instanz, der diese Verwaltung zugeordnet ist.</param>
-        internal JobManager(DirectoryInfo rootDirectory, VCRServer server, VCRProfiles profiles)
+        public JobManager(VCRProfiles profiles, VCRConfiguration configuration, Logger logger)
         {
             // Remember
-            RootDirectory = rootDirectory;
-            Server = server;
+            _configuration = configuration;
+            _logger = logger;
+
             Profiles = profiles;
 
             // Create root directory
+            var rootDirectory = RunTimeLoader.GetDirectory("Recording");
+
+            // Report
+            Tools.ExtendedLogging("Using Root Directory {0}", rootDirectory.FullName);
+
+            RootDirectory = new DirectoryInfo(Path.Combine(rootDirectory.FullName, "Jobs"));
             RootDirectory.Create();
 
             // Create working directories
@@ -349,7 +354,7 @@ namespace JMS.DVB.NET.Recording
             m_nextArchiveCleanup = DateTime.UtcNow.AddDays(1);
 
             // Access limit
-            var firstValid = DateTime.UtcNow.AddDays(-7 * Server.Configuration.ArchiveLifeTime);
+            var firstValid = DateTime.UtcNow.AddDays(-7 * _configuration.ArchiveLifeTime);
             var jobDirectory = ArchiveDirectory;
 
             // Protect to avoid parallel operations on the archive directory
@@ -364,7 +369,7 @@ namespace JMS.DVB.NET.Recording
                         catch (Exception e)
                         {
                             // Report error
-                            Server.Log(e);
+                            _logger.Log(e);
                         }
         }
 
@@ -380,7 +385,7 @@ namespace JMS.DVB.NET.Recording
                     SerializationTools.SafeSave(
                         logEntry,
                         Path.Combine(LogDirectory.FullName, DateTime.UtcNow.ToString(LogEntryDateFormat + LogEntryTimeFormat) + logEntry.Source.ProfileName + VCRRecordingInfo.FileSuffix),
-                        Server
+                        _logger
                     );
         }
 
@@ -451,7 +456,7 @@ namespace JMS.DVB.NET.Recording
             m_nextLogCleanup = DateTime.UtcNow.AddDays(1);
 
             // For cleanup
-            var firstValid = DateTime.Now.Date.AddDays(-7 * Server.Configuration.LogLifeTime).ToString(LogEntryDateFormat);
+            var firstValid = DateTime.Now.Date.AddDays(-7 * _configuration.LogLifeTime).ToString(LogEntryDateFormat);
 
             // Load all jobs
             foreach (var file in LogDirectory.GetFiles("*" + VCRRecordingInfo.FileSuffix))
@@ -464,7 +469,7 @@ namespace JMS.DVB.NET.Recording
                     catch (Exception e)
                     {
                         // Report error
-                        Server.Log(e);
+                        _logger.Log(e);
                     }
         }
     }

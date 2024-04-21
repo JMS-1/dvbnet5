@@ -14,7 +14,11 @@ public static class RecordingExtensions
 
     public static void UseRecording(this IServiceCollection services)
     {
+        services.AddTransient<Logger>();
+
         services.AddSingleton<IVCRConfigurationExePathProvider>((ctx) => new ConfigurationPathProvider());
+
+        services.AddSingleton<JobManager>();
         services.AddSingleton<VCRConfiguration>();
         services.AddSingleton<VCRProfiles>();
         services.AddSingleton<VCRServer>();

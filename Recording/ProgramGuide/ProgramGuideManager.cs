@@ -29,17 +29,23 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
 
         private readonly VCRProfiles _profiles;
 
+        private readonly Logger _logger;
+
+        private readonly VCRServer _server;
+
         /// <summary>
         /// Erzeugt eine neue Verwaltungsinstanz.
         /// </summary>
         /// <param name="jobs">Die zugehörige Auftragsverwaltung.</param>
         /// <param name="profileName">Der Name des verwalteten DVB.NET Geräteprofils.</param>
-        public ProgramGuideManager(JobManager jobs, string profileName, VCRProfiles profiles)
+        public ProgramGuideManager(JobManager jobs, string profileName, VCRProfiles profiles, VCRServer server, Logger logger)
         {
             // Remember
-            ProfileName = profileName;
-            JobManager = jobs;
+            _logger = logger;
             _profiles = profiles;
+            _server = server;
+            JobManager = jobs;
+            ProfileName = profileName;
 
             // Calculate file
             ProgramGuideFile = new FileInfo(Path.Combine(JobManager.CollectorDirectory.FullName, $"EPGData for {ProfileName}.xml"));
@@ -70,7 +76,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             }
 
             // Report
-            JobManager.Server.Log(LoggingLevel.Errors, "Die Datei '{0}' zur Programmzeitschrift ist ungültig", ProgramGuideFile.FullName);
+            _logger.Log(LoggingLevel.Errors, "Die Datei '{0}' zur Programmzeitschrift ist ungültig", ProgramGuideFile.FullName);
 
             // Save delete
             try
@@ -81,7 +87,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             catch
             {
                 // Discard any error
-                JobManager.Server.Log(LoggingLevel.Errors, "Die Datei '{0}' zur Programmzeitschrift kann nicht gelöscht werden", ProgramGuideFile.FullName);
+                _logger.Log(LoggingLevel.Errors, "Die Datei '{0}' zur Programmzeitschrift kann nicht gelöscht werden", ProgramGuideFile.FullName);
             }
         }
 
@@ -153,8 +159,8 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         internal DateTime? LastUpdateTime
         {
-            get { return Tools.GetRegistryTime(UpdateRegistryName, JobManager.Server); }
-            set { Tools.SetRegistryTime(UpdateRegistryName, value, JobManager.Server); }
+            get { return Tools.GetRegistryTime(UpdateRegistryName, _logger); }
+            set { Tools.SetRegistryTime(UpdateRegistryName, value, _logger); }
         }
 
         /// <summary>
@@ -193,7 +199,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             catch (Exception e)
             {
                 // Report
-                JobManager.Server.Log(LoggingLevel.Errors, "Fehler beim Aktualisieren der Programmzeitschrift: {0}", e);
+                _logger.Log(LoggingLevel.Errors, "Fehler beim Aktualisieren der Programmzeitschrift: {0}", e);
             }
         }
 
@@ -287,7 +293,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             get
             {
                 // See if we are already done
-                var profiles = JobManager.Server.Profiles;
+                var profiles = _server.Profiles;
                 if (profiles == null)
                     return null;
 

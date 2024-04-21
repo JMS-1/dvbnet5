@@ -24,8 +24,8 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="forResource">Das Gerät, für das die Sammlung erfolgt.</param>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
-        public ProgramGuideTask(IScheduleResource forResource, ProfileState profile, VCRConfiguration configuration)
-            : this(forResource, profile, () => profile.ProgramGuide.LastUpdateTime, configuration)
+        public ProgramGuideTask(IScheduleResource forResource, ProfileState profile, VCRConfiguration configuration, JobManager jobs)
+            : this(forResource, profile, () => profile.ProgramGuide.LastUpdateTime, configuration, jobs)
         {
         }
 
@@ -34,8 +34,8 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="forResource">Das Gerät, für das die Sammlung erfolgt.</param>
         /// <param name="lastUpdate">Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.</param>
-        public ProgramGuideTask(IScheduleResource forResource, Func<DateTime?> lastUpdate, VCRConfiguration configuration)
-            : this(forResource, null!, lastUpdate, configuration)
+        public ProgramGuideTask(IScheduleResource forResource, Func<DateTime?> lastUpdate, VCRConfiguration configuration, JobManager jobs)
+            : this(forResource, null!, lastUpdate, configuration, jobs)
         {
         }
 
@@ -46,7 +46,13 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
         /// <param name="lastUpdate">Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.</param>
         /// <exception cref="ArgumentNullException">Der letzte Aktualisierungszeitpunkt ist nicht gesetzt.</exception>
-        private ProgramGuideTask(IScheduleResource forResource, ProfileState profile, Func<DateTime?> lastUpdate, VCRConfiguration configuration)
+        private ProgramGuideTask(
+            IScheduleResource forResource,
+            ProfileState profile,
+            Func<DateTime?> lastUpdate,
+            VCRConfiguration configuration,
+            JobManager jobs
+        )
             : base("Programmzeitschrift", Guid.NewGuid())
         {
             // Validate
@@ -62,7 +68,7 @@ namespace JMS.DVB.NET.Recording.Planning
 
             // Set the job directory
             if (profile != null)
-                CollectorDirectory = profile.Server.JobManager.CollectorDirectory;
+                CollectorDirectory = jobs.CollectorDirectory;
         }
 
         /// <summary>

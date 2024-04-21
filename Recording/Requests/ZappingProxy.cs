@@ -25,8 +25,8 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="profile">Das zu verwendende Geräteprofil.</param>
         /// <param name="primary">Informationen zur Aufzeichnung als Ganzes.</param>
         /// <param name="target">Die aktuelle Zieladresse für die Nutzdaten.</param>
-        private ZappingProxy(ProfileState profile, VCRRecordingInfo primary, string target, VCRServer server, VCRProfiles profiles)
-            : base(profile, primary, server, profiles)
+        private ZappingProxy(ProfileState profile, VCRRecordingInfo primary, string target, VCRServer server, VCRProfiles profiles, Logger logger)
+            : base(profile, primary, server, profiles, logger)
         {
             // Remember
             m_target = target;
@@ -39,7 +39,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="target">Die aktuelle Zieladresse für die Nutzdaten.</param>
         /// <returns>Die gewünschte Steuerung.</returns>
         /// <exception cref="ArgumentNullException">Mindestens ein Parameter wurde nicht angegeben.</exception>
-        public static ZappingProxy Create(ProfileState profile, string target, VCRServer server, VCRProfiles profiles)
+        public static ZappingProxy Create(ProfileState profile, string target, VCRServer server, VCRProfiles profiles, Logger logger)
         {
             // Validate
             if (profile == null)
@@ -53,7 +53,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 new VCRRecordingInfo
                 {
                     Source = new SourceSelection { ProfileName = profile.ProfileName, DisplayName = VCRJob.ZappingName },
-                    FileName = Path.Combine(profile.Server.JobManager.CollectorDirectory.FullName, "zapping.live"),
+                    FileName = Path.Combine(server.JobManager.CollectorDirectory.FullName, "zapping.live"),
                     ScheduleUniqueID = Guid.NewGuid(),
                     EndsAt = now.AddMinutes(2),
                     Name = VCRJob.ZappingName,
@@ -64,7 +64,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 };
 
             // Forward
-            return new ZappingProxy(profile, primary, target, server, profiles);
+            return new ZappingProxy(profile, primary, target, server, profiles, logger);
         }
 
         /// <summary>
