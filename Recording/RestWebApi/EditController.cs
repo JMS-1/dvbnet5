@@ -7,7 +7,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Der Web Service zur Pflege von Aufzeichnungen und Aufträgen.
     /// </summary>
-    public class EditController(VCRServer server, VCRProfiles profiles) : ControllerBase
+    public class EditController(VCRServer server, VCRProfiles profiles, JobManager jobs) : ControllerBase
     {
         /// <summary>
         /// Wird zum Anlegen einer neuen Aufzeichnung verwendet.
@@ -29,7 +29,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             job.Schedules.Add(schedule);
 
             // Process
-            server.UpdateJob(job, schedule.UniqueID!.Value);
+            jobs.Update(job, schedule.UniqueID!.Value);
+
+            server.BeginNewPlan();
 
             // Update recently used channels
             UserProfileSettings.AddRecentChannel(data.Job.Source);
@@ -56,7 +58,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                     detail = detail.Substring(1, 32) + Guid.NewGuid().ToString("N");
 
             // Parameter analysieren
-            var schedule = server.ParseUniqueWebId(detail, out VCRJob job);
+            var schedule = jobs.ParseUniqueWebId(detail, out VCRJob job);
 
             // See if we have to initialize from program guide
             ProgramGuideEntry? epgEntry = null;
@@ -83,7 +85,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public void UpdateRecording(string detail, [FromBody] JobScheduleData data)
         {
             // Parameter analysieren
-            var schedule = server.ParseUniqueWebId(detail, out VCRJob job);
+            var schedule = jobs.ParseUniqueWebId(detail, out VCRJob job);
 
             // Validate
             if (schedule == null)
@@ -111,7 +113,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             newJob.Schedules.Add(newSchedule);
 
             // Send to persistence
-            server.UpdateJob(newJob, newSchedule.UniqueID!.Value);
+            jobs.Update(newJob, newSchedule.UniqueID!.Value);
+
+            server.BeginNewPlan();
 
             // Update recently used channels
             UserProfileSettings.AddRecentChannel(data.Job.Source);
@@ -126,7 +130,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public void DeleteRecording(string detail)
         {
             // Parameter analysieren
-            var schedule = server.ParseUniqueWebId(detail, out VCRJob job);
+            var schedule = jobs.ParseUniqueWebId(detail, out VCRJob job);
 
             // Validate
             if (schedule == null)
@@ -137,9 +141,11 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
             // Send to persistence
             if (job.Schedules.Count < 1)
-                server.DeleteJob(job);
+                jobs.Delete(job);
             else
-                server.UpdateJob(job, null);
+                jobs.Update(job, null);
+
+            server.BeginNewPlan();
         }
 
         /// <summary>
@@ -152,7 +158,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public string CreateNewRecording(string detail, [FromBody] JobScheduleData data)
         {
             // Parameter analysieren
-            server.ParseUniqueWebId(detail + Guid.NewGuid().ToString("N"), out VCRJob job);
+            jobs.ParseUniqueWebId(detail + Guid.NewGuid().ToString("N"), out VCRJob job);
 
             // Validate
             if (job == null)
@@ -173,7 +179,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             newJob.Schedules.Add(newSchedule);
 
             // Send to persistence
-            server.UpdateJob(newJob, newSchedule.UniqueID!.Value);
+            jobs.Update(newJob, newSchedule.UniqueID!.Value);
+
+            server.BeginNewPlan();
 
             // Update recently used channels
             UserProfileSettings.AddRecentChannel(data.Job.Source);

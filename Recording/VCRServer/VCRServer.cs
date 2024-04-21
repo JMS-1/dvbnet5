@@ -58,6 +58,11 @@ namespace JMS.DVB.NET.Recording
         private readonly VCRProfiles _profiles;
 
         /// <summary>
+        /// Die Verwaltung der Aufträge.
+        /// </summary>
+        private JobManager _jobs = null!;
+
+        /// <summary>
         /// L?dt Verwaltungsinstanzen f?r alle freigeschalteten DVB.NET Ger?teprofile.
         /// </summary>
         static VCRServer()

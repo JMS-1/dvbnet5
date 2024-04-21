@@ -1,4 +1,5 @@
 using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.RestWebApi;
 
 namespace JMS.DVB.NET.Recording
 {
@@ -173,6 +174,13 @@ namespace JMS.DVB.NET.Recording
         public void Update(VCRJob job, Guid? scheduleIdentifier)
         {
             ArgumentNullException.ThrowIfNull(job, nameof(job));
+
+            // Cleanup
+            if (scheduleIdentifier.HasValue)
+                foreach (var schedule in job.Schedules)
+                    if (schedule.UniqueID.HasValue)
+                        if (schedule.UniqueID.Value.Equals(scheduleIdentifier.Value))
+                            schedule.NoStartBefore = null;
 
             // Report
             Tools.ExtendedLogging("Updating Job {0}", job.UniqueID!);
@@ -472,6 +480,23 @@ namespace JMS.DVB.NET.Recording
                         // Report error
                         _logger.Log(e);
                     }
+        }
+
+        /// <summary>
+        /// Rekonstruiert einen Auftrag und eine Aufzeichnung aus einer Textdarstellung.
+        /// </summary>
+        /// <param name="id">Die Textdarstellung.</param>
+        /// <param name="job">Der ermittelte Auftrag.</param>
+        /// <returns>Die zugeh�rige Aufzeichnung im Auftrag.</returns>
+        public VCRSchedule? ParseUniqueWebId(string id, out VCRJob job)
+        {
+            ServerTools.ParseUniqueWebId(id, out Guid jobID, out Guid scheduleID);
+
+            // Find the job
+            job = FindJob(jobID)!;
+
+            // Report schedule if job exists
+            return job?[scheduleID];
         }
     }
 }
