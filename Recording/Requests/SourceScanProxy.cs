@@ -1,5 +1,6 @@
 ﻿using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Status;
 
 namespace JMS.DVB.NET.Recording.Requests

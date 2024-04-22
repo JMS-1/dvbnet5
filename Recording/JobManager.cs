@@ -1,5 +1,6 @@
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.RestWebApi;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording
 {
@@ -51,14 +52,14 @@ namespace JMS.DVB.NET.Recording
 
         private readonly VCRConfiguration _configuration;
 
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Erzeugt eine neue Verwaltungsinstanz und lädt die aktuellen Auftragsliste.
         /// </summary>
         /// <param name="rootDirectory">Meldet das Verzeichnis, unterhalb dessen alle
         /// Aufträge und Protokolle angelegt werden.</param>
-        public JobManager(VCRProfiles profiles, VCRConfiguration configuration, Logger logger)
+        public JobManager(VCRProfiles profiles, VCRConfiguration configuration, ILogger logger)
         {
             // Remember
             _configuration = configuration;

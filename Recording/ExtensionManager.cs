@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording
 {
@@ -32,7 +33,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="extensionName">Der Name der Erweiterung.</param>
         /// <param name="environment">Die für die Erweiterung zu verwendenden Umgebungsvariablen.</param>
-        public void AddWithCleanup(string extensionName, Dictionary<string, string> environment, VCRServer server, Logger logger)
+        public void AddWithCleanup(string extensionName, Dictionary<string, string> environment, VCRServer server, ILogger logger)
         {
             // Lookup, start and forward
             AddWithCleanup(Tools.RunExtensions(extensionName, environment, server, logger).ToArray());

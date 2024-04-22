@@ -1,14 +1,16 @@
+using JMS.DVB.NET.Recording.Services;
+
 namespace JMS.DVB.NET.Recording.Persistence
 {
     public static class VCRJobExtensions
     {
         private static VCRProfiles _profiles = null!;
 
-        private static Logger _logger = null!;
+        private static ILogger _logger = null!;
 
         public class Initializer
         {
-            public Initializer(VCRProfiles profiles, Logger logger)
+            public Initializer(VCRProfiles profiles, ILogger logger)
             {
                 _logger = logger;
                 _profiles = profiles;

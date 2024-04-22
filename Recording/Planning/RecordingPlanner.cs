@@ -1,4 +1,5 @@
 ﻿using JMS.DVB.Algorithms.Scheduler;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording.Planning
 {
@@ -39,13 +40,13 @@ namespace JMS.DVB.NET.Recording.Planning
 
         private readonly VCRProfiles _profiles;
 
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Erstellt eine neue Planung.
         /// </summary>
         /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
-        private RecordingPlanner(IRecordingPlannerSite site, VCRServer server, VCRProfiles profiles, Logger logger, JobManager jobs)
+        private RecordingPlanner(IRecordingPlannerSite site, VCRServer server, VCRProfiles profiles, ILogger logger, JobManager jobs)
         {
             // Remember
             _logger = logger;
@@ -143,7 +144,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
         /// <returns>Die gewünschte Planungsumgebung.</returns>
-        public static RecordingPlanner Create(IRecordingPlannerSite site, VCRServer server, VCRProfiles profiles, Logger logger, JobManager jobs)
+        public static RecordingPlanner Create(IRecordingPlannerSite site, VCRServer server, VCRProfiles profiles, ILogger logger, JobManager jobs)
         {
             // Validate
             if (site == null)

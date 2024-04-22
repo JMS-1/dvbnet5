@@ -1,6 +1,7 @@
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording
 {
@@ -90,7 +91,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="instance">Das zu speichernde Objekt.</param>
         /// <param name="path">Der Pfad zur Datei.</param>
         /// <returns>Gesetzt, wenn kein Fehler aufgetreten ist.</returns>
-        public static bool SafeSave(object instance, string path, Logger logger)
+        public static bool SafeSave(object instance, string path, ILogger logger)
         {
             // Be safe
             try

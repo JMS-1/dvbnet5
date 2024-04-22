@@ -1,6 +1,7 @@
 using System.Text;
 using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Requests;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording
 {
@@ -77,12 +78,12 @@ namespace JMS.DVB.NET.Recording
             Tools.ExtendedLogging("VCRServer static Initialisation completed");
         }
 
-        public readonly Logger _logger;
+        public readonly ILogger _logger;
 
         /// <summary>
         /// Erzeugt eine neue Instanz.
         /// </summary>
-        public VCRServer(VCRConfiguration configuration, Logger logger, VCRProfiles profiles, JobManager jobManager, ServiceFactory factory)
+        public VCRServer(VCRConfiguration configuration, ILogger logger, VCRProfiles profiles, JobManager jobManager, ServiceFactory factory)
         {
             _configuration = configuration;
             _logger = logger;

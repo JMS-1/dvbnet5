@@ -2,6 +2,7 @@
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Requests;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording
 {
@@ -25,7 +26,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         private readonly Dictionary<string, ProfileState> _stateMap;
 
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
 
         private readonly ServiceFactory _factory;
 
@@ -35,7 +36,7 @@ namespace JMS.DVB.NET.Recording
         /// Erzeugt eine neue Verwaltungsinstanz.
         /// </summary>
         /// <param name="server">Die primäre VCR.NET Instanz.</param>
-        internal ProfileStateCollection(VCRServer server, VCRProfiles profiles, Logger logger, JobManager jobs, ServiceFactory factory)
+        internal ProfileStateCollection(VCRServer server, VCRProfiles profiles, ILogger logger, JobManager jobs, ServiceFactory factory)
         {
             // Remember
             _factory = factory;

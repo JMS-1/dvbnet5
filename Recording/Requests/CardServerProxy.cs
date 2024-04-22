@@ -1,5 +1,6 @@
 ﻿using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Status;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -45,7 +46,7 @@ namespace JMS.DVB.NET.Recording.Requests
 
         protected readonly VCRProfiles Profiles;
 
-        protected readonly Logger Logger;
+        protected readonly ILogger Logger;
 
         protected readonly JobManager JobManager;
 
@@ -66,7 +67,7 @@ namespace JMS.DVB.NET.Recording.Requests
 
             // Remember
             JobManager = factory.Create<JobManager>();
-            Logger = factory.Create<Logger>();
+            Logger = factory.Create<ILogger>();
             Profiles = factory.Create<VCRProfiles>();
             ProfileState = state;
             Representative = primary.Clone();

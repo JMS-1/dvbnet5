@@ -1,10 +1,12 @@
-﻿namespace JMS.DVB.NET.Recording
+﻿using JMS.DVB.NET.Recording.Services;
+
+namespace JMS.DVB.NET.Recording
 {
     /// <summary>
     /// Verwaltet die Geräteprofile des VCR.NET Recording Service.
     /// </summary>
     /// <remarks>LEAF SERVICE</remarks>
-    public class VCRProfiles(Logger logger)
+    public class VCRProfiles(ILogger logger)
     {
         /// <summary>
         /// Der aktuelle Konfigurationsbestand.

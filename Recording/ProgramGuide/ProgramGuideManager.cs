@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording.ProgramGuide
 {
@@ -29,7 +30,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
 
         private readonly VCRProfiles _profiles;
 
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
 
         private readonly VCRServer _server;
 
@@ -38,7 +39,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         /// <param name="jobs">Die zugehörige Auftragsverwaltung.</param>
         /// <param name="profileName">Der Name des verwalteten DVB.NET Geräteprofils.</param>
-        public ProgramGuideManager(JobManager jobs, string profileName, VCRProfiles profiles, VCRServer server, Logger logger)
+        public ProgramGuideManager(JobManager jobs, string profileName, VCRProfiles profiles, VCRServer server, ILogger logger)
         {
             // Remember
             _logger = logger;
