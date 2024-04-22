@@ -31,7 +31,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="state">Das zugehörige Geräteprofil.</param>
         /// <param name="recording">Daten der primären Aufzeichnung.</param>
-        private ProgramGuideProxy(ProfileState state, VCRRecordingInfo recording, ServiceFactory factory)
+        private ProgramGuideProxy(IProfileState state, VCRRecordingInfo recording, ServiceFactory factory)
             : base(state, recording, factory)
         {
             // Reset fields
@@ -75,7 +75,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="recording">Beschreibt die Aufzeichnung.</param>
         /// <returns>Die gewünschte Steuerung.</returns>
         /// <exception cref="ArgumentNullException">Es wurden nicht alle Parameter angegeben.</exception>
-        public static ProgramGuideProxy Create(ProfileState state, VCRRecordingInfo recording, ServiceFactory factory)
+        public static ProgramGuideProxy Create(IProfileState state, VCRRecordingInfo recording, ServiceFactory factory)
         {
             // Validate
             if (state == null)

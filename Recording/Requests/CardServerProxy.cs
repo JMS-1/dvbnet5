@@ -24,7 +24,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <summary>
         /// Meldet den zugehörigen Zustand des Geräteprofils.
         /// </summary>
-        public ProfileState ProfileState { get; private set; }
+        public IProfileState ProfileState { get; private set; }
 
         /// <summary>
         /// Die Daten zur aktuellen Gesamtaufzeichnung - diese dient vor allem als Repräsentant für
@@ -56,7 +56,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="state">Der Zustands des zugehörigen Geräteprofils.</param>
         /// <param name="primary">Die primäre Aufzeichnung, auf Grund derer der Aufzeichnungsprozeß aktiviert wurde.</param>
         /// <exception cref="ArgumentNullException">Es wurde kein Profil angegeben.</exception>
-        protected CardServerProxy(ProfileState state, VCRRecordingInfo primary, ServiceFactory factory)
+        protected CardServerProxy(IProfileState state, VCRRecordingInfo primary, ServiceFactory factory)
         {
             // Validate
             if (state == null)

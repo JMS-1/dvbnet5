@@ -130,7 +130,7 @@ namespace JMS.DVB.NET.Recording
         /// <typeparam name="TInfo">Die Art der gemeldeten Information.</typeparam>
         /// <param name="factory">Methode zum Erzeugen der Informationen zu einem einzelnen Ger�teprofil.</param>
         /// <returns>Die Informationen zu den Profilen.</returns>
-        public TInfo[] GetProfiles<TInfo>(Func<ProfileState, TInfo> factory) => Profiles.InspectProfiles(factory).ToArray();
+        public TInfo[] GetProfiles<TInfo>(Func<IProfileState, TInfo> factory) => Profiles.InspectProfiles(factory).ToArray();
 
         /// <summary>
         /// Meldet alle Auftr�ge.

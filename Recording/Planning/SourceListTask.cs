@@ -25,7 +25,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="forResource">Das Geräteprofil, auf dem der Lauf erfolgen soll.</param>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
-        public SourceListTask(IScheduleResource forResource, ProfileState profile, IVCRConfiguration configuration, IJobManager jobs)
+        public SourceListTask(IScheduleResource forResource, IProfileState profile, IVCRConfiguration configuration, IJobManager jobs)
             : this(forResource, profile, () => profile.LastSourceUpdateTime, configuration, jobs)
         {
         }
@@ -47,7 +47,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
         /// <param name="lastUpdate">Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.</param>
         /// <exception cref="ArgumentNullException">Der letzte Aktualisierungszeitpunkt ist nicht gesetzt.</exception>
-        private SourceListTask(IScheduleResource forResource, ProfileState profile, Func<DateTime?> lastUpdate, IVCRConfiguration configuration, IJobManager jobs)
+        private SourceListTask(IScheduleResource forResource, IProfileState profile, Func<DateTime?> lastUpdate, IVCRConfiguration configuration, IJobManager jobs)
             : base("Sendersuchlauf", Guid.NewGuid())
         {
             // Validate

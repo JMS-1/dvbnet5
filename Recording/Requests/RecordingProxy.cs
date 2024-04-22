@@ -12,7 +12,7 @@ namespace JMS.DVB.NET.Recording.Requests
     /// <param name="state">Der Zustands des zugehörigen Geräteprofils.</param>
     /// <param name="firstRecording">Die erste Aufzeichnung, auf Grund derer dieser Zugriff angelegt wurde.</param>
     public class RecordingProxy(
-        ProfileState state,
+        IProfileState state,
         VCRRecordingInfo firstRecording,
         ServiceFactory factory
     ) : CardServerProxy(state, firstRecording, factory)

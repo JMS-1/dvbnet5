@@ -26,7 +26,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="profile">Das zu verwendende Geräteprofil.</param>
         /// <param name="primary">Informationen zur Aufzeichnung als Ganzes.</param>
         /// <param name="target">Die aktuelle Zieladresse für die Nutzdaten.</param>
-        private ZappingProxy(ProfileState profile, VCRRecordingInfo primary, string target, ServiceFactory factory)
+        private ZappingProxy(IProfileState profile, VCRRecordingInfo primary, string target, ServiceFactory factory)
             : base(profile, primary, factory)
         {
             // Remember
@@ -40,7 +40,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="target">Die aktuelle Zieladresse für die Nutzdaten.</param>
         /// <returns>Die gewünschte Steuerung.</returns>
         /// <exception cref="ArgumentNullException">Mindestens ein Parameter wurde nicht angegeben.</exception>
-        public static ZappingProxy Create(ProfileState profile, string target, ServiceFactory factory)
+        public static ZappingProxy Create(IProfileState profile, string target, ServiceFactory factory)
         {
             // Validate
             if (profile == null)

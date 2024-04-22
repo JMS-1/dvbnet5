@@ -143,7 +143,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="profileName">Der Name des gew?nschten Ger?teprofils.</param>
         /// <returns>Der Zustand des Profils.</returns>
-        public ProfileState? FindProfile(string profileName)
+        public IProfileState? FindProfile(string profileName)
         {
             // Forward
             var state = Profiles[profileName];

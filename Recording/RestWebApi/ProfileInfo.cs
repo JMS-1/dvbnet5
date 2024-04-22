@@ -21,7 +21,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="profile">Das zu beschreibende Geräteprofil.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public static ProfileInfo Create(ProfileState profile)
+        public static ProfileInfo Create(IProfileState profile)
         {
             // Validate
             if (profile == null)

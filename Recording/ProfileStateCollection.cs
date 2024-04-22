@@ -14,23 +14,23 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Meldet die primäre VCR.NET Instanz.
         /// </summary>
-        private readonly VCRServer _server;
+        internal readonly VCRServer _server;
 
         /// <summary>
         /// 
         /// </summary>
-        private readonly IVCRProfiles _profiles;
+        internal readonly IVCRProfiles _profiles;
 
         /// <summary>
         /// Alle von dieser Instanz verwalteten Geräteprofile.
         /// </summary>
-        private readonly Dictionary<string, ProfileState> _stateMap;
+        private readonly Dictionary<string, IProfileState> _stateMap;
 
-        private readonly ILogger _logger;
+        internal readonly ILogger _logger;
 
-        private readonly ServiceFactory _factory;
+        internal readonly ServiceFactory _factory;
 
-        private readonly IJobManager _jobs;
+        internal readonly IJobManager _jobs;
 
         /// <summary>
         /// Erzeugt eine neue Verwaltungsinstanz.
@@ -58,7 +58,7 @@ namespace JMS.DVB.NET.Recording
             // Load current profiles
             _stateMap = profileNames.ToDictionary(
                 profileName => profileName,
-                profileName => new ProfileState(this, profileName, _server, _profiles, _logger, _jobs, _factory), ProfileManager.ProfileNameComparer
+                profileName => (IProfileState)new ProfileState(this, profileName), ProfileManager.ProfileNameComparer
             );
 
             // Now we can create the planner
@@ -75,7 +75,7 @@ namespace JMS.DVB.NET.Recording
         /// <typeparam name="TInfo">Die Art der gemeldeten Informationen.</typeparam>
         /// <param name="factory">Methode zum Erstellen der Information zu einem einzelnen Geräteprofil.</param>
         /// <returns>Die Informationen zu den Profilen.</returns>
-        public IEnumerable<TInfo> InspectProfiles<TInfo>(Func<ProfileState, TInfo> factory) => _stateMap.Values.Select(factory);
+        public IEnumerable<TInfo> InspectProfiles<TInfo>(Func<IProfileState, TInfo> factory) => _stateMap.Values.Select(factory);
 
         /// <summary>
         /// Meldet die Anzahl der aktiven Aufzeichnungen.
@@ -87,7 +87,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="profileName">Das gewünschte Profil.</param>
         /// <returns>Die Zustandsbeschreibung oder <i>null</i>.</returns>
-        public ProfileState? this[string profileName]
+        public IProfileState? this[string profileName]
         {
             get
             {
@@ -146,7 +146,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="method">Die gewünschte Methode.</param>
         /// <param name="ignoreErrors">Gesetzt, wenn Fehler ignoriert werden sollen.</param>
-        private void ForEachProfile(Action<ProfileState> method, bool ignoreErrors = false)
+        private void ForEachProfile(Action<IProfileState> method, bool ignoreErrors = false)
         {
             // Forward to all
             foreach (var state in _stateMap.Values)

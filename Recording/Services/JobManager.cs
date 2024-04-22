@@ -372,7 +372,7 @@ public class JobManager : IJobManager
     }
 
     /// <inheritdoc/>
-    public List<VCRRecordingInfo> FindLogEntries(DateTime firstDate, DateTime lastDate, ProfileState profile)
+    public List<VCRRecordingInfo> FindLogEntries(DateTime firstDate, DateTime lastDate, IProfileState profile)
     {
         // Create list
         var logs = new List<VCRRecordingInfo>();

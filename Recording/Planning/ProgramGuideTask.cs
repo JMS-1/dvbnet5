@@ -25,7 +25,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="forResource">Das Gerät, für das die Sammlung erfolgt.</param>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
-        public ProgramGuideTask(IScheduleResource forResource, ProfileState profile, IVCRConfiguration configuration, IJobManager jobs)
+        public ProgramGuideTask(IScheduleResource forResource, IProfileState profile, IVCRConfiguration configuration, IJobManager jobs)
             : this(forResource, profile, () => profile.ProgramGuide.LastUpdateTime, configuration, jobs)
         {
         }
@@ -49,7 +49,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <exception cref="ArgumentNullException">Der letzte Aktualisierungszeitpunkt ist nicht gesetzt.</exception>
         private ProgramGuideTask(
             IScheduleResource forResource,
-            ProfileState profile,
+            IProfileState profile,
             Func<DateTime?> lastUpdate,
             IVCRConfiguration configuration,
             IJobManager jobs

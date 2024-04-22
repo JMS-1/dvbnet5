@@ -63,7 +63,7 @@ public interface IJobManager
     /// <param name="lastDate">Letzter zu berücksichtigender Tag.</param>
     /// <param name="profile">Profile, dessen Protokolle ausgelesen werden sollen.</param>
     /// <returns>Liste aller Protokolleinträge für den gewünschten Zeitraum.</returns>
-    List<VCRRecordingInfo> FindLogEntries(DateTime firstDate, DateTime lastDate, ProfileState profile);
+    List<VCRRecordingInfo> FindLogEntries(DateTime firstDate, DateTime lastDate, IProfileState profile);
 
     /// <summary>
     /// Bereinigt alle veralteten Protokolleinträge.

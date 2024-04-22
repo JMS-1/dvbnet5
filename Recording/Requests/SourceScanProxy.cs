@@ -25,7 +25,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="state">Das zugehörige Geräteprofil.</param>
         /// <param name="recording">Die Beschreibung der Aufgabe.</param>
-        private SourceScanProxy(ProfileState state, VCRRecordingInfo recording, ServiceFactory factory)
+        private SourceScanProxy(IProfileState state, VCRRecordingInfo recording, ServiceFactory factory)
             : base(state, recording, factory)
         {
             // Finish
@@ -38,7 +38,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="state">Das zugehörige Geräteprofil.</param>
         /// <param name="recording">Die Beschreibung der Aufgabe.</param>
         /// <returns>Die gewünschte Steuerung.</returns>
-        public static SourceScanProxy Create(ProfileState state, VCRRecordingInfo recording, ServiceFactory factory)
+        public static SourceScanProxy Create(IProfileState state, VCRRecordingInfo recording, ServiceFactory factory)
         {
             // Validate
             if (state == null)

@@ -10,70 +10,88 @@ namespace JMS.DVB.NET.Recording
     /// <summary>
     /// Beschreibt den Arbeitszustand eines einzelnen aktiven Geräteprofils.
     /// </summary>
-    public class ProfileState : IDisposable
+    /// <param name="collection">Die zugehörige Verwaltung der aktiven Geräteprofile.</param>
+    /// <param name="profileName">Der Name des zugehörigen Geräteprofils.</param>
+    public interface IProfileState : IDisposable
     {
-        /// <summary>
-        /// Der Name des Geräteprofils.
-        /// </summary>
-        public string ProfileName { get; private set; }
-
         /// <summary>
         /// Die zugehörige Verwaltungsinstanz.
         /// </summary>
-        public ProfileStateCollection Collection { get; private set; }
+        ProfileStateCollection Collection { get; }
+
+        /// <summary>
+        /// Der Name des Geräteprofils.
+        /// </summary>
+        string ProfileName { get; }
 
         /// <summary>
         /// Meldet die zugehörige Verwaltung der elektronischen Programmzeitschrift (EPG).
         /// </summary>
-        public ProgramGuideManager ProgramGuide { get; private set; }
+        ProgramGuideManager ProgramGuide { get; }
+
+        /// <summary>
+        /// Meldet die aktuelle Aufzeichnung oder <i>null</i>.
+        /// </summary>
+        FullInfo? CurrentRecording { get; }
+
+        /// <summary>
+        /// Meldet die Anzahl der gerade aktiven Aufzeichnungen.
+        /// </summary>
+        int NumberOfActiveRecordings { get; }
+
+        /// <summary>
+        /// Meldet, ob gerade ein Zugriff auf diesem Geräteprofil stattfindet.
+        /// </summary>
+        bool IsActive { get; }
+
+        /// <summary>
+        /// Liest oder setzt den Zeitpunkt der letzen Aktualisierung der Liste der Quellen
+        /// dieses Geräteprofils durch den VCR.NET Recording Service.
+        /// </summary>
+        DateTime? LastSourceUpdateTime { get; set; }
 
         /// <summary>
         /// Wird nach Aufwachen aus dem Schlafzustand gesetzt.
         /// </summary>
-        internal volatile bool WakeUpRequired;
-
-        private readonly ILogger _logger;
-
-        private readonly IVCRProfiles _profiles;
-
-        private readonly ServiceFactory _factory;
-
-        /// <summary>
-        /// Erzeugt eine neue Beschreibung.
-        /// </summary>
-        /// <param name="collection">Die zugehörige Verwaltung der aktiven Geräteprofile.</param>
-        /// <param name="profileName">Der Name des zugehörigen Geräteprofils.</param>
-        public ProfileState(ProfileStateCollection collection, string profileName, VCRServer server, IVCRProfiles profiles, ILogger logger, IJobManager jobs, ServiceFactory factory)
-        {
-            // Remember
-            _factory = factory;
-            _logger = logger;
-            _profiles = profiles;
-            Collection = collection;
-            ProfileName = profileName;
-
-            // Create program guide manager
-            ProgramGuide = new ProgramGuideManager(jobs, profileName, profiles, server, logger);
-        }
-
-        /// <summary>
-        /// Meldet das zugehörige Geräteprofil.
-        /// </summary>
-        public Profile? Profile => _profiles.FindProfile(ProfileName);
+        bool WakeUpRequired { get; set; }
 
         /// <summary>
         /// Prüft, ob eine bestimmte Quelle zu diesem Geräteprofil gehört.
         /// </summary>
         /// <param name="source">Die zu prüfende Quelle.</param>
         /// <returns>Gesetzt, wenn es sich um eine Quelle dieses Geräteprofil handelt.</returns>
-        public bool IsResponsibleFor(SourceSelection source)
-        {
-            // Process
-            if (null == source)
-                return false;
-            else
-                return ProfileManager.ProfileNameComparer.Equals(ProfileName, source.ProfileName);
-        }
+        bool IsResponsibleFor(SourceSelection source);
+
+        /// <summary>
+        /// Aktiviert oder deaktiviert den Netzwerkversand einer aktiven Quelle.
+        /// </summary>
+        /// <param name="source">Die gewünschte Quelle.</param>
+        /// <param name="uniqueIdentifier">Die eindeutige Kennung der Teilaufzeichnung.</param>
+        /// <param name="target">Das neue Ziel des Netzwerkversands.</param>
+        /// <returns>Gesetzt, wenn die Operation ausgeführt wurde.</returns>
+        bool SetStreamTarget(SourceIdentifier source, Guid uniqueIdentifier, string target);
+
+        /// <summary>
+        /// Verändert die Endzeit der aktuellen Aufzeichnung.
+        /// </summary>
+        /// <param name="streamIdentifier">Die eindeutige Kennung des zu verwendenden Datenstroms.</param>
+        /// <param name="newEndTime">Der neue Endzeitpunkt.</param>
+        /// <param name="disableHibernation">Gesetzt, wenn der Übergang in den Schlafzustand deaktiviert werden soll.</param>
+        /// <returns>Die Aktivität auf dem Geräteprofil, die verändert wurde.</returns>
+        CardServerProxy? ChangeStreamEnd(Guid streamIdentifier, DateTime newEndTime, bool disableHibernation);
+
+        /// <summary>
+        /// Beginnt eine Aufzeichnung auf diesem Geräteprofil. Eventuell wird diese mit 
+        /// einer anderen zusammen geführt.
+        /// </summary>
+        /// <param name="recording">Die gewünschte Aufzeichnung.</param>
+        void StartRecording(VCRRecordingInfo recording);
+
+        /// <summary>
+        /// Beendet eine Aufzeichnung.
+        /// </summary>
+        /// <param name="scheduleIdentifier">Die eindeutige Kennung der Aufzeichnung.</param>
+        void EndRecording(Guid scheduleIdentifier);
 
         /// <summary>
         /// Steuert den Zappping Modus.
@@ -85,6 +103,73 @@ namespace JMS.DVB.NET.Recording
         /// <param name="factory">Methode zum Erstellen einer neuen Zustandsinformation.</param>
         /// <returns>Der aktuelle Zustand des Zapping Modus oder <i>null</i>, wenn dieser nicht ermittelt
         /// werden kann.</returns>
+        TStatus LiveModeOperation<TStatus>(bool active, string connectTo, SourceIdentifier source, Func<string, ServerInformation, TStatus> factory, ServiceFactory services);
+
+        /// <summary>
+        /// Beginnt eine Operation auf diesem Geräteprofil.
+        /// </summary>
+        /// <param name="request">Der zu aktivierende Zugriff.</param>
+        /// <param name="throwOnBusy">Gesetzt um einen Fehler auszulösen, wenn bereits ein Zugriff aktiv ist.</param>
+        /// <exception cref="ArgumentNullException">Es wurde kein Zugriff angegeben.</exception>
+        /// <exception cref="ArgumentException">Der Zugriff gehört nicht zu diesem Geräteprofil.</exception>
+        /// <exception cref="InvalidOperationException">Es ist bereits ein Zugriff aktiv.</exception>
+        /// <returns>Gesetzt, wenn der neue Zugriff erfolgreich gestartet wurde.</returns>
+        bool BeginRequest(CardServerProxy request, bool throwOnBusy = true);
+
+        /// <summary>
+        /// Beendet eine Operation auf diesem Geräteprofil.
+        /// </summary>
+        /// <param name="request">Der zu beendende Zugriff.</param>
+        /// <exception cref="ArgumentNullException">Es wurde kein Zugriff angegeben.</exception>
+        /// <exception cref="InvalidOperationException">Dieser Zugriff ist nicht der aktive Zugriff dieses
+        /// Geräteprofils.</exception>
+        void EndRequest(CardServerProxy request);
+
+        /// <summary>
+        /// Bereitet den Übergang in den Schlafzustand vor.
+        /// </summary>
+        void PrepareSuspend();
+
+        /// <summary>
+        /// Führt den Übergang in den Schlafzustand durch.
+        /// </summary>
+        void Suspend();
+    }
+
+    /// <summary>
+    /// Beschreibt den Arbeitszustand eines einzelnen aktiven Geräteprofils.
+    /// </summary>
+    /// <param name="collection">Die zugehörige Verwaltung der aktiven Geräteprofile.</param>
+    /// <param name="profileName">Der Name des zugehörigen Geräteprofils.</param>
+    public class ProfileState(ProfileStateCollection collection, string profileName) : IProfileState
+    {
+        /// <inheritdoc/>
+        public string ProfileName => profileName;
+
+        /// <inheritdoc/>
+        public ProfileStateCollection Collection => collection;
+
+        /// <inheritdoc/>
+        public ProgramGuideManager ProgramGuide { get; } = new ProgramGuideManager(collection, profileName);
+
+        /// <summary>
+        /// Wird nach Aufwachen aus dem Schlafzustand gesetzt.
+        /// </summary>
+        private volatile bool _wakeUpRequired;
+
+        /// <inheritdoc/>
+        public bool WakeUpRequired { get { return _wakeUpRequired; } set { _wakeUpRequired = value; } }
+
+        /// <summary>
+        /// Meldet das zugehörige Geräteprofil.
+        /// </summary>
+        public Profile? Profile => collection._profiles.FindProfile(profileName);
+
+        /// <inheritdoc/>
+        public bool IsResponsibleFor(SourceSelection source)
+            => source == null ? false : ProfileManager.ProfileNameComparer.Equals(ProfileName, source.ProfileName);
+
+        /// <inheritdoc/>
         public TStatus LiveModeOperation<TStatus>(bool active, string connectTo, SourceIdentifier source, Func<string, ServerInformation, TStatus> factory, ServiceFactory services)
         {
             // Check mode of operation
@@ -116,18 +201,10 @@ namespace JMS.DVB.NET.Recording
                 return statusRequest.CreateStatus(factory);
         }
 
-        /// <summary>
-        /// Bereitet den Übergang in den Schlafzustand vor.
-        /// </summary>
-        public void PrepareSuspend()
-        {
-            // Stop request
-            Stop();
-        }
+        /// <inheritdoc/>
+        public void PrepareSuspend() => Stop();
 
-        /// <summary>
-        /// Führt den Übergang in den Schlafzustand durch.
-        /// </summary>
+        /// <inheritdoc/>
         public void Suspend()
         {
             // Wait for the current job to end
@@ -180,15 +257,7 @@ namespace JMS.DVB.NET.Recording
                 newRequest.Activate();
         }
 
-        /// <summary>
-        /// Beginnt eine Operation auf diesem Geräteprofil.
-        /// </summary>
-        /// <param name="request">Der zu aktivierende Zugriff.</param>
-        /// <param name="throwOnBusy">Gesetzt um einen Fehler auszulösen, wenn bereits ein Zugriff aktiv ist.</param>
-        /// <exception cref="ArgumentNullException">Es wurde kein Zugriff angegeben.</exception>
-        /// <exception cref="ArgumentException">Der Zugriff gehört nicht zu diesem Geräteprofil.</exception>
-        /// <exception cref="InvalidOperationException">Es ist bereits ein Zugriff aktiv.</exception>
-        /// <returns>Gesetzt, wenn der neue Zugriff erfolgreich gestartet wurde.</returns>
+        /// <inheritdoc/>
         public bool BeginRequest(CardServerProxy request, bool throwOnBusy = true)
         {
             // Validate
@@ -229,13 +298,7 @@ namespace JMS.DVB.NET.Recording
             return true;
         }
 
-        /// <summary>
-        /// Beendet eine Operation auf diesem Geräteprofil.
-        /// </summary>
-        /// <param name="request">Der zu beendende Zugriff.</param>
-        /// <exception cref="ArgumentNullException">Es wurde kein Zugriff angegeben.</exception>
-        /// <exception cref="InvalidOperationException">Dieser Zugriff ist nicht der aktive Zugriff dieses
-        /// Geräteprofils.</exception>
+        /// <inheritdoc/>
         public void EndRequest(CardServerProxy request)
         {
             // Validate
@@ -267,14 +330,10 @@ namespace JMS.DVB.NET.Recording
                 request.Stop();
         }
 
-        /// <summary>
-        /// Meldet, ob gerade ein Zugriff auf diesem Geräteprofil stattfindet.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsActive { get { return !ReferenceEquals(m_CurrentRequest, null); } }
 
-        /// <summary>
-        /// Meldet die aktuelle Aufzeichnung oder <i>null</i>.
-        /// </summary>
+        /// <inheritdoc/>
         public FullInfo? CurrentRecording
         {
             get
@@ -292,11 +351,7 @@ namespace JMS.DVB.NET.Recording
 
         #region Reguläre Aufzeichnungen
 
-        /// <summary>
-        /// Beginnt eine Aufzeichnung auf diesem Geräteprofil. Eventuell wird diese mit 
-        /// einer anderen zusammen geführt.
-        /// </summary>
-        /// <param name="recording">Die gewünschte Aufzeichnung.</param>
+        /// <inheritdoc/>
         public void StartRecording(VCRRecordingInfo recording)
         {
             // Protect current request against transistions
@@ -310,7 +365,7 @@ namespace JMS.DVB.NET.Recording
                     if (ReferenceEquals(current, null))
                     {
                         // Create a brand new regular recording request
-                        var request = new RecordingProxy(this, recording, _factory);
+                        var request = new RecordingProxy(this, recording, collection._factory);
 
                         // Activate the request
                         request.Start();
@@ -337,10 +392,7 @@ namespace JMS.DVB.NET.Recording
                 }
         }
 
-        /// <summary>
-        /// Beendet eine Aufzeichnung.
-        /// </summary>
-        /// <param name="scheduleIdentifier">Die eindeutige Kennung der Aufzeichnung.</param>
+        /// <inheritdoc/>
         public void EndRecording(Guid scheduleIdentifier)
         {
             // Protect current request against transistions
@@ -353,7 +405,7 @@ namespace JMS.DVB.NET.Recording
                 if (ReferenceEquals(current, null))
                 {
                     // Report
-                    _logger.Log(LoggingLevel.Errors, "Request to end Recording '{0}' but there is no active Recording Process", scheduleIdentifier);
+                    collection._logger.Log(LoggingLevel.Errors, "Request to end Recording '{0}' but there is no active Recording Process", scheduleIdentifier);
 
                     // Better do it ourselves
                     Collection.ConfirmOperation(scheduleIdentifier, false);
@@ -366,13 +418,7 @@ namespace JMS.DVB.NET.Recording
             }
         }
 
-        /// <summary>
-        /// Verändert die Endzeit der aktuellen Aufzeichnung.
-        /// </summary>
-        /// <param name="streamIdentifier">Die eindeutige Kennung des zu verwendenden Datenstroms.</param>
-        /// <param name="newEndTime">Der neue Endzeitpunkt.</param>
-        /// <param name="disableHibernation">Gesetzt, wenn der Übergang in den Schlafzustand deaktiviert werden soll.</param>
-        /// <returns>Die Aktivität auf dem Geräteprofil, die verändert wurde.</returns>
+        /// <inheritdoc/>
         public CardServerProxy? ChangeStreamEnd(Guid streamIdentifier, DateTime newEndTime, bool disableHibernation)
         {
             // Be safe
@@ -394,18 +440,10 @@ namespace JMS.DVB.NET.Recording
             }
         }
 
-        /// <summary>
-        /// Meldet die Anzahl der gerade aktiven Aufzeichnungen.
-        /// </summary>
+        /// <inheritdoc/>
         public int NumberOfActiveRecordings => m_CurrentRequest?.NumberOfActiveRecordings ?? 0;
 
-        /// <summary>
-        /// Aktiviert oder deaktiviert den Netzwerkversand einer aktiven Quelle.
-        /// </summary>
-        /// <param name="source">Die gewünschte Quelle.</param>
-        /// <param name="uniqueIdentifier">Die eindeutige Kennung der Teilaufzeichnung.</param>
-        /// <param name="target">Das neue Ziel des Netzwerkversands.</param>
-        /// <returns>Gesetzt, wenn die Operation ausgeführt wurde.</returns>
+        /// <inheritdoc/>
         public bool SetStreamTarget(SourceIdentifier source, Guid uniqueIdentifier, string target)
         {
             // Get the current request
@@ -430,14 +468,11 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         private string SourceUpdateRegistryName => $"LastPSIRun {ProfileName}";
 
-        /// <summary>
-        /// Liest oder setzt den Zeitpunkt der letzen Aktualisierung der Liste der Quellen
-        /// dieses Geräteprofils durch den VCR.NET Recording Service.
-        /// </summary>
-        internal DateTime? LastSourceUpdateTime
+        /// <inheritdoc/>
+        public DateTime? LastSourceUpdateTime
         {
-            get { return Tools.GetRegistryTime(SourceUpdateRegistryName, _logger); }
-            set { Tools.SetRegistryTime(SourceUpdateRegistryName, value, _logger); }
+            get { return Tools.GetRegistryTime(SourceUpdateRegistryName, collection._logger); }
+            set { Tools.SetRegistryTime(SourceUpdateRegistryName, value, collection._logger); }
         }
 
         #endregion
