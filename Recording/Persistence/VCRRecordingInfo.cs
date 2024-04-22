@@ -200,7 +200,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Meldet die zugehörige Quelle, so wie sie im aktuellen Geräteprofil bekannt ist.
         /// </summary>
-        public SourceSelection? GetCurrentSource(VCRProfiles profiles) => profiles.FindSource(Source);
+        public SourceSelection? GetCurrentSource(IVCRProfiles profiles) => profiles.FindSource(Source);
 
         /// <summary>
         /// Erstellt eine exakte Kopie dieser Aufzeichnungsinformation.
@@ -238,7 +238,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Ermittelt die Ersetzungsmuster für Dateinamen gemäß den Daten dieser Aufzeichnung.
         /// </summary>
         /// <returns>Die konkreten Ersetzungswertes für diesen Auftrag.</returns>
-        public Dictionary<string, string> GetReplacementPatterns(VCRProfiles profiles)
+        public Dictionary<string, string> GetReplacementPatterns(IVCRProfiles profiles)
         {
             // Pattern map static parts
             var localNow = DateTime.Now;
@@ -361,7 +361,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Befüllt vor allem den Dateinamen mit Vorgabewerten.
         /// </summary>
-        internal void LoadDefaults(IVCRConfiguration configuration, VCRProfiles profiles)
+        internal void LoadDefaults(IVCRConfiguration configuration, IVCRProfiles profiles)
         {
             // Construct file name
             var pattern = configuration.FileNamePattern;
@@ -404,7 +404,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// </summary>
         /// <param name="withPatterns">Der ursprüngliche Dateiname mit Platzhaltern.</param>
         /// <returns>Der Dateiname mit den ausgetauschten Platzhaltern.</returns>
-        private string UpdatePlaceHolders(string withPatterns, VCRProfiles profiles) =>
+        private string UpdatePlaceHolders(string withPatterns, IVCRProfiles profiles) =>
             GetReplacementPatterns(profiles).Aggregate(withPatterns, (current, rule) => current.Replace(rule.Key, rule.Value.MakeValid()));
 
         /// <summary>
@@ -452,7 +452,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <param name="planItem">Die zugehörige Beschreibung der geplanten Aktivität.</param>
         /// <param name="context">Die Abbildung auf die Aufträge.</param>
         /// <returns>Die angeforderte Repräsentation.</returns>
-        public static VCRRecordingInfo? Create(IScheduleInformation planItem, PlanContext context, IVCRConfiguration configuration, VCRProfiles profiles)
+        public static VCRRecordingInfo? Create(IScheduleInformation planItem, PlanContext context, IVCRConfiguration configuration, IVCRProfiles profiles)
         {
             // Validate
             ArgumentNullException.ThrowIfNull(planItem, nameof(planItem));
@@ -554,7 +554,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Wandelt eine Aufzeichnung in die Beschreibung eines Empfangsdatenstroms.
         /// </summary>
         /// <returns>Die passende Beschreibung.</returns>
-        public ReceiveInformation ToReceiveInformation(IVCRConfiguration configuration, VCRProfiles profiles)
+        public ReceiveInformation ToReceiveInformation(IVCRConfiguration configuration, IVCRProfiles profiles)
         {
             // Attach to the station and the profile
             var source = Source;

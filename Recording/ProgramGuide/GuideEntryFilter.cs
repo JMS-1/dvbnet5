@@ -1,3 +1,5 @@
+using JMS.DVB.NET.Recording.Services;
+
 namespace JMS.DVB.NET.Recording.ProgramGuide
 {
     /// <summary>
@@ -165,7 +167,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         /// <param name="entries">Eine Liste von Eintr�gen.</param>
         /// <returns>Die gefilterte Liste.</returns>
-        public IEnumerable<ProgramGuideEntry> Filter(IEnumerable<ProgramGuideEntry> entries, VCRProfiles profiles)
+        public IEnumerable<ProgramGuideEntry> Filter(IEnumerable<ProgramGuideEntry> entries, IVCRProfiles profiles)
         {
             // Only use sources available to the target profile
             var entrySet = entries

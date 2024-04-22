@@ -180,11 +180,8 @@ public class VCRConfiguration : IVCRConfiguration
         m_Restart[SettingNames.UseSSL] = true;
     }
 
-    /// <summary>
-    /// Load the configuration from the provided file.
-    /// </summary>
-    public void Reload()
-        => Configuration = ConfigurationManager.OpenExeConfiguration(_configurationExePath);
+    /// <inheritdoc/>
+    public void Reload() => Configuration = ConfigurationManager.OpenExeConfiguration(_configurationExePath);
 
     /// <inheritdoc/>
     public Dictionary<SettingNames, SettingDescription> BeginUpdate(params SettingNames[] names) =>

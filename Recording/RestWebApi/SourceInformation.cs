@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
@@ -33,7 +34,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="source">Die volle Beschreibung der Quelle.</param>
         /// <returns>Das Transferformat.</returns>
-        public static TReal Create(SourceSelection source, VCRProfiles profiles)
+        public static TReal Create(SourceSelection source, IVCRProfiles profiles)
         {
             // Attach to the station
             var station = (Station)source.Source;

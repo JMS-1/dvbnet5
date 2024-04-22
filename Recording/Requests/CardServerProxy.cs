@@ -44,7 +44,7 @@ namespace JMS.DVB.NET.Recording.Requests
 
         protected readonly VCRServer Server;
 
-        protected readonly VCRProfiles Profiles;
+        protected readonly IVCRProfiles Profiles;
 
         protected readonly ILogger Logger;
 
@@ -68,7 +68,7 @@ namespace JMS.DVB.NET.Recording.Requests
             // Remember
             JobManager = factory.Create<JobManager>();
             Logger = factory.Create<ILogger>();
-            Profiles = factory.Create<VCRProfiles>();
+            Profiles = factory.Create<IVCRProfiles>();
             ProfileState = state;
             Representative = primary.Clone();
             Server = factory.Create<VCRServer>();

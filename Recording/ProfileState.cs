@@ -34,7 +34,7 @@ namespace JMS.DVB.NET.Recording
 
         private readonly ILogger _logger;
 
-        private readonly VCRProfiles _profiles;
+        private readonly IVCRProfiles _profiles;
 
         private readonly ServiceFactory _factory;
 
@@ -43,7 +43,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="collection">Die zugehörige Verwaltung der aktiven Geräteprofile.</param>
         /// <param name="profileName">Der Name des zugehörigen Geräteprofils.</param>
-        public ProfileState(ProfileStateCollection collection, string profileName, VCRServer server, VCRProfiles profiles, ILogger logger, JobManager jobs, ServiceFactory factory)
+        public ProfileState(ProfileStateCollection collection, string profileName, VCRServer server, IVCRProfiles profiles, ILogger logger, JobManager jobs, ServiceFactory factory)
         {
             // Remember
             _factory = factory;

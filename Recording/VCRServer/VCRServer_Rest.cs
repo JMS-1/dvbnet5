@@ -2,6 +2,7 @@ using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.ProgramGuide;
+using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Status;
 
 namespace JMS.DVB.NET.Recording
@@ -63,7 +64,7 @@ namespace JMS.DVB.NET.Recording
             SourceIdentifier source,
             DateTime from,
             DateTime to,
-            Func<ProgramGuideEntry, string, VCRProfiles, TTarget> factory)
+            Func<ProgramGuideEntry, string, IVCRProfiles, TTarget> factory)
         {
             // See if profile exists
             var profile = Profiles[profileName];
@@ -137,7 +138,7 @@ namespace JMS.DVB.NET.Recording
         /// <typeparam name="TJob">Die Art der externen Darstellung.</typeparam>
         /// <param name="factory">Methode zum Erstellen der externen Darstellung.</param>
         /// <returns>Die Liste der Auftr�ge.</returns>
-        public TJob[] GetJobs<TJob>(Func<VCRJob, bool, VCRProfiles, TJob> factory, VCRProfiles profiles)
+        public TJob[] GetJobs<TJob>(Func<VCRJob, bool, IVCRProfiles, TJob> factory, IVCRProfiles profiles)
         {
             // Report
             return
@@ -158,8 +159,8 @@ namespace JMS.DVB.NET.Recording
         /// <param name="forIdle">Erstellt eine Beschreibung f�r ein Ger�t, f�r das keine Aufzeichnungen geplant sind.</param>
         /// <returns>Die Liste aller Informationen.</returns>
         public TInfo[] GetCurrentRecordings<TInfo>(
-            Func<FullInfo, VCRServer, VCRProfiles, JobManager, TInfo[]> fromActive,
-            Func<IScheduleInformation, PlanContext, VCRServer, VCRProfiles, TInfo> fromPlan = null!,
+            Func<FullInfo, VCRServer, IVCRProfiles, JobManager, TInfo[]> fromActive,
+            Func<IScheduleInformation, PlanContext, VCRServer, IVCRProfiles, TInfo> fromPlan = null!,
             Func<string, TInfo> forIdle = null!
         )
         {
@@ -241,8 +242,8 @@ namespace JMS.DVB.NET.Recording
         /// <returns>Die Liste aller passenden Eintr�ge.</returns>
         public TEntry[] GetProgramGuideEntries<TFilter, TEntry>(
             TFilter filter,
-            Func<TFilter, VCRProfiles, GuideEntryFilter?> filterConverter,
-            Func<ProgramGuideEntry, string, VCRProfiles, TEntry> factory
+            Func<TFilter, IVCRProfiles, GuideEntryFilter?> filterConverter,
+            Func<ProgramGuideEntry, string, IVCRProfiles, TEntry> factory
         ) where TFilter : class
         {
             // Validate filter
@@ -273,7 +274,7 @@ namespace JMS.DVB.NET.Recording
         /// <returns>Die Anzahl der passenden Eintr�ge.</returns>
         public int GetProgramGuideEntries<TFilter>(
             TFilter filter,
-            Func<TFilter, VCRProfiles, GuideEntryFilter?> filterConverter
+            Func<TFilter, IVCRProfiles, GuideEntryFilter?> filterConverter
         ) where TFilter : class
         {
             // Validate filter
@@ -301,7 +302,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="profileName">Der Name des Ger�teprofils.</param>
         /// <param name="factory">Methode zur Erstellung der Informationen.</param>
         /// <returns>Die gew�nschten Informationen.</returns>
-        public TInfo GetProgramGuideInformation<TInfo>(string profileName, Func<ProgramGuideManager, VCRProfiles, TInfo> factory)
+        public TInfo GetProgramGuideInformation<TInfo>(string profileName, Func<ProgramGuideManager, IVCRProfiles, TInfo> factory)
         {
             // Locate profile and forward call
             if (string.IsNullOrEmpty(profileName))

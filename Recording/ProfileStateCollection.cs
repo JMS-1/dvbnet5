@@ -19,7 +19,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// 
         /// </summary>
-        private readonly VCRProfiles _profiles;
+        private readonly IVCRProfiles _profiles;
 
         /// <summary>
         /// Alle von dieser Instanz verwalteten Geräteprofile.
@@ -36,7 +36,7 @@ namespace JMS.DVB.NET.Recording
         /// Erzeugt eine neue Verwaltungsinstanz.
         /// </summary>
         /// <param name="server">Die primäre VCR.NET Instanz.</param>
-        internal ProfileStateCollection(VCRServer server, VCRProfiles profiles, ILogger logger, JobManager jobs, ServiceFactory factory)
+        internal ProfileStateCollection(VCRServer server, IVCRProfiles profiles, ILogger logger, JobManager jobs, ServiceFactory factory)
         {
             // Remember
             _factory = factory;
@@ -570,7 +570,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="disabled">Alle nicht zu verwendenden Aufzeichnungen.</param>
         /// <param name="planner">Die Gesamtplanung.</param>
         /// <param name="context">Zusätzliche Informationen zur aktuellen Planung.</param>
-        void IRecordingPlannerSite.AddRegularJobs(RecordingScheduler scheduler, Func<Guid, bool> disabled, RecordingPlanner planner, PlanContext context, VCRProfiles profiles)
+        void IRecordingPlannerSite.AddRegularJobs(RecordingScheduler scheduler, Func<Guid, bool> disabled, RecordingPlanner planner, PlanContext context, IVCRProfiles profiles)
         {
             // Retrieve all jobs related to this profile
             foreach (var job in _jobs.GetActiveJobs())

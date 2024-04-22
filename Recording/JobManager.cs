@@ -43,7 +43,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// 
         /// </summary>
-        public VCRProfiles Profiles { get; private set; }
+        public IVCRProfiles Profiles { get; private set; }
 
         /// <summary>
         /// Vorhaltung aller Aufträge.
@@ -59,7 +59,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="rootDirectory">Meldet das Verzeichnis, unterhalb dessen alle
         /// Aufträge und Protokolle angelegt werden.</param>
-        public JobManager(VCRProfiles profiles, IVCRConfiguration configuration, ILogger logger)
+        public JobManager(IVCRProfiles profiles, IVCRConfiguration configuration, ILogger logger)
         {
             // Remember
             _configuration = configuration;

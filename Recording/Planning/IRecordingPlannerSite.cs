@@ -1,4 +1,5 @@
 ﻿using JMS.DVB.Algorithms.Scheduler;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording.Planning
 {
@@ -40,7 +41,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="disabled">Alle deaktivierten Aufträge.</param>
         /// <param name="planner">Die zugehörige Aufzeichnungsplanung.</param>
         /// <param name="context">Eine neue Umgebung für die Erstellung des aktuellen Plans.</param>
-        void AddRegularJobs(RecordingScheduler scheduler, Func<Guid, bool> disabled, RecordingPlanner planner, PlanContext context, VCRProfiles profiles);
+        void AddRegularJobs(RecordingScheduler scheduler, Func<Guid, bool> disabled, RecordingPlanner planner, PlanContext context, IVCRProfiles profiles);
 
         /// <summary>
         /// Meldet eine Warteperiode.

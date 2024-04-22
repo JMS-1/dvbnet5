@@ -2,6 +2,7 @@
 using System.Runtime.Serialization;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.ProgramGuide;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
@@ -125,7 +126,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="job">Der bereits vorhandene Auftrag.</param>
         /// <param name="guide">Ein Eintrag aus der Programmzeitschrift.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public static EditSchedule? Create(VCRSchedule schedule, VCRJob job, ProgramGuideEntry guide, VCRProfiles profiles)
+        public static EditSchedule? Create(VCRSchedule schedule, VCRJob job, ProgramGuideEntry guide, IVCRProfiles profiles)
         {
             // None
             if (schedule == null)

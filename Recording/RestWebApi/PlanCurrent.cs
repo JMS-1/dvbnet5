@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Status;
+using JMS.DVB.NET.Recording.Services;
 
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -209,7 +210,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="active">Die Daten zur aktiven Aufzeichnung.</param>
         /// <param name="server">Der zugehörige Dienst.</param>
         /// <returns>Die gewünschten Beschreibungen.</returns>
-        public static PlanCurrent[] Create(FullInfo active, VCRServer server, VCRProfiles profiles, JobManager jobs)
+        public static PlanCurrent[] Create(FullInfo active, VCRServer server, IVCRProfiles profiles, JobManager jobs)
         {
             // Validate
             if (active == null)
@@ -265,7 +266,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Schließt die Konfiguration einer Beschreibung ab.
         /// </summary>
         /// <param name="server">Der zugehörige Dienst.</param>
-        private void Complete(VCRServer server, VCRProfiles profiles)
+        private void Complete(VCRServer server, IVCRProfiles profiles)
         {
             // No source
             if (m_source == null)
@@ -306,7 +307,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="streamIndex">Die laufende Nummer dieses Datenstroms.</param>
         /// <param name="server">Der zugehörige Dienst.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        private static IEnumerable<PlanCurrent> Create(FullInfo active, StreamInfo stream, int streamIndex, VCRServer server, VCRProfiles profiles, JobManager jobs)
+        private static IEnumerable<PlanCurrent> Create(FullInfo active, StreamInfo stream, int streamIndex, VCRServer server, IVCRProfiles profiles, JobManager jobs)
         {
             // Static data
             var recording = active.Recording;
@@ -354,7 +355,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="context">Die aktuelle Analyseumgebung.</param>
         /// <param name="server">Der zugehörige Dienst.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public static PlanCurrent Create(IScheduleInformation plan, PlanContext context, VCRServer server, VCRProfiles profiles)
+        public static PlanCurrent Create(IScheduleInformation plan, PlanContext context, VCRServer server, IVCRProfiles profiles)
         {
             // Attach to the definition
             var definition = (IScheduleDefinition<VCRSchedule>)plan.Definition;

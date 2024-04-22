@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.Services;
 
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -34,7 +35,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="job">Ein Auftrag.</param>
         /// <param name="active">Gesetzt, wenn es sich um einen aktiven Auftrag handel.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public static ProfileJobInfo? Create(VCRJob job, bool active, VCRProfiles profiles)
+        public static ProfileJobInfo? Create(VCRJob job, bool active, IVCRProfiles _profiles)
         {
             // Process
             if (active)

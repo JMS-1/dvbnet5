@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Runtime.Serialization;
 using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
@@ -71,7 +72,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="schedule">Die Aufzeichnung.</param>
         /// <param name="job">Der zugehörige Auftrag.</param>
         /// <returns></returns>
-        public static InfoSchedule Create(VCRSchedule schedule, VCRJob job, VCRProfiles profiles)
+        public static InfoSchedule Create(VCRSchedule schedule, VCRJob job, IVCRProfiles profiles)
         {
             // Create
             return

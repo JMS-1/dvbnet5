@@ -1,14 +1,15 @@
 using JMS.DVB.Algorithms.Scheduler;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording.Persistence
 {
     public static class VCRScheduleExtensions
     {
-        private static VCRProfiles _profiles = null!;
+        private static IVCRProfiles _profiles = null!;
 
         public class Initializer
         {
-            public Initializer(VCRProfiles profiles)
+            public Initializer(IVCRProfiles profiles)
             {
                 _profiles = profiles;
             }
@@ -90,7 +91,7 @@ namespace JMS.DVB.NET.Recording.Persistence
             RecordingScheduler scheduler,
             VCRJob job,
             IScheduleResource[] devices,
-            Func<SourceSelection, VCRProfiles, SourceSelection?> findSource,
+            Func<SourceSelection, IVCRProfiles, SourceSelection?> findSource,
             Func<Guid, bool> disabled
         )
         {

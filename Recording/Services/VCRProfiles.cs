@@ -1,12 +1,12 @@
 ﻿using JMS.DVB.NET.Recording.Services;
 
-namespace JMS.DVB.NET.Recording
+namespace JMS.DVB.NET.Recording.Services
 {
     /// <summary>
     /// Verwaltet die Geräteprofile des VCR.NET Recording Service.
     /// </summary>
     /// <remarks>LEAF SERVICE</remarks>
-    public class VCRProfiles(ILogger logger)
+    public class VCRProfiles(ILogger logger) : IVCRProfiles
     {
         /// <summary>
         /// Der aktuelle Konfigurationsbestand.
@@ -53,10 +53,8 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         private volatile _State CurrentState = new();
 
-        /// <summary>
-        /// Lädt alle Profile erneut.
-        /// </summary>
-        internal void Reset(VCRServer server)
+        /// <inheritdoc/>
+        public void Reset(VCRServer server)
         {
             // Report
             Tools.ExtendedLogging("Reloading Profile List");
@@ -143,9 +141,7 @@ namespace JMS.DVB.NET.Recording
             CurrentState = newState;
         }
 
-        /// <summary>
-        /// Meldet das erste zu verwendende Geräteprofil.
-        /// </summary>
+        /// <inheritdoc/>
         public Profile? DefaultProfile
         {
             get
@@ -159,12 +155,7 @@ namespace JMS.DVB.NET.Recording
             }
         }
 
-        /// <summary>
-        /// Ermittelt eine Quelle nach ihrem Namen.
-        /// </summary>
-        /// <param name="profileName">Das zu verwendende Geräteprofil.</param>
-        /// <param name="name">Der Anzeigename der Quelle.</param>
-        /// <returns>Die eidneutige Auswahl der Quelle oder <i>null</i>.</returns>
+        /// <inheritdoc/>
         public SourceSelection? FindSource(string profileName, string name)
         {
             // No source
@@ -191,12 +182,7 @@ namespace JMS.DVB.NET.Recording
             return source;
         }
 
-        /// <summary>
-        /// Ermittelt eine Quelle nach ihrer eindeutigen Kennung.
-        /// </summary>
-        /// <param name="profileName">Das zu verwendende Geräteprofil.</param>
-        /// <param name="source">Die gewünschte Kennung.</param>
-        /// <returns>Die eidneutige Auswahl der Quelle oder <i>null</i>.</returns>
+        /// <inheritdoc/>
         public SourceSelection? FindSource(string profileName, SourceIdentifier source)
         {
             // No source
@@ -222,66 +208,7 @@ namespace JMS.DVB.NET.Recording
                 return found;
         }
 
-        /// <summary>
-        /// Ermittelt die aktuelle Konfiguration einer Quelle.
-        /// </summary>
-        /// <param name="source">Die gewünschte Quelle.</param>
-        /// <returns>Die aktuelle Auswahl oder <i>null</i>.</returns>
-        public SourceSelection? FindSource(SourceSelection source)
-        {
-            // Never
-            if (source == null)
-                return null;
-            if (source.Source == null)
-                return null;
-
-            // Find the source
-            return FindSource(source.ProfileName, source.Source);
-        }
-
-        /// <summary>
-        /// Ermittelt alle Quellen zu einem DVB.NET Geräteprofil.
-        /// </summary>
-        /// <param name="profileName">Der Name des Geräteprofils.</param>
-        /// <returns>Alle Quellen zum Profil.</returns>
-        public IEnumerable<SourceSelection> GetSources(string profileName) => GetSources(profileName, (Func<SourceSelection, bool>)null!);
-
-        /// <summary>
-        /// Ermittelt alle Quellen zu einem DVB.NET Geräteprofil.
-        /// </summary>
-        /// <param name="profile">Der Name des Geräteprofils.</param>
-        /// <returns>Alle Quellen zum Profil.</returns>
-        public IEnumerable<SourceSelection> GetSources(Profile profile) => GetSources(profile, (Func<SourceSelection, bool>)null!);
-
-        /// <summary>
-        /// Ermittelt alle Quellen zu einem DVB.NET Geräteprofil.
-        /// </summary>
-        /// <param name="profileName">Der Name des Geräteprofils.</param>
-        /// <param name="predicate">Methode, die prüft, ob eine Quelle gemeldet werden soll.</param>
-        /// <returns>Alle Quellen zum Profil.</returns>
-        public IEnumerable<SourceSelection> GetSources(string profileName, Func<SourceSelection, bool> predicate) => GetSources(FindProfile(profileName)!, predicate);
-
-        /// <summary>
-        /// Ermittelt alle Quellen zu einem DVB.NET Geräteprofil.
-        /// </summary>
-        /// <param name="profileName">Der Name des Geräteprofils.</param>
-        /// <param name="predicate">Methode, die prüft, ob eine Quelle gemeldet werden soll.</param>
-        /// <returns>Alle Quellen zum Profil.</returns>
-        public IEnumerable<SourceSelection> GetSources(string profileName, Func<Station, bool> predicate)
-        {
-            // Forward
-            if (predicate == null)
-                return GetSources(FindProfile(profileName)!);
-            else
-                return GetSources(FindProfile(profileName)!, s => predicate((Station)s.Source));
-        }
-
-        /// <summary>
-        /// Ermittelt alle Quellen zu einem DVB.NET Geräteprofil.
-        /// </summary>
-        /// <param name="profile">Das zu verwendende Geräteprofil.</param>
-        /// <param name="predicate">Methode, die prüft, ob eine Quelle gemeldet werden soll.</param>
-        /// <returns>Alle Quellen zum Profil.</returns>
+        /// <inheritdoc/>
         public IEnumerable<SourceSelection> GetSources(Profile profile, Func<SourceSelection, bool> predicate)
         {
             // Resolve
@@ -298,12 +225,7 @@ namespace JMS.DVB.NET.Recording
                     yield return source;
         }
 
-        /// <summary>
-        /// Ermittelt ein Geräteprofil.
-        /// </summary>
-        /// <param name="name">Der Name des Geräteprofils oder <i>null</i> für das
-        /// bevorzugte Profil.</param>
-        /// <returns>Das gewünschte Geräteprofil.</returns>
+        /// <inheritdoc/>
         public Profile? FindProfile(string name)
         {
             // Use default
@@ -314,21 +236,14 @@ namespace JMS.DVB.NET.Recording
             return CurrentState.ProfileMap.TryGetValue(name, out var profile) ? profile : null;
         }
 
-        /// <summary>
-        /// Meldet die Namen alle aktivierten Geräteprofile, das bevorzugte Profil immer zuerst.
-        /// </summary>
-        public IEnumerable<string> ProfileNames { get { return CurrentState.Profiles.Select(p => p.Name); } }
+        /// <inheritdoc/>
+        public IEnumerable<string> ProfileNames => CurrentState.Profiles.Select(p => p.Name);
 
-        /// <summary>
-        /// Ermittelt den eindeutigen Namen einer Quelle.
-        /// </summary>
-        /// <param name="source">Die gewünschte Quelle.</param>
-        /// <returns>Der eindeutige Name oder <i>null</i>, wenn die Quelle nicht
-        /// bekannt ist..</returns>
+        /// <inheritdoc/>
         public string GetUniqueName(SourceSelection source)
         {
             // Map to current
-            var active = FindSource(source);
+            var active = this.FindSource(source);
             if (active == null)
                 return null!;
 

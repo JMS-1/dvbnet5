@@ -1,6 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.ProgramGuide;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
@@ -73,7 +74,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="guide">Ein Eintrag der Programmzeitschrift.</param>
         /// <param name="profile">Vorgabe für das Geräteprofil.</param>
         /// <returns>Die zugehörige Beschreibung.</returns>
-        public static EditJob? Create(VCRJob job, ProgramGuideEntry guide, string profile, VCRProfiles profiles)
+        public static EditJob? Create(VCRJob job, ProgramGuideEntry guide, string profile, IVCRProfiles profiles)
         {
             // Process
             if (job == null)

@@ -4,13 +4,13 @@ namespace JMS.DVB.NET.Recording.Persistence
 {
     public static class VCRJobExtensions
     {
-        private static VCRProfiles _profiles = null!;
+        private static IVCRProfiles _profiles = null!;
 
         private static ILogger _logger = null!;
 
         public class Initializer
         {
-            public Initializer(VCRProfiles profiles, ILogger logger)
+            public Initializer(IVCRProfiles profiles, ILogger logger)
             {
                 _logger = logger;
                 _profiles = profiles;

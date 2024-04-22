@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Runtime.Serialization;
 using JMS.DVB.NET.Recording.ProgramGuide;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
@@ -79,7 +80,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="filter">Die externe Darstellung des Filters.</param>
         /// <returns>Die gewünschte Repräsentation.</returns>
-        public static GuideEntryFilter? Translate(GuideFilter filter, VCRProfiles profiles)
+        public static GuideEntryFilter? Translate(GuideFilter filter, IVCRProfiles profiles)
         {
             // None
             if (filter == null)

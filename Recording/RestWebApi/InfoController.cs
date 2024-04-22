@@ -2,6 +2,7 @@
 
 using System.Runtime.InteropServices;
 using System.Text;
+using JMS.DVB.NET.Recording.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -9,7 +10,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Web Service für allgemeine Informationen.
     /// </summary>
-    public class InfoController(VCRServer server, VCRProfiles profiles) : ControllerBase
+    public class InfoController(VCRServer server, IVCRProfiles profiles) : ControllerBase
     {
         /// <summary>
         /// Ermittelt zu einer Komponente das Produkt.

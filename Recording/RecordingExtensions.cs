@@ -23,7 +23,7 @@ public static class RecordingExtensions
 
         services.AddSingleton<JobManager>();
         services.AddSingleton<IVCRConfiguration, VCRConfiguration>();
-        services.AddSingleton<VCRProfiles>();
+        services.AddSingleton<IVCRProfiles, VCRProfiles>();
         services.AddSingleton<VCRServer>();
 
         /* Vorläufig Lösung für das 'static-Problem', da muss noch deutlich mehr passieren. */

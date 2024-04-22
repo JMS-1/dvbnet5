@@ -229,6 +229,11 @@ public interface IVCRConfiguration
     bool IsValidTarget(string path);
 
     /// <summary>
+    /// Load the configuration from the provided file.
+    /// </summary>
+    void Reload();
+
+    /// <summary>
     /// Meldet oder legt fest, ob bereits einmal eine Aufzeichnung ausgeführt wurde.
     /// </summary>
     bool HasRecordedSomething { get; set; }

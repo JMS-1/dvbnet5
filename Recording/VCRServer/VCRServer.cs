@@ -56,7 +56,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         private readonly IVCRConfiguration _configuration;
 
-        private readonly VCRProfiles _profiles;
+        private readonly IVCRProfiles _profiles;
 
         /// <summary>
         /// Die Verwaltung der Aufträge.
@@ -83,7 +83,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Erzeugt eine neue Instanz.
         /// </summary>
-        public VCRServer(IVCRConfiguration configuration, ILogger logger, VCRProfiles profiles, JobManager jobManager, ServiceFactory factory)
+        public VCRServer(IVCRConfiguration configuration, ILogger logger, IVCRProfiles profiles, JobManager jobManager, ServiceFactory factory)
         {
             _configuration = configuration;
             _logger = logger;
@@ -163,7 +163,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="withRadio">Gesetzt, wenn Radiosender zu ber?cksichtigen sind.</param>
         /// <param name="factory">Eine Methode zum Erzeugen der Zielelemente aus den Daten einer einzelnen Quelle.</param>
         /// <returns></returns>
-        public TTarget[] GetSources<TTarget>(string profileName, bool withTV, bool withRadio, Func<SourceSelection, VCRProfiles, TTarget> factory)
+        public TTarget[] GetSources<TTarget>(string profileName, bool withTV, bool withRadio, Func<SourceSelection, IVCRProfiles, TTarget> factory)
         {
             // Find the profile
             var profile = FindProfile(profileName);

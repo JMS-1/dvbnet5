@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using JMS.DVB.NET.Recording.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -7,7 +8,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// Erlaubt den Zurgiff auf die Geräteprofile, die der <i>VCR.NET Recording Service</i>
     /// verwaltet.
     /// </summary>
-    public class ProfileController(VCRServer server, VCRProfiles profiles) : ControllerBase
+    public class ProfileController(VCRServer server, IVCRProfiles profiles) : ControllerBase
     {
         /// <summary>
         /// Meldet alle Geräteprofile, die der <i>VCR.NET Recording Service</i> verwenden darf.

@@ -1,4 +1,5 @@
 using JMS.DVB.NET.Recording;
+using JMS.DVB.NET.Recording.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -33,7 +34,7 @@ public class ConfigurationTests
         services.AddTransient<ILogger<IVCRConfiguration>, NullLogger<IVCRConfiguration>>();
         services.AddSingleton<IVCRConfigurationExePathProvider, ConfigPathProvider>();
 
-        services.AddTransient<IVCRConfiguration>();
+        services.AddTransient<IVCRConfiguration, VCRConfiguration>();
 
         Services = services.BuildServiceProvider();
     }

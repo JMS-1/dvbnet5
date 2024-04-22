@@ -28,7 +28,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         private volatile ProgramGuideEntries m_Events = new ProgramGuideEntries();
 
-        private readonly VCRProfiles _profiles;
+        private readonly IVCRProfiles _profiles;
 
         private readonly ILogger _logger;
 
@@ -39,7 +39,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         /// <param name="jobs">Die zugehörige Auftragsverwaltung.</param>
         /// <param name="profileName">Der Name des verwalteten DVB.NET Geräteprofils.</param>
-        public ProgramGuideManager(JobManager jobs, string profileName, VCRProfiles profiles, VCRServer server, ILogger logger)
+        public ProgramGuideManager(JobManager jobs, string profileName, IVCRProfiles profiles, VCRServer server, ILogger logger)
         {
             // Remember
             _logger = logger;
@@ -234,8 +234,8 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             SourceIdentifier source,
             DateTime start,
             DateTime end,
-            Func<ProgramGuideEntry, string, VCRProfiles, TTarget> factory,
-            VCRProfiles profiles
+            Func<ProgramGuideEntry, string, IVCRProfiles, TTarget> factory,
+            IVCRProfiles profiles
         )
         {
             // Forward
@@ -261,7 +261,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <param name="filter">Der Filter in der internen Darstellung.</param>
         /// <param name="factory">Erstellt die externe Repräsentation eines Eintrags.</param>
         /// <returns>Die Liste aller passenden Einträge.</returns>
-        public TEntry[] GetProgramGuideEntries<TEntry>(GuideEntryFilter filter, Func<ProgramGuideEntry, string, VCRProfiles, TEntry> factory, VCRProfiles profiles)
+        public TEntry[] GetProgramGuideEntries<TEntry>(GuideEntryFilter filter, Func<ProgramGuideEntry, string, IVCRProfiles, TEntry> factory, IVCRProfiles profiles)
         {
             // See if there is a guide
             var entries = LeafEntries;
@@ -276,7 +276,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         /// <param name="filter">Der Filter in der internen Darstellung.</param>
         /// <returns>Die Anzahl der passenden Einträge.</returns>
-        public int GetProgramGuideEntries(GuideEntryFilter filter, VCRProfiles profiles)
+        public int GetProgramGuideEntries(GuideEntryFilter filter, IVCRProfiles profiles)
         {
             // See if there is a guide
             var entries = LeafEntries;

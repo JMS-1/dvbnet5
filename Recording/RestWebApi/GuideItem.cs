@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Runtime.Serialization;
 using JMS.DVB.NET.Recording.ProgramGuide;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
@@ -101,7 +102,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="entry">Der originale Eintrag aus der Verwaltung.</param>
         /// <param name="profileName">Der Name des zugehörigen Geräteprofils.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public static GuideItem Create(ProgramGuideEntry entry, string profileName, VCRProfiles profiles)
+        public static GuideItem Create(ProgramGuideEntry entry, string profileName, IVCRProfiles profiles)
         {
             // Validate
             if (entry == null)
