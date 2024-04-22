@@ -50,7 +50,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         private readonly Dictionary<Guid, VCRJob> m_Jobs = [];
 
-        private readonly VCRConfiguration _configuration;
+        private readonly IVCRConfiguration _configuration;
 
         private readonly ILogger _logger;
 
@@ -59,7 +59,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="rootDirectory">Meldet das Verzeichnis, unterhalb dessen alle
         /// Aufträge und Protokolle angelegt werden.</param>
-        public JobManager(VCRProfiles profiles, VCRConfiguration configuration, ILogger logger)
+        public JobManager(VCRProfiles profiles, IVCRConfiguration configuration, ILogger logger)
         {
             // Remember
             _configuration = configuration;

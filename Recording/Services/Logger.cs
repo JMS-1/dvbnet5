@@ -8,7 +8,7 @@ namespace JMS.DVB.NET.Recording.Services;
 /// <remarks>LEAF SERVICE</remarks>
 /// <param name="configuration"></param>
 /// <param name="logger"></param>
-public class Logger(VCRConfiguration configuration, ILogger<VCRServer> logger) : ILogger
+public class Logger(IVCRConfiguration configuration, ILogger<VCRServer> logger) : ILogger
 {
     /// <summary>
     /// Check if an event of the indicated level should be reported to

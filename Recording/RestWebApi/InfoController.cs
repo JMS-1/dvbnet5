@@ -116,7 +116,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="directories">Wird zur Unterscheidung der Methoden verwendet.</param>
         /// <returns>Die gewünschte Liste.</returns>
         [HttpGet]
-        public string[] GetRecordingDirectories(string directories) => server.Configuration.TargetDirectoriesNames.SelectMany(ScanDirectory).ToArray();
+        public string[] GetRecordingDirectories(string directories) => server.Configuration.TargetDirectoryNames.SelectMany(ScanDirectory).ToArray();
 
         /// <summary>
         /// Meldet alle Aufträge.

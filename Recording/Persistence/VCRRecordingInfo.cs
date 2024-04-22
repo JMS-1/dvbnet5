@@ -2,6 +2,7 @@ using System.Xml.Serialization;
 using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Planning;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording.Persistence
 {
@@ -360,7 +361,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Befüllt vor allem den Dateinamen mit Vorgabewerten.
         /// </summary>
-        internal void LoadDefaults(VCRConfiguration configuration, VCRProfiles profiles)
+        internal void LoadDefaults(IVCRConfiguration configuration, VCRProfiles profiles)
         {
             // Construct file name
             var pattern = configuration.FileNamePattern;
@@ -451,7 +452,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <param name="planItem">Die zugehörige Beschreibung der geplanten Aktivität.</param>
         /// <param name="context">Die Abbildung auf die Aufträge.</param>
         /// <returns>Die angeforderte Repräsentation.</returns>
-        public static VCRRecordingInfo? Create(IScheduleInformation planItem, PlanContext context, VCRConfiguration configuration, VCRProfiles profiles)
+        public static VCRRecordingInfo? Create(IScheduleInformation planItem, PlanContext context, IVCRConfiguration configuration, VCRProfiles profiles)
         {
             // Validate
             ArgumentNullException.ThrowIfNull(planItem, nameof(planItem));
@@ -553,7 +554,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// Wandelt eine Aufzeichnung in die Beschreibung eines Empfangsdatenstroms.
         /// </summary>
         /// <returns>Die passende Beschreibung.</returns>
-        public ReceiveInformation ToReceiveInformation(VCRConfiguration configuration, VCRProfiles profiles)
+        public ReceiveInformation ToReceiveInformation(IVCRConfiguration configuration, VCRProfiles profiles)
         {
             // Attach to the station and the profile
             var source = Source;

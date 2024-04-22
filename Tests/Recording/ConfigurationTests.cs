@@ -30,10 +30,10 @@ public class ConfigurationTests
     {
         var services = new ServiceCollection();
 
-        services.AddTransient<ILogger<VCRConfiguration>, NullLogger<VCRConfiguration>>();
+        services.AddTransient<ILogger<IVCRConfiguration>, NullLogger<IVCRConfiguration>>();
         services.AddSingleton<IVCRConfigurationExePathProvider, ConfigPathProvider>();
 
-        services.AddTransient<VCRConfiguration>();
+        services.AddTransient<IVCRConfiguration>();
 
         Services = services.BuildServiceProvider();
     }
@@ -47,7 +47,7 @@ public class ConfigurationTests
     [Test]
     public void Can_Read_Configuration_File()
     {
-        var cut = Services.GetRequiredService<VCRConfiguration>();
+        var cut = Services.GetRequiredService<IVCRConfiguration>();
 
         Assert.That(cut.ProfileNames, Is.EqualTo("card1|card2"));
     }
@@ -55,7 +55,7 @@ public class ConfigurationTests
     [Test]
     public void Can_Update_Configuration_File_With_Restart()
     {
-        var cut = Services.GetRequiredService<VCRConfiguration>();
+        var cut = Services.GetRequiredService<IVCRConfiguration>();
 
         Assert.That(cut.ProfileNames, Is.EqualTo("card1|card2"));
 
@@ -74,7 +74,7 @@ public class ConfigurationTests
     [Test]
     public void Can_Update_Configuration_File_Without_Restart()
     {
-        var cut = Services.GetRequiredService<VCRConfiguration>();
+        var cut = Services.GetRequiredService<IVCRConfiguration>();
 
         Assert.That(cut.ProgramGuideUpdateDuration, Is.EqualTo(20));
 

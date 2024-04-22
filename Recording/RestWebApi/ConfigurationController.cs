@@ -281,7 +281,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                     .GetDirectories(root);
 
             // Report
-            return new[] { root }.Concat(names.OrderBy(name => name, StringComparer.InvariantCultureIgnoreCase)).ToArray();
+            return [root, .. names.OrderBy(name => name, StringComparer.InvariantCultureIgnoreCase)];
         }
 
         /// <summary>
@@ -337,10 +337,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var settings = new ProfileSettings
             {
                 SystemProfiles =
-                        server
+                        [.. server
                             .GetProfiles(ConfigurationProfile.Create, out string defaultName)
-                            .OrderBy(profile => profile.Name, ProfileManager.ProfileNameComparer)
-                            .ToArray()
+                            .OrderBy(profile => profile.Name, ProfileManager.ProfileNameComparer)]
             };
 
             // Merge default
@@ -393,7 +392,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new DirectorySettings
                 {
-                    TargetDirectories = server.Configuration.TargetDirectoriesNames.ToArray(),
+                    TargetDirectories = [.. server.Configuration.TargetDirectoryNames],
                     RecordingPattern = server.Configuration.FileNamePattern,
                 };
         }
@@ -435,7 +434,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new SourceScanSettings
                 {
-                    Hours = server.Configuration.SourceListUpdateHoursAsArray.OrderBy(hour => hour).ToArray(),
+                    Hours = [.. server.Configuration.SourceListUpdateHours.OrderBy(hour => hour)],
                     Threshold = join.HasValue ? (int)join.Value.TotalDays : default(int?),
                     MergeLists = server.Configuration.MergeSourceListUpdateResult,
                     Duration = server.Configuration.SourceListUpdateDuration,
@@ -510,8 +509,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new GuideSettings
                 {
-                    Sources = server.Configuration.ProgramGuideSourcesAsArray.OrderBy(name => name, StringComparer.InvariantCultureIgnoreCase).ToArray(),
-                    Hours = server.Configuration.ProgramGuideUpdateHoursAsArray.OrderBy(hour => hour).ToArray(),
+                    Sources = [.. server.Configuration.ProgramGuideSourcesAsArray.OrderBy(name => name, StringComparer.InvariantCultureIgnoreCase)],
+                    Hours = [.. server.Configuration.ProgramGuideUpdateHours.OrderBy(hour => hour)],
                     Interval = interval.HasValue ? (int)interval.Value.TotalHours : default(int?),
                     Threshold = join.HasValue ? (int)join.Value.TotalHours : default(int?),
                     Duration = server.Configuration.ProgramGuideUpdateDuration,

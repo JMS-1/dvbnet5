@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording;
 
@@ -10,7 +10,7 @@ partial class VCRServer
     /// <param name="settings">Die zu aktualisierenden Konfigurationswerte.</param>
     /// <param name="forceRestart">Erzwingt einen Neustart des Dienstes.</param>
     /// <returns>Gesetzt, wenn ein Neustart erforderlich ist.</returns>
-    public bool? UpdateConfiguration(IEnumerable<VCRConfiguration.SettingDescription> settings, bool forceRestart = false)
+    public bool? UpdateConfiguration(IEnumerable<SettingDescription> settings, bool forceRestart = false)
     {
         // Check state
         if (IsActive)

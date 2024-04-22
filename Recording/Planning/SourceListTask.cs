@@ -1,4 +1,5 @@
 ﻿using JMS.DVB.Algorithms.Scheduler;
+using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording.Planning
 {
@@ -17,14 +18,14 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         public DirectoryInfo CollectorDirectory { get; private set; } = null!;
 
-        private readonly VCRConfiguration m_configuration;
+        private readonly IVCRConfiguration m_configuration;
 
         /// <summary>
         /// Erzeugt eine neue Verwaltung.
         /// </summary>
         /// <param name="forResource">Das Geräteprofil, auf dem der Lauf erfolgen soll.</param>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
-        public SourceListTask(IScheduleResource forResource, ProfileState profile, VCRConfiguration configuration, JobManager jobs)
+        public SourceListTask(IScheduleResource forResource, ProfileState profile, IVCRConfiguration configuration, JobManager jobs)
             : this(forResource, profile, () => profile.LastSourceUpdateTime, configuration, jobs)
         {
         }
@@ -34,7 +35,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="forResource">Das Geräteprofil, auf dem der Lauf erfolgen soll.</param>
         /// <param name="lastUpdate">Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.</param>
-        public SourceListTask(IScheduleResource forResource, Func<DateTime?> lastUpdate, VCRConfiguration configuration, JobManager jobs)
+        public SourceListTask(IScheduleResource forResource, Func<DateTime?> lastUpdate, IVCRConfiguration configuration, JobManager jobs)
             : this(forResource, null!, lastUpdate, configuration, jobs)
         {
         }
@@ -46,7 +47,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
         /// <param name="lastUpdate">Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.</param>
         /// <exception cref="ArgumentNullException">Der letzte Aktualisierungszeitpunkt ist nicht gesetzt.</exception>
-        private SourceListTask(IScheduleResource forResource, ProfileState profile, Func<DateTime?> lastUpdate, VCRConfiguration configuration, JobManager jobs)
+        private SourceListTask(IScheduleResource forResource, ProfileState profile, Func<DateTime?> lastUpdate, IVCRConfiguration configuration, JobManager jobs)
             : base("Sendersuchlauf", Guid.NewGuid())
         {
             // Validate

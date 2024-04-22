@@ -22,7 +22,7 @@ public static class RecordingExtensions
         services.AddSingleton<IVCRConfigurationExePathProvider>((ctx) => new ConfigurationPathProvider());
 
         services.AddSingleton<JobManager>();
-        services.AddSingleton<VCRConfiguration>();
+        services.AddSingleton<IVCRConfiguration, VCRConfiguration>();
         services.AddSingleton<VCRProfiles>();
         services.AddSingleton<VCRServer>();
 

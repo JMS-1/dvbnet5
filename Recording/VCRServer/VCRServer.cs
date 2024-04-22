@@ -54,7 +54,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Die aktive Konfiguration.
         /// </summary>
-        private readonly VCRConfiguration _configuration;
+        private readonly IVCRConfiguration _configuration;
 
         private readonly VCRProfiles _profiles;
 
@@ -83,7 +83,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Erzeugt eine neue Instanz.
         /// </summary>
-        public VCRServer(VCRConfiguration configuration, ILogger logger, VCRProfiles profiles, JobManager jobManager, ServiceFactory factory)
+        public VCRServer(IVCRConfiguration configuration, ILogger logger, VCRProfiles profiles, JobManager jobManager, ServiceFactory factory)
         {
             _configuration = configuration;
             _logger = logger;
@@ -101,7 +101,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Meldet die aktuell zu verwendende Konfiguration.
         /// </summary>
-        public VCRConfiguration Configuration { get { return _configuration; } }
+        public IVCRConfiguration Configuration { get { return _configuration; } }
 
         public class _Setting
         {
