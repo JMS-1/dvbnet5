@@ -61,7 +61,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Die Verwaltung der Aufträge.
         /// </summary>
-        private JobManager _jobs = null!;
+        private IJobManager _jobs = null!;
 
         /// <summary>
         /// L?dt Verwaltungsinstanzen f?r alle freigeschalteten DVB.NET Ger?teprofile.
@@ -83,7 +83,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Erzeugt eine neue Instanz.
         /// </summary>
-        public VCRServer(IVCRConfiguration configuration, ILogger logger, IVCRProfiles profiles, JobManager jobManager, ServiceFactory factory)
+        public VCRServer(IVCRConfiguration configuration, ILogger logger, IVCRProfiles profiles, IJobManager jobManager, ServiceFactory factory)
         {
             _configuration = configuration;
             _logger = logger;

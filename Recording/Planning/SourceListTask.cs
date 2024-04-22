@@ -25,7 +25,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="forResource">Das Geräteprofil, auf dem der Lauf erfolgen soll.</param>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
-        public SourceListTask(IScheduleResource forResource, ProfileState profile, IVCRConfiguration configuration, JobManager jobs)
+        public SourceListTask(IScheduleResource forResource, ProfileState profile, IVCRConfiguration configuration, IJobManager jobs)
             : this(forResource, profile, () => profile.LastSourceUpdateTime, configuration, jobs)
         {
         }
@@ -35,7 +35,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="forResource">Das Geräteprofil, auf dem der Lauf erfolgen soll.</param>
         /// <param name="lastUpdate">Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.</param>
-        public SourceListTask(IScheduleResource forResource, Func<DateTime?> lastUpdate, IVCRConfiguration configuration, JobManager jobs)
+        public SourceListTask(IScheduleResource forResource, Func<DateTime?> lastUpdate, IVCRConfiguration configuration, IJobManager jobs)
             : this(forResource, null!, lastUpdate, configuration, jobs)
         {
         }
@@ -47,7 +47,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
         /// <param name="lastUpdate">Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.</param>
         /// <exception cref="ArgumentNullException">Der letzte Aktualisierungszeitpunkt ist nicht gesetzt.</exception>
-        private SourceListTask(IScheduleResource forResource, ProfileState profile, Func<DateTime?> lastUpdate, IVCRConfiguration configuration, JobManager jobs)
+        private SourceListTask(IScheduleResource forResource, ProfileState profile, Func<DateTime?> lastUpdate, IVCRConfiguration configuration, IJobManager jobs)
             : base("Sendersuchlauf", Guid.NewGuid())
         {
             // Validate

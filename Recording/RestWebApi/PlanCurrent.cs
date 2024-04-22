@@ -210,7 +210,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="active">Die Daten zur aktiven Aufzeichnung.</param>
         /// <param name="server">Der zugehörige Dienst.</param>
         /// <returns>Die gewünschten Beschreibungen.</returns>
-        public static PlanCurrent[] Create(FullInfo active, VCRServer server, IVCRProfiles profiles, JobManager jobs)
+        public static PlanCurrent[] Create(FullInfo active, VCRServer server, IVCRProfiles profiles, IJobManager jobs)
         {
             // Validate
             if (active == null)
@@ -307,7 +307,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="streamIndex">Die laufende Nummer dieses Datenstroms.</param>
         /// <param name="server">Der zugehörige Dienst.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        private static IEnumerable<PlanCurrent> Create(FullInfo active, StreamInfo stream, int streamIndex, VCRServer server, IVCRProfiles profiles, JobManager jobs)
+        private static IEnumerable<PlanCurrent> Create(FullInfo active, StreamInfo stream, int streamIndex, VCRServer server, IVCRProfiles profiles, IJobManager jobs)
         {
             // Static data
             var recording = active.Recording;

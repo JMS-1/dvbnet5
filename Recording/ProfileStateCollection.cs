@@ -30,13 +30,13 @@ namespace JMS.DVB.NET.Recording
 
         private readonly ServiceFactory _factory;
 
-        private readonly JobManager _jobs;
+        private readonly IJobManager _jobs;
 
         /// <summary>
         /// Erzeugt eine neue Verwaltungsinstanz.
         /// </summary>
         /// <param name="server">Die primäre VCR.NET Instanz.</param>
-        internal ProfileStateCollection(VCRServer server, IVCRProfiles profiles, ILogger logger, JobManager jobs, ServiceFactory factory)
+        internal ProfileStateCollection(VCRServer server, IVCRProfiles profiles, ILogger logger, IJobManager jobs, ServiceFactory factory)
         {
             // Remember
             _factory = factory;
@@ -534,7 +534,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="resource">Die zu verwendende Ressource.</param>
         /// <param name="profile">Das zugehörige Geräteprofil.</param>
         /// <returns>Der gewünschte Auftrag.</returns>
-        PeriodicScheduler IRecordingPlannerSite.CreateProgramGuideTask(IScheduleResource resource, Profile profile, VCRServer server, JobManager jobs)
+        PeriodicScheduler IRecordingPlannerSite.CreateProgramGuideTask(IScheduleResource resource, Profile profile, VCRServer server, IJobManager jobs)
         {
             // Protect against misuse
             if (_stateMap.TryGetValue(profile.Name, out var state))
@@ -553,7 +553,7 @@ namespace JMS.DVB.NET.Recording
             IScheduleResource resource,
             Profile profile,
             VCRServer server,
-            JobManager jobs
+            IJobManager jobs
         )
         {
             // Protect against misuse

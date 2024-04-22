@@ -46,7 +46,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// Erstellt eine neue Planung.
         /// </summary>
         /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
-        private RecordingPlanner(IRecordingPlannerSite site, VCRServer server, IVCRProfiles profiles, ILogger logger, JobManager jobs)
+        private RecordingPlanner(IRecordingPlannerSite site, VCRServer server, IVCRProfiles profiles, ILogger logger, IJobManager jobs)
         {
             // Remember
             _logger = logger;
@@ -144,7 +144,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
         /// <returns>Die gewünschte Planungsumgebung.</returns>
-        public static RecordingPlanner Create(IRecordingPlannerSite site, VCRServer server, IVCRProfiles profiles, ILogger logger, JobManager jobs)
+        public static RecordingPlanner Create(IRecordingPlannerSite site, VCRServer server, IVCRProfiles profiles, ILogger logger, IJobManager jobs)
         {
             // Validate
             if (site == null)

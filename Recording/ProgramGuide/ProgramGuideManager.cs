@@ -11,7 +11,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Die zugehörige Auftragsverwaltung.
         /// </summary>
-        public JobManager JobManager { get; }
+        public IJobManager JobManager { get; }
 
         /// <summary>
         /// Der Name des zugehörigen Geräteprofils.
@@ -39,7 +39,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         /// <param name="jobs">Die zugehörige Auftragsverwaltung.</param>
         /// <param name="profileName">Der Name des verwalteten DVB.NET Geräteprofils.</param>
-        public ProgramGuideManager(JobManager jobs, string profileName, IVCRProfiles profiles, VCRServer server, ILogger logger)
+        public ProgramGuideManager(IJobManager jobs, string profileName, IVCRProfiles profiles, VCRServer server, ILogger logger)
         {
             // Remember
             _logger = logger;

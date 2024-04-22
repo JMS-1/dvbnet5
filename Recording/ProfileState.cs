@@ -43,7 +43,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="collection">Die zugehörige Verwaltung der aktiven Geräteprofile.</param>
         /// <param name="profileName">Der Name des zugehörigen Geräteprofils.</param>
-        public ProfileState(ProfileStateCollection collection, string profileName, VCRServer server, IVCRProfiles profiles, ILogger logger, JobManager jobs, ServiceFactory factory)
+        public ProfileState(ProfileStateCollection collection, string profileName, VCRServer server, IVCRProfiles profiles, ILogger logger, IJobManager jobs, ServiceFactory factory)
         {
             // Remember
             _factory = factory;

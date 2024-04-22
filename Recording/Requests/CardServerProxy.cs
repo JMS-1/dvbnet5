@@ -48,7 +48,7 @@ namespace JMS.DVB.NET.Recording.Requests
 
         protected readonly ILogger Logger;
 
-        protected readonly JobManager JobManager;
+        protected readonly IJobManager JobManager;
 
         /// <summary>
         /// Erzeugt eine neue Zugriffsinstanz.
@@ -66,7 +66,7 @@ namespace JMS.DVB.NET.Recording.Requests
             RequestFinished = new ManualResetEvent(false);
 
             // Remember
-            JobManager = factory.Create<JobManager>();
+            JobManager = factory.Create<IJobManager>();
             Logger = factory.Create<ILogger>();
             Profiles = factory.Create<IVCRProfiles>();
             ProfileState = state;

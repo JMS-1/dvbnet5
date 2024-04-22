@@ -159,7 +159,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="forIdle">Erstellt eine Beschreibung f�r ein Ger�t, f�r das keine Aufzeichnungen geplant sind.</param>
         /// <returns>Die Liste aller Informationen.</returns>
         public TInfo[] GetCurrentRecordings<TInfo>(
-            Func<FullInfo, VCRServer, IVCRProfiles, JobManager, TInfo[]> fromActive,
+            Func<FullInfo, VCRServer, IVCRProfiles, IJobManager, TInfo[]> fromActive,
             Func<IScheduleInformation, PlanContext, VCRServer, IVCRProfiles, TInfo> fromPlan = null!,
             Func<string, TInfo> forIdle = null!
         )

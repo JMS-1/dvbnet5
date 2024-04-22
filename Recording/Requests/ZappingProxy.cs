@@ -1,5 +1,6 @@
 ﻿using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Status;
 
 namespace JMS.DVB.NET.Recording.Requests
@@ -53,7 +54,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 new VCRRecordingInfo
                 {
                     Source = new SourceSelection { ProfileName = profile.ProfileName, DisplayName = VCRJob.ZappingName },
-                    FileName = Path.Combine(factory.Create<JobManager>().CollectorDirectory.FullName, "zapping.live"),
+                    FileName = Path.Combine(factory.Create<IJobManager>().CollectorDirectory.FullName, "zapping.live"),
                     ScheduleUniqueID = Guid.NewGuid(),
                     EndsAt = now.AddMinutes(2),
                     Name = VCRJob.ZappingName,
