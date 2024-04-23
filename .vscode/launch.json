@@ -36,7 +36,7 @@
         "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
         "uriFormat": "%s/swagger"
       },
-      "stopAtEntry": false,
+      "stopAtEntry": true,
       "type": "coreclr"
     }
   ]

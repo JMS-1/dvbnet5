@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using JMS.DVB.NET.Recording.Services.Planning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -8,7 +9,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/plan")]
-    public class PlanController(VCRServer server) : ControllerBase
+    public class PlanController(VCRServer server, IProfileStateCollection states) : ControllerBase
     {
         /// <summary>
         /// Meldet den aktuellen Aufzeichnungsplan.
@@ -97,16 +98,14 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Fordert die Aktualisierung der Quellen an.
         /// </summary>
-        /// <param name="sourceScan">Wird zur Unterscheidung der Methoden verwendet.</param>
         [HttpPost("scan")]
-        public void StartSourceScan(string sourceScan) => server.ForceSoureListUpdate();
+        public void StartSourceScan() => states.ForceSoureListUpdate();
 
         /// <summary>
         /// Fordert die Aktualisierung der Programmzeitschrift an.
         /// </summary>
-        /// <param name="guideUpdate">Wird zur Unterscheidung der Methoden verwendet.</param>
         [HttpPost("guide")]
-        public void StartGuideUpdate(string guideUpdate) => server.ForceProgramGuideUpdate();
+        public void StartGuideUpdate() => states.ForceProgramGuideUpdate();
 
         /// <summary>
         /// Ändert den Netzwerkversand.

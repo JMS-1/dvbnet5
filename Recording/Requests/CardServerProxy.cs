@@ -1,6 +1,7 @@
 ﻿using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Status;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -50,6 +51,8 @@ namespace JMS.DVB.NET.Recording.Requests
 
         protected readonly IJobManager JobManager;
 
+        protected readonly IVCRConfiguration Configuration;
+
         /// <summary>
         /// Erzeugt eine neue Zugriffsinstanz.
         /// </summary>
@@ -66,6 +69,7 @@ namespace JMS.DVB.NET.Recording.Requests
             RequestFinished = new ManualResetEvent(false);
 
             // Remember
+            Configuration = factory.Create<IVCRConfiguration>();
             JobManager = factory.Create<IJobManager>();
             Logger = factory.Create<ILogger>();
             Profiles = factory.Create<IVCRProfiles>();
@@ -466,7 +470,7 @@ namespace JMS.DVB.NET.Recording.Requests
                     JobManager.CreateLogEntry(Representative);
 
                     // May go to sleep after job is finished
-                    Server.ReportRecordingDone(IsRealRecording);
+                    if (IsRealRecording) Configuration.HasRecordedSomething = true;
 
                     // Check for next job on all profiles
                     ProfileState.Collection.BeginNewPlan();

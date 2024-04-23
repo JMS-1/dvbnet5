@@ -5,6 +5,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Erlaubt den Zugriff auf die Programmzeitschrift.
     /// </summary>
+    [ApiController]
+    [Route("api/guide")]
     public class GuideController(VCRServer server) : ControllerBase
     {
         /// <summary>
@@ -35,7 +37,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="filter">Die Beschreibung des Filters.</param>
         /// <returns>Die Liste aller passenden Einträge.</returns>
-        [HttpPost]
+        [HttpPost("query")]
         public GuideItem[] Find([FromBody] GuideFilter filter) => server.GetProgramGuideEntries(filter, GuideFilter.Translate, GuideItem.Create);
 
         /// <summary>
@@ -44,16 +46,15 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="countOnly">Indikator zur Unterscheidung der Methoden.</param>
         /// <param name="filter">Die Beschreibung des Filters.</param>
         /// <returns>Die Anzahl aller passenden Einträge.</returns>
-        [HttpPost]
+        [HttpPost("count")]
         public int Count(string countOnly, [FromBody] GuideFilter filter) => server.GetProgramGuideEntries(filter, GuideFilter.Translate);
-
 
         /// <summary>
         /// Ermittelt Informationen zu den Einträgen in einem Geräteprofil.
         /// </summary>
         /// <param name="detail">Der Name des Profils.</param>
         /// <returns>Die gewünschten Informationen.</returns>
-        [HttpGet]
+        [HttpGet("info/{detail}")]
         public GuideInfo GetInfo(string detail) => server.GetProgramGuideInformation(detail, GuideInfo.Create);
     }
 }

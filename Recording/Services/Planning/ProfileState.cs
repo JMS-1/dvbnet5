@@ -1,30 +1,44 @@
 ﻿using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Requests;
+using JMS.DVB.NET.Recording.Services.ProgramGuide;
 using JMS.DVB.NET.Recording.Status;
 
-namespace JMS.DVB.NET.Recording.Services;
+namespace JMS.DVB.NET.Recording.Services.Planning;
 
 /// <summary>
 /// Beschreibt den Arbeitszustand eines einzelnen aktiven Geräteprofils.
 /// </summary>
 /// <param name="collection">Die zugehörige Verwaltung der aktiven Geräteprofile.</param>
 /// <param name="profileName">Der Name des zugehörigen Geräteprofils.</param>
-public class ProfileState(IProfileStateCollection collection, string profileName) : IProfileState
+public class ProfileState(
+    Lazy<IProfileStateCollection> collection,
+    string profileName,
+    IProgramGuideManagerFactory guideManagerFactory,
+    IVCRProfiles profiles,
+    ServiceFactory factory,
+    ILogger logger
+) : IProfileState
 {
+    private readonly ServiceFactory _factory = factory;
+
+    private readonly IVCRProfiles _profiles = profiles;
+
+    private readonly ILogger _logger = logger;
+
     /// <inheritdoc/>
     public string ProfileName => profileName;
 
     /// <inheritdoc/>
-    public IProfileStateCollection Collection => collection;
+    public IProfileStateCollection Collection => collection.Service;
 
     /// <inheritdoc/>
-    public IProgramGuideManager ProgramGuide { get; } = new ProgramGuideManager(collection, profileName);
+    public IProgramGuideManager ProgramGuide { get; } = guideManagerFactory.Create(profileName);
 
     /// <summary>
     /// Meldet das zugehörige Geräteprofil.
     /// </summary>
-    public Profile? Profile => collection.Profiles.FindProfile(profileName);
+    public Profile? Profile => _profiles.FindProfile(profileName);
 
     /// <inheritdoc/>
     public bool IsResponsibleFor(SourceSelection source)
@@ -211,7 +225,7 @@ public class ProfileState(IProfileStateCollection collection, string profileName
                 if (ReferenceEquals(current, null))
                 {
                     // Create a brand new regular recording request
-                    var request = new RecordingProxy(this, recording, collection.ServiceFactory);
+                    var request = new RecordingProxy(this, recording, _factory);
 
                     // Activate the request
                     request.Start();
@@ -251,7 +265,7 @@ public class ProfileState(IProfileStateCollection collection, string profileName
             if (ReferenceEquals(current, null))
             {
                 // Report
-                collection.Logger.Log(LoggingLevel.Errors, "Request to end Recording '{0}' but there is no active Recording Process", scheduleIdentifier);
+                _logger.Log(LoggingLevel.Errors, "Request to end Recording '{0}' but there is no active Recording Process", scheduleIdentifier);
 
                 // Better do it ourselves
                 Collection.ConfirmOperation(scheduleIdentifier, false);
@@ -317,8 +331,8 @@ public class ProfileState(IProfileStateCollection collection, string profileName
     /// <inheritdoc/>
     public DateTime? LastSourceUpdateTime
     {
-        get { return Tools.GetRegistryTime(SourceUpdateRegistryName, collection.Logger); }
-        set { Tools.SetRegistryTime(SourceUpdateRegistryName, value, collection.Logger); }
+        get { return Tools.GetRegistryTime(SourceUpdateRegistryName, _logger); }
+        set { Tools.SetRegistryTime(SourceUpdateRegistryName, value, _logger); }
     }
 
     #endregion

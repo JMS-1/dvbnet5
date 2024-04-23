@@ -6,53 +6,13 @@ namespace JMS.DVB.NET.Recording
     partial class VCRServer
     {
         /// <summary>
-        /// Wird zur Pr�fung auf neue Bearbeitungen aufgerufen.
-        /// </summary>
-        public void BeginNewPlan() => Profiles?.BeginNewPlan();
-
-        /// <summary>
-        /// Fordert eine baldm�gliche Aktualisierung der Programmzeitschrift an.
-        /// </summary>
-        public void ForceProgramGuideUpdate()
-        {
-            // Forward to profile collection
-            Profiles.ForceProgramGuideUpdate();
-
-            // Forward
-            BeginNewPlan();
-        }
-
-        /// <summary>
-        /// Erzwingt eine baldige Aktualisierung aller Listen von Quellen in allen
-        /// Ger�teprofilen.
-        /// </summary>
-        public void ForceSoureListUpdate()
-        {
-            // Forward to profile collection
-            Profiles.ForceSoureListUpdate();
-
-            // Forward
-            BeginNewPlan();
-        }
-
-        /// <summary>
-        /// Meldet, ob auf irgendeinem Ger�teprofil ein Zugriff aktiv ist.
-        /// </summary>
-        public bool IsActive => Profiles.IsActive;
-
-        /// <summary>
         /// Ver�ndert die Endzeit der aktuellen Aufzeichnung auf einem Ger�teprofil.
         /// </summary>
         /// <param name="profile">Der Name des betroffenen Ger�teprofils.</param>
         /// <param name="streamIdentifier">Die eindeutige Kennung des zu verwendenden Datenstroms.</param>
         /// <param name="newEndTime">Der neue Endzeitpunkt.</param>
         /// <param name="disableHibernation">Gesetzt, wenn der �bergang in den Schlafzustand deaktiviert werden soll.</param>
-        public void ChangeRecordingStreamEndTime(string profile, Guid streamIdentifier, DateTime newEndTime, bool disableHibernation) => FindProfile(profile)?.ChangeStreamEnd(streamIdentifier, newEndTime, disableHibernation && (NumberOfActiveRecordings == 1));
-
-        /// <summary>
-        /// Meldet die Anzahl der aktiven Aufzeichnungen.
-        /// </summary>
-        public int NumberOfActiveRecordings => Profiles.NumberOfActiveRecordings;
+        public void ChangeRecordingStreamEndTime(string profile, Guid streamIdentifier, DateTime newEndTime, bool disableHibernation) => FindProfile(profile)?.ChangeStreamEnd(streamIdentifier, newEndTime, disableHibernation && (Profiles.NumberOfActiveRecordings == 1));
 
         /// <summary>
         /// Aktiviert oder deaktiviert den Netzwerkversand f�r eine Quelle.

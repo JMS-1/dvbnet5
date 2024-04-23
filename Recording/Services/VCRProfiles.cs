@@ -4,8 +4,12 @@
     /// Verwaltet die Geräteprofile des VCR.NET Recording Service.
     /// </summary>
     /// <remarks>LEAF SERVICE</remarks>
-    public class VCRProfiles(ILogger logger) : IVCRProfiles
+    public class VCRProfiles : IVCRProfiles
     {
+        private readonly ILogger _logger;
+
+        private readonly IVCRConfiguration _configuration;
+
         /// <summary>
         /// Der aktuelle Konfigurationsbestand.
         /// </summary>
@@ -51,8 +55,16 @@
         /// </summary>
         private volatile _State CurrentState = new();
 
+        public VCRProfiles(ILogger logger, IVCRConfiguration configuration)
+        {
+            _configuration = configuration;
+            _logger = logger;
+
+            Reset();
+        }
+
         /// <inheritdoc/>
-        public void Reset(VCRServer server)
+        public void Reset()
         {
             // Report
             Tools.ExtendedLogging("Reloading Profile List");
@@ -67,7 +79,7 @@
             var profiles = new List<Profile>();
 
             // Load the setting
-            var profileNames = server.Configuration.ProfileNames;
+            var profileNames = _configuration.ProfileNames;
             if (!string.IsNullOrEmpty(profileNames))
                 foreach (var profileName in profileNames.Split('|'))
                 {
@@ -76,7 +88,7 @@
                     if (profile == null)
                     {
                         // This is not goot
-                        logger.LogError("DVB.NET Geräteprofil '{0}' nicht gefunden", profileName.Trim());
+                        _logger.LogError("DVB.NET Geräteprofil '{0}' nicht gefunden", profileName.Trim());
 
                         // Next
                         continue;

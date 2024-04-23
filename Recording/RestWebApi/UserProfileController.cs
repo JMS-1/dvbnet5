@@ -5,6 +5,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Pflegt die Benutzerkonfiguration.
     /// </summary>
+    [ApiController]
+    [Route("api/user")]
     public class UserProfileController : ControllerBase
     {
         /// <summary>
@@ -33,7 +35,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Aktualisiert die Suchen der Programmzeitschrift.
         /// </summary>
         /// <param name="favorites">Dient zur Unterscheidung der Methoden.</param>
-        [HttpPut]
+        [HttpPut("favorites")]
         public void UpdateGuideFavorites(string favorites)
         {
             // Just store body as data

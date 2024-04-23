@@ -5,6 +5,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Ändert Ausnahmeregelungen.
     /// </summary>
+    [ApiController]
+    [Route("api/exception")]
     public class ExceptionController(VCRServer server) : ControllerBase
     {
         /// <summary>

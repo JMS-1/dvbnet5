@@ -1,8 +1,5 @@
-﻿#pragma warning disable SYSLIB1054 // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
-
-using System.Runtime.InteropServices;
-using System.Text;
-using JMS.DVB.NET.Recording.Services;
+﻿using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Planning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -10,28 +7,10 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Web Service für allgemeine Informationen.
     /// </summary>
-    public class InfoController(VCRServer server, IVCRProfiles profiles) : ControllerBase
+    [ApiController]
+    [Route("api/info")]
+    public class InfoController(VCRServer server, IProfileStateCollection states, IVCRProfiles profiles) : ControllerBase
     {
-        /// <summary>
-        /// Ermittelt zu einer Komponente das Produkt.
-        /// </summary>
-        /// <param name="componentCode">Die eindeutige Kennung der Komponente.</param>
-        /// <param name="productCode">Die eindeutige Kennung des Produktes.</param>
-        /// <returns>Der zugehörige Fehlercode.</returns>
-        [DllImport("msi.dll", CharSet = CharSet.Unicode)]
-        private static extern uint MsiGetProductCode(string componentCode, StringBuilder productCode);
-
-        /// <summary>
-        /// Ermittelt eine Eigenschaft eines Produktes.
-        /// </summary>
-        /// <param name="productCode">Die eindeutige Kennung des Produktes.</param>
-        /// <param name="propertyIdentifier">Die gewünschte Eigenschaft.</param>
-        /// <param name="propertyValue">Der Wert der Eigenschaft.</param>
-        /// <param name="valueSize">Die Größe des Speichers.</param>
-        /// <returns>Der zugehörige Fehlercode.</returns>
-        [DllImport("msi.dll", CharSet = CharSet.Unicode)]
-        private static extern uint MsiGetProductInfo(string productCode, string propertyIdentifier, char[] propertyValue, ref UInt32 valueSize);
-
         /// <summary>
         /// Die exakte Version der Installation.
         /// </summary>
@@ -57,20 +36,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                             // Process
                             try
                             {
-                                // Buffer for product
-                                var productCode = new StringBuilder(39);
-
-                                // Lookup product
-                                if (MsiGetProductCode("{2cbfae32-689e-43d8-9665-ab5b6c06d4d6}", productCode) == 0)
-                                {
-                                    // Buffer for version
-                                    UInt32 bufferSize = 100;
-                                    var buffer = new char[bufferSize + 1];
-
-                                    // Retrieve
-                                    if (MsiGetProductInfo(productCode.ToString(), "VersionString", buffer, ref bufferSize) == 0)
-                                        _InstalledVersion = new string(buffer, 0, checked((int)bufferSize));
-                                }
+                                _InstalledVersion = "?";
                             }
                             catch (Exception e)
                             {
@@ -91,7 +57,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Meldet Informationen zur Version des VCR.NET Recording Service.
         /// </summary>
-        [HttpGet]
+        [HttpGet("info")]
         public InfoService VersionInformation()
         {
             // Load
@@ -104,7 +70,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                     HasPendingExtensions = server.ExtensionProcessManager.HasActiveProcesses,
                     SourceScanEnabled = server.Configuration.SourceListUpdateInterval != 0,
                     GuideUpdateEnabled = server.Configuration.ProgramGuideUpdateEnabled,
-                    IsRunning = server.IsActive,
+                    IsRunning = states.IsActive,
                     //ProfilesNames = settings.Profiles.ToArray(),
                     InstalledVersion = InstalledVersion,
                     Version = VCRServer.CurrentVersion,
@@ -116,7 +82,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="directories">Wird zur Unterscheidung der Methoden verwendet.</param>
         /// <returns>Die gewünschte Liste.</returns>
-        [HttpGet]
+        [HttpGet("folder")]
         public string[] GetRecordingDirectories(string directories) => server.Configuration.TargetDirectoryNames.SelectMany(ScanDirectory).ToArray();
 
         /// <summary>
@@ -124,7 +90,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="jobs">Wird zur Unterscheidung der Methoden verwendet.</param>
         /// <returns>Die Liste aller Aufträge.</returns>
-        [HttpGet]
+        [HttpGet("jobs")]
         public InfoJob[] GetJobs(string jobs)
         {
             // Report

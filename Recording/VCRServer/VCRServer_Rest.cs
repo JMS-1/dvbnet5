@@ -3,6 +3,8 @@ using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Planning;
+using JMS.DVB.NET.Recording.Services.ProgramGuide;
 using JMS.DVB.NET.Recording.Status;
 
 namespace JMS.DVB.NET.Recording
@@ -121,7 +123,7 @@ namespace JMS.DVB.NET.Recording
             _jobs.Update(job, null);
 
             // Recalculate plan
-            BeginNewPlan();
+            Profiles.BeginNewPlan();
         }
 
         /// <summary>

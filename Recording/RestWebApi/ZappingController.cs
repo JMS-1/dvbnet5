@@ -7,6 +7,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// Vermittelt den Zugriff auf die im <i>VCR.NET Recording Service</i> verwalteten
     /// Geräte zur Fernnutzung.
     /// </summary>
+    [ApiController]
+    [Route("api/zapping")]
     public class ZappingController(VCRServer server, ServiceFactory factory) : ControllerBase
     {
         /// <summary>
@@ -14,7 +16,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="detail">Der Name des zu verwendenden Geräteprofils.</param>
         /// <returns>Der Zustand auf dem gewählten Geräteprofil.</returns>
-        [HttpGet]
+        [HttpGet("status/{detail}")]
         public ZappingStatus GetCurrentStatus(string detail)
             => server.LiveModeOperation(detail, true, null!, null!, ZappingStatus.Create, factory);
 
@@ -25,7 +27,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="tv">Gesetzt, wenn Fernsehender berücksichtigt werden sollen.</param>
         /// <param name="radio">Gesetzt, wenn Radiosender berücksichtigt werden sollen.</param>
         /// <returns>Die gewünschte Liste von Sendern.</returns>
-        [HttpGet]
+        [HttpGet("source/{detail}")]
         public ZappingSource[] FindSources(string detail, bool tv, bool radio)
             => server.GetSources(detail, tv, radio, ZappingSource.Create);
 
@@ -35,7 +37,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="detail">Der Name des zu verwendenden Geräteprofils.</param>
         /// <param name="target">Legt fest, wohin die Nutzdaten zu senden sind.</param>
         /// <returns>Der Zustand auf dem gewählten Geräteprofil.</returns>
-        [HttpPost]
+        [HttpPost("live/{detail}")]
         public ZappingStatus Connect(string detail, string target)
             => server.LiveModeOperation(detail, true, target, null!, ZappingStatus.Create, factory);
 
@@ -44,7 +46,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="detail">Der Name des zu verwendenden Geräteprofils.</param>
         /// <returns>Der Zustand auf dem gewählten Geräteprofil.</returns>
-        [HttpDelete]
+        [HttpDelete("live/{detail}")]
         public ZappingStatus Disconnect(string detail)
             => server.LiveModeOperation(detail, false, null!, null!, ZappingStatus.Create, factory);
 
@@ -54,7 +56,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="detail">Der Name des zu verwendenden Geräteprofils.</param>        
         /// <param name="source">Die gewünschte Quelle als Tripel analog zur Textdarstellung von <see cref="SourceIdentifier"/>.</param>
         /// <returns>Der Zustand auf dem gewählten Geräteprofil.</returns>
-        [HttpPut]
+        [HttpPut("tune/{detail}")]
         public ZappingStatus Tune(string detail, string source)
             => server.LiveModeOperation(detail, true, null!, SourceIdentifier.Parse(source), ZappingStatus.Create, factory);
     }

@@ -1,6 +1,7 @@
 ﻿using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Planning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -8,14 +9,16 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Der Web Service zur Pflege von Aufzeichnungen und Aufträgen.
     /// </summary>
-    public class EditController(VCRServer server, IVCRProfiles profiles, IJobManager jobs) : ControllerBase
+    [ApiController]
+    [Route("api/edit")]
+    public class EditController(VCRServer server, IProfileStateCollection states, IVCRProfiles profiles, IJobManager jobs) : ControllerBase
     {
         /// <summary>
         /// Wird zum Anlegen einer neuen Aufzeichnung verwendet.
         /// </summary>
         /// <param name="data">Die Daten zur Aufzeichnung.</param>
         /// <returns>Die Identifikation des neuen Auftrags.</returns>
-        [HttpPost]
+        [HttpPost("job")]
         public string CreateNewJob([FromBody] JobScheduleData data)
         {
             // Reconstruct
@@ -32,7 +35,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             // Process
             jobs.Update(job, schedule.UniqueID!.Value);
 
-            server.BeginNewPlan();
+            states.BeginNewPlan();
 
             // Update recently used channels
             UserProfileSettings.AddRecentChannel(data.Job.Source);
@@ -48,7 +51,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="detail">Die Referenz auf die Aufzeichnung.</param>
         /// <param name="epg">Informationen zu einem Eintrag aus der Programmzeitschrift.</param>
         /// <returns>Die Daten zur gewünschten Aufzeichnung.</returns>
-        [HttpGet]
+        [HttpGet("job/{detail}")]
         public JobScheduleInfo FindJob(string detail, string epg = null!)
         {
             // May need to recreate the identifier
@@ -82,7 +85,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="detail">Die Referenz auf die Aufzeichnung.</param>
         /// <param name="data">Die neuen Daten von Auftrag und Aufzeichnung.</param>
-        [HttpPut]
+        [HttpPut("recording/{detail}")]
         public void UpdateRecording(string detail, [FromBody] JobScheduleData data)
         {
             // Parameter analysieren
@@ -116,7 +119,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             // Send to persistence
             jobs.Update(newJob, newSchedule.UniqueID!.Value);
 
-            server.BeginNewPlan();
+            states.BeginNewPlan();
 
             // Update recently used channels
             UserProfileSettings.AddRecentChannel(data.Job.Source);
@@ -127,7 +130,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Entfernt eine Aufzeichnung.
         /// </summary>
         /// <param name="detail">Die Referenz auf die Aufzeichnung.</param>
-        [HttpDelete]
+        [HttpDelete("recording/{detail}")]
         public void DeleteRecording(string detail)
         {
             // Parameter analysieren
@@ -146,7 +149,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             else
                 jobs.Update(job, null);
 
-            server.BeginNewPlan();
+            states.BeginNewPlan();
         }
 
         /// <summary>
@@ -155,7 +158,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="detail">Die eindeutige Kennung des Auftrags.</param>
         /// <param name="data">Die Daten zum Auftrag und zur Aufzeichnung.</param>
         /// <returns>Die Identifikation des neuen Auftrags.</returns>
-        [HttpPost]
+        [HttpPost("recording/{detail}")]
         public string CreateNewRecording(string detail, [FromBody] JobScheduleData data)
         {
             // Parameter analysieren
@@ -182,7 +185,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             // Send to persistence
             jobs.Update(newJob, newSchedule.UniqueID!.Value);
 
-            server.BeginNewPlan();
+            states.BeginNewPlan();
 
             // Update recently used channels
             UserProfileSettings.AddRecentChannel(data.Job.Source);

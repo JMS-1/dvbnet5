@@ -1,6 +1,8 @@
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Requests;
 using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Planning;
+using JMS.DVB.NET.Recording.Services.ProgramGuide;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JMS.DVB.NET.Recording;
@@ -18,7 +20,11 @@ public static class RecordingExtensions
     {
         services.AddTransient<ServiceFactory>();
 
+        services.AddTransient(typeof(Lazy<>));
+
         services.AddTransient<ILogger, Logger>();
+        services.AddTransient<IProfileStateFactory, ProfileStateFactory>();
+        services.AddTransient<IProgramGuideManagerFactory, ProgramGuideManagerFactory>();
 
         services.AddSingleton<IVCRConfigurationExePathProvider>((ctx) => new ConfigurationPathProvider());
 

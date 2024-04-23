@@ -48,7 +48,7 @@ namespace JMS.DVB
         /// <summary>
         /// Meldet den vollen Pfad zum Verzeichnis aller Geräteprofile.
         /// </summary>
-        public static DirectoryInfo ProfilePath => new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "DVBNETProfiles"));
+        public static DirectoryInfo ProfilePath => new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "jmsdvbnet", "DVBNETProfiles"));
 
         /// <summary>
         /// Ermittelt ein bestimmtes Geräteprofil.

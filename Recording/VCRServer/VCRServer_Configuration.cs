@@ -13,7 +13,7 @@ partial class VCRServer
     public bool? UpdateConfiguration(IEnumerable<SettingDescription> settings, bool forceRestart = false)
     {
         // Check state
-        if (IsActive)
+        if (Profiles.IsActive)
             return null;
 
         // Process
@@ -32,7 +32,7 @@ partial class VCRServer
         else
         {
             // Check for new tasks
-            BeginNewPlan();
+            Profiles.BeginNewPlan();
 
             // Finally back to the administration page
             return false;
@@ -47,7 +47,7 @@ partial class VCRServer
     public bool? UpdateSchedulerRules(string newRules)
     {
         // Check state
-        if (IsActive)
+        if (Profiles.IsActive)
             return null;
 
         // Process

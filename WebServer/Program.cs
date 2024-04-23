@@ -10,6 +10,8 @@ public class Program
         {
             var host = CreateHostBuilder(args).Build();
 
+            host.Services.GetRequiredService<VCRServer>();
+
             var restart = new CancellationTokenSource();
 
             host.Services.StartRecording(restart);

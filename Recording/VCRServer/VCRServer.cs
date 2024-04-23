@@ -1,6 +1,7 @@
 using System.Text;
 using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording
 {
@@ -18,7 +19,7 @@ namespace JMS.DVB.NET.Recording
     /// Von dieser Klasse existiert im Allgemeinen nur eine einzige Instanz. Sie
     /// realisiert die fachlische Logik des VCR.NET Recording Service.
     /// </summary>
-    public partial class VCRServer
+    public partial class VCRServer(IVCRConfiguration configuration, ILogger logger, IVCRProfiles profiles, IJobManager jobManager, IProfileStateCollection states)
     {
         /// <summary>
         /// Wird zum Neustart des Dienstes ausgelöst.
@@ -28,7 +29,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Wird beim Bauen automatisch eingemischt.
         /// </summary>
-        private const string CURRENTDATE = "2024/04/21";
+        private const string CURRENTDATE = "2024/04/23";
 
         /// <summary>
         /// Aktuelle Version des VCR.NET Recording Service.
@@ -43,7 +44,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Die zugeh?rige Verwaltung der aktiven Ger?teprofile.
         /// </summary>
-        internal IProfileStateCollection Profiles { get; private set; }
+        internal IProfileStateCollection Profiles { get; private set; } = states;
 
         /// <summary>
         /// Alle Prozesse, die gestartet wurden.
@@ -53,14 +54,14 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Die aktive Konfiguration.
         /// </summary>
-        private readonly IVCRConfiguration _configuration;
+        private readonly IVCRConfiguration _configuration = configuration;
 
-        private readonly IVCRProfiles _profiles;
+        private readonly IVCRProfiles _profiles = profiles;
 
         /// <summary>
         /// Die Verwaltung der Aufträge.
         /// </summary>
-        private IJobManager _jobs = null!;
+        private IJobManager _jobs = jobManager;
 
         /// <summary>
         /// L?dt Verwaltungsinstanzen f?r alle freigeschalteten DVB.NET Ger?teprofile.
@@ -77,25 +78,7 @@ namespace JMS.DVB.NET.Recording
             Tools.ExtendedLogging("VCRServer static Initialisation completed");
         }
 
-        public readonly ILogger _logger;
-
-        /// <summary>
-        /// Erzeugt eine neue Instanz.
-        /// </summary>
-        public VCRServer(IVCRConfiguration configuration, ILogger logger, IVCRProfiles profiles, IJobManager jobManager, IProfileStateCollection states)
-        {
-            _configuration = configuration;
-            _logger = logger;
-            _profiles = profiles;
-
-            _jobs = jobManager;
-
-            // Prepare profiles
-            _profiles.Reset(this);
-
-            // Create profile state manager and start it up
-            Profiles = states;
-        }
+        public readonly ILogger _logger = logger;
 
         /// <summary>
         /// Meldet die aktuell zu verwendende Konfiguration.

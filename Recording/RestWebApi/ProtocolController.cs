@@ -6,6 +6,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Dieser Webdienst erlaubt den Zugriff auf Protokolldaten.
     /// </summary>
+    [ApiController]
+    [Route("api/protocol")]
     public class ProtocolController(VCRServer server) : ControllerBase
     {
         /// <summary>

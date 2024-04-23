@@ -59,6 +59,6 @@ namespace JMS.DVB.NET.Recording.Services
         /// <summary>
         /// Lädt alle Profile erneut.
         /// </summary>
-        void Reset(VCRServer server);
+        void Reset();
     }
 }

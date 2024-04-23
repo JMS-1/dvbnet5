@@ -1,9 +1,10 @@
 using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Requests;
+using JMS.DVB.NET.Recording.Services.ProgramGuide;
 using JMS.DVB.NET.Recording.Status;
 
-namespace JMS.DVB.NET.Recording.Services;
+namespace JMS.DVB.NET.Recording.Services.Planning;
 
 /// <summary>
 /// Beschreibt den Arbeitszustand eines einzelnen aktiven Geräteprofils.

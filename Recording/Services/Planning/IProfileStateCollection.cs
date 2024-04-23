@@ -1,7 +1,7 @@
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Requests;
 
-namespace JMS.DVB.NET.Recording.Services;
+namespace JMS.DVB.NET.Recording.Services.Planning;
 
 /// <summary>
 /// Verwaltet den Arbeitszustand aller Geräteprofile.

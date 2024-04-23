@@ -1,6 +1,7 @@
 ﻿using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Status;
 
 namespace JMS.DVB.NET.Recording.Requests
@@ -110,7 +111,7 @@ namespace JMS.DVB.NET.Recording.Requests
             Tools.ExtendedLogging("Card Server has updated Profile {0} - VCR.NET will reload all Profiles now", ProfileName);
 
             // Time to refresh our lists
-            Profiles.Reset(Server);
+            Profiles.Reset();
         }
 
         /// <summary>

@@ -3,7 +3,7 @@ using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Requests;
 
-namespace JMS.DVB.NET.Recording.Services;
+namespace JMS.DVB.NET.Recording.Services.Planning;
 
 /// <summary>
 /// Verwaltet den Arbeitszustand aller Geräteprofile.
@@ -29,7 +29,14 @@ public class ProfileStateCollection : IProfileStateCollection, IDisposable
     /// Erzeugt eine neue Verwaltungsinstanz.
     /// </summary>
     /// <param name="server">Die primäre VCR.NET Instanz.</param>
-    public ProfileStateCollection(IVCRConfiguration configuration, IVCRProfiles profiles, ILogger logger, IJobManager jobs, ServiceFactory factory)
+    public ProfileStateCollection(
+        IVCRConfiguration configuration,
+        IVCRProfiles profiles,
+        ILogger logger,
+        IJobManager jobs,
+        IProfileStateFactory states,
+        ServiceFactory factory
+    )
     {
         // Remember
         _configuration = configuration;
@@ -51,7 +58,7 @@ public class ProfileStateCollection : IProfileStateCollection, IDisposable
         // Load current profiles
         _stateMap = profileNames.ToDictionary(
             profileName => profileName,
-            profileName => (IProfileState)new ProfileState(this, profileName), ProfileManager.ProfileNameComparer
+            profileName => states.Create(profileName), ProfileManager.ProfileNameComparer
         );
 
         // Now we can create the planner
@@ -101,6 +108,9 @@ public class ProfileStateCollection : IProfileStateCollection, IDisposable
 
         // Forward to all
         ForEachProfile(state => state.ProgramGuide.LastUpdateTime = null);
+
+        // Replan
+        BeginNewPlan();
     }
 
     /// <inheritdoc/>
@@ -111,6 +121,9 @@ public class ProfileStateCollection : IProfileStateCollection, IDisposable
 
         // Forward
         ForEachProfile(state => state.LastSourceUpdateTime = null);
+
+        // Replan
+        BeginNewPlan();
     }
 
     /// <inheritdoc/>

@@ -8,6 +8,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Versendet Dateien.
     /// </summary>
+    [ApiController]
+    [Route("api/file")]
     public class FileController(VCRServer server) : ControllerBase
     {
         private readonly VCRServer _server = server;
