@@ -120,27 +120,10 @@ public interface IVCRConfiguration
     bool EncryptWebCommunication { get; }
 
     /// <summary>
-    /// Meldet die Zeit die nach einem erzwungenen Schlafzustand verstreichen muss, bevor der
-    /// Rechner für eine Aufzeichnung aufgweckt wird.
-    /// </summary>
-    TimeSpan DelayAfterForcedHibernation { get; }
-
-    /// <summary>
-    /// Gesetzt, wenn beim Schlafzustand keine Sonderbehandlung erwünscht ist.
-    /// </summary>
-    bool SuppressDelayAfterForcedHibernation { get; }
-
-    /// <summary>
     /// Gesetzt wenn es nicht gestattet ist, aus einem H.264 Bildsignal die Zeitbasis (PCR)
     /// abzuleiten.
     /// </summary>
     bool DisablePCRFromH264Generation { get; }
-
-    /// <summary>
-    /// Meldet, ob der VCR.NET Recording Service den Rechner in einen Schlafzustand
-    /// versetzten darf.
-    /// </summary>
-    bool MayHibernateSystem { get; }
 
     /// <summary>
     /// Gesetzt, wenn die Anwender sich auch über das Basic Prototokoll
@@ -163,12 +146,6 @@ public interface IVCRConfiguration
     /// er gelöscht wird.
     /// </summary>
     uint ArchiveLifeTime { get; }
-
-    /// <summary>
-    /// Meldet die geschätzte Zeit, die dieses System maximal braucht, um aus dem
-    /// Schlafzustand zu erwachen.
-    /// </summary>
-    uint HibernationDelay { get; }
 
     /// <summary>
     /// Meldet den aktuellen Umfang der Protokollierung.
@@ -200,12 +177,6 @@ public interface IVCRConfiguration
     /// Meldet die Größe für die Zwischenspeicherung bei Radioaufnahmen.
     /// </summary>
     int? AudioBufferSize { get; }
-
-    /// <summary>
-    /// Meldet, ob der Schlafzustand S3 (Standby) anstelle von S4 (Hibernate)
-    /// verwenden soll.
-    /// </summary>
-    bool UseS3ForHibernate { get; }
 
     /// <summary>
     /// Bereitet eine Aktualisierung vor.

@@ -336,7 +336,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 var coreEnvironment =
                     new Dictionary<string, string>
                     {
-                        { "%wakeupprofile%", ProfileState.WakeUpRequired ? "1" : "0" },
+                        { "%wakeupprofile%", "0" },
                         { "%dvbnetprofile%", ProfileName },
                     };
 
@@ -355,23 +355,12 @@ namespace JMS.DVB.NET.Recording.Requests
                     // Use it
                     using (CardServer = CreateCardServerProxy())
                     {
-                        // Check mode
-                        var mustWakeUp = ProfileState.WakeUpRequired;
-                        if (mustWakeUp)
-                        {
-                            // Log
-                            Logger.Log(LoggingLevel.Full, "Das DVB.NETGerät wird neu gestartet");
-
-                            // Report
-                            Tools.ExtendedLogging("Will restart Hardware for {0} if Restart Device is configured in Profile", ProfileName);
-                        }
-
                         // Start synchronously
                         ServerImplementation.EndRequest(
                             CardServer.BeginSetProfile
                                 (
                                     ProfileName,
-                                    mustWakeUp,
+                                    false,
                                     Server.Configuration.DisablePCRFromH264Generation,
                                     Server.Configuration.DisablePCRFromMPEG2Generation
                                 ));
@@ -443,9 +432,6 @@ namespace JMS.DVB.NET.Recording.Requests
 
                         // Process extensions
                         FireRecordingFinishedExtensions(ExtensionEnvironment);
-
-                        // No need for further wakeups
-                        ProfileState.WakeUpRequired = false;
                     }
                 }
                 catch (Exception e)
@@ -480,7 +466,7 @@ namespace JMS.DVB.NET.Recording.Requests
                     JobManager.CreateLogEntry(Representative);
 
                     // May go to sleep after job is finished
-                    Server.ReportRecordingDone(Representative.DisableHibernation, IsRealRecording);
+                    Server.ReportRecordingDone(IsRealRecording);
 
                     // Check for next job on all profiles
                     ProfileState.Collection.BeginNewPlan();

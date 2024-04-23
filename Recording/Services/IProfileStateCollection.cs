@@ -74,21 +74,6 @@ public interface IProfileStateCollection : IRecordingPlannerSite
     void ConfirmOperation(Guid scheduleIdentifier, bool isStart);
 
     /// <summary>
-    /// Bereitet den Übergang in den Schlafzustand vor.
-    /// </summary>
-    void PrepareSuspend();
-
-    /// <summary>
-    /// Führt den Übergang in den Schlafzustand durch.
-    /// </summary>
-    void Suspend();
-
-    /// <summary>
-    /// Reaktiviert die Planung der Aufzeichnungen nach der Rückkehr aus dem Schlafzustand.
-    /// </summary>
-    void Resume();
-
-    /// <summary>
     /// Fordert eine baldmögliche Aktualisierung der Programmzeitschrift an.
     /// </summary>
     void ForceProgramGuideUpdate();

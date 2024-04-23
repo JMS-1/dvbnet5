@@ -96,23 +96,6 @@ namespace JMS.DVB.NET.Recording
         MergeScanResult,
 
         /// <summary>
-        /// Wird gesetzt, wenn der VCR.NET Recording Service den Rechner in den Schlafzustand
-        /// versetzten darf.
-        /// </summary>
-        MayHibernateSystem,
-
-        /// <summary>
-        /// Wenn der VCR.NET Recording Service einen Schlafzustand einleitet, so wird
-        /// dafür S3 (Standby) und nicht S4 (Hibernate) verwendet.
-        /// </summary>
-        UseStandByForHibernation,
-
-        /// <summary>
-        /// Die Vorlaufzeit in Sekunden, die bei dem Aufwachen aus dem Schlafzustand erwartet wird.
-        /// </summary>
-        HibernationDelay,
-
-        /// <summary>
         /// Optional der Name der Windows Gruppe der Anwender, die Zugiff auf den VCR.NET
         /// Recording Server haben.
         /// </summary>
@@ -167,17 +150,6 @@ namespace JMS.DVB.NET.Recording
         /// Verbietet es, aus einem MPEG2 Bildsignal die Zeitbasis (PCR) abzuleiten.
         /// </summary>
         DisablePCRFromMPEG2Generation,
-
-        /// <summary>
-        /// Die Zeit nach dem erzwungenen Übergang in den Schlafzustand in dem der Rechner
-        /// nicht durch den <i>VCR.NET Recording Service</i> aufgeweckt wird (in Minuten).
-        /// </summary>
-        DelayAfterForcedHibernation,
-
-        /// <summary>
-        /// Gesetzt, wenn der Übergang in den Schlafzustand nicht weiter beeinflusst werden soll.
-        /// </summary>
-        SuppressDelayAfterForcedHibernation,
 
         /// <summary>
         /// Gesetzt, wenn der Zugriff auf die Web Dienste verschlüsselt erfolgen soll.

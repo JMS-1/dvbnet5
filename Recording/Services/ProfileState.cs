@@ -23,14 +23,6 @@ public class ProfileState(IProfileStateCollection collection, string profileName
     public ProgramGuideManager ProgramGuide { get; } = new ProgramGuideManager(collection, profileName);
 
     /// <summary>
-    /// Wird nach Aufwachen aus dem Schlafzustand gesetzt.
-    /// </summary>
-    private volatile bool _wakeUpRequired;
-
-    /// <inheritdoc/>
-    public bool WakeUpRequired { get { return _wakeUpRequired; } set { _wakeUpRequired = value; } }
-
-    /// <summary>
     /// Meldet das zugehörige Geräteprofil.
     /// </summary>
     public Profile? Profile => collection.Profiles.FindProfile(profileName);
@@ -69,21 +61,6 @@ public class ProfileState(IProfileStateCollection collection, string profileName
             return factory(null!, null!);
         else
             return statusRequest.CreateStatus(factory);
-    }
-
-    /// <inheritdoc/>
-    public void PrepareSuspend() => Stop();
-
-    /// <inheritdoc/>
-    public void Suspend()
-    {
-        // Wait for the current job to end
-        var current = m_CurrentRequest;
-        if (current != null)
-            current.RequestFinished.WaitOne();
-
-        // Will reset on next recording
-        WakeUpRequired = true;
     }
 
     /// <summary>

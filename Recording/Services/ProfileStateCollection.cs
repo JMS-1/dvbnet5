@@ -186,49 +186,6 @@ public class ProfileStateCollection : IProfileStateCollection, IDisposable
 
     #endregion
 
-    #region Schlafzustand
-
-    /// <inheritdoc/>
-    public void PrepareSuspend()
-    {
-        // Report
-        Tools.ExtendedLogging("Notifying all Profiles of upcoming Suspend");
-
-        // Disallow starting new recordings
-        var planner = m_planner;
-        if (planner != null)
-            lock (planner)
-                m_plannerActive = false;
-
-        // Forward
-        ForEachProfile(state => state.PrepareSuspend(), true);
-    }
-
-    /// <inheritdoc/>
-    public void Suspend()
-    {
-        // Report
-        Tools.ExtendedLogging("Suspending all Profiles");
-
-        // Forward
-        ForEachProfile(state => state.Suspend(), true);
-    }
-
-    /// <inheritdoc/>
-    public void Resume()
-    {
-        // Report
-        Tools.ExtendedLogging("Resuming Recording Planner");
-
-        // Reactivate
-        var planner = m_planner;
-        if (planner != null)
-            lock (planner)
-                m_plannerActive = true;
-    }
-
-    #endregion
-
     #region Die Aufzeichnungsplanung und die zugehörige Infrastruktur
 
     /// <summary>

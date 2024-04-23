@@ -50,11 +50,6 @@ public interface IProfileState : IDisposable
     DateTime? LastSourceUpdateTime { get; set; }
 
     /// <summary>
-    /// Wird nach Aufwachen aus dem Schlafzustand gesetzt.
-    /// </summary>
-    bool WakeUpRequired { get; set; }
-
-    /// <summary>
     /// Prüft, ob eine bestimmte Quelle zu diesem Geräteprofil gehört.
     /// </summary>
     /// <param name="source">Die zu prüfende Quelle.</param>
@@ -123,15 +118,5 @@ public interface IProfileState : IDisposable
     /// <exception cref="InvalidOperationException">Dieser Zugriff ist nicht der aktive Zugriff dieses
     /// Geräteprofils.</exception>
     void EndRequest(CardServerProxy request);
-
-    /// <summary>
-    /// Bereitet den Übergang in den Schlafzustand vor.
-    /// </summary>
-    void PrepareSuspend();
-
-    /// <summary>
-    /// Führt den Übergang in den Schlafzustand durch.
-    /// </summary>
-    void Suspend();
 }
 

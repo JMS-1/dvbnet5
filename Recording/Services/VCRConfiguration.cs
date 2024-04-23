@@ -139,7 +139,6 @@ public class VCRConfiguration : IVCRConfiguration
         Add(SettingNames.AdditionalRecorderPaths);
         Add(SettingNames.AllowBasic, false);
         Add(SettingNames.ArchiveLifeTime, (uint)5);
-        Add(SettingNames.DelayAfterForcedHibernation, (uint)5);
         Add(SettingNames.DisablePCRFromH264Generation, false);
         Add(SettingNames.DisablePCRFromMPEG2Generation, false);
         Add(SettingNames.EPGDuration, (uint)15);
@@ -149,10 +148,8 @@ public class VCRConfiguration : IVCRConfiguration
         Add(SettingNames.EPGJoinThreshold, (uint?)null);
         Add(SettingNames.EPGStations);
         Add(SettingNames.FileNamePattern, "%Job% - %Schedule% - %Start%");
-        Add(SettingNames.HibernationDelay, (uint)60);
         Add(SettingNames.LoggingLevel, LoggingLevel.Full);
         Add(SettingNames.LogLifeTime, (uint)5);
-        Add(SettingNames.MayHibernateSystem, false);
         Add(SettingNames.MergeScanResult, true);
         Add(SettingNames.Profiles);
         Add(SettingNames.RequiredAdminRole);
@@ -162,14 +159,12 @@ public class VCRConfiguration : IVCRConfiguration
         Add(SettingNames.ScanInterval, 0);
         Add(SettingNames.ScanJoinThreshold, (uint?)null);
         Add(SettingNames.SSLPort, (ushort)3909);
-        Add(SettingNames.SuppressDelayAfterForcedHibernation, false);
         Add(SettingNames.TCPPort, (ushort)2909);
         Add(SettingNames.TSAudioBufferSize, 0);
         Add(SettingNames.TSHDTVBufferSize, 0);
         Add(SettingNames.TSSDTVBufferSize, 0);
         Add(SettingNames.UseExternalCardServer, true);
         Add(SettingNames.UseSSL, false);
-        Add(SettingNames.UseStandByForHibernation, false);
         Add(SettingNames.VideoRecorderDirectory, "Recordings");
 
         // Set restart items
@@ -285,9 +280,6 @@ public class VCRConfiguration : IVCRConfiguration
     public string AdminRole => ReadStringSetting(SettingNames.RequiredAdminRole);
 
     /// <inheritdoc/>
-    public bool UseS3ForHibernate => ReadSetting<bool>(SettingNames.UseStandByForHibernation);
-
-    /// <inheritdoc/>
     public int? AudioBufferSize
     {
         get
@@ -322,12 +314,6 @@ public class VCRConfiguration : IVCRConfiguration
             return (buffer < 1) ? null : Math.Max(1000, buffer);
         }
     }
-
-    /// <inheritdoc/>
-    public bool MayHibernateSystem => ReadSetting<bool>(SettingNames.MayHibernateSystem);
-
-    /// <inheritdoc/>
-    public uint HibernationDelay => ReadSetting<uint>(SettingNames.HibernationDelay);
 
     /// <inheritdoc/>
     public bool UseExternalCardServer => ReadSetting<bool>(SettingNames.UseExternalCardServer);
@@ -460,18 +446,6 @@ public class VCRConfiguration : IVCRConfiguration
 
     /// <inheritdoc/>
     public uint ArchiveLifeTime => ReadSetting<uint>(SettingNames.ArchiveLifeTime);
-
-    /// <summary>
-    /// Meldet die Zeit die nach einem erzwungenen Schlafzustand verstreichen muss, bevor der
-    /// Rechner für eine Aufzeichnung aufgweckt wird.
-    /// </summary>
-    private uint RawDelayAfterForcedHibernation => ReadSetting<uint>(SettingNames.DelayAfterForcedHibernation);
-
-    /// <inheritdoc/>
-    public TimeSpan DelayAfterForcedHibernation => TimeSpan.FromMinutes(Math.Max(1, RawDelayAfterForcedHibernation));
-
-    /// <inheritdoc/>
-    public bool SuppressDelayAfterForcedHibernation => ReadSetting<bool>(SettingNames.SuppressDelayAfterForcedHibernation);
 
     /// <inheritdoc/>
     public LoggingLevel LoggingLevel => ReadSetting<LoggingLevel>(SettingNames.LoggingLevel);

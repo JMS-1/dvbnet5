@@ -155,18 +155,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public class OtherSettings
         {
             /// <summary>
-            /// Gesetzt, wenn der <i>VCR.NET Recording Service</i> den Rechner in den Schlafzustand versetzen darf-
-            /// </summary>
-            [DataMember(Name = "mayHibernate")]
-            public bool AllowHibernate { get; set; }
-
-            /// <summary>
-            /// Gesetzt, wenn beim Übergang in den Schlafzustand <i>StandBy</i> verwendet werden soll.
-            /// </summary>
-            [DataMember(Name = "useStandBy")]
-            public bool UseStandBy { get; set; }
-
-            /// <summary>
             /// Verweildauer (in Wochen) von Aufträgen im Archiv.
             /// </summary>
             [DataMember(Name = "archive")]
@@ -179,12 +167,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             public uint ProtocolTime { get; set; }
 
             /// <summary>
-            /// Vorlaufzeit (in Sekunden) beim Aufwecken aus dem Schlafzustand.
-            /// </summary>
-            [DataMember(Name = "hibernationDelay")]
-            public uint HibernationDelay { get; set; }
-
-            /// <summary>
             /// Gesetzt, wenn für H.264 Aufzeichnungen kein PCR generiert werden soll.
             /// </summary>
             [DataMember(Name = "noH264PCR")]
@@ -195,18 +177,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             /// </summary>
             [DataMember(Name = "noMPEG2PCR")]
             public bool DisablePCRFromMPEG2 { get; set; }
-
-            /// <summary>
-            /// Minimale Verweildauer (in Minuten) im Schlafzustand bei einem erzwungenen Übergang.
-            /// </summary>
-            [DataMember(Name = "forcedHibernationDelay")]
-            public uint DelayAfterForcedHibernation { get; set; }
-
-            /// <summary>
-            /// Gesetzt um die minimale Verweildauer im Schlafzustand zu ignorieren.
-            /// </summary>
-            [DataMember(Name = "suppressHibernationDelay")]
-            public bool SuppressDelayAfterForcedHibernation { get; set; }
 
             /// <summary>
             /// Gesetzt, wenn auch das <i>Basic</i> Protokoll zur Autorisierung verwendet werden darf.
@@ -604,16 +574,11 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new OtherSettings
                 {
-                    DelayAfterForcedHibernation = (uint)server.Configuration.DelayAfterForcedHibernation.TotalMinutes,
-                    SuppressDelayAfterForcedHibernation = server.Configuration.SuppressDelayAfterForcedHibernation,
                     DisablePCRFromMPEG2 = server.Configuration.DisablePCRFromMPEG2Generation,
                     DisablePCRFromH264 = server.Configuration.DisablePCRFromH264Generation,
                     AllowBasic = server.Configuration.EnableBasicAuthentication,
-                    AllowHibernate = server.Configuration.MayHibernateSystem,
-                    HibernationDelay = server.Configuration.HibernationDelay,
                     SSLPort = server.Configuration.WebServerSecureTcpPort,
                     UseSSL = server.Configuration.EncryptWebCommunication,
-                    UseStandBy = server.Configuration.UseS3ForHibernate,
                     ArchiveTime = server.Configuration.ArchiveLifeTime,
                     ProtocolTime = server.Configuration.LogLifeTime,
                     WebPort = server.Configuration.WebServerTcpPort,
@@ -634,13 +599,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var update =
                 server.Configuration.BeginUpdate
                    (
-                        SettingNames.SuppressDelayAfterForcedHibernation,
                         SettingNames.DisablePCRFromMPEG2Generation,
                         SettingNames.DisablePCRFromH264Generation,
-                        SettingNames.DelayAfterForcedHibernation,
-                        SettingNames.UseStandByForHibernation,
-                        SettingNames.MayHibernateSystem,
-                        SettingNames.HibernationDelay,
                         SettingNames.ArchiveLifeTime,
                         SettingNames.LoggingLevel,
                         SettingNames.LogLifeTime,
@@ -651,13 +611,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                     );
 
             // Change
-            update[SettingNames.SuppressDelayAfterForcedHibernation].NewValue = settings.SuppressDelayAfterForcedHibernation.ToString();
-            update[SettingNames.DelayAfterForcedHibernation].NewValue = settings.DelayAfterForcedHibernation.ToString();
             update[SettingNames.DisablePCRFromMPEG2Generation].NewValue = settings.DisablePCRFromMPEG2.ToString();
             update[SettingNames.DisablePCRFromH264Generation].NewValue = settings.DisablePCRFromH264.ToString();
-            update[SettingNames.UseStandByForHibernation].NewValue = settings.UseStandBy.ToString();
-            update[SettingNames.HibernationDelay].NewValue = settings.HibernationDelay.ToString();
-            update[SettingNames.MayHibernateSystem].NewValue = settings.AllowHibernate.ToString();
             update[SettingNames.ArchiveLifeTime].NewValue = settings.ArchiveTime.ToString();
             update[SettingNames.LogLifeTime].NewValue = settings.ProtocolTime.ToString();
             update[SettingNames.AllowBasic].NewValue = settings.AllowBasic.ToString();

@@ -19,16 +19,6 @@ namespace JMS.DVB.NET.Recording
         private readonly List<Process> m_activeProcesses = new List<Process>();
 
         /// <summary>
-        /// Gesetzt, sobald der Übergang in den Schlafzustand ansteht.
-        /// </summary>
-        private volatile bool m_isSuspended;
-
-        /// <summary>
-        /// Gesetzt, wenn der Übergang in den Schlafzustand verboten ist.
-        /// </summary>
-        private IDisposable m_forbidHibernation = null!;
-
-        /// <summary>
         /// Startet Erweiterungen und ergänzt die zugehörigen Prozesse in der Verwaltung.
         /// </summary>
         /// <param name="extensionName">Der Name der Erweiterung.</param>
@@ -50,35 +40,6 @@ namespace JMS.DVB.NET.Recording
                 lock (m_activeProcesses)
                     return m_activeProcesses.Count > 0;
             }
-        }
-
-        /// <summary>
-        /// Wird aufgerufen, wenn das System aus dem Schlafzustand erwacht ist.
-        /// </summary>
-        public void Resume()
-        {
-            // Reset
-            m_isSuspended = false;
-
-            // Enforce hibernation lock
-            lock (m_activeProcesses)
-                if (m_activeProcesses.Count > 0)
-                    if (m_forbidHibernation == null)
-                        m_forbidHibernation = null!; // PowerManager.StartForbidHibernation();
-        }
-
-        /// <summary>
-        /// Wird aufgerufen, bevor das System in den Schlafzustand geht.
-        /// </summary>
-        public void Suspend()
-        {
-            // No longer stopping hibernation
-            m_isSuspended = true;
-
-            // Release hibernation lock
-            lock (m_activeProcesses)
-                using (m_forbidHibernation)
-                    m_forbidHibernation = null!;
         }
 
         /// <summary>
@@ -124,14 +85,6 @@ namespace JMS.DVB.NET.Recording
                         // Get rid of it
                         return true;
                     });
-
-                // May want to change hibernation
-                if (m_activeProcesses.Count < 1)
-                    using (m_forbidHibernation)
-                        m_forbidHibernation = null!;
-                else if (m_forbidHibernation == null)
-                    if (!m_isSuspended)
-                        m_forbidHibernation = null!; // PowerManager.StartForbidHibernation();
             }
         }
     }
