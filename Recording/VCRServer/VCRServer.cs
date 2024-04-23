@@ -1,6 +1,5 @@
 using System.Text;
 using JMS.DVB.Algorithms.Scheduler;
-using JMS.DVB.NET.Recording.Requests;
 using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording
@@ -19,7 +18,7 @@ namespace JMS.DVB.NET.Recording
     /// Von dieser Klasse existiert im Allgemeinen nur eine einzige Instanz. Sie
     /// realisiert die fachlische Logik des VCR.NET Recording Service.
     /// </summary>
-    public partial class VCRServer : IDisposable
+    public partial class VCRServer
     {
         /// <summary>
         /// Wird zum Neustart des Dienstes ausgelöst.
@@ -44,7 +43,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Die zugeh?rige Verwaltung der aktiven Ger?teprofile.
         /// </summary>
-        internal ProfileStateCollection Profiles { get; private set; }
+        internal IProfileStateCollection Profiles { get; private set; }
 
         /// <summary>
         /// Alle Prozesse, die gestartet wurden.
@@ -83,7 +82,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Erzeugt eine neue Instanz.
         /// </summary>
-        public VCRServer(IVCRConfiguration configuration, ILogger logger, IVCRProfiles profiles, IJobManager jobManager, ServiceFactory factory)
+        public VCRServer(IVCRConfiguration configuration, ILogger logger, IVCRProfiles profiles, IJobManager jobManager, IProfileStateCollection states)
         {
             _configuration = configuration;
             _logger = logger;
@@ -95,7 +94,7 @@ namespace JMS.DVB.NET.Recording
             _profiles.Reset(this);
 
             // Create profile state manager and start it up
-            Profiles = new ProfileStateCollection(this, _profiles, logger, _jobs, factory);
+            Profiles = states;
         }
 
         /// <summary>
@@ -261,22 +260,5 @@ namespace JMS.DVB.NET.Recording
             _jobs.CleanupArchivedJobs();
             _jobs.CleanupLogEntries();
         }
-
-        #region IDisposable Members
-
-        /// <summary>
-        /// Beendet die Nutzung dieser Instanz endg?ltig.
-        /// </summary>
-        public void Dispose()
-        {
-            // Shutdown profiles
-            using (Profiles)
-                Profiles = null!;
-
-            // Detach from jobs
-            _jobs = null!;
-        }
-
-        #endregion
     }
 }

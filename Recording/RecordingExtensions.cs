@@ -16,14 +16,17 @@ public static class RecordingExtensions
 
     public static void UseRecording(this IServiceCollection services)
     {
-        services.AddTransient<ILogger, Logger>();
         services.AddTransient<ServiceFactory>();
+
+        services.AddTransient<ILogger, Logger>();
 
         services.AddSingleton<IVCRConfigurationExePathProvider>((ctx) => new ConfigurationPathProvider());
 
         services.AddSingleton<IJobManager, JobManager>();
+        services.AddSingleton<IProfileStateCollection, ProfileStateCollection>();
         services.AddSingleton<IVCRConfiguration, VCRConfiguration>();
         services.AddSingleton<IVCRProfiles, VCRProfiles>();
+
         services.AddSingleton<VCRServer>();
 
         /* Vorläufig Lösung für das 'static-Problem', da muss noch deutlich mehr passieren. */

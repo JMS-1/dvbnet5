@@ -36,8 +36,6 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         private readonly Dictionary<Guid, ScheduleInformation> m_started = new Dictionary<Guid, ScheduleInformation>();
 
-        private readonly VCRServer _server;
-
         private readonly IVCRProfiles _profiles;
 
         private readonly ILogger _logger;
@@ -46,12 +44,11 @@ namespace JMS.DVB.NET.Recording.Planning
         /// Erstellt eine neue Planung.
         /// </summary>
         /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
-        private RecordingPlanner(IRecordingPlannerSite site, VCRServer server, IVCRProfiles profiles, ILogger logger, IJobManager jobs)
+        private RecordingPlanner(IRecordingPlannerSite site, IVCRConfiguration configuration, IVCRProfiles profiles, ILogger logger, IJobManager jobs)
         {
             // Remember
             _logger = logger;
             _profiles = profiles;
-            _server = server;
             _site = site;
 
             // Process all profiles
@@ -73,12 +70,12 @@ namespace JMS.DVB.NET.Recording.Planning
                     continue;
 
                 // See if we should process guide updates
-                var guideTask = site.CreateProgramGuideTask(profileResource, profile, _server, jobs);
+                var guideTask = site.CreateProgramGuideTask(profileResource, profile, configuration, jobs);
                 if (guideTask != null)
                     m_tasks.Add(guideTask);
 
                 // See if we should update the source list
-                var scanTask = site.CreateSourceScanTask(profileResource, profile, _server, jobs);
+                var scanTask = site.CreateSourceScanTask(profileResource, profile, configuration, jobs);
                 if (scanTask != null)
                     m_tasks.Add(scanTask);
             }
@@ -144,14 +141,14 @@ namespace JMS.DVB.NET.Recording.Planning
         /// </summary>
         /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
         /// <returns>Die gewünschte Planungsumgebung.</returns>
-        public static RecordingPlanner Create(IRecordingPlannerSite site, VCRServer server, IVCRProfiles profiles, ILogger logger, IJobManager jobs)
+        public static RecordingPlanner Create(IRecordingPlannerSite site, IVCRConfiguration configuration, IVCRProfiles profiles, ILogger logger, IJobManager jobs)
         {
             // Validate
             if (site == null)
                 throw new ArgumentNullException(nameof(site));
 
             // Forward
-            return new RecordingPlanner(site, server, profiles, logger, jobs);
+            return new RecordingPlanner(site, configuration, profiles, logger, jobs);
         }
 
         /// <summary>

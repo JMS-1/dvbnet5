@@ -11,7 +11,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Die zugehörige Auftragsverwaltung.
         /// </summary>
-        public IJobManager JobManager => Collection._jobs;
+        public IJobManager JobManager => Collection.JobManager;
 
         /// <summary>
         /// Der Name des zugehörigen Geräteprofils.
@@ -28,14 +28,14 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         private volatile ProgramGuideEntries m_Events = new();
 
-        private readonly ProfileStateCollection Collection;
+        private readonly IProfileStateCollection Collection;
 
         /// <summary>
         /// Erzeugt eine neue Verwaltungsinstanz.
         /// </summary>
         /// <param name="jobs">Die zugehörige Auftragsverwaltung.</param>
         /// <param name="profileName">Der Name des verwalteten DVB.NET Geräteprofils.</param>
-        public ProgramGuideManager(ProfileStateCollection collection, string profileName)
+        public ProgramGuideManager(IProfileStateCollection collection, string profileName)
         {
             // Remember
             Collection = collection;
@@ -70,7 +70,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             }
 
             // Report
-            Collection._logger.Log(LoggingLevel.Errors, "Die Datei '{0}' zur Programmzeitschrift ist ungültig", ProgramGuideFile.FullName);
+            Collection.Logger.Log(LoggingLevel.Errors, "Die Datei '{0}' zur Programmzeitschrift ist ungültig", ProgramGuideFile.FullName);
 
             // Save delete
             try
@@ -81,7 +81,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             catch
             {
                 // Discard any error
-                Collection._logger.Log(LoggingLevel.Errors, "Die Datei '{0}' zur Programmzeitschrift kann nicht gelöscht werden", ProgramGuideFile.FullName);
+                Collection.Logger.Log(LoggingLevel.Errors, "Die Datei '{0}' zur Programmzeitschrift kann nicht gelöscht werden", ProgramGuideFile.FullName);
             }
         }
 
@@ -111,7 +111,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
                         return me;
 
                     // See if this is active
-                    if (Collection._profiles.FindProfile(test.Name) != null)
+                    if (Collection.Profiles.FindProfile(test.Name) != null)
                         if (string.IsNullOrEmpty(test.UseSourcesFrom))
                             return test;
 
@@ -140,7 +140,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Meldet das zugehörige Geräteprofil.
         /// </summary>
-        public Profile? Profile => Collection._profiles.FindProfile(ProfileName);
+        public Profile? Profile => Collection.Profiles.FindProfile(ProfileName);
 
         /// <summary>
         /// Meldet den Namen des Wertes in der Registrierung von Windows, wo der Zeitpunkt
@@ -153,8 +153,8 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         internal DateTime? LastUpdateTime
         {
-            get { return Tools.GetRegistryTime(UpdateRegistryName, Collection._logger); }
-            set { Tools.SetRegistryTime(UpdateRegistryName, value, Collection._logger); }
+            get { return Tools.GetRegistryTime(UpdateRegistryName, Collection.Logger); }
+            set { Tools.SetRegistryTime(UpdateRegistryName, value, Collection.Logger); }
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
             catch (Exception e)
             {
                 // Report
-                Collection._logger.Log(LoggingLevel.Errors, "Fehler beim Aktualisieren der Programmzeitschrift: {0}", e);
+                Collection.Logger.Log(LoggingLevel.Errors, "Fehler beim Aktualisieren der Programmzeitschrift: {0}", e);
             }
         }
 

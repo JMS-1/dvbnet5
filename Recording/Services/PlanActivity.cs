@@ -1,6 +1,7 @@
 ﻿using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Planning;
+using JMS.DVB.NET.Recording.Services;
 using System.Globalization;
 using System.Runtime.Serialization;
 
@@ -233,7 +234,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="context">Die Abbildung auf die Aufträge.</param>
         /// <param name="profiles">Die Verwaltung der Geräteprofile.</param>
         /// <returns>Die angeforderte Repräsentation.</returns>
-        public static PlanActivity Create(IScheduleInformation schedule, PlanContext context, ProfileStateCollection profiles)
+        public static PlanActivity Create(IScheduleInformation schedule, PlanContext context, IProfileStateCollection profiles)
         {
             // Request context information
             var definition = schedule.Definition;

@@ -17,7 +17,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="limit">Die maximale Anzahl von Ergebniszeilen.</param>
         /// <param name="factory">Methode zum Erstellen einer einzelnen Planungsinformation.</param>
         /// <returns>Der gew�nschte Aufzeichnungsplan.</returns>
-        public TActivity[] GetPlan<TActivity>(DateTime end, int limit, Func<IScheduleInformation, PlanContext, ProfileStateCollection, TActivity> factory)
+        public TActivity[] GetPlan<TActivity>(DateTime end, int limit, Func<IScheduleInformation, PlanContext, IProfileStateCollection, TActivity> factory)
         {
             // Result
             var activities = new List<TActivity>();
