@@ -71,7 +71,7 @@ namespace JMS.DVB.NET.Recording
             if (profile == null)
                 return default;
             else
-                return profile.ProgramGuide.FindBestEntry(source, from, to, factory, _profiles);
+                return profile.ProgramGuide.FindBestEntry(source, from, to, factory);
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace JMS.DVB.NET.Recording
             if (profile == null)
                 return [];
 
-            return profile.ProgramGuide.GetProgramGuideEntries(filterIntern, factory, _profiles);
+            return profile.ProgramGuide.GetProgramGuideEntries(filterIntern, factory);
         }
 
         /// <summary>
@@ -291,8 +291,8 @@ namespace JMS.DVB.NET.Recording
             var profile = FindProfile(profileName);
             if (profile == null)
                 return 0;
-            else
-                return profile.ProgramGuide.GetProgramGuideEntries(filterIntern, _profiles);
+
+            return profile.ProgramGuide.GetProgramGuideEntries(filterIntern);
         }
 
         /// <summary>
@@ -302,7 +302,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="profileName">Der Name des Ger�teprofils.</param>
         /// <param name="factory">Methode zur Erstellung der Informationen.</param>
         /// <returns>Die gew�nschten Informationen.</returns>
-        public TInfo GetProgramGuideInformation<TInfo>(string profileName, Func<ProgramGuideManager, IVCRProfiles, TInfo> factory)
+        public TInfo GetProgramGuideInformation<TInfo>(string profileName, Func<IProgramGuideManager, IVCRProfiles, TInfo> factory)
         {
             // Locate profile and forward call
             if (string.IsNullOrEmpty(profileName))

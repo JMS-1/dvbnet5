@@ -1,6 +1,5 @@
 ﻿using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Persistence;
-using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Requests;
 using JMS.DVB.NET.Recording.Status;
 
@@ -20,7 +19,7 @@ public class ProfileState(IProfileStateCollection collection, string profileName
     public IProfileStateCollection Collection => collection;
 
     /// <inheritdoc/>
-    public ProgramGuideManager ProgramGuide { get; } = new ProgramGuideManager(collection, profileName);
+    public IProgramGuideManager ProgramGuide { get; } = new ProgramGuideManager(collection, profileName);
 
     /// <summary>
     /// Meldet das zugehörige Geräteprofil.

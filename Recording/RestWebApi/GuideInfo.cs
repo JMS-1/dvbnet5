@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.Runtime.Serialization;
-using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Services;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -53,7 +52,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="guide">Die zugehörige Programmzeitschrift.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public static GuideInfo Create(ProgramGuideManager guide, IVCRProfiles profiles)
+        public static GuideInfo Create(IProgramGuideManager guide, IVCRProfiles profiles)
         {
             // Collectors
             var sources = new HashSet<SourceIdentifier>();

@@ -1,6 +1,5 @@
 using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Persistence;
-using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Requests;
 using JMS.DVB.NET.Recording.Status;
 
@@ -26,7 +25,7 @@ public interface IProfileState : IDisposable
     /// <summary>
     /// Meldet die zugehörige Verwaltung der elektronischen Programmzeitschrift (EPG).
     /// </summary>
-    ProgramGuideManager ProgramGuide { get; }
+    IProgramGuideManager ProgramGuide { get; }
 
     /// <summary>
     /// Meldet die aktuelle Aufzeichnung oder <i>null</i>.
