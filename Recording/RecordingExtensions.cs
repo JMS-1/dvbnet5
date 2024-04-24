@@ -27,6 +27,7 @@ public static class RecordingExtensions
         services.AddTransient<ILogger, Logger>();
         services.AddTransient<IProfileStateFactory, ProfileStateFactory>();
         services.AddTransient<IProgramGuideManagerFactory, ProgramGuideManagerFactory>();
+        services.AddTransient<IRuleUpdater, RuleUpdater>();
 
         services.AddSingleton<IVCRConfigurationExePathProvider>((ctx) => new ConfigurationPathProvider());
 

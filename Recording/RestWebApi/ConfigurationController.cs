@@ -12,7 +12,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi;
 /// </summary>
 [ApiController]
 [Route("api/configuration")]
-public class ConfigurationController(IVCRConfiguration configuration, IConfigurationUpdater updateConfig, VCRServer server) : ControllerBase
+public class ConfigurationController(IVCRConfiguration configuration, IConfigurationUpdater updateConfig, IRuleUpdater updateRules, VCRServer server) : ControllerBase
 {
     /// <summary>
     /// Die Einstellungen der Sicherheit.
@@ -290,7 +290,7 @@ public class ConfigurationController(IVCRConfiguration configuration, IConfigura
     /// <param name="settings">Die ab sofort zu verwendenden Regeln.</param>
     /// <returns>Meldet, ob ein Neustart erforderlich ist.</returns>
     [HttpPut("rules")]
-    public bool? WriteSchedulerRules([FromBody] SchedulerRules settings) => server.UpdateSchedulerRules(settings.RuleFileContents);
+    public bool? WriteSchedulerRules([FromBody] SchedulerRules settings) => updateRules.UpdateSchedulerRules(settings.RuleFileContents);
 
     /// <summary>
     /// Meldet die Konfigurationsdaten der Geräte.
