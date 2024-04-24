@@ -33,11 +33,10 @@ public class ProgramGuideProxy : CardServerProxy
     /// </summary>
     /// <param name="state">Das zugehörige Geräteprofil.</param>
     /// <param name="recording">Daten der primären Aufzeichnung.</param>
-    private ProgramGuideProxy(IProfileState state, VCRRecordingInfo recording, ServiceFactory factory)
-        : base(state, recording, factory)
+    private ProgramGuideProxy(IProfileState state, VCRRecordingInfo recording) : base(state, recording)
     {
         // Reset fields
-        if (Server.Configuration.EnableFreeSat)
+        if (Configuration.EnableFreeSat)
             m_extensions = EPGExtensions.FreeSatUK;
         else
             m_extensions = EPGExtensions.None;
@@ -56,7 +55,7 @@ public class ProgramGuideProxy : CardServerProxy
         }
 
         // Fill in all
-        foreach (var legacyName in Server.Configuration.ProgramGuideSources)
+        foreach (var legacyName in Configuration.ProgramGuideSources)
         {
             // Skip if empty
             if (string.IsNullOrEmpty(legacyName))
@@ -77,7 +76,7 @@ public class ProgramGuideProxy : CardServerProxy
     /// <param name="recording">Beschreibt die Aufzeichnung.</param>
     /// <returns>Die gewünschte Steuerung.</returns>
     /// <exception cref="ArgumentNullException">Es wurden nicht alle Parameter angegeben.</exception>
-    public static ProgramGuideProxy Create(IProfileState state, VCRRecordingInfo recording, ServiceFactory factory)
+    public static ProgramGuideProxy Create(IProfileState state, VCRRecordingInfo recording)
     {
         // Validate
         if (state == null)
@@ -86,7 +85,7 @@ public class ProgramGuideProxy : CardServerProxy
             throw new ArgumentNullException(nameof(recording));
 
         // Forward
-        return new ProgramGuideProxy(state, recording, factory);
+        return new ProgramGuideProxy(state, recording);
     }
 
     /// <summary>

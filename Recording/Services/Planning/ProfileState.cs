@@ -17,12 +17,9 @@ public class ProfileState(
     string profileName,
     IProgramGuideManagerFactory guideManagerFactory,
     IVCRProfiles profiles,
-    ServiceFactory factory,
     ILogger logger
 ) : IProfileState
 {
-    private readonly ServiceFactory _factory = factory;
-
     private readonly IVCRProfiles _profiles = profiles;
 
     private readonly ILogger _logger = logger;
@@ -46,7 +43,7 @@ public class ProfileState(
         => source == null ? false : ProfileManager.ProfileNameComparer.Equals(ProfileName, source.ProfileName);
 
     /// <inheritdoc/>
-    public TStatus LiveModeOperation<TStatus>(bool active, string connectTo, SourceIdentifier source, Func<string, ServerInformation, TStatus> factory, ServiceFactory services)
+    public TStatus LiveModeOperation<TStatus>(bool active, string connectTo, SourceIdentifier source, Func<string, ServerInformation, TStatus> factory)
     {
         // Check mode of operation
         if (!active)
@@ -59,7 +56,7 @@ public class ProfileState(
         else if (!string.IsNullOrEmpty(connectTo))
         {
             // Activate 
-            ZappingProxy.Create(this, connectTo, services).Start();
+            ZappingProxy.Create(this, connectTo).Start();
         }
         else if (source != null)
         {
@@ -226,7 +223,7 @@ public class ProfileState(
                 if (ReferenceEquals(current, null))
                 {
                     // Create a brand new regular recording request
-                    var request = new RecordingProxy(this, recording, _factory);
+                    var request = new RecordingProxy(this, recording);
 
                     // Activate the request
                     request.Start();

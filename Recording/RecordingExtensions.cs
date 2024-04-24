@@ -1,5 +1,4 @@
 using JMS.DVB.NET.Recording.Actions;
-using JMS.DVB.NET.Recording.Requests;
 using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
@@ -19,8 +18,6 @@ public static class RecordingExtensions
 
     public static void UseRecording(this IServiceCollection services)
     {
-        services.AddTransient<ServiceFactory>();
-
         services.AddTransient(typeof(Lazy<>));
 
         services.AddTransient<IConfigurationUpdater, ConfigurationUpdater>();
@@ -31,6 +28,7 @@ public static class RecordingExtensions
 
         services.AddSingleton<IVCRConfigurationExePathProvider>((ctx) => new ConfigurationPathProvider());
 
+        services.AddSingleton<IExtensionManager, ExtensionManager>();
         services.AddSingleton<IJobManager, JobManager>();
         services.AddSingleton<IProfileStateCollection, ProfileStateCollection>();
         services.AddSingleton<IVCRConfiguration, VCRConfiguration>();

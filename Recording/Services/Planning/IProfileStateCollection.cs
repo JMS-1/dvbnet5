@@ -1,5 +1,4 @@
 using JMS.DVB.NET.Recording.Planning;
-using JMS.DVB.NET.Recording.Requests;
 using JMS.DVB.NET.Recording.Services.Configuration;
 
 namespace JMS.DVB.NET.Recording.Services.Planning;
@@ -15,7 +14,9 @@ public interface IProfileStateCollection : IRecordingPlannerSite
 
     IVCRProfiles Profiles { get; }
 
-    ServiceFactory ServiceFactory { get; }
+    IVCRConfiguration Configuration { get; }
+
+    IExtensionManager ExtensionManager { get; }
 
     /// <summary>
     /// Ermittelt den Zustand eines einzelnen Geräteprofils.

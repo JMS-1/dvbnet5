@@ -1,4 +1,4 @@
-﻿using JMS.DVB.NET.Recording.Services.Configuration;
+﻿using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Planning;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +9,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/info")]
-    public class InfoController(VCRServer server, IProfileStateCollection states, IVCRProfiles profiles) : ControllerBase
+    public class InfoController(VCRServer server, IProfileStateCollection states, IExtensionManager extensions) : ControllerBase
     {
         /// <summary>
         /// Die exakte Version der Installation.
@@ -67,9 +67,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new InfoService
                 {
-                    HasPendingExtensions = server.ExtensionProcessManager.HasActiveProcesses,
-                    SourceScanEnabled = server.Configuration.SourceListUpdateInterval != 0,
-                    GuideUpdateEnabled = server.Configuration.ProgramGuideUpdateEnabled,
+                    HasPendingExtensions = extensions.HasActiveProcesses,
+                    SourceScanEnabled = states.Configuration.SourceListUpdateInterval != 0,
+                    GuideUpdateEnabled = states.Configuration.ProgramGuideUpdateEnabled,
                     IsRunning = states.IsActive,
                     //ProfilesNames = settings.Profiles.ToArray(),
                     InstalledVersion = InstalledVersion,
@@ -83,20 +83,19 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="directories">Wird zur Unterscheidung der Methoden verwendet.</param>
         /// <returns>Die gewünschte Liste.</returns>
         [HttpGet("folder")]
-        public string[] GetRecordingDirectories(string directories) => server.Configuration.TargetDirectoryNames.SelectMany(ScanDirectory).ToArray();
+        public string[] GetRecordingDirectories(string directories) => states.Configuration.TargetDirectoryNames.SelectMany(ScanDirectory).ToArray();
 
         /// <summary>
         /// Meldet alle Aufträge.
         /// </summary>
-        /// <param name="jobs">Wird zur Unterscheidung der Methoden verwendet.</param>
         /// <returns>Die Liste aller Aufträge.</returns>
         [HttpGet("jobs")]
-        public InfoJob[] GetJobs(string jobs)
+        public InfoJob[] GetJobs()
         {
             // Report
             return
                 server
-                    .GetJobs(InfoJob.Create, profiles)
+                    .GetJobs(InfoJob.Create, states.Profiles)
                     .OrderBy(job => job.Name ?? string.Empty, StringComparer.InvariantCulture)
                     .ToArray();
         }

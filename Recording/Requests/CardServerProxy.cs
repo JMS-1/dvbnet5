@@ -4,15 +4,9 @@ using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Status;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace JMS.DVB.NET.Recording.Requests
 {
-    public class ServiceFactory(IServiceProvider di)
-    {
-        public T Create<T>() where T : notnull => di.GetRequiredService<T>();
-    }
-
     /// <summary>
     /// Beschreibt Zugriffe auf eine DVB.NET Hardware.
     /// </summary>
@@ -44,15 +38,13 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         private IDisposable m_HibernateBlock = null!;
 
-        protected readonly VCRServer Server;
+        protected IVCRProfiles Profiles => ProfileState.Collection.Profiles;
 
-        protected readonly IVCRProfiles Profiles;
+        protected ILogger Logger => ProfileState.Collection.Logger;
 
-        protected readonly ILogger Logger;
+        protected IJobManager JobManager => ProfileState.Collection.JobManager;
 
-        protected readonly IJobManager JobManager;
-
-        protected readonly IVCRConfiguration Configuration;
+        protected IVCRConfiguration Configuration => ProfileState.Collection.Configuration;
 
         /// <summary>
         /// Erzeugt eine neue Zugriffsinstanz.
@@ -60,7 +52,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="state">Der Zustands des zugehörigen Geräteprofils.</param>
         /// <param name="primary">Die primäre Aufzeichnung, auf Grund derer der Aufzeichnungsprozeß aktiviert wurde.</param>
         /// <exception cref="ArgumentNullException">Es wurde kein Profil angegeben.</exception>
-        protected CardServerProxy(IProfileState state, VCRRecordingInfo primary, ServiceFactory factory)
+        protected CardServerProxy(IProfileState state, VCRRecordingInfo primary)
         {
             // Validate
             if (state == null)
@@ -70,13 +62,8 @@ namespace JMS.DVB.NET.Recording.Requests
             RequestFinished = new ManualResetEvent(false);
 
             // Remember
-            Configuration = factory.Create<IVCRConfiguration>();
-            JobManager = factory.Create<IJobManager>();
-            Logger = factory.Create<ILogger>();
-            Profiles = factory.Create<IVCRProfiles>();
             ProfileState = state;
             Representative = primary.Clone();
-            Server = factory.Create<VCRServer>();
 
             // Make sure that we report the start
             m_start = primary;
@@ -348,7 +335,7 @@ namespace JMS.DVB.NET.Recording.Requests
                     Tools.ExtendedLogging("Started Recording Control Thread for {0}", ProfileName);
 
                     // Fire all extensions
-                    Tools.RunSynchronousExtensions("BeforeProfileAccess", coreEnvironment, Server, Logger);
+                    Tools.RunSynchronousExtensions("BeforeProfileAccess", coreEnvironment, Logger);
 
                     // Use it
                     using (CardServer = CreateCardServerProxy())
@@ -359,8 +346,8 @@ namespace JMS.DVB.NET.Recording.Requests
                                 (
                                     ProfileName,
                                     false,
-                                    Server.Configuration.DisablePCRFromH264Generation,
-                                    Server.Configuration.DisablePCRFromMPEG2Generation
+                                    Configuration.DisablePCRFromH264Generation,
+                                    Configuration.DisablePCRFromMPEG2Generation
                                 ));
 
                         // Report
@@ -455,7 +442,7 @@ namespace JMS.DVB.NET.Recording.Requests
                     CardServer = null!;
 
                     // Fire all extensions
-                    Tools.RunSynchronousExtensions("AfterProfileAccess", coreEnvironment, Server, Logger);
+                    Tools.RunSynchronousExtensions("AfterProfileAccess", coreEnvironment, Logger);
 
                     // Detach from profile
                     ProfileState.EndRequest(this);
@@ -819,18 +806,20 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="environment">Die Umgebungsvariablen für die Erweiterung.</param>
         protected void FireRecordingStartedExtensions(Dictionary<string, string> environment)
-        => Server
-            .ExtensionProcessManager
-            .AddWithCleanup("RecordingStarted", environment, Server, Logger);
+        => ProfileState
+            .Collection
+            .ExtensionManager
+            .AddWithCleanup("RecordingStarted", environment, Logger);
 
         /// <summary>
         /// Aktiviert eine VCR.NET Erweiterung.
         /// </summary>
         /// <param name="environment">Die Umgebungsvariablen für die Erweiterung.</param>
         protected void FireRecordingFinishedExtensions(Dictionary<string, string> environment)
-            => Server
-                .ExtensionProcessManager
-                .AddWithCleanup("RecordingFinished", environment, Server, Logger);
+            => ProfileState
+                .Collection
+                .ExtensionManager
+                .AddWithCleanup("RecordingFinished", environment, Logger);
 
         #endregion
     }

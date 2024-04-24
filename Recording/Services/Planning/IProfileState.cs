@@ -97,7 +97,7 @@ public interface IProfileState : IDisposable
     /// <param name="factory">Methode zum Erstellen einer neuen Zustandsinformation.</param>
     /// <returns>Der aktuelle Zustand des Zapping Modus oder <i>null</i>, wenn dieser nicht ermittelt
     /// werden kann.</returns>
-    TStatus LiveModeOperation<TStatus>(bool active, string connectTo, SourceIdentifier source, Func<string, ServerInformation, TStatus> factory, ServiceFactory services);
+    TStatus LiveModeOperation<TStatus>(bool active, string connectTo, SourceIdentifier source, Func<string, ServerInformation, TStatus> factory);
 
     /// <summary>
     /// Beginnt eine Operation auf diesem Geräteprofil.

@@ -48,11 +48,6 @@ namespace JMS.DVB.NET.Recording
         internal IProfileStateCollection Profiles { get; private set; } = states;
 
         /// <summary>
-        /// Alle Prozesse, die gestartet wurden.
-        /// </summary>
-        public readonly ExtensionManager ExtensionProcessManager = new ExtensionManager();
-
-        /// <summary>
         /// Die aktive Konfiguration.
         /// </summary>
         private readonly IVCRConfiguration _configuration = configuration;

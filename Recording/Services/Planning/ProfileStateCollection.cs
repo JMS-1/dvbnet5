@@ -20,11 +20,11 @@ public class ProfileStateCollection : IProfileStateCollection, IDisposable
 
     public ILogger Logger { get; private set; }
 
-    public ServiceFactory ServiceFactory { get; private set; }
-
     public IJobManager JobManager { get; private set; }
 
-    private readonly IVCRConfiguration _configuration;
+    public IVCRConfiguration Configuration { get; private set; }
+
+    public IExtensionManager ExtensionManager { get; private set; }
 
     /// <summary>
     /// Erzeugt eine neue Verwaltungsinstanz.
@@ -36,12 +36,12 @@ public class ProfileStateCollection : IProfileStateCollection, IDisposable
         ILogger logger,
         IJobManager jobs,
         IProfileStateFactory states,
-        ServiceFactory factory
+        IExtensionManager extensions
     )
     {
         // Remember
-        _configuration = configuration;
-        ServiceFactory = factory;
+        Configuration = configuration;
+        ExtensionManager = extensions;
         JobManager = jobs;
         Logger = logger;
         Profiles = profiles;
@@ -63,7 +63,7 @@ public class ProfileStateCollection : IProfileStateCollection, IDisposable
         );
 
         // Now we can create the planner
-        m_planner = RecordingPlanner.Create(this, _configuration, Profiles, Logger, jobs);
+        m_planner = RecordingPlanner.Create(this, Configuration, Profiles, Logger, jobs);
         m_planThread = new Thread(PlanThread) { Name = "Recording Planner", IsBackground = true };
 
         // Start planner
@@ -588,14 +588,14 @@ public class ProfileStateCollection : IProfileStateCollection, IDisposable
         m_pendingStart = true;
 
         // Create the recording
-        var recording = VCRRecordingInfo.Create(item, context, _configuration, Profiles)!;
+        var recording = VCRRecordingInfo.Create(item, context, Configuration, Profiles)!;
 
         // Check for EPG
         var guideUpdate = item.Definition as ProgramGuideTask;
         if (guideUpdate != null)
         {
             // Start a new guide collector
-            m_pendingActions += ProgramGuideProxy.Create(profile, recording, ServiceFactory).Start;
+            m_pendingActions += ProgramGuideProxy.Create(profile, recording).Start;
         }
         else
         {
@@ -604,7 +604,7 @@ public class ProfileStateCollection : IProfileStateCollection, IDisposable
             if (sourceUpdate != null)
             {
                 // Start a new update
-                m_pendingActions += SourceScanProxy.Create(profile, recording, ServiceFactory).Start;
+                m_pendingActions += SourceScanProxy.Create(profile, recording).Start;
             }
             else
             {

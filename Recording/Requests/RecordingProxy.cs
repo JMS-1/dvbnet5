@@ -12,11 +12,7 @@ namespace JMS.DVB.NET.Recording.Requests
     /// </summary>
     /// <param name="state">Der Zustands des zugehörigen Geräteprofils.</param>
     /// <param name="firstRecording">Die erste Aufzeichnung, auf Grund derer dieser Zugriff angelegt wurde.</param>
-    public class RecordingProxy(
-        IProfileState state,
-        VCRRecordingInfo firstRecording,
-        ServiceFactory factory
-    ) : CardServerProxy(state, firstRecording, factory)
+    public class RecordingProxy(IProfileState state, VCRRecordingInfo firstRecording) : CardServerProxy(state, firstRecording)
     {
         #region Felder zur Steuerung der asynchronen Aufrufe an den Aufzeichnungsprozess
 
@@ -167,7 +163,7 @@ namespace JMS.DVB.NET.Recording.Requests
             }
 
             // Enqueue
-            m_startPending = CardServer.BeginAddSources([recording.ToReceiveInformation(Server.Configuration, Profiles)]);
+            m_startPending = CardServer.BeginAddSources([recording.ToReceiveInformation(Configuration, Profiles)]);
         }
 
         /// <summary>

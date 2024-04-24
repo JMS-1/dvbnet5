@@ -1,5 +1,4 @@
 using JMS.DVB.CardServer;
-using JMS.DVB.NET.Recording.Requests;
 
 namespace JMS.DVB.NET.Recording
 {
@@ -34,14 +33,14 @@ namespace JMS.DVB.NET.Recording
         /// <param name="factory">Methode zum Erstellen einer neuen Zustandsinformation.</param>
         /// <returns>Der aktuelle Zustand des Zapping Modus oder <i>null</i>, wenn dieser nicht ermittelt
         /// werden konnte.</returns>
-        public TStatus LiveModeOperation<TStatus>(string profile, bool active, string connectTo, SourceIdentifier source, Func<string, ServerInformation, TStatus> factory, ServiceFactory services)
+        public TStatus LiveModeOperation<TStatus>(string profile, bool active, string connectTo, SourceIdentifier source, Func<string, ServerInformation, TStatus> factory)
         {
             // Attach to the profile and process
             var state = FindProfile(profile);
             if (state == null)
                 return default!;
             else
-                return state.LiveModeOperation(active, connectTo, source, factory, services);
+                return state.LiveModeOperation(active, connectTo, source, factory);
         }
     }
 }
