@@ -135,7 +135,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         }
 
         /// <summary>
-        /// Meldet, ob nach einer Programmierung �ber die Programmzeitschrift zu dieser zur�ck gekehrt werden soll.
+        /// Meldet, ob nach einer Programmierung über die Programmzeitschrift zu dieser zur�ck gekehrt werden soll.
         /// </summary>
         public static bool BackToEPG
         {
@@ -180,7 +180,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         }
 
         /// <summary>
-        /// Meldet die Nachlaufzeit bei Programmierung �ber die Programmzeitschrift.
+        /// Meldet die Nachlaufzeit bei Programmierung über die Programmzeitschrift.
         /// </summary>
         /// <seealso cref="EPGPreTime"/>
         public static int EPGPostTime
@@ -190,7 +190,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         }
 
         /// <summary>
-        /// Meldet die Vorlaufzeit bei Programmierung �ber die Programmzeitschrift.
+        /// Meldet die Vorlaufzeit bei Programmierung über die Programmzeitschrift.
         /// </summary>
         /// <seealso cref="EPGPostTime"/>
         public static int EPGPreTime

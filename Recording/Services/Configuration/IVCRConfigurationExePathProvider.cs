@@ -1,4 +1,4 @@
-namespace JMS.DVB.NET.Recording.Services;
+namespace JMS.DVB.NET.Recording.Services.Configuration;
 
 /// <summary>
 /// Schnittstelle zur Ermittelung des Pfades zum Dienst.

@@ -1,3 +1,4 @@
+using JMS.DVB.NET.Recording.Services.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace JMS.DVB.NET.Recording.Services;

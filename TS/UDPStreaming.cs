@@ -14,7 +14,7 @@ namespace JMS.DVB.TS
         /// </summary>
         /// <param name="client">Der aktuelle Empf�nger.</param>
         /// <param name="port">Der empfangende UDP Port.</param>
-        /// <param name="socket">Die TCP/IP Verbindung, �ber die Daten versendet werden sollen.</param>
+        /// <param name="socket">Die TCP/IP Verbindung, über die Daten versendet werden sollen.</param>
         /// <param name="target">Die Adresse des Empf�ngers.</param>
         private class ConnectionInfo(string client, int port, Socket socket, EndPoint target)
         {
@@ -51,7 +51,7 @@ namespace JMS.DVB.TS
             /// <summary>
             /// �bertr�gt Daten.
             /// </summary>
-            /// <param name="buffer">Die gew�nschten Daten.</param>
+            /// <param name="buffer">Die gewünschten Daten.</param>
             public void Send(byte[] buffer) => Socket.SendTo(buffer, m_target);
         }
 
@@ -195,7 +195,7 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Versendet einen Datenblock an die gew�nschte Adresse.
+        /// Versendet einen Datenblock an die gewünschte Adresse.
         /// </summary>
         /// <param name="buffer">Vollst�ndiger Datenblock.</param>
         public void Send(byte[] buffer)

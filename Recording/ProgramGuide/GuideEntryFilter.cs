@@ -1,4 +1,4 @@
-using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Configuration;
 
 namespace JMS.DVB.NET.Recording.ProgramGuide
 {
@@ -118,7 +118,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         }
 
         /// <summary>
-        /// Der Name des zu verwendenden Ger�teprofils.
+        /// Der Name des zu verwendenden Geräteprofils.
         /// </summary>
         public string ProfileName { get; set; } = null!;
 
@@ -143,7 +143,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         public string ContentPattern { get; set; } = null!;
 
         /// <summary>
-        /// Die gew�nschte Seitengr��e.
+        /// Die gewünschte Seitengr��e.
         /// </summary>
         public int PageSize { get; set; }
 
@@ -158,7 +158,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         public GuideEncryptionFilter SourceEncryption { get; set; }
 
         /// <summary>
-        /// Die aktuell gew�nschte Seite.
+        /// Die aktuell gewünschte Seite.
         /// </summary>
         public int PageIndex;
 

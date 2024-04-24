@@ -2,7 +2,7 @@ using System.Xml.Serialization;
 using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Planning;
-using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Configuration;
 
 namespace JMS.DVB.NET.Recording.Persistence
 {

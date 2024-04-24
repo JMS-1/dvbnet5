@@ -9,7 +9,7 @@ namespace JMS.DVB.Provider.Legacy
     public class LegacyDeviceInformation
     {
         /// <summary>
-        /// Enth�lt die Beschreibung zu allen bekannten Ger�ten der alten DVB.NET Version.
+        /// Enth�lt die Beschreibung zu allen bekannten Geräten der alten DVB.NET Version.
         /// </summary>
         public static readonly LegacyDeviceInformation[] Devices = Load();
 

@@ -70,7 +70,7 @@ namespace JMS.DVB.EPG
         /// <param name="table">Die gesamte <i>NIT</i>.</param>
         /// <param name="offset">Das erste Byte dieser Beschreibung in den Rohdaten.</param>
         /// <param name="length">Die Gr��e der Rohdaten zu dieser Beschreibung.</param>
-        /// <returns>Die gew�nschte Beschreibung.</returns>
+        /// <returns>Die gewünschte Beschreibung.</returns>
         static internal NetworkEntry? Create(Table table, int offset, int length)
         {
             // Validate

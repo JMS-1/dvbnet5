@@ -1,4 +1,4 @@
-namespace JMS.DVB.NET.Recording.Services;
+namespace JMS.DVB.NET.Recording.Services.Configuration;
 
 /// <summary>
 /// Verwaltet die Konfiguration des VCR.NET Recording Service.

@@ -1,7 +1,7 @@
 using JMS.DVB.NET.Recording.Actions;
-using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Requests;
 using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Services.ProgramGuide;
 using Microsoft.Extensions.DependencyInjection;

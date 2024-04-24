@@ -12,7 +12,7 @@ namespace JMS.DVB.TS
     public class TSParser : IDisposable
     {
         /// <summary>
-        /// Informationen �ber den Interessenten an einem der Nutzdatenstr�me. Instanzen dieser
+        /// Informationen über den Interessenten an einem der Nutzdatenstr�me. Instanzen dieser
         /// Klasse werden für die automatische Extraktion von Bild- und Tonsignal verwendet.
         /// </summary>
         /// <param name="parser">Die zugeh�rige Instanz zum Gesamtdatenstrom.</param>
@@ -75,12 +75,12 @@ namespace JMS.DVB.TS
         private readonly Dictionary<ushort, Action<byte[]>> m_Extractors = new();
 
         /// <summary>
-        /// Enth�lt eine Statistik �ber die Anteile der individuellen Datenstr�me am Gesamtdatenstrom.
+        /// Enth�lt eine Statistik über die Anteile der individuellen Datenstr�me am Gesamtdatenstrom.
         /// </summary>
         private readonly Dictionary<ushort, long> m_PacketStatistics = new();
 
         /// <summary>
-        /// Gesetzt, wenn die Statistik �ber die Anzeile der einzelnen Datenstr�me gef�hrt werden soll.
+        /// Gesetzt, wenn die Statistik über die Anzeile der einzelnen Datenstr�me gef�hrt werden soll.
         /// </summary>
         private bool m_FillStatisics = false;
 
@@ -182,7 +182,7 @@ namespace JMS.DVB.TS
         private ushort m_WaitForService;
 
         /// <summary>
-        /// Gesetzt, wenn nach dem Auffinden der gew�nschten PMT diese weiter �berwacht werden soll.
+        /// Gesetzt, wenn nach dem Auffinden der gewünschten PMT diese weiter �berwacht werden soll.
         /// </summary>
         private ushort m_ResetAfterServiceFound;
 
@@ -192,7 +192,7 @@ namespace JMS.DVB.TS
         private ushort m_WaitForPID;
 
         /// <summary>
-        /// Signatur einer Methode, die �ber eine bestimmte PMT informiert.
+        /// Signatur einer Methode, die über eine bestimmte PMT informiert.
         /// </summary>
         /// <param name="pmt">Die zugeh�rige Informationstabelle.</param>
         public delegate void PMTFoundHandler(PMT pmt);
@@ -290,13 +290,13 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Ermittelt die n�chste PMT zu einem Sender.
         /// </summary>
-        /// <param name="serviceIdentifier">Der gew�nschte Sender.</param>
+        /// <param name="serviceIdentifier">Der gewünschte Sender.</param>
         public void RequestPMT(ushort serviceIdentifier) => RequestPMT(serviceIdentifier, false);
 
         /// <summary>
         /// Ermittelt die n�chste PMT zu einem Sender.
         /// </summary>
-        /// <param name="serviceIdentifier">Der gew�nschte Sender.</param>
+        /// <param name="serviceIdentifier">Der gewünschte Sender.</param>
         /// <param name="resetAfterEvent">Gesetzt, wenn nach dem Melden der Kennung
         /// weiter �berwacht werden soll.</param>
         public void RequestPMT(ushort serviceIdentifier, bool resetAfterEvent)
@@ -653,7 +653,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Meldet einen Verbraucher zu einem Teildatenstrom.
         /// </summary>
-        /// <param name="pid">Die gew�nschte Datenstromkennung.</param>
+        /// <param name="pid">Die gewünschte Datenstromkennung.</param>
         /// <returns>Der zugeh�rige Verbraucher oder <i>null</i>.</returns>
         public TSBuilder? this[ushort pid]
         {
@@ -672,7 +672,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Registriert einen einfacher Verbraucher für einen Datenstrom.
         /// </summary>
-        /// <param name="pid">Die gew�nschte Datenstromkennung.</param>
+        /// <param name="pid">Die gewünschte Datenstromkennung.</param>
         /// <param name="isSITable">Gesetzt, wenn es sich um einen Kontroll- und keinen
         /// Nutzdatenstrom handelt.</param>
         /// <param name="callback"></param>
@@ -695,7 +695,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Registriert einen Verbraucher für einen Datenstrom.
         /// </summary>
-        /// <param name="pid">Die gew�nschte Datenstromkennung.</param>
+        /// <param name="pid">Die gewünschte Datenstromkennung.</param>
         /// <param name="consumer">Der Verbrqaucher für die Daten.</param>
         /// <exception cref="ArgumentNullException">Es wurde kein Verbraucher angegeben.</exception>
         public void RegisterCustomFilter(ushort pid, TSBuilder consumer)
@@ -715,7 +715,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Definiert einen Verbraucher, der einen Teildatenstrom vollst�ndig abzieht.
         /// </summary>
-        /// <param name="pid">Die gew�nschte Datenstromkennung.</param>
+        /// <param name="pid">Die gewünschte Datenstromkennung.</param>
         /// <param name="filter">Der zu verwendende Verbraucher.</param>
         public void RegisterExtractor(ushort pid, Action<byte[]> filter)
         {
@@ -734,7 +734,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Entfernt einen Extraktionsverbraucher.
         /// </summary>
-        /// <param name="pid">Die gew�nschte Datenstromkennung.</param>
+        /// <param name="pid">Die gewünschte Datenstromkennung.</param>
         public void RemoveExtractor(ushort pid)
         {
             // Do it
@@ -745,7 +745,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Entfernt einen Verbraucher für einen Datenstrom.
         /// </summary>
-        /// <param name="pid">Die gew�nschte Datenstromkennung.</param>
+        /// <param name="pid">Die gewünschte Datenstromkennung.</param>
         public void RemoveFilter(ushort pid)
         {
             // Synchronize
@@ -801,7 +801,7 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Meldet die aktuelle Statistik �ber die Anteile der Teildatenstr�me
+        /// Meldet die aktuelle Statistik über die Anteile der Teildatenstr�me
         /// im Gesamtdatenstrom.
         /// </summary>
         /// <exception cref="InvalidOperationException">Die Statistik muss explizit aktiviert werden,
@@ -835,7 +835,7 @@ namespace JMS.DVB.TS
         public long ValidPATCount => Thread.VolatileRead(ref m_ValidPATCount);
 
         /// <summary>
-        /// Meldet oder legt fest, ob eine Statistik �ber die Anteile der Teildatestr�me
+        /// Meldet oder legt fest, ob eine Statistik über die Anteile der Teildatestr�me
         /// am Gesamtdatenstrom gef�hrt werden soll. Beim Setzen dieser Eigenschaft werden
         /// die Z�hler des Statistik immer zur�ckgesetzt.
         /// </summary>

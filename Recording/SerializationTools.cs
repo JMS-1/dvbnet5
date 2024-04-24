@@ -14,7 +14,7 @@ namespace JMS.DVB.NET.Recording
         /// L�dt eine Datenstruktur aus einer Datei.
         /// </summary>
         /// <typeparam name="T">Die Art der Datenstruktur.</typeparam>
-        /// <param name="info">Die gew�nschte Datei.</param>
+        /// <param name="info">Die gewünschte Datei.</param>
         /// <returns>Die rekonstruierte Datenstruktur.</returns>
         public static T Load<T>(FileInfo info)
         {

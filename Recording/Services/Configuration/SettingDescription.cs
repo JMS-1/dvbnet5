@@ -1,6 +1,4 @@
-using System.Configuration;
-
-namespace JMS.DVB.NET.Recording.Services;
+namespace JMS.DVB.NET.Recording.Services.Configuration;
 
 /// <summary>
 /// Beschreibt eine einzelne Einstellung.
@@ -47,14 +45,14 @@ public abstract class SettingDescription : ICloneable
     /// </summary>
     /// <param name="configuration">Die zu verwendende Konfiguration.</param>
     /// <returns>Der Wert der Einstellung als Zeichenkette.</returns>
-    private string ReadRawValue(Configuration configuration) => configuration.AppSettings.Settings[Name.ToString()]?.Value?.Trim()!;
+    private string ReadRawValue(System.Configuration.Configuration configuration) => configuration.AppSettings.Settings[Name.ToString()]?.Value?.Trim()!;
 
     /// <summary>
     /// Aktualisiert einen Konfigurationswert.
     /// </summary>
     /// <param name="newConfiguration"></param>
     /// <returns></returns>
-    internal bool Update(Configuration newConfiguration)
+    internal bool Update(System.Configuration.Configuration newConfiguration)
     {
         // Corret
         var newValue = string.IsNullOrEmpty(NewValue) ? string.Empty : NewValue.Trim();

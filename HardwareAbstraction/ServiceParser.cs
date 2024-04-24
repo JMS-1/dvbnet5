@@ -33,7 +33,7 @@ namespace JMS.DVB
         private SourceIdentifier Portal;
 
         /// <summary>
-        /// Das zu verwendende DVB.NET Ger�teprofil.
+        /// Das zu verwendende DVB.NET Geräteprofil.
         /// </summary>
         private readonly Profile Profile;
 

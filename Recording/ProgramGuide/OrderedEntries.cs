@@ -47,7 +47,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// Ermittelt einen bestimmten Eintrag.
         /// </summary>
         /// <param name="start">Der exakte Startzeitpunkt.</param>
-        /// <returns>Der gew�nschte Eintrag.</returns>
+        /// <returns>Der gewünschte Eintrag.</returns>
         public ProgramGuideEntry? FindEntry(DateTime start)
         {
             // Find the index
@@ -212,15 +212,15 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// Ermittelt einen bestimmten Eintrag.
         /// </summary>
         /// <param name="index">Die 0-basierte laufende Nummer des Eintrags.</param>
-        /// <returns>Der gew�nschte Eintrag.</returns>
+        /// <returns>Der gewünschte Eintrag.</returns>
         public ProgramGuideEntry this[int index] => m_Events[index];
 
         #region IEnumerable<ProgramGuideEntry> Members
 
         /// <summary>
-        /// Erzeugt eine Auflistung �ber alle enthaltenen Eintr�ge.
+        /// Erzeugt eine Auflistung über alle enthaltenen Eintr�ge.
         /// </summary>
-        /// <returns>Die gew�nschte Auflistung.</returns>
+        /// <returns>Die gewünschte Auflistung.</returns>
         public IEnumerator<ProgramGuideEntry> GetEnumerator() => m_Events.GetEnumerator();
 
         #endregion
@@ -228,9 +228,9 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         #region IEnumerable Members
 
         /// <summary>
-        /// Erzeugt eine Auflistung �ber alle enthaltenen Eintr�ge.
+        /// Erzeugt eine Auflistung über alle enthaltenen Eintr�ge.
         /// </summary>
-        /// <returns>Die gew�nschte Auflistung.</returns>
+        /// <returns>Die gewünschte Auflistung.</returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         #endregion
@@ -240,7 +240,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Erzeugt eine exakte Kopie dieser Liste.
         /// </summary>
-        /// <returns>Die gew�nschte Kopie.</returns>
+        /// <returns>Die gewünschte Kopie.</returns>
         public OrderedEntries Clone()
         {
             // Create
@@ -256,7 +256,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Erzeugt eine exakte Kopie dieser Liste.
         /// </summary>
-        /// <returns>Die gew�nschte Kopie.</returns>
+        /// <returns>Die gewünschte Kopie.</returns>
         object ICloneable.Clone() => Clone();
 
         #endregion

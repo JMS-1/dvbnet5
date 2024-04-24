@@ -3,6 +3,7 @@ using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Services.ProgramGuide;
 using JMS.DVB.NET.Recording.Status;
@@ -18,7 +19,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="end">Es werden nur Aufzeichnungen betrachtet, die nicht nach diesem Zeitpunkt starten.</param>
         /// <param name="limit">Die maximale Anzahl von Ergebniszeilen.</param>
         /// <param name="factory">Methode zum Erstellen einer einzelnen Planungsinformation.</param>
-        /// <returns>Der gew�nschte Aufzeichnungsplan.</returns>
+        /// <returns>Der gewünschte Aufzeichnungsplan.</returns>
         public TActivity[] GetPlan<TActivity>(DateTime end, int limit, Func<IScheduleInformation, PlanContext, IProfileStateCollection, TActivity> factory)
         {
             // Result
@@ -55,7 +56,7 @@ namespace JMS.DVB.NET.Recording
         /// Ermittelt den passendsten Eintrag aus der Programmzeitschrift.
         /// </summary>
         /// <typeparam name="TTarget">Die Art der R�ckgabewerte.</typeparam>
-        /// <param name="profileName">Das zu betrachtende Ger�teprofil.</param>
+        /// <param name="profileName">Das zu betrachtende Geräteprofil.</param>
         /// <param name="source">Die zugeh�rige Quelle.</param>
         /// <param name="from">Der Beginn eines Zeitraums.</param>
         /// <param name="to">Das Ende eines Zeitraums.</param>
@@ -79,10 +80,10 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Ermittelt einen bestimmten Eintrag.
         /// </summary>
-        /// <param name="profileName">Das zu betrachtende Ger�teprofil.</param>
+        /// <param name="profileName">Das zu betrachtende Geräteprofil.</param>
         /// <param name="source">Die Quelle, deren Eintrag ermittelt werden soll.</param>
         /// <param name="start">Der exakte Startzeitpunkt.</param>
-        /// <returns>Der gew�nschte Eintrag.</returns>
+        /// <returns>Der gewünschte Eintrag.</returns>
         public ProgramGuideEntry? FindProgramGuideEntry(string profileName, SourceIdentifier source, DateTime start) => Profiles[profileName]?.ProgramGuide.FindEntry(source, start);
 
         /// <summary>
@@ -127,19 +128,19 @@ namespace JMS.DVB.NET.Recording
         }
 
         /// <summary>
-        /// Meldet Informationen zu allen Ger�teprofilen.
+        /// Meldet Informationen zu allen Geräteprofilen.
         /// </summary>
         /// <typeparam name="TInfo">Die Art der gemeldeten Information.</typeparam>
-        /// <param name="factory">Methode zum Erzeugen der Informationen zu einem einzelnen Ger�teprofil.</param>
+        /// <param name="factory">Methode zum Erzeugen der Informationen zu einem einzelnen Geräteprofil.</param>
         /// <returns>Die Informationen zu den Profilen.</returns>
         public TInfo[] GetProfiles<TInfo>(Func<IProfileState, TInfo> factory) => Profiles.InspectProfiles(factory).ToArray();
 
         /// <summary>
-        /// Meldet alle Auftr�ge.
+        /// Meldet alle Aufträge.
         /// </summary>
         /// <typeparam name="TJob">Die Art der externen Darstellung.</typeparam>
         /// <param name="factory">Methode zum Erstellen der externen Darstellung.</param>
-        /// <returns>Die Liste der Auftr�ge.</returns>
+        /// <returns>Die Liste der Aufträge.</returns>
         public TJob[] GetJobs<TJob>(Func<VCRJob, bool, IVCRProfiles, TJob> factory, IVCRProfiles profiles)
         {
             // Report
@@ -152,13 +153,13 @@ namespace JMS.DVB.NET.Recording
         }
 
         /// <summary>
-        /// Ermittelt eine �bersicht �ber die aktuellen und anstehenden Aufzeichnungen
-        /// aller Ger�teprofile.
+        /// Ermittelt eine Übersicht über die aktuellen und anstehenden Aufzeichnungen
+        /// aller Geräteprofile.
         /// </summary>
         /// <typeparam name="TInfo">Die Art der Informationen.</typeparam>
         /// <param name="fromActive">Erstellt eine Liste von Beschreibungen zu einer aktuellen Aufzeichnung.</param>
         /// <param name="fromPlan">Erstellt eine einzelne Beschreibung zu einer Aufzeichnung aus dem Aufzeichnungsplan.</param>
-        /// <param name="forIdle">Erstellt eine Beschreibung für ein Ger�t, für das keine Aufzeichnungen geplant sind.</param>
+        /// <param name="forIdle">Erstellt eine Beschreibung für ein Gerät, für das keine Aufzeichnungen geplant sind.</param>
         /// <returns>Die Liste aller Informationen.</returns>
         public TInfo[] GetCurrentRecordings<TInfo>(
             Func<FullInfo, VCRServer, IVCRProfiles, IJobManager, TInfo[]> fromActive,
@@ -298,12 +299,12 @@ namespace JMS.DVB.NET.Recording
         }
 
         /// <summary>
-        /// Ermittelt die Eckdaten zu den Eintragungen eines Ger�teprofils.
+        /// Ermittelt die Eckdaten zu den Eintragungen eines Geräteprofils.
         /// </summary>
         /// <typeparam name="TInfo">Die Art der Informationen.</typeparam>
-        /// <param name="profileName">Der Name des Ger�teprofils.</param>
+        /// <param name="profileName">Der Name des Geräteprofils.</param>
         /// <param name="factory">Methode zur Erstellung der Informationen.</param>
-        /// <returns>Die gew�nschten Informationen.</returns>
+        /// <returns>Die gewünschten Informationen.</returns>
         public TInfo GetProgramGuideInformation<TInfo>(string profileName, Func<IProgramGuideManager, IVCRProfiles, TInfo> factory)
         {
             // Locate profile and forward call
@@ -317,12 +318,12 @@ namespace JMS.DVB.NET.Recording
         }
 
         /// <summary>
-        /// Ermittelt alle Ger�teprofile.
+        /// Ermittelt alle Geräteprofile.
         /// </summary>
         /// <typeparam name="TProfile">Die Art der Zielinformation.</typeparam>
         /// <param name="factory">Methode zum Erstellen der Zielinformation.</param>
-        /// <param name="defaultProfile">Der Name des bevorzugten Ger�teprofils.</param>
-        /// <returns>Die gew�nschte Liste.</returns>
+        /// <param name="defaultProfile">Der Name des bevorzugten Geräteprofils.</param>
+        /// <returns>Die gewünschte Liste.</returns>
         public TProfile[] GetProfiles<TProfile>(Func<Profile, bool, TProfile> factory, out string defaultProfile)
         {
             // Create map            
@@ -337,10 +338,10 @@ namespace JMS.DVB.NET.Recording
         }
 
         /// <summary>
-        /// Aktualisiert die Daten von Ger�teprofilen.
+        /// Aktualisiert die Daten von Geräteprofilen.
         /// </summary>
         /// <typeparam name="TProfile">Die Art der Daten.</typeparam>
-        /// <param name="profiles">Die Liste der Ger�teprofile.</param>
+        /// <param name="profiles">Die Liste der Geräteprofile.</param>
         /// <param name="getName">Methode zum Auslesen des Profilnames.</param>
         /// <param name="updater">Die Aktualisierungsmethode.</param>
         /// <returns>Gesetzt, wenn eine �nderung durchgef�hrt wurde.</returns>
@@ -360,7 +361,7 @@ namespace JMS.DVB.NET.Recording
         /// Liest einen Auszug aus einem Protokoll.
         /// </summary>
         /// <typeparam name="TEntry">Die Art der Zielinformation.</typeparam>
-        /// <param name="profileName">Der Name des betroffenen Ger�teprofils.</param>
+        /// <param name="profileName">Der Name des betroffenen Geräteprofils.</param>
         /// <param name="start">Das Startdatum.</param>
         /// <param name="end">Das Enddatum.</param>
         /// <param name="factory">Methode zum Erzeugen der externen Darstellung aus den Protokolleintr�gen.</param>

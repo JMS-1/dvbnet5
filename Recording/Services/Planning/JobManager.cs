@@ -1,9 +1,10 @@
 using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.RestWebApi;
+using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
 
-namespace JMS.DVB.NET.Recording.Services;
+namespace JMS.DVB.NET.Recording.Services.Planning;
 
 /// <summary>
 /// Verwaltung aller Aufträge für alle DVB.NET Geräteprofile.

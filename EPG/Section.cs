@@ -157,7 +157,7 @@ namespace JMS.DVB.EPG
         /// Meldete eine erweiterte Dekompromierung an.
         /// </summary>
         /// <param name="index">Die laufende Nummer des Algorithmus.</param>
-        /// <param name="encoding">Der gew�nschte Algorithmus.</param>
+        /// <param name="encoding">Der gewünschte Algorithmus.</param>
         static public void RegisterEncoding(byte index, Encoding encoding)
         {
             // Extend array if necessary

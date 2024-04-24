@@ -56,7 +56,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// Wandelt eine Frequenzangabe aus einer <see cref="FrequencyList"/> in eine echte Frequenz um.
         /// </summary>
         /// <param name="frequency">Die Rohdaten der Frequenz.</param>
-        /// <returns>Die gew�nschte Frequenz in Hz.</returns>
+        /// <returns>Die gewünschte Frequenz in Hz.</returns>
         internal static ulong ConvertFrequency(uint frequency)
         {
             // Easy

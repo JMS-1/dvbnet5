@@ -693,7 +693,7 @@ namespace JMS.DVB.TS
 		/// einer Gesamtdatei an.
 		/// </summary>
 		/// <remarks>
-		/// Der Gesamtstrom tr�gt �ber <see cref="GuidePTS"/> den vollen PTS eines
+		/// Der Gesamtstrom tr�gt über <see cref="GuidePTS"/> den vollen PTS eines
 		/// Datenstroms ein - <i>-1</i>, wenn keine weiteren Datenstr�me vorhanden
 		/// sind. Die Methode �bernimmt das 33te Bit in die PTS Werte des PVA Stroms
 		/// und pr�ft dann die Abweichung dieses korrigierten Wertes gegen den

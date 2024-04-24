@@ -78,7 +78,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Meldet eine der Frequenzen in der nat�rlichen Form.
         /// </summary>
-        /// <param name="index">Die 0-basierte laufende Nummer der gew�nschten Frequenz.</param>
+        /// <param name="index">Die 0-basierte laufende Nummer der gewünschten Frequenz.</param>
         /// <returns>Die Frequenz in Hz.</returns>
         public ulong ConvertFrequency(int index)
         {

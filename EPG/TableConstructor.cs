@@ -62,13 +62,13 @@ namespace JMS.DVB.EPG
         /// <summary>
         /// Erg�nzt ein Byte.
         /// </summary>
-        /// <param name="value">Das gew�nschte Byte.</param>
+        /// <param name="value">Das gewünschte Byte.</param>
         public void Add(byte value) => m_Buffer.Add(value);
 
         /// <summary>
         /// Erg�nzt eine Zahl.
         /// </summary>
-        /// <param name="value">Die gew�nschte Zahl.</param>
+        /// <param name="value">Die gewünschte Zahl.</param>
         public void Add(ushort value) =>
             Add((byte)((value >> 8) & 0xff), (byte)(value & 0xff));
 

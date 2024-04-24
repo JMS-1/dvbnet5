@@ -309,7 +309,7 @@ namespace JMS.DVB.TS
         /// Erzeugt einen neuen, doppelt gepufferten Bereich für das Schreiben in eine Datei.
         /// </summary>
         /// <param name="filePath">Der volle Pfad zur Datei.</param>
-        /// <returns>Der gew�nschte Speicherbereich.</returns>
+        /// <returns>Der gewünschte Speicherbereich.</returns>
         private DoubleBufferedFile CreateBuffered(string filePath) => new(filePath, m_BufferSize);
 
         /// <summary>
@@ -332,7 +332,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Beginnt bei n�chster Gelegenheit mit dem Beschreiben einer neuen Datei.
         /// </summary>
-        /// <param name="newFilePath">Der volle Pfad zur gew�nschten Zieldatei.</param>
+        /// <param name="newFilePath">Der volle Pfad zur gewünschten Zieldatei.</param>
         /// <exception cref="ArgumentNullException">Es wurde keine Zieldatei angegeben.</exception>
         public void SplitFile(string newFilePath)
         {
@@ -729,7 +729,7 @@ namespace JMS.DVB.TS
         /// wird nicht auf Konsistenz gepr�ft.
         /// </summary>
         /// <param name="packet">Ein elementares Paket.</param>
-        /// <returns>Die gew�nschte Systemzeit.</returns>
+        /// <returns>Die gewünschte Systemzeit.</returns>
         public static TimeSpan GetPCR(byte[] packet)
         {
             // Load parts

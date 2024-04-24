@@ -1,5 +1,6 @@
 ﻿using JMS.DVB.NET.Recording.Actions;
 using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -261,7 +262,7 @@ public class ConfigurationController(IVCRConfiguration configuration, IConfigura
     /// </summary>
     /// <param name="directory">Das zu prüfende Verzeichnis.</param>
     /// <returns>Gesetzt, wenn das Verzeichnis verwendet werden kann.</returns>
-    [HttpGet("variable")]
+    [HttpGet("validate^")]
     public bool Validate(string directory)
     {
         // Be safe

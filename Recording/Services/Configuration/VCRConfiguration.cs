@@ -3,7 +3,7 @@ using System.Reflection;
 using JMS.DVB.NET.Recording.Services;
 using Microsoft.Extensions.Logging;
 
-namespace JMS.DVB.NET.Recording.Services;
+namespace JMS.DVB.NET.Recording.Services.Configuration;
 
 /// <summary>
 /// Verwaltet die Konfiguration des VCR.NET Recording Service.
@@ -117,7 +117,7 @@ public class VCRConfiguration : IVCRConfiguration
     /// <summary>
     /// Die aktuell gültige Konfiguration.
     /// </summary>
-    internal Configuration Configuration = null!;
+    internal System.Configuration.Configuration Configuration = null!;
 
     /// <summary>
     /// Initialisiert eine neue Konfiguration.

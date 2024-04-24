@@ -77,7 +77,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// Ermittelt den am besten passenden Eintrag aus einem Zeitraum.
         /// </summary>
         /// <typeparam name="TTarget">Die Art der R�ckgabewerte.</typeparam>
-        /// <param name="source">Die gew�nschte Quelle.</param>
+        /// <param name="source">Die gewünschte Quelle.</param>
         /// <param name="start">Der Beginn des Zeitraums.</param>
         /// <param name="end">Das Ende des Zeitraums.</param>
         /// <param name="factory">Methode zum Erzeugen eines R�ckgabewertes.</param>
@@ -96,7 +96,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// </summary>
         /// <param name="source">Die Quelle, deren Eintrag ermittelt werden soll.</param>
         /// <param name="start">Der exakte Startzeitpunkt.</param>
-        /// <returns>Der gew�nschte Eintrag.</returns>
+        /// <returns>Der gewünschte Eintrag.</returns>
         public ProgramGuideEntry? FindEntry(SourceIdentifier source, DateTime start)
         {
             // Attach to holder
@@ -165,8 +165,8 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Meldet alle Eintr�ge der Programmzeitschrift zu einer Quelle.
         /// </summary>
-        /// <param name="source">Die gew�nschte Quelle.</param>
-        /// <returns>Die gew�nschte Liste.</returns>
+        /// <param name="source">Die gewünschte Quelle.</param>
+        /// <returns>Die gewünschte Liste.</returns>
         public IEnumerable<ProgramGuideEntry> GetEntries(SourceIdentifier source)
         {
             // Load list
@@ -183,7 +183,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Erzeugt eine exakte Kopie dieser Verwaltungsinstanz.
         /// </summary>
-        /// <returns>Die gew�nschte Kopie.</returns>
+        /// <returns>Die gewünschte Kopie.</returns>
         public ProgramGuideEntries Clone()
         {
             // Create
@@ -200,7 +200,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Erzeugt eine exakte Kopie dieser Verwaltungsinstanz.
         /// </summary>
-        /// <returns>Die gew�nschte Kopie.</returns>
+        /// <returns>Die gewünschte Kopie.</returns>
         object ICloneable.Clone()
         {
             // Forward

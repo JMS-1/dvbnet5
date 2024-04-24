@@ -273,7 +273,7 @@ namespace JMS.DVB.EPG
         /// </summary>
         /// <typeparam name="T">Die Art der gesuchten Beschreibung.</typeparam>
         /// <param name="descriptors">Die Liste der zu durchsuchenden Beschreibungen.</param>
-        /// <returns>Die gew�nschte Beschreibung oder <i>null</i>, wenn keine Beschreibung
+        /// <returns>Die gewünschte Beschreibung oder <i>null</i>, wenn keine Beschreibung
         /// der gesuchten Art in der Liste vorhanden ist.</returns>
         public static T? Find<T>(this Descriptor[] descriptors) where T : Descriptor
         {
