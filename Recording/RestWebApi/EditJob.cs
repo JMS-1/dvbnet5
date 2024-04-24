@@ -122,18 +122,14 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Erstellt einen passenden Auftrag für die persistente Ablage.
         /// </summary>
         /// <returns>Der zugehörige Auftrag.</returns>
-        public VCRJob CreateJob(VCRServer server)
-        {
-            // Forward
-            return CreateJob(Guid.NewGuid(), server);
-        }
+        public VCRJob CreateJob(IVCRProfiles profiles) => CreateJob(Guid.NewGuid(), profiles);
 
         /// <summary>
         /// Erstellt einen passenden Auftrag für die persistente Ablage.
         /// </summary>
         /// <param name="jobIdentifier">Die eindeutige Kennung des Auftrags.</param>
         /// <returns>Der zugehörige Auftrag.</returns>
-        public VCRJob CreateJob(Guid jobIdentifier, VCRServer server)
+        public VCRJob CreateJob(Guid jobIdentifier, IVCRProfiles profiles)
         {
             // Create core
             var job =
@@ -162,7 +158,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             }
 
             // Locate the source
-            job.Source = server.FindSource(profile, sourceName)!;
+            job.Source = profiles.FindSource(profile, sourceName)!;
             if (job.Source == null)
                 return job;
 

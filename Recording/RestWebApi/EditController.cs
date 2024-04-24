@@ -11,7 +11,11 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/edit")]
-    public class EditController(VCRServer server, IProfileStateCollection states, IVCRProfiles profiles, IJobManager jobs) : ControllerBase
+    public class EditController(
+        IProfileStateCollection states,
+        IVCRProfiles profiles,
+        IJobManager jobs
+    ) : ControllerBase
     {
         /// <summary>
         /// Wird zum Anlegen einer neuen Aufzeichnung verwendet.
@@ -22,8 +26,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public string CreateNewJob([FromBody] JobScheduleData data)
         {
             // Reconstruct
-            var job = data.Job.CreateJob(server);
-            var schedule = data.Schedule.CreateSchedule(job, server);
+            var job = data.Job.CreateJob(profiles);
+            var schedule = data.Schedule.CreateSchedule(job, profiles);
 
             // See if we can use it
             if (!schedule.IsActive)
@@ -73,7 +77,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 var epgInfo = epg.Split(':');
 
                 // Locate
-                epgEntry = server.FindProgramGuideEntry(profile = epgInfo[1], SourceIdentifier.Parse(epgInfo[2]), new DateTime(long.Parse(epgInfo[0]), DateTimeKind.Utc));
+                epgEntry = states[profile = epgInfo[1]]?.ProgramGuide.FindEntry(SourceIdentifier.Parse(epgInfo[2]), new DateTime(long.Parse(epgInfo[0]), DateTimeKind.Utc));
             }
 
             // Information erzeugen
@@ -96,8 +100,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 throw new ArgumentException("Job or Schedule not found");
 
             // Take the new job data
-            var newJob = data.Job.CreateJob(job.UniqueID!.Value, server);
-            var newSchedule = data.Schedule.CreateSchedule(schedule.UniqueID!.Value, newJob, server);
+            var newJob = data.Job.CreateJob(job.UniqueID!.Value, profiles);
+            var newSchedule = data.Schedule.CreateSchedule(schedule.UniqueID!.Value, newJob, profiles);
 
             // All exceptions still active
             var activeExceptions = data.Schedule.Exceptions ?? Enumerable.Empty<PlanException>();
@@ -169,8 +173,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 throw new ArgumentException("Job not found");
 
             // Take the new job data
-            var newJob = data.Job.CreateJob(job.UniqueID!.Value, server);
-            var newSchedule = data.Schedule.CreateSchedule(newJob, server);
+            var newJob = data.Job.CreateJob(job.UniqueID!.Value, profiles);
+            var newSchedule = data.Schedule.CreateSchedule(newJob, profiles);
 
             // See if we can use it
             if (!newSchedule.IsActive)

@@ -77,15 +77,6 @@ namespace JMS.DVB.NET.Recording
         }
 
         /// <summary>
-        /// Ermittelt einen bestimmten Eintrag.
-        /// </summary>
-        /// <param name="profileName">Das zu betrachtende Geräteprofil.</param>
-        /// <param name="source">Die Quelle, deren Eintrag ermittelt werden soll.</param>
-        /// <param name="start">Der exakte Startzeitpunkt.</param>
-        /// <returns>Der gewünschte Eintrag.</returns>
-        public ProgramGuideEntry? FindProgramGuideEntry(string profileName, SourceIdentifier source, DateTime start) => Profiles[profileName]?.ProgramGuide.FindEntry(source, start);
-
-        /// <summary>
         /// Ver�ndert eine Ausnahme.
         /// </summary>
         /// <param name="jobIdentifier">Die eindeutige Kennung des Auftrags.</param>
@@ -124,31 +115,6 @@ namespace JMS.DVB.NET.Recording
 
             // Recalculate plan
             Profiles.BeginNewPlan();
-        }
-
-        /// <summary>
-        /// Meldet Informationen zu allen Geräteprofilen.
-        /// </summary>
-        /// <typeparam name="TInfo">Die Art der gemeldeten Information.</typeparam>
-        /// <param name="factory">Methode zum Erzeugen der Informationen zu einem einzelnen Geräteprofil.</param>
-        /// <returns>Die Informationen zu den Profilen.</returns>
-        public TInfo[] GetProfiles<TInfo>(Func<IProfileState, TInfo> factory) => Profiles.InspectProfiles(factory).ToArray();
-
-        /// <summary>
-        /// Meldet alle Aufträge.
-        /// </summary>
-        /// <typeparam name="TJob">Die Art der externen Darstellung.</typeparam>
-        /// <param name="factory">Methode zum Erstellen der externen Darstellung.</param>
-        /// <returns>Die Liste der Aufträge.</returns>
-        public TJob[] GetJobs<TJob>(Func<VCRJob, bool, IVCRProfiles, TJob> factory, IVCRProfiles profiles)
-        {
-            // Report
-            return
-                _jobs
-                    .GetActiveJobs()
-                    .Select(job => factory(job, true, profiles))
-                    .Concat(_jobs.ArchivedJobs.Select(job => factory(job, false, profiles)))
-                    .ToArray();
         }
 
         /// <summary>
@@ -260,7 +226,7 @@ namespace JMS.DVB.NET.Recording
             if (string.IsNullOrEmpty(profileName))
                 return [];
 
-            var profile = FindProfile(profileName);
+            var profile = Profiles.FindProfile(profileName);
             if (profile == null)
                 return [];
 
@@ -290,7 +256,7 @@ namespace JMS.DVB.NET.Recording
             var profileName = filterIntern!.ProfileName;
             if (string.IsNullOrEmpty(profileName))
                 return 0;
-            var profile = FindProfile(profileName);
+            var profile = Profiles.FindProfile(profileName);
             if (profile == null)
                 return 0;
 
@@ -309,7 +275,7 @@ namespace JMS.DVB.NET.Recording
             // Locate profile and forward call
             if (string.IsNullOrEmpty(profileName))
                 return default!;
-            var profile = FindProfile(profileName);
+            var profile = Profiles.FindProfile(profileName);
             if (profile == null)
                 return default!;
             else
@@ -370,7 +336,7 @@ namespace JMS.DVB.NET.Recording
             // Locate profile and forward call
             if (string.IsNullOrEmpty(profileName))
                 return [];
-            var profile = FindProfile(profileName);
+            var profile = Profiles.FindProfile(profileName);
             if (profile == null)
                 return [];
             else

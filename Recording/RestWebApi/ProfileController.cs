@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Planning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -10,7 +11,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/profile")]
-    public class ProfileController(VCRServer server, IVCRProfiles profiles) : ControllerBase
+    public class ProfileController(IProfileStateCollection states) : ControllerBase
     {
         /// <summary>
         /// Meldet alle Geräteprofile, die der <i>VCR.NET Recording Service</i> verwenden darf.
@@ -21,10 +22,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Forward
             return
-                server
+                [.. states
                     .GetProfiles(ProfileInfo.Create)
-                    .OrderBy(profile => profile.Name, ProfileManager.ProfileNameComparer)
-                    .ToArray();
+                    .OrderBy(profile => profile.Name, ProfileManager.ProfileNameComparer)];
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="profile">Der Name des zu verwendenden Geräteprofils.</param>
         /// <returns>Die gewünschte Liste von Sendern.</returns>
         [HttpGet("sources/{profile}")]
-        public ProfileSource[] FindSources(string profile) => server.GetSources(profile, true, true, ProfileSource.Create);
+        public ProfileSource[] FindSources(string profile) => states.GetSources(profile, true, true, ProfileSource.Create);
 
         /// <summary>
         /// Verändert den Endzeitpunkt.
@@ -44,14 +44,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="endTime">Der neue Endzeitpunkt.</param>
         [HttpPut("endtime/{profile}")]
         public void SetNewEndTime(string profile, bool disableHibernate, string schedule, string endTime)
-        {
-            // Map parameters to native types
-            var scheduleIdentifier = new Guid(schedule);
-            var end = DateTime.Parse(endTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-
-            // Forward
-            server.ChangeRecordingStreamEndTime(profile, scheduleIdentifier, end, disableHibernate);
-        }
+            => states
+                .FindProfile(profile)?
+                .ChangeStreamEnd(
+                    new Guid(schedule),
+                    DateTime.Parse(endTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                    disableHibernate && (states.NumberOfActiveRecordings == 1)
+                );
 
         /// <summary>
         /// Ermittelt alle aktiven Aufträge eines Geräteprofils.
@@ -63,12 +62,11 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Request jobs
             return
-                server
-                    .GetJobs(ProfileJobInfo.Create, profiles)
+                [.. states
+                    .GetJobs(ProfileJobInfo.Create)
                     .Where(job => job != null && ProfileManager.ProfileNameComparer.Equals(job.Profile, profile))
                     .Cast<ProfileJobInfo>()
-                    .OrderBy(job => job.Name, StringComparer.InvariantCultureIgnoreCase)
-                    .ToArray();
+                    .OrderBy(job => job.Name, StringComparer.InvariantCultureIgnoreCase)];
         }
     }
 }

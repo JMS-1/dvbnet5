@@ -99,4 +99,3 @@ public interface IJobManager
     /// <exception cref="ArgumentNullException">Es wurden nicht alle Parameter angegeben.</exception>
     void AddToScheduler(VCRSchedule schedule, RecordingScheduler scheduler, VCRJob job, IScheduleResource[] devices, Func<SourceSelection, IVCRProfiles, SourceSelection?> findSource, Func<Guid, bool> disabled);
 }
-

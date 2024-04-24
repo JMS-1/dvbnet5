@@ -21,7 +21,7 @@ public class RuleUpdater(IProfileStateCollection states, VCRServer server) : IRu
             return null;
 
         // Process
-        server.SchedulerRules = newRules;
+        states.SchedulerRules = newRules;
 
         // Do not restart in debug mode
         if (Tools.DebugMode)

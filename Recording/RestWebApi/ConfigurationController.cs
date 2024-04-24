@@ -1,6 +1,7 @@
 ﻿using JMS.DVB.NET.Recording.Actions;
 using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Planning;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -13,7 +14,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi;
 /// </summary>
 [ApiController]
 [Route("api/configuration")]
-public class ConfigurationController(IVCRConfiguration configuration, IConfigurationUpdater updateConfig, IRuleUpdater updateRules, VCRServer server) : ControllerBase
+public class ConfigurationController(
+    IProfileStateCollection states,
+    IVCRConfiguration configuration,
+    IConfigurationUpdater updateConfig,
+    IRuleUpdater updateRules,
+    VCRServer server
+) : ControllerBase
 {
     /// <summary>
     /// Die Einstellungen der Sicherheit.
@@ -262,7 +269,7 @@ public class ConfigurationController(IVCRConfiguration configuration, IConfigura
     /// </summary>
     /// <param name="directory">Das zu prüfende Verzeichnis.</param>
     /// <returns>Gesetzt, wenn das Verzeichnis verwendet werden kann.</returns>
-    [HttpGet("validate^")]
+    [HttpGet("validate")]
     public bool Validate(string directory)
     {
         // Be safe
@@ -283,7 +290,7 @@ public class ConfigurationController(IVCRConfiguration configuration, IConfigura
     /// </summary>
     /// <returns>Die aktuellen Regeln.</returns>
     [HttpGet("rules")]
-    public SchedulerRules ReadSchedulerRules() => new SchedulerRules { RuleFileContents = server.SchedulerRules };
+    public SchedulerRules ReadSchedulerRules() => new SchedulerRules { RuleFileContents = states.SchedulerRules };
 
     /// <summary>
     /// Aktualisiert das Regelwerk für die Aufzeichnungsplanung.

@@ -1,4 +1,5 @@
 using JMS.DVB.NET.Recording;
+using JMS.DVB.NET.Recording.Services.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;

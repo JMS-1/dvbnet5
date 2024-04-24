@@ -19,11 +19,23 @@ public interface IProfileStateCollection : IRecordingPlannerSite
     IExtensionManager ExtensionManager { get; }
 
     /// <summary>
+    /// Meldet die aktuellen Regeln für die Aufzeichnungsplanung.
+    /// </summary>
+    string SchedulerRules { get; set; }
+
+    /// <summary>
     /// Ermittelt den Zustand eines einzelnen Geräteprofils.
     /// </summary>
     /// <param name="profileName">Das gewünschte Profil.</param>
     /// <returns>Die Zustandsbeschreibung oder <i>null</i>.</returns>
     IProfileState? this[string profileName] { get; }
+
+    /// <summary>
+    /// Ermittelt ein Ger?teprofil und meldet einen Fehler, wenn keins gefunden wurde.
+    /// </summary>
+    /// <param name="profileName">Der Name des gew?nschten Ger?teprofils.</param>
+    /// <returns>Der Zustand des Profils.</returns>
+    IProfileState? FindProfile(string profileName);
 
     /// <summary>
     /// Meldet die Anzahl der aktiven Aufzeichnungen.

@@ -58,4 +58,14 @@ public static class IVCRProfilesExtensions
         // Find the source
         return profiles.FindSource(source.ProfileName, source.Source);
     }
+
+
+    /// <summary>
+    /// Ermittelt eine Quelle.
+    /// </summary>
+    /// <param name="profile">Das zu verwendende Ger?teprofil.</param>
+    /// <param name="name">Der (hoffentlicH) eindeutige Name der Quelle.</param>
+    /// <returns>Die Beschreibung der Quelle.</returns>
+    public static SourceSelection? FindSource(this IVCRProfiles profiles, string profile, string name)
+        => profiles.FindSource(profile, name);
 }
