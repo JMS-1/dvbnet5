@@ -20,7 +20,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         }
 
         /// <summary>
-        /// Pr�ft, ob f�r den gew�hlten Zeitraum ein Eintrag existiert.
+        /// Pr�ft, ob für den gew�hlten Zeitraum ein Eintrag existiert.
         /// </summary>
         /// <param name="start">Der Beginn des Zeitraums (einschlie�lich).</param>
         /// <param name="end">Das Ende des Zeitraums (ausschlie�lich).</param>

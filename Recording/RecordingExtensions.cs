@@ -1,3 +1,4 @@
+using JMS.DVB.NET.Recording.Actions;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Requests;
 using JMS.DVB.NET.Recording.Services;
@@ -22,6 +23,7 @@ public static class RecordingExtensions
 
         services.AddTransient(typeof(Lazy<>));
 
+        services.AddTransient<IConfigurationUpdater, ConfigurationUpdater>();
         services.AddTransient<ILogger, Logger>();
         services.AddTransient<IProfileStateFactory, ProfileStateFactory>();
         services.AddTransient<IProgramGuideManagerFactory, ProgramGuideManagerFactory>();

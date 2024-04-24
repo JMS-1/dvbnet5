@@ -133,12 +133,12 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         public DateTime? Start { get; set; }
 
         /// <summary>
-        /// Das Suchmuster f�r den Titel, das erste Zeichen bestimmt den Suchmodus.
+        /// Das Suchmuster für den Titel, das erste Zeichen bestimmt den Suchmodus.
         /// </summary>
         public string TitlePattern { get; set; } = null!;
 
         /// <summary>
-        /// Das Suchmuster f�r den Inhalt, das erste Zeichen bestimmt den Suchmodus.
+        /// Das Suchmuster für den Inhalt, das erste Zeichen bestimmt den Suchmodus.
         /// </summary>
         public string ContentPattern { get; set; } = null!;
 

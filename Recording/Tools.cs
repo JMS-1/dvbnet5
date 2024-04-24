@@ -13,12 +13,12 @@ namespace JMS.DVB.NET.Recording
     public static class Tools
     {
         /// <summary>
-        /// Die Zeitbasis f�r alle Zeitangaben.
+        /// Die Zeitbasis für alle Zeitangaben.
         /// </summary>
         public static long UnixTimeBias = new DateTime(1970, 1, 1).Ticks;
 
         /// <summary>
-        /// Umrechnungsfaktor f�r Zeitangaben.
+        /// Umrechnungsfaktor für Zeitangaben.
         /// </summary>
         public static int UnixTimeFactor = 10000;
 
@@ -48,7 +48,7 @@ namespace JMS.DVB.NET.Recording
         public static bool EnableTracing = false;
 
         /// <summary>
-        /// Eine Kurzbezeichnung f�r die aktuelle Laufzeitumgebung f�r Protokolleintr�ge.
+        /// Eine Kurzbezeichnung für die aktuelle Laufzeitumgebung für Protokolleintr�ge.
         /// </summary>
         public static string DomainName = null!;
 
@@ -82,8 +82,8 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Protokolliert besondere Ereignisse.
         /// </summary>
-        /// <param name="format">Format f�r eine Meldung.</param>
-        /// <param name="args">Parameter zum Format f�r die Meldung.</param>
+        /// <param name="format">Format für eine Meldung.</param>
+        /// <param name="args">Parameter zum Format für die Meldung.</param>
         public static void ExtendedLogging(string format, params object[] args)
         {
             // Log all errors a special way
@@ -243,7 +243,7 @@ namespace JMS.DVB.NET.Recording
         /// Startet eine einzelne Erweiterung.
         /// </summary>
         /// <param name="extension">Die gew�nschte Erweiterung.</param>
-        /// <param name="environment">Parameter f�r die Erweiterung.</param>
+        /// <param name="environment">Parameter für die Erweiterung.</param>
         /// <returns>Der gestartete Prozess oder <i>null</i>, wenn ein Start nicht m�glich war.</returns>
         public static Process? RunExtension(FileInfo extension, Dictionary<string, string> environment, VCRServer server, ILogger logger)
         {
@@ -302,7 +302,7 @@ namespace JMS.DVB.NET.Recording
 
         /// <summary>
         /// Ermittelt zu einem letzten Ausf�hrungszeitpunkt und einer Liste von erlaubten Stunden
-        /// den n�chsten ausf�hrungszeitpunkt f�r eine periodische Aktualisierung.
+        /// den n�chsten ausf�hrungszeitpunkt für eine periodische Aktualisierung.
         /// </summary>
         /// <param name="lastTime">Der Zeitpunkt, an dem letztmalig eine Aktualisierung ausgef�hrt wurde.</param>
         /// <param name="hourSkip">Die Anzahl von Stunden, die auf jeden Fall �bersprungen werden sollen.</param>
@@ -354,7 +354,7 @@ namespace JMS.DVB.NET.Recording
         /// Startet aller Erweiterung einer bestimmten Art.
         /// </summary>
         /// <param name="extensionType">Die gew�nschte Art von Erweiterungen.</param>
-        /// <param name="environment">Aller Parameter f�r die Erweiterungen.</param>
+        /// <param name="environment">Aller Parameter für die Erweiterungen.</param>
         /// <returns>Die Prozessinformationen zu allen gestarten Erweiterungen.</returns>
         public static IEnumerable<Process> RunExtensions(string extensionType, Dictionary<string, string> environment, VCRServer server, ILogger logger)
         {
@@ -366,7 +366,7 @@ namespace JMS.DVB.NET.Recording
         /// Startet aller Erweiterung einer bestimmten Art.
         /// </summary>
         /// <param name="extensionType">Die gew�nschte Art von Erweiterungen.</param>
-        /// <param name="environment">Aller Parameter f�r die Erweiterungen.</param>
+        /// <param name="environment">Aller Parameter für die Erweiterungen.</param>
         /// <returns>Die Prozessinformationen zu allen gestarten Erweiterungen.</returns>
         public static void RunSynchronousExtensions(string extensionType, Dictionary<string, string> environment, VCRServer server, ILogger logger)
         {
@@ -398,7 +398,7 @@ namespace JMS.DVB.NET.Recording
         /// Startet eine Liste von Erweiterungen.
         /// </summary>
         /// <param name="extensions">Die zu startenden Erweiterungen.</param>
-        /// <param name="environment">Aller Parameter f�r die Erweiterungen.</param>
+        /// <param name="environment">Aller Parameter für die Erweiterungen.</param>
         /// <returns>Die Prozessinformationen zu allen gestarten Erweiterungen.</returns>
         public static IEnumerable<Process> RunExtensions(IEnumerable<FileInfo> extensions, Dictionary<string, string> environment, VCRServer server, ILogger logger)
         {

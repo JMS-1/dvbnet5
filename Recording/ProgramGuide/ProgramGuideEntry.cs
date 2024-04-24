@@ -121,7 +121,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         private static readonly char[] m_Disallowed;
 
         /// <summary>
-        /// Eine eindeutige Kennung f�r diesen Eintrag - dieser wird in einem
+        /// Eine eindeutige Kennung für diesen Eintrag - dieser wird in einem
         /// Filter zum Bl�ttern verwendet.
         /// </summary>
         [XmlIgnore]

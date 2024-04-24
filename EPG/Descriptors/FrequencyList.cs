@@ -46,7 +46,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// </summary>
         /// <param name="container">Der SI Bereich, in dem diese Liste gefunden wurde.</param>
         /// <param name="offset">Der Index des ersten Bytes dieser Liste in den Rohdaten des SI Bereichs.</param>
-        /// <param name="length">Die Anzahl der Bytes f�r diese Liste.</param>
+        /// <param name="length">Die Anzahl der Bytes für diese Liste.</param>
         public FrequencyList(IDescriptorContainer container, int offset, int length)
             : base(container, offset, length)
         {
@@ -93,10 +93,10 @@ namespace JMS.DVB.EPG.Descriptors
         }
 
         /// <summary>
-        /// Pr�ft, ob diese Klasse f�r eine bestimmte Art von SI Beschreibungen zust�ndig ist.
+        /// Pr�ft, ob diese Klasse für eine bestimmte Art von SI Beschreibungen zust�ndig ist.
         /// </summary>
         /// <param name="tag">Die eindeutige Kennung einer SI Beschreibung.</param>
-        /// <returns>Gesetzt, wenn diese Klasse f�r die angegebene Art von Beschreibung zurst�ndig ist.</returns>
+        /// <returns>Gesetzt, wenn diese Klasse für die angegebene Art von Beschreibung zurst�ndig ist.</returns>
         public static bool IsHandlerFor(byte tag)
         {
             // Check it

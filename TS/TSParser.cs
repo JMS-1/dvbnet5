@@ -13,7 +13,7 @@ namespace JMS.DVB.TS
     {
         /// <summary>
         /// Informationen �ber den Interessenten an einem der Nutzdatenstr�me. Instanzen dieser
-        /// Klasse werden f�r die automatische Extraktion von Bild- und Tonsignal verwendet.
+        /// Klasse werden für die automatische Extraktion von Bild- und Tonsignal verwendet.
         /// </summary>
         /// <param name="parser">Die zugeh�rige Instanz zum Gesamtdatenstrom.</param>
         /// <param name="pid">Die betroffenen Datenstromkennung.</param>
@@ -26,7 +26,7 @@ namespace JMS.DVB.TS
             public readonly ushort PID = pid;
 
             /// <summary>
-            /// Der zugeh�rige Rekonstruktionskomponente f�r den Nutzdatenstrom.
+            /// Der zugeh�rige Rekonstruktionskomponente für den Nutzdatenstrom.
             /// </summary>
             private PESBuilder m_Builder = new PESBuilder(parser, callback);
 
@@ -38,8 +38,8 @@ namespace JMS.DVB.TS
             /// <summary>
             /// Nimmt ein Rohdatenpaket entgegen.
             /// </summary>
-            /// <param name="packet">Zwischenspeicher f�r Daten.</param>
-            /// <param name="offset">Index des ersten Bytes f�r das aktuelle Rohdatenpaket.</param>
+            /// <param name="packet">Zwischenspeicher für Daten.</param>
+            /// <param name="offset">Index des ersten Bytes für das aktuelle Rohdatenpaket.</param>
             /// <param name="length">Anzahl der Bytes im Rohdatenpaket.</param>
             /// <param name="noincrement">Gesetzt, wenn der Rohdatenpaketz�hler nicht erh�ht werden darf.</param>
             /// <param name="first">Gesetzt, wenn dieses Rohdatenpaket einen PES Kopf enth�lt.</param>
@@ -203,14 +203,14 @@ namespace JMS.DVB.TS
         public event PMTFoundHandler? PMTFound;
 
         /// <summary>
-        /// Erzeugt eine neue Analyseinstanz f�r einen <i>Transport Stream</i>.
+        /// Erzeugt eine neue Analyseinstanz für einen <i>Transport Stream</i>.
         /// </summary>
         public TSParser() : this(false)
         {
         }
 
         /// <summary>
-        /// Erzeugt eine neue Analyseinstanz f�r einen <i>Transport Stream</i>.
+        /// Erzeugt eine neue Analyseinstanz für einen <i>Transport Stream</i>.
         /// </summary>
         /// <param name="fastSync">Gesetzt, wenn die Synchronisation bereits nach 10 statt
         /// 100 empfangenen Paketen erfolgen soll.</param>
@@ -670,7 +670,7 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Registriert einen einfacher Verbraucher f�r einen Datenstrom.
+        /// Registriert einen einfacher Verbraucher für einen Datenstrom.
         /// </summary>
         /// <param name="pid">Die gew�nschte Datenstromkennung.</param>
         /// <param name="isSITable">Gesetzt, wenn es sich um einen Kontroll- und keinen
@@ -693,10 +693,10 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Registriert einen Verbraucher f�r einen Datenstrom.
+        /// Registriert einen Verbraucher für einen Datenstrom.
         /// </summary>
         /// <param name="pid">Die gew�nschte Datenstromkennung.</param>
-        /// <param name="consumer">Der Verbrqaucher f�r die Daten.</param>
+        /// <param name="consumer">Der Verbrqaucher für die Daten.</param>
         /// <exception cref="ArgumentNullException">Es wurde kein Verbraucher angegeben.</exception>
         public void RegisterCustomFilter(ushort pid, TSBuilder consumer)
         {
@@ -743,7 +743,7 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Entfernt einen Verbraucher f�r einen Datenstrom.
+        /// Entfernt einen Verbraucher für einen Datenstrom.
         /// </summary>
         /// <param name="pid">Die gew�nschte Datenstromkennung.</param>
         public void RemoveFilter(ushort pid)

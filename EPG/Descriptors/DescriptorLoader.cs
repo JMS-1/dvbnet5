@@ -12,12 +12,12 @@ namespace JMS.DVB.EPG.Descriptors
 		private IDescriptorContainer m_Container;
 
 		/// <summary>
-		/// Erstes Byte der Daten f�r die Descriptoren.
+		/// Erstes Byte der Daten für die Descriptoren.
 		/// </summary>
 		private int m_Offset;
 
 		/// <summary>
-		/// Anzahl der Bytes f�r Descriptoren.
+		/// Anzahl der Bytes für Descriptoren.
 		/// </summary>
 		private int m_Length;
 
@@ -30,8 +30,8 @@ namespace JMS.DVB.EPG.Descriptors
 		/// Erzeugt eine neue Ladeinstanz.
 		/// </summary>
 		/// <param name="table">Die zugeh�rige SI Struktur.</param>
-		/// <param name="offset">Erstes Byte f�r Descriptoren.</param>
-		/// <param name="length">Anzahl der Bytes f�r Descriptoren.</param>
+		/// <param name="offset">Erstes Byte für Descriptoren.</param>
+		/// <param name="length">Anzahl der Bytes für Descriptoren.</param>
 		public DescriptorLoader(IDescriptorContainer table, int offset, int length)
 		{
 			// Remember all

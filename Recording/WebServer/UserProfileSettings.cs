@@ -90,7 +90,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         }
 
         /// <summary>
-        /// Pr�ft die Voreinstellung f�r den Schlafzustand nach einem Abbruch.
+        /// Pr�ft die Voreinstellung für den Schlafzustand nach einem Abbruch.
         /// </summary>
         public static bool NoHibernateOnAbort
         {

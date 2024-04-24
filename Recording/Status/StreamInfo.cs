@@ -36,7 +36,7 @@ namespace JMS.DVB.NET.Recording.Status
         /// <summary>
         /// Erzeugt eine neue Beschreibung.
         /// </summary>
-        /// <param name="primary">Die prim�re Aufzeichnung f�r die Quelle, in der auch der Dateiname
+        /// <param name="primary">Die prim�re Aufzeichnung für die Quelle, in der auch der Dateiname
         /// festgelegt ist.</param>
         /// <param name="target">Das aktuelle Ziel eines Netzwerkversands.</param>
         /// <param name="fileMap">Die Liste aller Dateien zur Gesamtaktivit�t.</param>

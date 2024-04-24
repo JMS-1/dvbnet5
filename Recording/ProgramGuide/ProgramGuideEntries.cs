@@ -58,7 +58,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         }
 
         /// <summary>
-        /// Pr�ft, ob f�r den gew�hlten Zeitraum ein Eintrag existiert.
+        /// Pr�ft, ob für den gew�hlten Zeitraum ein Eintrag existiert.
         /// </summary>
         /// <param name="source">Die Quelle, deren Eintr�ge untersucht werden sollen.</param>
         /// <param name="start">Der Beginn des Zeitraums (einschlie�lich).</param>

@@ -20,7 +20,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// </summary>
         /// <param name="container">Der SI Bereich, in dem diese Beschreibung gefunden wurde.</param>
         /// <param name="offset">Das erste Byte zu den Rohdaten dieser Beschreibung in dem zugeh�rigen Bereich.</param>
-        /// <param name="length">Die Anzahl der Bytes f�r die Rohdaten dieser Beschreibung.</param>
+        /// <param name="length">Die Anzahl der Bytes für die Rohdaten dieser Beschreibung.</param>
         public TerrestrialDelivery(IDescriptorContainer container, int offset, int length)
             : base(container, offset, length)
         {
@@ -42,10 +42,10 @@ namespace JMS.DVB.EPG.Descriptors
         }
 
         /// <summary>
-        /// Pr�ft, ob diese Klasse f�r eine bestimmte Art von SI Beschreibungen zust�ndig ist.
+        /// Pr�ft, ob diese Klasse für eine bestimmte Art von SI Beschreibungen zust�ndig ist.
         /// </summary>
         /// <param name="tag">Die eindeutige Kennung einer SI Beschreibung.</param>
-        /// <returns>Gesetzt, wenn diese Klasse f�r die angegebene Art von Beschreibung zurst�ndig ist.</returns>
+        /// <returns>Gesetzt, wenn diese Klasse für die angegebene Art von Beschreibung zurst�ndig ist.</returns>
         public static bool IsHandlerFor(byte tag)
         {
             // Check it

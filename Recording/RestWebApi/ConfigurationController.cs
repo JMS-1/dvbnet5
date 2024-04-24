@@ -1,4 +1,5 @@
-﻿using JMS.DVB.NET.Recording.Services;
+﻿using JMS.DVB.NET.Recording.Actions;
+using JMS.DVB.NET.Recording.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -11,7 +12,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi;
 /// </summary>
 [ApiController]
 [Route("api/configuration")]
-public class ConfigurationController(IVCRConfiguration configuration, VCRServer server) : ControllerBase
+public class ConfigurationController(IVCRConfiguration configuration, IConfigurationUpdater updateConfig, VCRServer server) : ControllerBase
 {
     /// <summary>
     /// Die Einstellungen der Sicherheit.
@@ -343,7 +344,7 @@ public class ConfigurationController(IVCRConfiguration configuration, VCRServer 
         update[SettingNames.Profiles].NewValue = string.Join("|", profiles);
 
         // Process
-        return server.UpdateConfiguration(update.Values, server.UpdateProfiles(settings.SystemProfiles, profile => profile.Name, (profile, device) => profile.WriteBack(device)));
+        return updateConfig.UpdateConfiguration(update.Values, server.UpdateProfiles(settings.SystemProfiles, profile => profile.Name, (profile, device) => profile.WriteBack(device)));
     }
 
     /// <summary>
@@ -379,7 +380,7 @@ public class ConfigurationController(IVCRConfiguration configuration, VCRServer 
         update[SettingNames.FileNamePattern].NewValue = settings.RecordingPattern;
 
         // Process
-        return server.UpdateConfiguration(update.Values);
+        return updateConfig.UpdateConfiguration(update.Values);
     }
 
     /// <summary>
@@ -423,7 +424,7 @@ public class ConfigurationController(IVCRConfiguration configuration, VCRServer 
             disable[SettingNames.ScanInterval].NewValue = "0";
 
             // Process
-            return server.UpdateConfiguration(disable.Values);
+            return updateConfig.UpdateConfiguration(disable.Values);
         }
 
         // Check mode
@@ -438,7 +439,7 @@ public class ConfigurationController(IVCRConfiguration configuration, VCRServer 
             manual[SettingNames.ScanInterval].NewValue = "-1";
 
             // Process
-            return server.UpdateConfiguration(manual.Values);
+            return updateConfig.UpdateConfiguration(manual.Values);
         }
 
         // Prepare to update
@@ -452,7 +453,7 @@ public class ConfigurationController(IVCRConfiguration configuration, VCRServer 
         update[SettingNames.ScanDuration].NewValue = settings.Duration.ToString();
 
         // Process
-        return server.UpdateConfiguration(update.Values);
+        return updateConfig.UpdateConfiguration(update.Values);
     }
 
     /// <summary>
@@ -497,7 +498,7 @@ public class ConfigurationController(IVCRConfiguration configuration, VCRServer 
             disable[SettingNames.EPGDuration].NewValue = "0";
 
             // Process
-            return server.UpdateConfiguration(disable.Values);
+            return updateConfig.UpdateConfiguration(disable.Values);
         }
 
         // Prepare to update
@@ -512,7 +513,7 @@ public class ConfigurationController(IVCRConfiguration configuration, VCRServer 
         update[SettingNames.EPGDuration].NewValue = settings.Duration.ToString();
 
         // Process
-        return server.UpdateConfiguration(update.Values);
+        return updateConfig.UpdateConfiguration(update.Values);
     }
 
     /// <summary>
@@ -547,7 +548,7 @@ public class ConfigurationController(IVCRConfiguration configuration, VCRServer 
         update[SettingNames.RequiredUserRole].NewValue = settings.UserRole;
 
         // Process
-        return server.UpdateConfiguration(update.Values);
+        return updateConfig.UpdateConfiguration(update.Values);
     }
 
     /// <summary>
@@ -608,7 +609,7 @@ public class ConfigurationController(IVCRConfiguration configuration, VCRServer 
         update[SettingNames.UseSSL].NewValue = settings.UseSSL.ToString();
 
         // Process
-        return server.UpdateConfiguration(update.Values);
+        return updateConfig.UpdateConfiguration(update.Values);
     }
 }
 

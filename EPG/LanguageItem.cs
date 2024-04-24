@@ -80,7 +80,7 @@ namespace JMS.DVB.EPG
     }
 
     /// <summary>
-    /// Erweiterungsmethoden f�r das Arbeiten mit Sprachen.
+    /// Erweiterungsmethoden für das Arbeiten mit Sprachen.
     /// </summary>
     public static class LanguageItemExtensions
     {

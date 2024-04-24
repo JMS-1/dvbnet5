@@ -15,7 +15,7 @@ namespace JMS.DVB.NET.Recording
         public void ChangeRecordingStreamEndTime(string profile, Guid streamIdentifier, DateTime newEndTime, bool disableHibernation) => FindProfile(profile)?.ChangeStreamEnd(streamIdentifier, newEndTime, disableHibernation && (Profiles.NumberOfActiveRecordings == 1));
 
         /// <summary>
-        /// Aktiviert oder deaktiviert den Netzwerkversand f�r eine Quelle.
+        /// Aktiviert oder deaktiviert den Netzwerkversand für eine Quelle.
         /// </summary>
         /// <param name="profile">Das zugeh�rige DVB.NET Ger�teprofil.</param>
         /// <param name="source">Die betroffene Quelle.</param>

@@ -75,7 +75,7 @@ namespace JMS.DVB.TS
 		private byte[] m_PTS = new byte[4];
 
 		/// <summary>
-		/// Wird gesetzt, sobald der PES Kopf f�r den Videostrom rekonstruiert wurde.
+		/// Wird gesetzt, sobald der PES Kopf für den Videostrom rekonstruiert wurde.
 		/// </summary>
 		private bool m_PESCreated = false;
 
@@ -699,7 +699,7 @@ namespace JMS.DVB.TS
 		/// und pr�ft dann die Abweichung dieses korrigierten Wertes gegen den
 		/// <see cref="GuidePTS"/>. Ist diese gr��er als ein Schwellwert (es wurde
 		/// willk�rlich 2 Minuten gew�hlt), so wird das 33te Bit invertiert. So sollte
-		/// f�r alle praktische F�lle erreicht werden, dass sich die rekonstruierte PTS
+		/// für alle praktische F�lle erreicht werden, dass sich die rekonstruierte PTS
 		/// homogen in den Gesamtstrom einf�gt.
 		/// </remarks>
 		/// <param name="pts">32-Bit PVA PTS.</param>

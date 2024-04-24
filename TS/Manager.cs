@@ -10,7 +10,7 @@ namespace JMS.DVB.TS
     public class Manager : IDisposable, IStreamConsumer2
     {
         /// <summary>
-        /// Die Voreinstellung f�r die Gr��e des Zwischenspeichers beim Schreiben in Dateien.
+        /// Die Voreinstellung für die Gr��e des Zwischenspeichers beim Schreiben in Dateien.
         /// </summary>
         public const int DefaultBufferSize = 2000000;
 
@@ -198,7 +198,7 @@ namespace JMS.DVB.TS
         private Stream Target;
 
         /// <summary>
-        /// Das aktuelle Ziel f�r alle Schreiboperationen.
+        /// Das aktuelle Ziel für alle Schreiboperationen.
         /// </summary>
         private DoubleBufferedFile BufferedTarget = null!;
 
@@ -228,7 +228,7 @@ namespace JMS.DVB.TS
         public Action<string, long, byte[]> OnWritingPCR = null!;
 
         /// <summary>
-        /// Die Gr��e des Zwischenspeichers f�r das Schreiben in Dateien.
+        /// Die Gr��e des Zwischenspeichers für das Schreiben in Dateien.
         /// </summary>
         private readonly int m_BufferSize = DefaultBufferSize;
 
@@ -306,7 +306,7 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Erzeugt einen neuen, doppelt gepufferten Bereich f�r das Schreiben in eine Datei.
+        /// Erzeugt einen neuen, doppelt gepufferten Bereich für das Schreiben in eine Datei.
         /// </summary>
         /// <param name="filePath">Der volle Pfad zur Datei.</param>
         /// <returns>Der gew�nschte Speicherbereich.</returns>
@@ -1483,7 +1483,7 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// Legt den Filter f�r die Programmzeitschrift fest.
+        /// Legt den Filter für die Programmzeitschrift fest.
         /// </summary>
         /// <param name="network">Die originale Netzwerkkenung des zugeh�rigen Dienstes.</param>
         /// <param name="transportStream">Die Kennung des <i>Transport Streams</i>.</param>

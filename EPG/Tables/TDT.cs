@@ -12,7 +12,7 @@ namespace JMS.DVB.EPG.Tables
         public DateTime Time { get; set; }
 
         /// <summary>
-        /// Meldet, f�r welche Tabellenkennungen diese Klasse zust�ndig ist.
+        /// Meldet, für welche Tabellenkennungen diese Klasse zust�ndig ist.
         /// </summary>
         /// <param name="tableIdentifier">Eine zu pr�fende Tabellenkennung.</param>
         /// <returns>Gesetzt, wenn diese Klasse die Tabelle analysieren kann.</returns>

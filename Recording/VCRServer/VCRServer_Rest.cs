@@ -14,7 +14,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Ermittelt den aktuellen Aufzeichnungsplan.
         /// </summary>
-        /// <typeparam name="TActivity">Die Art der Information f�r einen Eintrag der Planung.</typeparam>
+        /// <typeparam name="TActivity">Die Art der Information für einen Eintrag der Planung.</typeparam>
         /// <param name="end">Es werden nur Aufzeichnungen betrachtet, die nicht nach diesem Zeitpunkt starten.</param>
         /// <param name="limit">Die maximale Anzahl von Ergebniszeilen.</param>
         /// <param name="factory">Methode zum Erstellen einer einzelnen Planungsinformation.</param>
@@ -158,7 +158,7 @@ namespace JMS.DVB.NET.Recording
         /// <typeparam name="TInfo">Die Art der Informationen.</typeparam>
         /// <param name="fromActive">Erstellt eine Liste von Beschreibungen zu einer aktuellen Aufzeichnung.</param>
         /// <param name="fromPlan">Erstellt eine einzelne Beschreibung zu einer Aufzeichnung aus dem Aufzeichnungsplan.</param>
-        /// <param name="forIdle">Erstellt eine Beschreibung f�r ein Ger�t, f�r das keine Aufzeichnungen geplant sind.</param>
+        /// <param name="forIdle">Erstellt eine Beschreibung für ein Ger�t, für das keine Aufzeichnungen geplant sind.</param>
         /// <returns>Die Liste aller Informationen.</returns>
         public TInfo[] GetCurrentRecordings<TInfo>(
             Func<FullInfo, VCRServer, IVCRProfiles, IJobManager, TInfo[]> fromActive,

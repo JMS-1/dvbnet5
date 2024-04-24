@@ -1,10 +1,10 @@
 namespace JMS.DVB.TS.TSBuilders
 {
     /// <summary>
-    /// Basisklasse f�r Rekonstruktionsalgorithmen auf einem <i>Transport Stream</i>.
+    /// Basisklasse für Rekonstruktionsalgorithmen auf einem <i>Transport Stream</i>.
     /// </summary>
     /// <param name="parser">Die zugeh�rige Analyseeinheit.</param>
-    /// <param name="callback">Optional ein Verbraucher f�r rekonstruierte Pakete.</param>
+    /// <param name="callback">Optional ein Verbraucher für rekonstruierte Pakete.</param>
     public abstract class TSBuilder(TSParser parser, Action<byte[]> callback) : IDisposable
     {
         /// <summary>
@@ -18,7 +18,7 @@ namespace JMS.DVB.TS.TSBuilders
         private int m_MaxPacket = int.MinValue;
 
         /// <summary>
-        /// Ein optionaler Verbraucher f�r rekonstruierte Pakete.
+        /// Ein optionaler Verbraucher für rekonstruierte Pakete.
         /// </summary>
         private readonly Action<byte[]> m_Callback = callback;
 

@@ -6,13 +6,13 @@ namespace JMS.DVB.TS
     /// <param name="consumer">Der zugeh�rige Gesamtdatenstrom, im Allgemeinen ein
     /// <i>Transport Stream</i> <see cref="Manager"/>.</param>
     /// <param name="pid">Die Datenstromkennung im Gesamtstrom.</param>
-    /// <param name="isPCR">Gesetzt, wenn dieser Datenstrom die Zeitbasis f�r den Gesamtstrom
-    /// bereitstellt (sehr un�blich f�r Untertitel).</param>
+    /// <param name="isPCR">Gesetzt, wenn dieser Datenstrom die Zeitbasis für den Gesamtstrom
+    /// bereitstellt (sehr un�blich für Untertitel).</param>
     public class SubtitleStream(IStreamConsumer consumer, short pid, bool isPCR) : StreamBase(consumer, pid, isPCR)
     {
 
         /// <summary>
-        /// Pr�ft, ob ein Zeichen ein legaler MPEG-2 Startcode f�r DVB Untertitelstr�me
+        /// Pr�ft, ob ein Zeichen ein legaler MPEG-2 Startcode für DVB Untertitelstr�me
         /// ist.
         /// </summary>
         /// <param name="code">Der zu pr�fende Code.</param>

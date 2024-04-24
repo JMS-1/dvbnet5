@@ -30,7 +30,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// </summary>
         /// <param name="container">Die zugeh�rige Liste von Beschreibungen.</param>
         /// <param name="offset">Erstes Byte dieser Beschreibung.</param>
-        /// <param name="length">Anzahl der Bytes f�r diese Beschreibung.</param>
+        /// <param name="length">Anzahl der Bytes für diese Beschreibung.</param>
         public ContentTransmissionPremiere(IDescriptorContainer container, int offset, int length)
             : base(container, offset, length)
         {

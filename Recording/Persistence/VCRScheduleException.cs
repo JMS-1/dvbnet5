@@ -3,7 +3,7 @@ using JMS.DVB.Algorithms.Scheduler;
 namespace JMS.DVB.NET.Recording.Persistence
 {
     /// <summary>
-    /// Beschreibt eine Ausnahme f�r eine sich wiederholende Aufzeichnung.
+    /// Beschreibt eine Ausnahme für eine sich wiederholende Aufzeichnung.
     /// </summary>
     [Serializable]
     public class VCRScheduleException
@@ -31,7 +31,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         public bool IsEmpty => !Duration.HasValue && !ShiftTime.HasValue;
 
         /// <summary>
-        /// Wandelt diese Ausnahmebeschreibung in ein entsprechendes �auivalent f�r die Planung.
+        /// Wandelt diese Ausnahmebeschreibung in ein entsprechendes �auivalent für die Planung.
         /// </summary>
         /// <param name="duration">Die Dauer der zugeh�rigen Aufzeichnung.</param>
         /// <returns>Die gew�nschte �quivalente Repr�sentation der Ausnahmeregel.</returns>

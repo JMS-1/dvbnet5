@@ -9,7 +9,7 @@ namespace JMS.DVB.EPG
     public class TableConstructor
     {
         /// <summary>
-        /// Die Standard-Codierung f�r Zeichenketten.
+        /// Die Standard-Codierung für Zeichenketten.
         /// </summary>
         private static readonly Encoding ANSI = Encoding.GetEncoding(1252);
 
@@ -19,7 +19,7 @@ namespace JMS.DVB.EPG
         private List<byte> m_Buffer = new List<byte>(184);
 
         /// <summary>
-        /// Erzeugt einen Eintrag f�r die L�nge.
+        /// Erzeugt einen Eintrag für die L�nge.
         /// </summary>
         /// <returns>Die Position des Eintrags.</returns>
         public int CreateDynamicLength()
