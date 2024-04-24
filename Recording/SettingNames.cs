@@ -49,11 +49,6 @@ namespace JMS.DVB.NET.Recording
         LoggingLevel,
 
         /// <summary>
-        /// Wird gesetzt, um die Hardwarezugriff in einen eigenen Prozess auszulagern.
-        /// </summary>
-        UseExternalCardServer,
-
-        /// <summary>
         /// Die durch Kommas getrennte Liste der Sender, die in der Programmzeitschrift berücksichtigt werden sollen.
         /// </summary>
         EPGStations,

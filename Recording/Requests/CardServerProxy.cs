@@ -216,14 +216,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// Erzeugt einen passenden Aufzeichnungsprozess.
         /// </summary>
         /// <returns>Der gewünschte Aufzeichnungsprozess.</returns>
-        private ServerImplementation CreateCardServerProxy()
-        {
-            // Create the server
-            if (Server.Configuration.UseExternalCardServer)
-                return ServerImplementation.CreateOutOfProcess();
-            else
-                return ServerImplementation.CreateInMemory();
-        }
+        private static ServerImplementation CreateCardServerProxy() => ServerImplementation.CreateInMemory();
 
         /// <summary>
         /// Startet einen separaten Thread, der die Ausführung steuert.

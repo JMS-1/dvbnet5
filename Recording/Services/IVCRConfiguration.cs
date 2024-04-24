@@ -44,11 +44,6 @@ public interface IVCRConfiguration
     string[] TargetDirectoryNames { get; }
 
     /// <summary>
-    /// Meldet, ob der <i>Card Server</i> als eigenständiger Prozess gestartet werden soll.
-    /// </summary>
-    bool UseExternalCardServer { get; }
-
-    /// <summary>
     /// Meldet die Zeitspanne, nachdem eine Aktualisierung der Programmzeitschrift vorgezogen
     /// erfolgen darf.
     /// </summary>

@@ -163,7 +163,6 @@ public class VCRConfiguration : IVCRConfiguration
         Add(SettingNames.TSAudioBufferSize, 0);
         Add(SettingNames.TSHDTVBufferSize, 0);
         Add(SettingNames.TSSDTVBufferSize, 0);
-        Add(SettingNames.UseExternalCardServer, true);
         Add(SettingNames.UseSSL, false);
         Add(SettingNames.VideoRecorderDirectory, "Recordings");
 
@@ -314,9 +313,6 @@ public class VCRConfiguration : IVCRConfiguration
             return (buffer < 1) ? null : Math.Max(1000, buffer);
         }
     }
-
-    /// <inheritdoc/>
-    public bool UseExternalCardServer => ReadSetting<bool>(SettingNames.UseExternalCardServer);
 
     /// <inheritdoc/>
     public bool DisablePCRFromH264Generation => ReadSetting<bool>(SettingNames.DisablePCRFromH264Generation);
