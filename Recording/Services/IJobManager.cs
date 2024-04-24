@@ -1,3 +1,4 @@
+using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Services.Planning;
 
@@ -85,5 +86,17 @@ public interface IJobManager
     /// </summary>
     /// <param name="recording">Alle Informationen zur ausgeführten Aufzeichnung.</param>
     void SetRestartThreshold(VCRRecordingInfo recording);
+
+    /// <summary>
+    /// Registriert diese Aufzeichnung in einer Planungsinstanz.
+    /// </summary>
+    /// <param name="scheduler">Die zu verwendende Planungsinstanz.</param>
+    /// <param name="job">Der zugehörige Auftrag.</param>
+    /// <param name="devices">Die Liste der Geräte, auf denen die Aufzeichnung ausgeführt werden darf.</param>
+    /// <param name="findSource">Dient zum Prüfen einer Quelle.</param>
+    /// <param name="disabled">Alle deaktivierten Aufträge.</param>
+    /// <param name="context">Die aktuelle Planungsumgebung.</param>
+    /// <exception cref="ArgumentNullException">Es wurden nicht alle Parameter angegeben.</exception>
+    void AddToScheduler(VCRSchedule schedule, RecordingScheduler scheduler, VCRJob job, IScheduleResource[] devices, Func<SourceSelection, IVCRProfiles, SourceSelection?> findSource, Func<Guid, bool> disabled);
 }
 

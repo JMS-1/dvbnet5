@@ -513,7 +513,7 @@ public class ProfileStateCollection : IProfileStateCollection, IDisposable
                     continue;
 
                 // Register single item
-                schedule.AddToScheduler(scheduler, job, [resource], (s, p) => p.FindSource(s), disabled);
+                JobManager.AddToScheduler(schedule, scheduler, job, [resource], (s, p) => p.FindSource(s), disabled);
 
                 // Remember - even if we skipped it
                 context.RegisterSchedule(schedule, job);

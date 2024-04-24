@@ -1,3 +1,4 @@
+using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.RestWebApi;
 using JMS.DVB.NET.Recording.Services.Planning;
@@ -120,13 +121,13 @@ public class JobManager : IJobManager
             if (internalJob != null)
             {
                 // Delete it
-                internalJob.Delete(JobDirectory);
+                DeleteJob(internalJob, JobDirectory);
 
                 // Remove from map
                 m_Jobs.Remove(internalJob.UniqueID!.Value);
 
                 // Save to file
-                internalJob.Save(ArchiveDirectory);
+                SaveJob(internalJob, ArchiveDirectory);
             }
             else
             {
@@ -134,7 +135,7 @@ public class JobManager : IJobManager
                 Tools.ExtendedLogging("Job not found in Active Directory - trying Archive");
 
                 // Must be archived               
-                job.Delete(ArchiveDirectory);
+                DeleteJob(job, ArchiveDirectory);
             }
         }
     }
@@ -170,20 +171,20 @@ public class JobManager : IJobManager
         Tools.ExtendedLogging("Updating Job {0}", job.UniqueID!);
 
         // Load default profile name
-        job.SetProfile();
+        SetJobProfile(job);
 
         // Validate
-        job.Validate(scheduleIdentifier);
+        ValidateJob(job, scheduleIdentifier);
 
         // Cleanup schedules
         job.CleanupExceptions();
 
         // Remove from archive - if job has been recovered
-        job.Delete(ArchiveDirectory);
+        DeleteJob(job, ArchiveDirectory);
 
         // Try to store to disk - actually this is inside the lock because the directory virtually is part of our map
         lock (m_Jobs)
-            if (job.Save(JobDirectory).GetValueOrDefault())
+            if (SaveJob(job, JobDirectory).GetValueOrDefault())
                 m_Jobs[job.UniqueID!.Value] = job;
             else
                 throw new ArgumentException(string.Format("Die Datei zum Auftrag {0} kann nicht geschrieben werden", job.UniqueID), nameof(job));
@@ -225,7 +226,7 @@ public class JobManager : IJobManager
             return null;
 
         // Finish
-        result.SetProfile();
+        SetJobProfile(result);
 
         // Found in archive
         return result;
@@ -457,6 +458,308 @@ public class JobManager : IJobManager
 
         // Report schedule if job exists
         return job?[scheduleID];
+    }
+
+    /// <summary>
+    /// Ermittelt den Namen dieses Auftrags in einem Zielverzeichnis.
+    /// </summary>
+    /// <param name="target">Der Pfad zu einem Zielverzeichnis.</param>
+    /// <returns>Die zugehörige Datei.</returns>
+    private FileInfo? GetJobFileName(VCRJob job, DirectoryInfo target)
+        => job.UniqueID.HasValue
+            ? new FileInfo(Path.Combine(target.FullName, job.UniqueID.Value.ToString("N").ToUpper() + VCRJob.FileSuffix))
+            : null;
+
+    /// <summary>
+    /// Speichert diesen Auftrag ab.
+    /// </summary>
+    /// <param name="target">Der Pfad zu einem Zielverzeichnis.</param>
+    /// <returns>Gesetzt, wenn der Speichervorgang erfolgreich war. <i>null</i> wird
+    /// gemeldet, wenn diesem Auftrag keine Datei zugeordnet ist.</returns>
+    private bool? SaveJob(VCRJob job, DirectoryInfo target)
+    {
+        // Get the file
+        var file = GetJobFileName(job, target);
+        if (file == null)
+            return null;
+
+        // Be safe
+        try
+        {
+            // Process
+            SerializationTools.Save(job, file);
+        }
+        catch (Exception e)
+        {
+            // Report
+            _logger.Log(e);
+
+            // Done
+            return false;
+        }
+
+        // Done
+        return true;
+    }
+
+    /// <summary>
+    /// Löschte diesen Auftrag.
+    /// </summary>
+    /// <param name="target">Der Pfad zu einem Zielverzeichnis.</param>
+    /// <returns>Gesetzt, wenn der Löschvorgang erfolgreich war. <i>null</i> wird gemeldet,
+    /// wenn die Datei nicht existierte.</returns>
+    private bool? DeleteJob(VCRJob job, DirectoryInfo target)
+    {
+        // Get the file
+        var file = GetJobFileName(job, target);
+        if (file == null)
+            return null;
+        if (!file.Exists)
+            return null;
+
+        // Be safe
+        try
+        {
+            // Process
+            file.Delete();
+        }
+        catch (Exception e)
+        {
+            // Report error
+            _logger.Log(e);
+
+            // Failed
+            return false;
+        }
+
+        // Did it
+        return true;
+    }
+
+    /// <summary>
+    /// Stellt sicher, dass für diesen Auftrag ein Geräteprprofil ausgewählt ist.
+    /// </summary>
+    private void SetJobProfile(VCRJob job)
+    {
+        // No need
+        if (!string.IsNullOrEmpty(job.Source?.ProfileName))
+            return;
+
+        // Attach to the default profile
+        var defaultProfile = Profiles.DefaultProfile;
+        if (defaultProfile == null)
+            return;
+
+        // Process
+        if (job.Source == null)
+            job.Source = new SourceSelection { ProfileName = defaultProfile.Name };
+        else
+            job.Source.ProfileName = defaultProfile.Name;
+    }
+
+    /// <summary>
+    /// Prüft, ob ein Auftrag zulässig ist.
+    /// </summary>
+    /// <param name="scheduleIdentifier">Die eindeutige Kennung der veränderten Aufzeichnung.</param>
+    /// <exception cref="InvalidJobDataException">Die Konfiguration dieses Auftrags is ungültig.</exception>
+    private void ValidateJob(VCRJob job, Guid? scheduleIdentifier)
+    {
+        // Identifier
+        if (!job.UniqueID.HasValue)
+            throw new InvalidJobDataException("Die eindeutige Kennung ist ungültig");
+
+        // Name
+        if (!job.Name.IsValidName())
+            throw new InvalidJobDataException("Der Name enthält ungültige Zeichen");
+
+        // Test the station
+        if (job.HasSource)
+        {
+            // Source
+            if (!ValidateSource(job.Source))
+                throw new InvalidJobDataException("Eine Quelle ist ungültig");
+
+            // Streams
+            if (!job.Streams.Validate())
+                throw new InvalidJobDataException("Die Aufzeichnungsoptionen sind ungültig");
+        }
+        else if (job.Streams != null)
+            throw new InvalidJobDataException("Die Aufzeichnungsoptionen sind ungültig");
+
+        // List of schedules
+        if (job.Schedules.Count < 1)
+            throw new InvalidJobDataException("Keine Aufzeichnungen vorhanden");
+
+        // Only validate the schedule we updated
+        if (scheduleIdentifier.HasValue)
+            foreach (var schedule in job.Schedules)
+                if (!schedule.UniqueID.HasValue || schedule.UniqueID.Value.Equals(scheduleIdentifier))
+                    ValidateSchedule(schedule, job);
+    }
+
+    /// <summary>
+    /// Prüft, ob eine Quelle gültig ist.
+    /// </summary>
+    /// <param name="source">Die Auswahl der Quelle oder <i>null</i>.</param>
+    /// <returns>Gesetzt, wenn die Auswahl gültig ist.</returns>
+    private bool ValidateSource(SourceSelection source) => Profiles.FindSource(source) != null;
+
+    /// <summary>
+    /// Prüft, ob die Daten zur Aufzeichnung zulässig sind.
+    /// </summary>
+    /// <param name="job">Der zugehörige Auftrag.</param>
+    /// <exception cref="InvalidJobDataException">Es wurde keine eindeutige Kennung angegeben.</exception>
+    /// <exception cref="InvalidJobDataException">Die Daten der Aufzeichnung sind fehlerhaft.</exception>
+    private void ValidateSchedule(VCRSchedule schedule, VCRJob job)
+    {
+        // Identifier
+        if (!schedule.UniqueID.HasValue)
+            throw new InvalidJobDataException("Die eindeutige Kennung ist ungültig");
+
+        // Check for termination date
+        if (schedule.LastDay.HasValue)
+        {
+            // Must be a date
+            if (schedule.LastDay.Value != schedule.LastDay.Value.Date)
+                throw new InvalidJobDataException("Das Enddatum darf keine Uhrzeit enthalten");
+            if (schedule.FirstStart.Date > schedule.LastDay.Value.Date)
+                throw new InvalidJobDataException("Der Endzeitpunkt darf nicht vor dem Startzeitpunkt liegen");
+        }
+
+        // Duration
+        if ((schedule.Duration < 1) || (schedule.Duration > 9999))
+            throw new InvalidJobDataException("Ungültige Dauer");
+
+        // Repetition
+        if (schedule.Days.HasValue)
+            if (0 != (~0x7f & (int)schedule.Days.Value))
+                throw new InvalidJobDataException("Die Aufzeichnungstage sind ungültig");
+
+        // Test the station
+        if (schedule.Source != null)
+        {
+            // Match profile
+            if (job != null)
+                if (job.Source != null)
+                    if (!string.Equals(job.Source.ProfileName, schedule.Source.ProfileName, StringComparison.InvariantCultureIgnoreCase))
+                        throw new InvalidJobDataException("Die Aufzeichnungstage sind ungültig");
+
+            // Source
+            if (!ValidateSource(schedule.Source))
+                throw new InvalidJobDataException("Eine Quelle ist ungültig");
+
+            // Streams
+            if (!schedule.Streams.Validate())
+                throw new InvalidJobDataException("Die Aufzeichnungsoptionen sind ungültig");
+        }
+        else if (schedule.Streams != null)
+            throw new InvalidJobDataException("Die Aufzeichnungsoptionen sind ungültig");
+
+        // Station
+        if (!job!.HasSource)
+            if (schedule.Source == null)
+                throw new InvalidJobDataException("Wenn einem Auftrag keine Quelle zugeordnet ist, so müssen alle Aufzeichnungen eine solche festlegen");
+
+        // Name
+        if (!schedule.Name.IsValidName())
+            throw new InvalidJobDataException("Der Name enthält ungültige Zeichen");
+    }
+
+    /// <inheritdoc/>
+    public void AddToScheduler(
+        VCRSchedule schedule,
+        RecordingScheduler scheduler,
+        VCRJob job,
+        IScheduleResource[] devices,
+        Func<SourceSelection, IVCRProfiles, SourceSelection?> findSource,
+        Func<Guid, bool> disabled
+    )
+    {
+        // Validate
+        if (scheduler == null)
+            throw new ArgumentNullException(nameof(scheduler));
+        if (job == null)
+            throw new ArgumentNullException(nameof(job));
+        if (findSource == null)
+            throw new ArgumentNullException(nameof(findSource));
+
+        // Let VCR.NET choose a profile to do the work
+        if (job.AutomaticResourceSelection)
+            devices = null!;
+
+        // Create the source selection
+        var persistedSource = schedule.Source ?? job.Source;
+        var selection = findSource(persistedSource, Profiles);
+
+        // Station no longer available
+        if (selection == null)
+            if (persistedSource != null)
+                selection =
+                    new SourceSelection
+                    {
+                        DisplayName = persistedSource.DisplayName,
+                        ProfileName = persistedSource.ProfileName,
+                        Location = persistedSource.Location,
+                        Group = persistedSource.Group,
+                        Source =
+                            new Station
+                            {
+                                TransportStream = persistedSource.Source?.TransportStream ?? 0,
+                                Network = persistedSource.Source?.Network ?? 0,
+                                Service = persistedSource.Source?.Service ?? 0,
+                                Name = persistedSource.DisplayName,
+                            },
+                    };
+
+        // See if we are allowed to process
+        var identifier = schedule.UniqueID!.Value;
+        if (disabled != null)
+            if (disabled(identifier))
+                return;
+
+        // Load all
+        var name = string.IsNullOrEmpty(schedule.Name) ? job.Name : $"{job.Name} ({schedule.Name})";
+        var source = ProfileScheduleResource.CreateSource(selection!);
+        var duration = TimeSpan.FromMinutes(schedule.Duration);
+        var noStartBefore = schedule.NoStartBefore;
+        var start = schedule.FirstStart;
+
+        // Check repetition
+        var repeat = schedule.CreateRepeatPattern();
+        if (repeat == null)
+        {
+            // Only if not being recorded
+            if (!noStartBefore.HasValue)
+                scheduler.Add(RecordingDefinition.Create(schedule, name, identifier, devices, source, start, duration));
+        }
+        else
+        {
+            // See if we have to adjust the start day
+            if (noStartBefore.HasValue)
+            {
+                // Attach to the limit - actually we shift it a bit further assuming that we did have no large exception towards the past and the duration is moderate
+                var startAfter = noStartBefore.Value.AddHours(12);
+                var startAfterDay = startAfter.ToLocalTime().Date;
+
+                // Localize the start time
+                var startTime = start.ToLocalTime().TimeOfDay;
+
+                // First adjust
+                start = (startAfterDay + startTime).ToUniversalTime();
+
+                // One more day
+                if (start < startAfter)
+                    start = (startAfterDay.AddDays(1) + startTime).ToUniversalTime();
+            }
+
+            // Read the rest
+            var exceptions = schedule.Exceptions.Select(e => e.ToPlanException(duration)).ToArray();
+            var endDay = schedule.LastDay.GetValueOrDefault(VCRSchedule.MaxMovableDay);
+
+            // A bit more complex
+            if (start.Date <= endDay.Date)
+                scheduler.Add(RecordingDefinition.Create(schedule, name, identifier, devices, source, start, duration, endDay, repeat), exceptions);
+        }
     }
 }
 
