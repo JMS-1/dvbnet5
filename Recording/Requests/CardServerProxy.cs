@@ -33,11 +33,6 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         protected Dictionary<string, string> ExtensionEnvironment { get; private set; } = null!;
 
-        /// <summary>
-        /// Verhindert, dass der Rechner während der Aufzeichnung in den Schlafzustand wechselt.
-        /// </summary>
-        private IDisposable m_HibernateBlock = null!;
-
         protected readonly IVCRProfiles Profiles;
 
         protected readonly ILogger Logger;
@@ -46,7 +41,7 @@ namespace JMS.DVB.NET.Recording.Requests
 
         protected readonly IVCRConfiguration Configuration;
 
-        protected readonly IExtensionManager ExtensionManager;
+        private readonly IExtensionManager _extensionManager;
 
         /// <summary>
         /// Erzeugt eine neue Zugriffsinstanz.
@@ -73,7 +68,7 @@ namespace JMS.DVB.NET.Recording.Requests
 
             // Remember
             Configuration = configuration;
-            ExtensionManager = extensionManager;
+            _extensionManager = extensionManager;
             JobManager = jobManager;
             Logger = logger;
             Profiles = profiles;
@@ -93,26 +88,6 @@ namespace JMS.DVB.NET.Recording.Requests
         /// Meldet die anzahl der gerade aktiven Aufzeichnungen.
         /// </summary>
         public virtual int NumberOfActiveRecordings => 1;
-
-        /// <summary>
-        /// Wird aufgerufen, wenn eine Bindung an ein Geräteprofil vorgenommen wird.
-        /// </summary>
-        public void Activate()
-        {
-            // Block against hibernation
-            using (m_HibernateBlock)
-                m_HibernateBlock = null!; // PowerManager.StartForbidHibernation();
-        }
-
-        /// <summary>
-        /// Wird aufgerufen, wenn eine Bindung an ein Geräteprofil aufgehoben wird.
-        /// </summary>
-        public void Deactivate()
-        {
-            // Release hibernation block
-            using (m_HibernateBlock)
-                m_HibernateBlock = null!;
-        }
 
         /// <summary>
         /// Erzeugt eine Beschreibung der mit diesem Zugriff verbundenen Aufzeichnungen.
@@ -821,7 +796,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="environment">Die Umgebungsvariablen für die Erweiterung.</param>
         protected void FireRecordingStartedExtensions(Dictionary<string, string> environment)
-        => ExtensionManager
+        => _extensionManager
             .AddWithCleanup("RecordingStarted", environment, Logger);
 
         /// <summary>
@@ -829,7 +804,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="environment">Die Umgebungsvariablen für die Erweiterung.</param>
         protected void FireRecordingFinishedExtensions(Dictionary<string, string> environment)
-            => ExtensionManager
+            => _extensionManager
                 .AddWithCleanup("RecordingFinished", environment, Logger);
 
         #endregion

@@ -106,20 +106,7 @@ public class ProfileState(
     /// notwendigen Sperren.
     /// </summary>
     /// <param name="newRequest">Der neue Auftrag, der ab sofort ausgeführt wird.</param>
-    private void ChangeCurrentRequest(CardServerProxy newRequest)
-    {
-        // Detach from previous
-        var request = m_CurrentRequest;
-        if (!ReferenceEquals(request, null))
-            request.Deactivate();
-
-        // Update
-        m_CurrentRequest = newRequest;
-
-        // Attach to this one
-        if (!ReferenceEquals(newRequest, null))
-            newRequest.Activate();
-    }
+    private void ChangeCurrentRequest(CardServerProxy newRequest) => m_CurrentRequest = newRequest;
 
     /// <inheritdoc/>
     public bool BeginRequest(CardServerProxy request, bool throwOnBusy = true)
