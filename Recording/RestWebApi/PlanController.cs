@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using JMS.DVB.NET.Recording.Actions;
 using JMS.DVB.NET.Recording.Services.Planning;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +10,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/plan")]
-    public class PlanController(LegacyVCRServer legacyServer, IVCRServer server) : ControllerBase
+    public class PlanController(IVCRServer server, IRecordings recordings) : ControllerBase
     {
         /// <summary>
         /// Meldet den aktuellen Aufzeichnungsplan.
@@ -29,7 +30,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 endTime = DateTime.MaxValue;
 
             // Route from Web AppDomain into service AppDomain
-            var activities = legacyServer.GetPlan(endTime, maximum, PlanActivity.Create);
+            var activities = server.GetPlan(endTime, maximum, PlanActivity.Create);
 
             // Must resort to correct for running entries
             Array.Sort(activities, PlanActivity.ByStartComparer);
@@ -69,8 +70,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Forward
             return
-                legacyServer
-                    .GetCurrentRecordings(PlanCurrent.Create, PlanCurrent.Create, PlanCurrent.Create)
+                recordings
+                    .GetCurrent(PlanCurrent.Create, PlanCurrent.Create, PlanCurrent.Create)
                     .OrderBy(current => current.StartTime)
                     .ThenBy(current => current.Duration)
                     .ToArray();
@@ -79,15 +80,14 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Ermittelt Informationen zu allen Geräteprofilen.
         /// </summary>
-        /// <param name="mobile">Schalter zum Umschalten auf die Liste für mobile Geräte.</param>
         /// <returns>Die gewünschte Liste.</returns>
         [HttpGet("current/mobile")]
-        public PlanCurrentMobile[] GetCurrent(string mobile)
+        public PlanCurrentMobile[] GetCurrentMobile()
         {
             // Forward
             return
-                legacyServer
-                    .GetCurrentRecordings(PlanCurrent.Create)
+                recordings
+                    .GetCurrent(PlanCurrent.Create)
                     .Where(current => !string.IsNullOrEmpty(current.SourceName))
                     .Select(PlanCurrentMobile.Create)
                     .OrderBy(current => current.StartTime)

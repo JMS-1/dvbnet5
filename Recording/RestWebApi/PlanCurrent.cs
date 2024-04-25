@@ -211,7 +211,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="active">Die Daten zur aktiven Aufzeichnung.</param>
         /// <param name="server">Der zugehörige Dienst.</param>
         /// <returns>Die gewünschten Beschreibungen.</returns>
-        public static PlanCurrent[] Create(FullInfo active, LegacyVCRServer server, IVCRProfiles profiles, IJobManager jobs)
+        public static PlanCurrent[] Create(FullInfo active, IVCRServer server, IVCRProfiles profiles, IJobManager jobs)
         {
             // Validate
             if (active == null)
@@ -267,7 +267,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Schließt die Konfiguration einer Beschreibung ab.
         /// </summary>
         /// <param name="server">Der zugehörige Dienst.</param>
-        private void Complete(LegacyVCRServer server, IVCRProfiles profiles)
+        private void Complete(IVCRServer server, IVCRProfiles profiles)
         {
             // No source
             if (m_source == null)
@@ -277,7 +277,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             Source = SourceIdentifier.ToString(m_source.Source)!.Replace(" ", "");
 
             // Check profile - should normally be available
-            var profile = server.Profiles[ProfileName];
+            var profile = server[ProfileName];
             if (profile == null)
                 return;
 
@@ -308,7 +308,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="streamIndex">Die laufende Nummer dieses Datenstroms.</param>
         /// <param name="server">Der zugehörige Dienst.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        private static IEnumerable<PlanCurrent> Create(FullInfo active, StreamInfo stream, int streamIndex, LegacyVCRServer server, IVCRProfiles profiles, IJobManager jobs)
+        private static IEnumerable<PlanCurrent> Create(FullInfo active, StreamInfo stream, int streamIndex, IVCRServer server, IVCRProfiles profiles, IJobManager jobs)
         {
             // Static data
             var recording = active.Recording;
@@ -356,7 +356,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="context">Die aktuelle Analyseumgebung.</param>
         /// <param name="server">Der zugehörige Dienst.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public static PlanCurrent Create(IScheduleInformation plan, PlanContext context, LegacyVCRServer server, IVCRProfiles profiles)
+        public static PlanCurrent Create(IScheduleInformation plan, PlanContext context, IVCRServer server, IVCRProfiles profiles)
         {
             // Attach to the definition
             var definition = (IScheduleDefinition<VCRSchedule>)plan.Definition;

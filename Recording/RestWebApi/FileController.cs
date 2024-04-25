@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.TS;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/file")]
-    public class FileController(LegacyVCRServer server) : ControllerBase
+    public class FileController(IVCRConfiguration configuration) : ControllerBase
     {
-        private readonly LegacyVCRServer _server = server;
-
         /// <summary>
         /// Fordert ein Stück einer Datei an.
         /// </summary>
@@ -33,7 +32,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 throw new ArgumentException(path, nameof(path));
 
             // Check against VCR.NET recording directories
-            if (!_server.Configuration.IsValidTarget(path))
+            if (!configuration.IsValidTarget(path))
                 throw new ArgumentException(path, nameof(path));
 
             // Validate the slice

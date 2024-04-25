@@ -17,9 +17,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi;
 public class ConfigurationController(
     IVCRServer server,
     IVCRConfiguration configuration,
+    IVCRProfiles profiles,
     IConfigurationUpdater updateConfig,
-    IRuleUpdater updateRules,
-    LegacyVCRServer legacyServer
+    IRuleUpdater updateRules
 ) : ControllerBase
 {
     /// <summary>
@@ -313,7 +313,7 @@ public class ConfigurationController(
         var settings = new ProfileSettings
         {
             SystemProfiles =
-                    [.. legacyServer
+                    [.. profiles
                             .GetProfiles(ConfigurationProfile.Create, out string defaultName)
                             .OrderBy(profile => profile.Name, ProfileManager.ProfileNameComparer)]
         };
@@ -352,7 +352,7 @@ public class ConfigurationController(
         update[SettingNames.Profiles].NewValue = string.Join("|", profiles);
 
         // Process
-        return updateConfig.UpdateConfiguration(update.Values, legacyServer.UpdateProfiles(settings.SystemProfiles, profile => profile.Name, (profile, device) => profile.WriteBack(device)));
+        return updateConfig.UpdateConfiguration(update.Values, IVCRProfilesExtensions.UpdateProfiles(settings.SystemProfiles, profile => profile.Name, (profile, device) => profile.WriteBack(device)));
     }
 
     /// <summary>

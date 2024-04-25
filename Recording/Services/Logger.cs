@@ -1,4 +1,5 @@
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Planning;
 using Microsoft.Extensions.Logging;
 
 namespace JMS.DVB.NET.Recording.Services;
@@ -9,7 +10,7 @@ namespace JMS.DVB.NET.Recording.Services;
 /// <remarks>LEAF SERVICE</remarks>
 /// <param name="configuration"></param>
 /// <param name="logger"></param>
-public class Logger(IVCRConfiguration configuration, ILogger<LegacyVCRServer> logger) : ILogger
+public class Logger(IVCRConfiguration configuration, ILogger<IVCRServer> logger) : ILogger
 {
     /// <summary>
     /// Check if an event of the indicated level should be reported to

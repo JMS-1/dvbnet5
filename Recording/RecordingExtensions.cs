@@ -25,9 +25,11 @@ public static class RecordingExtensions
         services.AddTransient<IConfigurationUpdater, ConfigurationUpdater>();
         services.AddTransient<ILogger, Logger>();
         services.AddTransient<IProfileStateFactory, ProfileStateFactory>();
+        services.AddTransient<IProgramGuideEntries, ProgramGuideEntries>();
         services.AddTransient<IProgramGuideManagerFactory, ProgramGuideManagerFactory>();
         services.AddTransient<IProgramGuideProxyFactory, ProgramGuideProxyFactory>();
         services.AddTransient<IRecordingProxyFactory, RecordingProxyFactory>();
+        services.AddTransient<IRecordings, Recordings>();
         services.AddTransient<IRuleUpdater, RuleUpdater>();
         services.AddTransient<ISourceScanProxyFactory, SourceScanProxyFactory>();
         services.AddTransient<IZappingProxyFactory, ZappingProxyFactory>();
@@ -41,7 +43,6 @@ public static class RecordingExtensions
         services.AddSingleton<IVCRProfiles, VCRProfiles>();
 
         services.AddSingleton<LegacyVCRServer>();
-
     }
 
     public static void StartRecording(this IServiceProvider services, CancellationTokenSource restart)

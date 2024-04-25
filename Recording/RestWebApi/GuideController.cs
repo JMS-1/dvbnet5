@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using JMS.DVB.NET.Recording.Actions;
+using JMS.DVB.NET.Recording.Services.Planning;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
@@ -7,7 +9,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/guide")]
-    public class GuideController(LegacyVCRServer server) : ControllerBase
+    public class GuideController(IVCRServer server, IProgramGuideEntries entries) : ControllerBase
     {
         /// <summary>
         /// Ermittelt einen einzelnen Eintrag der Programmzeitschrift.
@@ -25,8 +27,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 return null!;
 
             // Split pattern
-            var start = new DateTime(long.Parse(pattern.Substring(0, split)) * Tools.UnixTimeFactor + Tools.UnixTimeBias, DateTimeKind.Utc);
-            var end = new DateTime(long.Parse(pattern.Substring(split + 1)) * Tools.UnixTimeFactor + Tools.UnixTimeBias, DateTimeKind.Utc);
+            var start = new DateTime(long.Parse(pattern[..split]) * Tools.UnixTimeFactor + Tools.UnixTimeBias, DateTimeKind.Utc);
+            var end = new DateTime(long.Parse(pattern[(split + 1)..]) * Tools.UnixTimeFactor + Tools.UnixTimeBias, DateTimeKind.Utc);
 
             // Forward
             return server.FindProgramGuideEntry(profile, SourceIdentifier.Parse(source), start, end, GuideItem.Create)!;
@@ -38,23 +40,22 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="filter">Die Beschreibung des Filters.</param>
         /// <returns>Die Liste aller passenden Einträge.</returns>
         [HttpPost("query")]
-        public GuideItem[] Find([FromBody] GuideFilter filter) => server.GetProgramGuideEntries(filter, GuideFilter.Translate, GuideItem.Create);
+        public GuideItem[] Find([FromBody] GuideFilter filter) => entries.Get(filter, GuideFilter.Translate, GuideItem.Create);
 
         /// <summary>
         /// Meldet alle Einträge der Programmzeitschrift zu einem Geräteprofil.
         /// </summary>
-        /// <param name="countOnly">Indikator zur Unterscheidung der Methoden.</param>
         /// <param name="filter">Die Beschreibung des Filters.</param>
         /// <returns>Die Anzahl aller passenden Einträge.</returns>
         [HttpPost("count")]
-        public int Count(string countOnly, [FromBody] GuideFilter filter) => server.GetProgramGuideEntries(filter, GuideFilter.Translate);
+        public int Count([FromBody] GuideFilter filter) => entries.Get(filter, GuideFilter.Translate);
 
         /// <summary>
         /// Ermittelt Informationen zu den Einträgen in einem Geräteprofil.
         /// </summary>
-        /// <param name="detail">Der Name des Profils.</param>
+        /// <param name="profile">Der Name des Profils.</param>
         /// <returns>Die gewünschten Informationen.</returns>
-        [HttpGet("info/{detail}")]
-        public GuideInfo GetInfo(string detail) => server.GetProgramGuideInformation(detail, GuideInfo.Create);
+        [HttpGet("info/{profile}")]
+        public GuideInfo GetInfo(string profile) => entries.GetInformation(profile, GuideInfo.Create);
     }
 }
