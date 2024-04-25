@@ -20,7 +20,8 @@ public class VCRServer(
     ILogger logger,
     IJobManager jobs,
     IProfileStateFactory states,
-    IExtensionManager extensions
+    IProgramGuideProxyFactory guideFactory,
+    ISourceScanProxyFactory scanFactory
 ) : IVCRServer, IDisposable
 {
     private readonly IVCRProfiles _profiles = profiles;
@@ -34,11 +35,13 @@ public class VCRServer(
 
     private readonly IJobManager _jobs = jobs;
 
-    public readonly IVCRConfiguration _configuration = configuration;
-
-    private readonly IExtensionManager _extensionManager = extensions;
+    private readonly IVCRConfiguration _configuration = configuration;
 
     private readonly IProfileStateFactory _states = states;
+
+    private readonly IProgramGuideProxyFactory _guideFactory = guideFactory;
+
+    private readonly ISourceScanProxyFactory _scanFactory = scanFactory;
 
     private Action? _restart;
 
@@ -612,7 +615,7 @@ public class VCRServer(
         if (guideUpdate != null)
         {
             // Start a new guide collector
-            m_pendingActions += ProgramGuideProxy.Create(profile, recording, _logger, _jobs, _configuration, _profiles, _extensionManager).Start;
+            m_pendingActions += _guideFactory.Create(profile, recording).Start;
         }
         else
         {
@@ -621,7 +624,7 @@ public class VCRServer(
             if (sourceUpdate != null)
             {
                 // Start a new update
-                m_pendingActions += SourceScanProxy.Create(profile, recording, _logger, _jobs, _configuration, _profiles, _extensionManager).Start;
+                m_pendingActions += _scanFactory.Create(profile, recording).Start;
             }
             else
             {

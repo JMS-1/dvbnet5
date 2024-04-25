@@ -33,7 +33,7 @@ public class ProgramGuideProxy : CardServerProxy
     /// </summary>
     /// <param name="state">Das zugehörige Geräteprofil.</param>
     /// <param name="recording">Daten der primären Aufzeichnung.</param>
-    private ProgramGuideProxy(
+    public ProgramGuideProxy(
         IProfileState state,
         VCRRecordingInfo recording,
         ILogger logger,
@@ -75,33 +75,6 @@ public class ProgramGuideProxy : CardServerProxy
             else
                 Logger.Log(LoggingLevel.Full, "Quelle '{0}' unbekannt: es wird keine Programmzeitschrift ermittelt", legacyName);
         }
-    }
-
-    /// <summary>
-    /// Erstellt eine neue Aktualisierung.
-    /// </summary>
-    /// <param name="state">Das zugehörige Geräteprofil.</param>
-    /// <param name="recording">Beschreibt die Aufzeichnung.</param>
-    /// <returns>Die gewünschte Steuerung.</returns>
-    /// <exception cref="ArgumentNullException">Es wurden nicht alle Parameter angegeben.</exception>
-    public static ProgramGuideProxy Create(
-        IProfileState state,
-        VCRRecordingInfo recording,
-        ILogger logger,
-        IJobManager jobManager,
-        IVCRConfiguration configuration,
-        IVCRProfiles profiles,
-        IExtensionManager extensionManager
-    )
-    {
-        // Validate
-        if (state == null)
-            throw new ArgumentNullException(nameof(state));
-        if (recording == null)
-            throw new ArgumentNullException(nameof(recording));
-
-        // Forward
-        return new ProgramGuideProxy(state, recording, logger, jobManager, configuration, profiles, extensionManager);
     }
 
     /// <summary>

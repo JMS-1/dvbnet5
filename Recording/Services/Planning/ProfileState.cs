@@ -17,21 +17,18 @@ public class ProfileState(
     string profileName,
     IProgramGuideManagerFactory guideManagerFactory,
     IVCRProfiles profiles,
-    IVCRConfiguration configuration,
-    IJobManager jobManager,
-    IExtensionManager extensionManager,
-    ILogger logger
+    ILogger logger,
+    IRecordingProxyFactory recordingFactory,
+    IZappingProxyFactory zappingFactory
 ) : IProfileState
 {
-    private readonly IExtensionManager _extensionManager = extensionManager;
+    private readonly IZappingProxyFactory _zappingFactory = zappingFactory;
+
+    private readonly IRecordingProxyFactory _recordingFactory = recordingFactory;
 
     private readonly IVCRProfiles _profiles = profiles;
 
     private readonly ILogger _logger = logger;
-
-    private readonly IJobManager _jobs = jobManager;
-
-    private readonly IVCRConfiguration _configuration = configuration;
 
     /// <inheritdoc/>
     public string ProfileName => profileName;
@@ -65,7 +62,7 @@ public class ProfileState(
         else if (!string.IsNullOrEmpty(connectTo))
         {
             // Activate 
-            ZappingProxy.Create(this, connectTo, _logger, _jobs, _configuration, _profiles, _extensionManager).Start();
+            _zappingFactory.Create(this, connectTo).Start();
         }
         else if (source != null)
         {
@@ -232,7 +229,7 @@ public class ProfileState(
                 if (ReferenceEquals(current, null))
                 {
                     // Create a brand new regular recording request
-                    var request = new RecordingProxy(this, recording, _logger, _jobs, _configuration, _profiles, _extensionManager);
+                    var request = _recordingFactory.Create(this, recording);
 
                     // Activate the request
                     request.Start();
