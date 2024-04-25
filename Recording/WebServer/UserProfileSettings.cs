@@ -200,7 +200,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         }
 
         /// <summary>
-        /// Meldet die Anzahl von Eintr�ge der Programmzeitschrift pro Seite.
+        /// Meldet die Anzahl von Einträge der Programmzeitschrift pro Seite.
         /// </summary>
         public static int EPGEntries
         {

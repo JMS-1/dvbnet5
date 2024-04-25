@@ -77,47 +77,6 @@ namespace JMS.DVB.NET.Recording
         }
 
         /// <summary>
-        /// Ver�ndert eine Ausnahme.
-        /// </summary>
-        /// <param name="jobIdentifier">Die eindeutige Kennung des Auftrags.</param>
-        /// <param name="scheduleIdentifier">Die eindeutige Kennung der Aufzeichnung.</param>
-        /// <param name="when">Der betroffene Tag.</param>
-        /// <param name="startDelta">Die Verschiebung der Startzeit in Minuten.</param>
-        /// <param name="durationDelta">Die �nderung der Aufzeichnungsdauer in Minuten.</param>
-        public void ChangeException(Guid jobIdentifier, Guid scheduleIdentifier, DateTime when, int startDelta, int durationDelta)
-        {
-            // Locate the job
-            var job = _jobs[jobIdentifier];
-            if (job == null)
-                return;
-            var schedule = job[scheduleIdentifier];
-            if (schedule == null)
-                return;
-
-            // Validate
-            if (durationDelta < -schedule.Duration)
-                return;
-
-            // Create description
-            var exception = new VCRScheduleException { When = when.Date };
-
-            // Fill all data 
-            if (startDelta != 0)
-                exception.ShiftTime = startDelta;
-            if (durationDelta != 0)
-                exception.Duration = schedule.Duration + durationDelta;
-
-            // Process
-            schedule.SetException(exception.When, exception);
-
-            // Store
-            _jobs.Update(job, null);
-
-            // Recalculate plan
-            Profiles.BeginNewPlan();
-        }
-
-        /// <summary>
         /// Ermittelt eine Übersicht über die aktuellen und anstehenden Aufzeichnungen
         /// aller Geräteprofile.
         /// </summary>
@@ -203,11 +162,11 @@ namespace JMS.DVB.NET.Recording
         /// Ermittelt einen Auszug aus der Programmzeitschrift.
         /// </summary>
         /// <typeparam name="TFilter">Die Art des Filters.</typeparam>
-        /// <typeparam name="TEntry">Die Art der externen Darstellung von Eintr�gen.</typeparam>
+        /// <typeparam name="TEntry">Die Art der externen Darstellung von Einträgen.</typeparam>
         /// <param name="filter">Der Filter in der externen Darstellung.</param>
         /// <param name="filterConverter">Methode zur Wandlung des Filters in die interne Darstellung.</param>
         /// <param name="factory">Erstellt die externe Repr�sentation eines Eintrags.</param>
-        /// <returns>Die Liste aller passenden Eintr�ge.</returns>
+        /// <returns>Die Liste aller passenden Einträge.</returns>
         public TEntry[] GetProgramGuideEntries<TFilter, TEntry>(
             TFilter filter,
             Func<TFilter, IVCRProfiles, GuideEntryFilter?> filterConverter,
@@ -239,7 +198,7 @@ namespace JMS.DVB.NET.Recording
         /// <typeparam name="TFilter">Die Art des Filters.</typeparam>
         /// <param name="filter">Der Filter in der externen Darstellung.</param>
         /// <param name="filterConverter">Methode zur Wandlung des Filters in die interne Darstellung.</param>
-        /// <returns>Die Anzahl der passenden Eintr�ge.</returns>
+        /// <returns>Die Anzahl der passenden Einträge.</returns>
         public int GetProgramGuideEntries<TFilter>(
             TFilter filter,
             Func<TFilter, IVCRProfiles, GuideEntryFilter?> filterConverter
@@ -309,7 +268,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="profiles">Die Liste der Geräteprofile.</param>
         /// <param name="getName">Methode zum Auslesen des Profilnames.</param>
         /// <param name="updater">Die Aktualisierungsmethode.</param>
-        /// <returns>Gesetzt, wenn eine �nderung durchgef�hrt wurde.</returns>
+        /// <returns>Gesetzt, wenn eine Änderung durchgef�hrt wurde.</returns>
         public bool UpdateProfiles<TProfile>(TProfile[] profiles, Func<TProfile, string> getName, Func<TProfile, Profile, bool> updater)
         {
             // Result
@@ -329,8 +288,8 @@ namespace JMS.DVB.NET.Recording
         /// <param name="profileName">Der Name des betroffenen Geräteprofils.</param>
         /// <param name="start">Das Startdatum.</param>
         /// <param name="end">Das Enddatum.</param>
-        /// <param name="factory">Methode zum Erzeugen der externen Darstellung aus den Protokolleintr�gen.</param>
-        /// <returns>Die angeforderten Protokolleintr�ge.</returns>
+        /// <param name="factory">Methode zum Erzeugen der externen Darstellung aus den ProtokollEinträgen.</param>
+        /// <returns>Die angeforderten ProtokollEinträge.</returns>
         public TEntry[] QueryLog<TEntry>(string profileName, DateTime start, DateTime end, Func<VCRRecordingInfo, TEntry> factory)
         {
             // Locate profile and forward call

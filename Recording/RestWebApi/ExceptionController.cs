@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using JMS.DVB.NET.Recording.Actions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
@@ -7,7 +8,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/exception")]
-    public class ExceptionController(LegacyVCRServer server) : ControllerBase
+    public class ExceptionController(IChangeExceptions changeExceptions) : ControllerBase
     {
         /// <summary>
         /// Verändert eine Ausnahme.
@@ -24,7 +25,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             ServerTools.ParseUniqueWebId(detail, out Guid jobIdentifier, out Guid scheduleIdentifier);
 
             // Forward
-            server.ChangeException(jobIdentifier, scheduleIdentifier, date, startDelta, durationDelta);
+            changeExceptions.Update(jobIdentifier, scheduleIdentifier, date, startDelta, durationDelta);
         }
     }
 }

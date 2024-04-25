@@ -25,7 +25,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
     }
 
     /// <summary>
-    /// Die Verschl�sselung der Quelle.
+    /// Die Verschlüsselung der Quelle.
     /// </summary>
     [Flags]
     public enum GuideEncryptionFilter
@@ -52,7 +52,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
     public class GuideEntryFilter
     {
         /// <summary>
-        /// Vergleichsalorithmus zum Anordnen von Eintr�gen.
+        /// Vergleichsalorithmus zum Anordnen von Einträgen.
         /// </summary>
         private static readonly IComparer<ProgramGuideEntry> Comparer = new EntryComparer();
 
@@ -62,11 +62,11 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         private class EntryComparer : IComparer<ProgramGuideEntry>
         {
             /// <summary>
-            /// Vergleicht zwei Eintr�ge.
+            /// Vergleicht zwei Einträge.
             /// </summary>
             /// <param name="left">Der erste Eintrag.</param>
             /// <param name="right">Der zweite Eintrag.</param>
-            /// <returns>Der Unterschied zwischen den Eintr�gen.</returns>
+            /// <returns>Der Unterschied zwischen den Einträgen.</returns>
             public int Compare(ProgramGuideEntry? left, ProgramGuideEntry? right)
             {
                 // Test for nothing
@@ -153,7 +153,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         public GuideSourceFilter SourceType { get; set; }
 
         /// <summary>
-        /// Die Art der Verschl�sselung.
+        /// Die Art der Verschlüsselung.
         /// </summary>
         public GuideEncryptionFilter SourceEncryption { get; set; }
 
@@ -165,7 +165,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Wendet die Fiterbedingung an.
         /// </summary>
-        /// <param name="entries">Eine Liste von Eintr�gen.</param>
+        /// <param name="entries">Eine Liste von Einträgen.</param>
         /// <returns>Die gefilterte Liste.</returns>
         public IEnumerable<ProgramGuideEntry> Filter(IEnumerable<ProgramGuideEntry> entries, IVCRProfiles profiles)
         {

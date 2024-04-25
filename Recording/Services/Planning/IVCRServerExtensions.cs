@@ -14,10 +14,10 @@ public static class IVCRServerExtensions
     /// <param name="withRadio">Gesetzt, wenn Radiosender zu ber?cksichtigen sind.</param>
     /// <param name="factory">Eine Methode zum Erzeugen der Zielelemente aus den Daten einer einzelnen Quelle.</param>
     /// <returns></returns>
-    public static TTarget[] GetSources<TTarget>(this IVCRServer states, string profileName, bool withTV, bool withRadio, Func<SourceSelection, IVCRProfiles, TTarget> factory, IVCRProfiles profiles)
+    public static TTarget[] GetSources<TTarget>(this IVCRServer server, string profileName, bool withTV, bool withRadio, Func<SourceSelection, IVCRProfiles, TTarget> factory, IVCRProfiles profiles)
     {
         // Find the profile
-        var profile = states.FindProfile(profileName);
+        var profile = server.FindProfile(profileName);
         if (profile == null)
             return [];
 
@@ -48,8 +48,8 @@ public static class IVCRServerExtensions
     /// <typeparam name="TInfo">Die Art der gemeldeten Information.</typeparam>
     /// <param name="factory">Methode zum Erzeugen der Informationen zu einem einzelnen Geräteprofil.</param>
     /// <returns>Die Informationen zu den Profilen.</returns>
-    public static TInfo[] GetProfiles<TInfo>(this IVCRServer states, Func<IProfileState, TInfo> factory)
-        => states.InspectProfiles(factory).ToArray();
+    public static TInfo[] GetProfiles<TInfo>(this IVCRServer server, Func<IProfileState, TInfo> factory)
+        => server.InspectProfiles(factory).ToArray();
 
     /// <summary>
     /// Meldet alle Aufträge.

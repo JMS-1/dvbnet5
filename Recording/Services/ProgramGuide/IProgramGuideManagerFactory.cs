@@ -4,6 +4,6 @@ namespace JMS.DVB.NET.Recording.Services.ProgramGuide;
 
 public interface IProgramGuideManagerFactory
 {
-    IProgramGuideManager Create(IVCRServer states, string profileName);
+    IProgramGuideManager Create(IVCRServer server, string profileName);
 }
 

@@ -12,7 +12,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     [ApiController]
     [Route("api/edit")]
     public class EditController(
-        IVCRServer states,
+        IVCRServer server,
         IVCRProfiles profiles,
         IJobManager jobs
     ) : ControllerBase
@@ -39,7 +39,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             // Process
             jobs.Update(job, schedule.UniqueID!.Value);
 
-            states.BeginNewPlan();
+            server.BeginNewPlan();
 
             // Update recently used channels
             UserProfileSettings.AddRecentChannel(data.Job.Source);
@@ -77,7 +77,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 var epgInfo = epg.Split(':');
 
                 // Locate
-                epgEntry = states[profile = epgInfo[1]]?.ProgramGuide.FindEntry(SourceIdentifier.Parse(epgInfo[2]), new DateTime(long.Parse(epgInfo[0]), DateTimeKind.Utc));
+                epgEntry = server[profile = epgInfo[1]]?.ProgramGuide.FindEntry(SourceIdentifier.Parse(epgInfo[2]), new DateTime(long.Parse(epgInfo[0]), DateTimeKind.Utc));
             }
 
             // Information erzeugen
@@ -123,7 +123,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             // Send to persistence
             jobs.Update(newJob, newSchedule.UniqueID!.Value);
 
-            states.BeginNewPlan();
+            server.BeginNewPlan();
 
             // Update recently used channels
             UserProfileSettings.AddRecentChannel(data.Job.Source);
@@ -153,7 +153,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             else
                 jobs.Update(job, null);
 
-            states.BeginNewPlan();
+            server.BeginNewPlan();
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             // Send to persistence
             jobs.Update(newJob, newSchedule.UniqueID!.Value);
 
-            states.BeginNewPlan();
+            server.BeginNewPlan();
 
             // Update recently used channels
             UserProfileSettings.AddRecentChannel(data.Job.Source);

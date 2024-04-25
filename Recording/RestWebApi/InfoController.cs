@@ -11,9 +11,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     [ApiController]
     [Route("api/info")]
     public class InfoController(
-        LegacyVCRServer server,
+        LegacyVCRServer legacyServer,
         IVCRConfiguration configuration,
-        IVCRServer states,
+        IVCRServer server,
         IVCRProfiles profiles,
         IJobManager jobs,
         IExtensionManager extensions
@@ -69,7 +69,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public InfoService VersionInformation()
         {
             // Load
-            var settings = server.Settings;
+            var settings = legacyServer.Settings;
 
             // Report
             return
@@ -78,7 +78,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                     HasPendingExtensions = extensions.HasActiveProcesses,
                     SourceScanEnabled = configuration.SourceListUpdateInterval != 0,
                     GuideUpdateEnabled = configuration.ProgramGuideUpdateEnabled,
-                    IsRunning = states.IsActive,
+                    IsRunning = server.IsActive,
                     //ProfilesNames = settings.Profiles.ToArray(),
                     InstalledVersion = InstalledVersion,
                     Version = LegacyVCRServer.CurrentVersion,

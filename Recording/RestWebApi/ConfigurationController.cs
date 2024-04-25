@@ -15,11 +15,11 @@ namespace JMS.DVB.NET.Recording.RestWebApi;
 [ApiController]
 [Route("api/configuration")]
 public class ConfigurationController(
-    IVCRServer states,
+    IVCRServer server,
     IVCRConfiguration configuration,
     IConfigurationUpdater updateConfig,
     IRuleUpdater updateRules,
-    LegacyVCRServer server
+    LegacyVCRServer legacyServer
 ) : ControllerBase
 {
     /// <summary>
@@ -290,7 +290,7 @@ public class ConfigurationController(
     /// </summary>
     /// <returns>Die aktuellen Regeln.</returns>
     [HttpGet("rules")]
-    public SchedulerRules ReadSchedulerRules() => new SchedulerRules { RuleFileContents = states.SchedulerRules };
+    public SchedulerRules ReadSchedulerRules() => new SchedulerRules { RuleFileContents = server.SchedulerRules };
 
     /// <summary>
     /// Aktualisiert das Regelwerk für die Aufzeichnungsplanung.
@@ -313,7 +313,7 @@ public class ConfigurationController(
         var settings = new ProfileSettings
         {
             SystemProfiles =
-                    [.. server
+                    [.. legacyServer
                             .GetProfiles(ConfigurationProfile.Create, out string defaultName)
                             .OrderBy(profile => profile.Name, ProfileManager.ProfileNameComparer)]
         };
@@ -352,7 +352,7 @@ public class ConfigurationController(
         update[SettingNames.Profiles].NewValue = string.Join("|", profiles);
 
         // Process
-        return updateConfig.UpdateConfiguration(update.Values, server.UpdateProfiles(settings.SystemProfiles, profile => profile.Name, (profile, device) => profile.WriteBack(device)));
+        return updateConfig.UpdateConfiguration(update.Values, legacyServer.UpdateProfiles(settings.SystemProfiles, profile => profile.Name, (profile, device) => profile.WriteBack(device)));
     }
 
     /// <summary>

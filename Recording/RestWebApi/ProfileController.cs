@@ -11,7 +11,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/profile")]
-    public class ProfileController(IVCRServer states, IVCRProfiles profiles, IJobManager jobs) : ControllerBase
+    public class ProfileController(IVCRServer server, IVCRProfiles profiles, IJobManager jobs) : ControllerBase
     {
         /// <summary>
         /// Meldet alle Geräteprofile, die der <i>VCR.NET Recording Service</i> verwenden darf.
@@ -22,7 +22,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Forward
             return
-                [.. states
+                [.. server
                     .GetProfiles(ProfileInfo.Create)
                     .OrderBy(profile => profile.Name, ProfileManager.ProfileNameComparer)];
         }
@@ -33,7 +33,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="profile">Der Name des zu verwendenden Geräteprofils.</param>
         /// <returns>Die gewünschte Liste von Sendern.</returns>
         [HttpGet("sources/{profile}")]
-        public ProfileSource[] FindSources(string profile) => states.GetSources(profile, true, true, ProfileSource.Create, profiles);
+        public ProfileSource[] FindSources(string profile) => server.GetSources(profile, true, true, ProfileSource.Create, profiles);
 
         /// <summary>
         /// Verändert den Endzeitpunkt.
@@ -44,12 +44,12 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="endTime">Der neue Endzeitpunkt.</param>
         [HttpPut("endtime/{profile}")]
         public void SetNewEndTime(string profile, bool disableHibernate, string schedule, string endTime)
-            => states
+            => server
                 .FindProfile(profile)?
                 .ChangeStreamEnd(
                     new Guid(schedule),
                     DateTime.Parse(endTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                    disableHibernate && (states.NumberOfActiveRecordings == 1)
+                    disableHibernate && (server.NumberOfActiveRecordings == 1)
                 );
 
         /// <summary>

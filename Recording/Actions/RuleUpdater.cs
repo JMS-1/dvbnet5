@@ -2,33 +2,24 @@ using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.Actions;
 
-public interface IRuleUpdater
-{  /// <summary>
-   /// Aktualisiert die Regeln für die Aufzeichnungsplanung.
-   /// </summary>
-   /// <param name="newRules">Die ab nun zu verwendenden Regeln.</param>
-   /// <returns>Meldet, ob ein Neustart erforderlich ist.</returns>
-    bool? UpdateSchedulerRules(string newRules);
-}
-
-public class RuleUpdater(IVCRServer states) : IRuleUpdater
+public class RuleUpdater(IVCRServer server) : IRuleUpdater
 {
     /// <inheritdoc/>
     public bool? UpdateSchedulerRules(string newRules)
     {
         // Check state
-        if (states.IsActive)
+        if (server.IsActive)
             return null;
 
         // Process
-        states.SchedulerRules = newRules;
+        server.SchedulerRules = newRules;
 
         // Do not restart in debug mode
         if (Tools.DebugMode)
             return null;
 
         // Create new process to restart the service
-        states.Restart();
+        server.Restart();
 
         // Finally back to the administration page
         return true;

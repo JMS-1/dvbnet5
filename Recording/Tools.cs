@@ -28,12 +28,12 @@ namespace JMS.DVB.NET.Recording
         /// <remarks>
         /// Dieser Pfad wird verwendet, um abh�ngige Dateien relativ zum
         /// VCR.NET Recording Service zu finden. Er kann in Testprogrammen
-        /// ver�ndert werden.
+        /// Verändert werden.
         /// </remarks>
         public static string ExecutablePath { get { return RunTimeLoader.GetDirectory("Recording").FullName; } }
 
         /// <summary>
-        /// Synchronisiert Eintr�ge in das spezielle Protokoll.
+        /// Synchronisiert Einträge in das spezielle Protokoll.
         /// </summary>
         public static object m_LoggingLock = new object();
 
@@ -48,7 +48,7 @@ namespace JMS.DVB.NET.Recording
         public static bool EnableTracing = false;
 
         /// <summary>
-        /// Eine Kurzbezeichnung für die aktuelle Laufzeitumgebung für Protokolleintr�ge.
+        /// Eine Kurzbezeichnung für die aktuelle Laufzeitumgebung für ProtokollEinträge.
         /// </summary>
         public static string DomainName = null!;
 

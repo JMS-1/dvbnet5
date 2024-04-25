@@ -29,7 +29,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         }
 
         /// <summary>
-        /// F�gt eine Liste von Eintr�gen zu dieser Verwaltung hinzu.
+        /// F�gt eine Liste von Einträgen zu dieser Verwaltung hinzu.
         /// </summary>
         /// <param name="entries">Die zu verwendende Liste.</param>
         public void AddRange(IEnumerable<ProgramGuideEntry> entries)
@@ -60,7 +60,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// Pr�ft, ob für den gew�hlten Zeitraum ein Eintrag existiert.
         /// </summary>
-        /// <param name="source">Die Quelle, deren Eintr�ge untersucht werden sollen.</param>
+        /// <param name="source">Die Quelle, deren Einträge untersucht werden sollen.</param>
         /// <param name="start">Der Beginn des Zeitraums (einschlie�lich).</param>
         /// <param name="end">Das Ende des Zeitraums (ausschlie�lich).</param>
         /// <returns>Gesetzt, wenn ein Eintrag existiert.</returns>
@@ -163,7 +163,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         }
 
         /// <summary>
-        /// Meldet alle Eintr�ge der Programmzeitschrift zu einer Quelle.
+        /// Meldet alle Einträge der Programmzeitschrift zu einer Quelle.
         /// </summary>
         /// <param name="source">Die gewünschte Quelle.</param>
         /// <returns>Die gewünschte Liste.</returns>

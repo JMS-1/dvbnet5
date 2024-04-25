@@ -135,7 +135,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
 
         /// <summary>
         /// Erg�nzt einen einzelnen Eintrag und ersetzt dabei eventuell bereits vorhandene
-        /// Eintr�ge.
+        /// Einträge.
         /// </summary>
         /// <param name="entry">Der zu erg�nzende Eintrag.</param>
         public void Add(ProgramGuideEntry entry)
@@ -204,7 +204,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         }
 
         /// <summary>
-        /// Meldet die Anzahl der verwalteten Eintr�ge.
+        /// Meldet die Anzahl der verwalteten Einträge.
         /// </summary>
         public int Count => m_Events.Count;
 
@@ -218,7 +218,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         #region IEnumerable<ProgramGuideEntry> Members
 
         /// <summary>
-        /// Erzeugt eine Auflistung über alle enthaltenen Eintr�ge.
+        /// Erzeugt eine Auflistung über alle enthaltenen Einträge.
         /// </summary>
         /// <returns>Die gewünschte Auflistung.</returns>
         public IEnumerator<ProgramGuideEntry> GetEnumerator() => m_Events.GetEnumerator();
@@ -228,7 +228,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         #region IEnumerable Members
 
         /// <summary>
-        /// Erzeugt eine Auflistung über alle enthaltenen Eintr�ge.
+        /// Erzeugt eine Auflistung über alle enthaltenen Einträge.
         /// </summary>
         /// <returns>Die gewünschte Auflistung.</returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

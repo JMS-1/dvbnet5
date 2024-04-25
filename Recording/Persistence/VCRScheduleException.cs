@@ -14,7 +14,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         public DateTime When { get; set; }
 
         /// <summary>
-        /// Liest oder setzt die ver�nderte Dauer der Aufzeichnung. Ist dieser Wert <i>0</i>,
+        /// Liest oder setzt die Veränderte Dauer der Aufzeichnung. Ist dieser Wert <i>0</i>,
         /// so wird keine Aufzeichnung ausgef�hrt. Ist kein Wert angegeben, so wird die urspr�ngliche
         /// Dauer verwendet.
         /// </summary>

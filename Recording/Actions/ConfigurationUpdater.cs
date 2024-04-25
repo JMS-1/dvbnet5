@@ -3,13 +3,13 @@ using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.Actions;
 
-public class ConfigurationUpdater(IVCRConfiguration configuration, IVCRServer states) : IConfigurationUpdater
+public class ConfigurationUpdater(IVCRConfiguration configuration, IVCRServer server) : IConfigurationUpdater
 {
     /// <inheritdoc/>
     public bool? UpdateConfiguration(IEnumerable<SettingDescription> settings, bool forceRestart = false)
     {
         // Check state
-        if (states.IsActive)
+        if (server.IsActive)
             return null;
 
         // Process
@@ -20,7 +20,7 @@ public class ConfigurationUpdater(IVCRConfiguration configuration, IVCRServer st
                 return null;
 
             // Create new process to restart the service
-            states.Restart();
+            server.Restart();
 
             // Finally back to the administration page
             return true;
@@ -28,7 +28,7 @@ public class ConfigurationUpdater(IVCRConfiguration configuration, IVCRServer st
         else
         {
             // Check for new tasks
-            states.BeginNewPlan();
+            server.BeginNewPlan();
 
             // Finally back to the administration page
             return false;

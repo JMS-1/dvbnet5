@@ -21,6 +21,7 @@ public static class RecordingExtensions
     {
         services.AddTransient(typeof(Lazy<>));
 
+        services.AddTransient<IChangeExceptions, ChangeExceptions>();
         services.AddTransient<IConfigurationUpdater, ConfigurationUpdater>();
         services.AddTransient<ILogger, Logger>();
         services.AddTransient<IProfileStateFactory, ProfileStateFactory>();

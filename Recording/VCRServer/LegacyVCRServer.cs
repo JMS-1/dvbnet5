@@ -18,7 +18,7 @@ namespace JMS.DVB.NET.Recording
     /// Von dieser Klasse existiert im Allgemeinen nur eine einzige Instanz. Sie
     /// realisiert die fachlische Logik des VCR.NET Recording Service.
     /// </summary>
-    public partial class LegacyVCRServer(IVCRConfiguration configuration, ILogger logger, IVCRProfiles profiles, IJobManager jobManager, IVCRServer states)
+    public partial class LegacyVCRServer(IVCRConfiguration configuration, ILogger logger, IVCRProfiles profiles, IJobManager jobManager, IVCRServer server)
     {
         /// <summary>
         /// Wird beim Bauen automatisch eingemischt.
@@ -38,7 +38,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Die zugeh?rige Verwaltung der aktiven Ger?teprofile.
         /// </summary>
-        internal IVCRServer Profiles { get; private set; } = states;
+        internal IVCRServer Profiles { get; private set; } = server;
 
         /// <summary>
         /// Die aktive Konfiguration.

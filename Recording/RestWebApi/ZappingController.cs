@@ -11,7 +11,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/zapping")]
-    public class ZappingController(IVCRServer states, IVCRProfiles profiles) : ControllerBase
+    public class ZappingController(IVCRServer server, IVCRProfiles profiles) : ControllerBase
     {
         /// <summary>
         /// Steuert den Zapping Modus.
@@ -27,7 +27,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         private TStatus LiveModeOperation<TStatus>(string profile, bool active, string connectTo, SourceIdentifier source, Func<string, ServerInformation, TStatus> factory)
         {
             // Attach to the profile and process
-            var state = states.FindProfile(profile);
+            var state = server.FindProfile(profile);
             if (state == null)
                 return default!;
             else
@@ -52,7 +52,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <returns>Die gewünschte Liste von Sendern.</returns>
         [HttpGet("source/{profile}")]
         public ZappingSource[] FindSources(string profile, bool tv, bool radio)
-            => states.GetSources(profile, tv, radio, ZappingSource.Create, profiles);
+            => server.GetSources(profile, tv, radio, ZappingSource.Create, profiles);
 
         /// <summary>
         /// Aktiviert eine neue Sitzung.

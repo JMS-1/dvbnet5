@@ -9,7 +9,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/plan")]
-    public class PlanController(LegacyVCRServer server, IVCRServer states) : ControllerBase
+    public class PlanController(LegacyVCRServer legacyServer, IVCRServer server) : ControllerBase
     {
         /// <summary>
         /// Meldet den aktuellen Aufzeichnungsplan.
@@ -29,7 +29,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 endTime = DateTime.MaxValue;
 
             // Route from Web AppDomain into service AppDomain
-            var activities = server.GetPlan(endTime, maximum, PlanActivity.Create);
+            var activities = legacyServer.GetPlan(endTime, maximum, PlanActivity.Create);
 
             // Must resort to correct for running entries
             Array.Sort(activities, PlanActivity.ByStartComparer);
@@ -69,7 +69,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Forward
             return
-                server
+                legacyServer
                     .GetCurrentRecordings(PlanCurrent.Create, PlanCurrent.Create, PlanCurrent.Create)
                     .OrderBy(current => current.StartTime)
                     .ThenBy(current => current.Duration)
@@ -86,7 +86,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Forward
             return
-                server
+                legacyServer
                     .GetCurrentRecordings(PlanCurrent.Create)
                     .Where(current => !string.IsNullOrEmpty(current.SourceName))
                     .Select(PlanCurrentMobile.Create)
@@ -99,13 +99,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Fordert die Aktualisierung der Quellen an.
         /// </summary>
         [HttpPost("scan")]
-        public void StartSourceScan() => states.ForceSoureListUpdate();
+        public void StartSourceScan() => server.ForceSoureListUpdate();
 
         /// <summary>
         /// Fordert die Aktualisierung der Programmzeitschrift an.
         /// </summary>
         [HttpPost("guide")]
-        public void StartGuideUpdate() => states.ForceProgramGuideUpdate();
+        public void StartGuideUpdate() => server.ForceProgramGuideUpdate();
 
         /// <summary>
         /// Ändert den Netzwerkversand.
@@ -116,6 +116,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="target">Das neue Ziel des Netzwerkversands.</param>
         [HttpPost("target")]
         public void SetStreamTarget(string profile, string source, Guid scheduleIdentifier, string target)
-            => states.FindProfile(profile)?.SetStreamTarget(SourceIdentifier.Parse(source), scheduleIdentifier, target);
+            => server.FindProfile(profile)?.SetStreamTarget(SourceIdentifier.Parse(source), scheduleIdentifier, target);
     }
 }
