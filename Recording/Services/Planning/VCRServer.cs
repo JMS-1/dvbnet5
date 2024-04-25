@@ -23,20 +23,20 @@ public class VCRServer(
     IExtensionManager extensions
 ) : IVCRServer, IDisposable
 {
-    public IVCRProfiles Profiles { get; private set; } = profiles;
+    private readonly IVCRProfiles _profiles = profiles;
 
     /// <summary>
     /// Alle von dieser Instanz verwalteten Geräteprofile.
     /// </summary>
     private Dictionary<string, IProfileState> _stateMap = [];
 
-    public ILogger Logger { get; private set; } = logger;
+    private readonly ILogger _logger = logger;
 
-    public IJobManager JobManager { get; private set; } = jobs;
+    private readonly IJobManager _jobs = jobs;
 
-    public IVCRConfiguration Configuration { get; private set; } = configuration;
+    public readonly IVCRConfiguration _configuration = configuration;
 
-    public IExtensionManager ExtensionManager { get; private set; } = extensions;
+    private readonly IExtensionManager _extensionManager = extensions;
 
     private readonly IProfileStateFactory _states = states;
 
@@ -51,11 +51,11 @@ public class VCRServer(
         _restart = restart;
 
         // Profiles to use
-        var profileNames = Profiles.ProfileNames.ToArray();
+        var profileNames = _profiles.ProfileNames.ToArray();
         var nameReport = string.Join(", ", profileNames);
 
         // Log
-        Logger.Log(LoggingLevel.Full, "Die Geräteprofile werden geladen: {0}", nameReport);
+        _logger.Log(LoggingLevel.Full, "Die Geräteprofile werden geladen: {0}", nameReport);
 
         // Report
         Tools.ExtendedLogging("Loading Profile Collection: {0}", nameReport);
@@ -67,7 +67,7 @@ public class VCRServer(
         );
 
         // Now we can create the planner
-        m_planner = RecordingPlanner.Create(this, Configuration, Profiles, Logger, JobManager);
+        m_planner = RecordingPlanner.Create(this, _configuration, _profiles, _logger, _jobs);
         m_planThread = new Thread(PlanThread) { Name = "Recording Planner", IsBackground = true };
 
         // Start planner
@@ -90,7 +90,7 @@ public class VCRServer(
             if (string.IsNullOrEmpty(profileName) || profileName.Equals("*"))
             {
                 // Attach to the default profile
-                var defaultProfile = Profiles.DefaultProfile;
+                var defaultProfile = _profiles.DefaultProfile;
                 if (defaultProfile == null)
                     return null;
 
@@ -112,7 +112,7 @@ public class VCRServer(
         // Forward
         var state = this[profileName];
         if (state == null)
-            Logger.LogError("Es gibt kein Geräteprofil '{0}'", profileName);
+            _logger.LogError("Es gibt kein Geräteprofil '{0}'", profileName);
 
         // Report
         return state;
@@ -164,7 +164,7 @@ public class VCRServer(
             catch (Exception e)
             {
                 // Report
-                Logger.Log(e);
+                _logger.Log(e);
 
                 // See if we are allowed to ignore
                 if (!ignoreErrors)
@@ -332,7 +332,7 @@ public class VCRServer(
             catch (Exception e)
             {
                 // Report and ignore - we do not expect any error to occur
-                Logger.Log(e);
+                _logger.Log(e);
             }
 
             // New plan is now available - beside termination this will do nothing at all but briefly aquiring an idle lock
@@ -424,21 +424,21 @@ public class VCRServer(
             if (m_pendingSchedule == null)
             {
                 // Report
-                Logger.Log(LoggingLevel.Errors, "There is no outstanding asynchronous Recording Request for Schedule '{0}'", scheduleIdentifier);
+                _logger.Log(LoggingLevel.Errors, "There is no outstanding asynchronous Recording Request for Schedule '{0}'", scheduleIdentifier);
             }
             else if (m_pendingSchedule.Definition.UniqueIdentifier != scheduleIdentifier)
             {
                 // Report
-                Logger.Log(LoggingLevel.Errors, "Confirmed asynchronous Recording Request for Schedule '{0}' but waiting for '{1}'", scheduleIdentifier, m_pendingSchedule.Definition.UniqueIdentifier);
+                _logger.Log(LoggingLevel.Errors, "Confirmed asynchronous Recording Request for Schedule '{0}' but waiting for '{1}'", scheduleIdentifier, m_pendingSchedule.Definition.UniqueIdentifier);
             }
             else
             {
                 // Report
-                Logger.Log(LoggingLevel.Schedules, "Confirmed asynchronous Recording Request for Schedule '{0}'", scheduleIdentifier);
+                _logger.Log(LoggingLevel.Schedules, "Confirmed asynchronous Recording Request for Schedule '{0}'", scheduleIdentifier);
 
                 // Check mode
                 if (isStart != m_pendingStart)
-                    Logger.Log(LoggingLevel.Errors, "Recording Request confirmed wrong Type of Operation");
+                    _logger.Log(LoggingLevel.Errors, "Recording Request confirmed wrong Type of Operation");
 
                 // Finish
                 if (m_pendingStart)
@@ -513,7 +513,7 @@ public class VCRServer(
     void IRecordingPlannerSite.AddRegularJobs(RecordingScheduler scheduler, Func<Guid, bool> disabled, RecordingPlanner planner, PlanContext context, IVCRProfiles profiles)
     {
         // Retrieve all jobs related to this profile
-        foreach (var job in JobManager.GetActiveJobs())
+        foreach (var job in _jobs.GetActiveJobs())
             foreach (var schedule in job.Schedules)
             {
                 // No longer in use
@@ -531,7 +531,7 @@ public class VCRServer(
                     continue;
 
                 // Register single item
-                JobManager.AddToScheduler(schedule, scheduler, job, [resource], (s, p) => p.FindSource(s), disabled);
+                _jobs.AddToScheduler(schedule, scheduler, job, [resource], (s, p) => p.FindSource(s), disabled);
 
                 // Remember - even if we skipped it
                 context.RegisterSchedule(schedule, job);
@@ -551,7 +551,7 @@ public class VCRServer(
     /// </summary>
     /// <param name="item">Die nicht ausgeführte Aufzeichnung.</param>
     void IRecordingPlannerSite.Discard(IScheduleDefinition item) =>
-        Logger.Log(LoggingLevel.Schedules, "Could not record '{0}'", item.Name);
+        _logger.Log(LoggingLevel.Schedules, "Could not record '{0}'", item.Name);
 
     /// <summary>
     /// Meldet, dass eine Aufzeichnung nun beendet werden kann.
@@ -561,7 +561,7 @@ public class VCRServer(
     void IRecordingPlannerSite.Stop(IScheduleInformation item, RecordingPlanner planner)
     {
         // Report
-        Logger.Log(LoggingLevel.Schedules, "Done recording '{0}'", item.Definition.Name);
+        _logger.Log(LoggingLevel.Schedules, "Done recording '{0}'", item.Definition.Name);
 
         // Locate the profile - if we don't find it we are in big trouble!
         if (!_stateMap.TryGetValue(item.Resource.Name, out var profile))
@@ -594,7 +594,7 @@ public class VCRServer(
         }
 
         // Report
-        Logger.Log(LoggingLevel.Schedules, "Start recording '{0}'", item.Definition.Name);
+        _logger.Log(LoggingLevel.Schedules, "Start recording '{0}'", item.Definition.Name);
 
         // Locate the profile - if we don't find it we are in big trouble!
         if (!_stateMap.TryGetValue(item.Resource.Name, out var profile))
@@ -605,14 +605,14 @@ public class VCRServer(
         m_pendingStart = true;
 
         // Create the recording
-        var recording = VCRRecordingInfo.Create(item, context, Configuration, Profiles)!;
+        var recording = VCRRecordingInfo.Create(item, context, _configuration, _profiles)!;
 
         // Check for EPG
         var guideUpdate = item.Definition as ProgramGuideTask;
         if (guideUpdate != null)
         {
             // Start a new guide collector
-            m_pendingActions += ProgramGuideProxy.Create(profile, recording).Start;
+            m_pendingActions += ProgramGuideProxy.Create(profile, recording, _logger, _jobs, _configuration, _profiles, _extensionManager).Start;
         }
         else
         {
@@ -621,7 +621,7 @@ public class VCRServer(
             if (sourceUpdate != null)
             {
                 // Start a new update
-                m_pendingActions += SourceScanProxy.Create(profile, recording).Start;
+                m_pendingActions += SourceScanProxy.Create(profile, recording, _logger, _jobs, _configuration, _profiles, _extensionManager).Start;
             }
             else
             {

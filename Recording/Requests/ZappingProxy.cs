@@ -1,5 +1,7 @@
 ﻿using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Status;
 
@@ -26,7 +28,16 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="profile">Das zu verwendende Geräteprofil.</param>
         /// <param name="primary">Informationen zur Aufzeichnung als Ganzes.</param>
         /// <param name="target">Die aktuelle Zieladresse für die Nutzdaten.</param>
-        private ZappingProxy(IProfileState profile, VCRRecordingInfo primary, string target) : base(profile, primary)
+        private ZappingProxy(
+            IProfileState profile,
+            VCRRecordingInfo primary,
+            string target,
+            ILogger logger,
+            IJobManager jobManager,
+            IVCRConfiguration configuration,
+            IVCRProfiles profiles,
+            IExtensionManager extensionManager
+        ) : base(profile, logger, jobManager, configuration, profiles, extensionManager, primary)
         {
             // Remember
             m_target = target;
@@ -39,7 +50,15 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="target">Die aktuelle Zieladresse für die Nutzdaten.</param>
         /// <returns>Die gewünschte Steuerung.</returns>
         /// <exception cref="ArgumentNullException">Mindestens ein Parameter wurde nicht angegeben.</exception>
-        public static ZappingProxy Create(IProfileState profile, string target)
+        public static ZappingProxy Create(
+            IProfileState profile,
+            string target,
+            ILogger logger,
+            IJobManager jobManager,
+            IVCRConfiguration configuration,
+            IVCRProfiles profiles,
+            IExtensionManager extensionManager
+        )
         {
             // Validate
             if (profile == null)
@@ -53,7 +72,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 new VCRRecordingInfo
                 {
                     Source = new SourceSelection { ProfileName = profile.ProfileName, DisplayName = VCRJob.ZappingName },
-                    FileName = Path.Combine(profile.Collection.JobManager.CollectorDirectory.FullName, "zapping.live"),
+                    FileName = Path.Combine(jobManager.CollectorDirectory.FullName, "zapping.live"),
                     ScheduleUniqueID = Guid.NewGuid(),
                     EndsAt = now.AddMinutes(2),
                     Name = VCRJob.ZappingName,
@@ -64,7 +83,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 };
 
             // Forward
-            return new ZappingProxy(profile, primary, target);
+            return new ZappingProxy(profile, primary, target, logger, jobManager, configuration, profiles, extensionManager);
         }
 
         /// <summary>

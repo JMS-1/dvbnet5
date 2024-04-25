@@ -1,4 +1,5 @@
 ﻿using JMS.DVB.CardServer;
+using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/zapping")]
-    public class ZappingController(IVCRServer states) : ControllerBase
+    public class ZappingController(IVCRServer states, IVCRProfiles profiles) : ControllerBase
     {
         /// <summary>
         /// Steuert den Zapping Modus.
@@ -51,7 +52,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <returns>Die gewünschte Liste von Sendern.</returns>
         [HttpGet("source/{profile}")]
         public ZappingSource[] FindSources(string profile, bool tv, bool radio)
-            => states.GetSources(profile, tv, radio, ZappingSource.Create);
+            => states.GetSources(profile, tv, radio, ZappingSource.Create, profiles);
 
         /// <summary>
         /// Aktiviert eine neue Sitzung.

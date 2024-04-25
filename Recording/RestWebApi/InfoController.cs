@@ -14,6 +14,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         LegacyVCRServer server,
         IVCRConfiguration configuration,
         IVCRServer states,
+        IVCRProfiles profiles,
+        IJobManager jobs,
         IExtensionManager extensions
     ) : ControllerBase
     {
@@ -100,8 +102,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Report
             return
-                states
-                    .GetJobs(InfoJob.Create)
+                jobs
+                    .GetJobs(InfoJob.Create, profiles)
                     .OrderBy(job => job.Name ?? string.Empty, StringComparer.InvariantCulture)
                     .ToArray();
         }

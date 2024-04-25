@@ -8,16 +8,6 @@ namespace JMS.DVB.NET.Recording.Services.Planning;
 /// </summary>
 public interface IVCRServer : IRecordingPlannerSite
 {
-    ILogger Logger { get; }
-
-    IJobManager JobManager { get; }
-
-    IVCRProfiles Profiles { get; }
-
-    IVCRConfiguration Configuration { get; }
-
-    IExtensionManager ExtensionManager { get; }
-
     void Startup(Action restart);
 
     void Restart();

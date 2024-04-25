@@ -1,6 +1,8 @@
 ﻿using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.ProgramGuide;
+using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Status;
 
@@ -12,7 +14,15 @@ namespace JMS.DVB.NET.Recording.Requests
     /// </summary>
     /// <param name="state">Der Zustands des zugehörigen Geräteprofils.</param>
     /// <param name="firstRecording">Die erste Aufzeichnung, auf Grund derer dieser Zugriff angelegt wurde.</param>
-    public class RecordingProxy(IProfileState state, VCRRecordingInfo firstRecording) : CardServerProxy(state, firstRecording)
+    public class RecordingProxy(
+        IProfileState state,
+        VCRRecordingInfo firstRecording,
+        ILogger logger,
+        IJobManager jobManager,
+        IVCRConfiguration configuration,
+        IVCRProfiles profiles,
+        IExtensionManager extensionManager
+    ) : CardServerProxy(state, logger, jobManager, configuration, profiles, extensionManager, firstRecording)
     {
         #region Felder zur Steuerung der asynchronen Aufrufe an den Aufzeichnungsprozess
 

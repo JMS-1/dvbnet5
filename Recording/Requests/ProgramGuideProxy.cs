@@ -33,7 +33,15 @@ public class ProgramGuideProxy : CardServerProxy
     /// </summary>
     /// <param name="state">Das zugehörige Geräteprofil.</param>
     /// <param name="recording">Daten der primären Aufzeichnung.</param>
-    private ProgramGuideProxy(IProfileState state, VCRRecordingInfo recording) : base(state, recording)
+    private ProgramGuideProxy(
+        IProfileState state,
+        VCRRecordingInfo recording,
+        ILogger logger,
+        IJobManager jobManager,
+        IVCRConfiguration configuration,
+        IVCRProfiles profiles,
+        IExtensionManager extensionManager
+    ) : base(state, logger, jobManager, configuration, profiles, extensionManager, recording)
     {
         // Reset fields
         if (Configuration.EnableFreeSat)
@@ -76,7 +84,15 @@ public class ProgramGuideProxy : CardServerProxy
     /// <param name="recording">Beschreibt die Aufzeichnung.</param>
     /// <returns>Die gewünschte Steuerung.</returns>
     /// <exception cref="ArgumentNullException">Es wurden nicht alle Parameter angegeben.</exception>
-    public static ProgramGuideProxy Create(IProfileState state, VCRRecordingInfo recording)
+    public static ProgramGuideProxy Create(
+        IProfileState state,
+        VCRRecordingInfo recording,
+        ILogger logger,
+        IJobManager jobManager,
+        IVCRConfiguration configuration,
+        IVCRProfiles profiles,
+        IExtensionManager extensionManager
+    )
     {
         // Validate
         if (state == null)
@@ -85,7 +101,7 @@ public class ProgramGuideProxy : CardServerProxy
             throw new ArgumentNullException(nameof(recording));
 
         // Forward
-        return new ProgramGuideProxy(state, recording);
+        return new ProgramGuideProxy(state, recording, logger, jobManager, configuration, profiles, extensionManager);
     }
 
     /// <summary>

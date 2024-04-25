@@ -1,6 +1,7 @@
 ﻿using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Status;
 
@@ -26,7 +27,15 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="state">Das zugehörige Geräteprofil.</param>
         /// <param name="recording">Die Beschreibung der Aufgabe.</param>
-        private SourceScanProxy(IProfileState state, VCRRecordingInfo recording) : base(state, recording)
+        private SourceScanProxy(
+            IProfileState state,
+            VCRRecordingInfo recording,
+            ILogger logger,
+            IJobManager jobManager,
+            IVCRConfiguration configuration,
+            IVCRProfiles profiles,
+            IExtensionManager extensionManager
+        ) : base(state, logger, jobManager, configuration, profiles, extensionManager, recording)
         {
             // Finish
             m_mergeSources = Configuration.MergeSourceListUpdateResult;
@@ -38,7 +47,15 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="state">Das zugehörige Geräteprofil.</param>
         /// <param name="recording">Die Beschreibung der Aufgabe.</param>
         /// <returns>Die gewünschte Steuerung.</returns>
-        public static SourceScanProxy Create(IProfileState state, VCRRecordingInfo recording)
+        public static SourceScanProxy Create(
+            IProfileState state,
+            VCRRecordingInfo recording,
+            ILogger logger,
+            IJobManager jobManager,
+            IVCRConfiguration configuration,
+            IVCRProfiles profiles,
+            IExtensionManager extensionManager
+        )
         {
             // Validate
             if (state == null)
@@ -47,7 +64,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 throw new ArgumentNullException(nameof(recording));
 
             // Forward
-            return new SourceScanProxy(state, recording);
+            return new SourceScanProxy(state, recording, logger, jobManager, configuration, profiles, extensionManager);
         }
 
         /// <summary>

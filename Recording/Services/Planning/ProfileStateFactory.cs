@@ -6,10 +6,13 @@ namespace JMS.DVB.NET.Recording.Services.Planning;
 public class ProfileStateFactory(
     IProgramGuideManagerFactory guideManagerFactory,
     IVCRProfiles profiles,
-    ILogger logger
+    IVCRConfiguration configuration,
+    ILogger logger,
+    IJobManager jobManager,
+    IExtensionManager extensionManager
 ) : IProfileStateFactory
 {
     public IProfileState Create(IVCRServer collection, string profileName)
-        => new ProfileState(collection, profileName, guideManagerFactory, profiles, logger);
+        => new ProfileState(collection, profileName, guideManagerFactory, profiles, configuration, jobManager, extensionManager, logger);
 }
 

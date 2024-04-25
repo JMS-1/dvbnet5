@@ -38,13 +38,15 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         private IDisposable m_HibernateBlock = null!;
 
-        protected IVCRProfiles Profiles => ProfileState.Collection.Profiles;
+        protected readonly IVCRProfiles Profiles;
 
-        protected ILogger Logger => ProfileState.Collection.Logger;
+        protected readonly ILogger Logger;
 
-        protected IJobManager JobManager => ProfileState.Collection.JobManager;
+        protected readonly IJobManager JobManager;
 
-        protected IVCRConfiguration Configuration => ProfileState.Collection.Configuration;
+        protected readonly IVCRConfiguration Configuration;
+
+        protected readonly IExtensionManager ExtensionManager;
 
         /// <summary>
         /// Erzeugt eine neue Zugriffsinstanz.
@@ -52,7 +54,15 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <param name="state">Der Zustands des zugehörigen Geräteprofils.</param>
         /// <param name="primary">Die primäre Aufzeichnung, auf Grund derer der Aufzeichnungsprozeß aktiviert wurde.</param>
         /// <exception cref="ArgumentNullException">Es wurde kein Profil angegeben.</exception>
-        protected CardServerProxy(IProfileState state, VCRRecordingInfo primary)
+        protected CardServerProxy(
+            IProfileState state,
+            ILogger logger,
+            IJobManager jobManager,
+            IVCRConfiguration configuration,
+            IVCRProfiles profiles,
+            IExtensionManager extensionManager,
+            VCRRecordingInfo primary
+        )
         {
             // Validate
             if (state == null)
@@ -62,6 +72,11 @@ namespace JMS.DVB.NET.Recording.Requests
             RequestFinished = new ManualResetEvent(false);
 
             // Remember
+            Configuration = configuration;
+            ExtensionManager = extensionManager;
+            JobManager = jobManager;
+            Logger = logger;
+            Profiles = profiles;
             ProfileState = state;
             Representative = primary.Clone();
 
@@ -806,9 +821,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="environment">Die Umgebungsvariablen für die Erweiterung.</param>
         protected void FireRecordingStartedExtensions(Dictionary<string, string> environment)
-        => ProfileState
-            .Collection
-            .ExtensionManager
+        => ExtensionManager
             .AddWithCleanup("RecordingStarted", environment, Logger);
 
         /// <summary>
@@ -816,9 +829,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="environment">Die Umgebungsvariablen für die Erweiterung.</param>
         protected void FireRecordingFinishedExtensions(Dictionary<string, string> environment)
-            => ProfileState
-                .Collection
-                .ExtensionManager
+            => ExtensionManager
                 .AddWithCleanup("RecordingFinished", environment, Logger);
 
         #endregion
