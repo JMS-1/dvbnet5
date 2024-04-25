@@ -10,42 +10,45 @@ namespace JMS.DVB.NET.Recording.Services.Planning;
 /// <summary>
 /// Verwaltet den Arbeitszustand aller Geräteprofile.
 /// </summary>
-public class ProfileStateCollection : IProfileStateCollection, IDisposable
+/// <remarks>
+/// Erzeugt eine neue Verwaltungsinstanz.
+/// </remarks>
+/// <param name="server">Die primäre VCR.NET Instanz.</param>
+public class ProfileStateCollection(
+    IVCRConfiguration configuration,
+    IVCRProfiles profiles,
+    ILogger logger,
+    IJobManager jobs,
+    IProfileStateFactory states,
+    IExtensionManager extensions
+) : IProfileStateCollection, IDisposable
 {
-    public IVCRProfiles Profiles { get; private set; }
+    public IVCRProfiles Profiles { get; private set; } = profiles;
 
     /// <summary>
     /// Alle von dieser Instanz verwalteten Geräteprofile.
     /// </summary>
-    private readonly Dictionary<string, IProfileState> _stateMap;
+    private Dictionary<string, IProfileState> _stateMap;
 
-    public ILogger Logger { get; private set; }
+    public ILogger Logger { get; private set; } = logger;
 
-    public IJobManager JobManager { get; private set; }
+    public IJobManager JobManager { get; private set; } = jobs;
 
-    public IVCRConfiguration Configuration { get; private set; }
+    public IVCRConfiguration Configuration { get; private set; } = configuration;
 
-    public IExtensionManager ExtensionManager { get; private set; }
+    public IExtensionManager ExtensionManager { get; private set; } = extensions;
 
-    /// <summary>
-    /// Erzeugt eine neue Verwaltungsinstanz.
-    /// </summary>
-    /// <param name="server">Die primäre VCR.NET Instanz.</param>
-    public ProfileStateCollection(
-        IVCRConfiguration configuration,
-        IVCRProfiles profiles,
-        ILogger logger,
-        IJobManager jobs,
-        IProfileStateFactory states,
-        IExtensionManager extensions
-    )
+    private readonly IProfileStateFactory _states = states;
+
+    private Action? _restart;
+
+    /// <inheritdoc/>
+    public void Restart() => _restart?.Invoke();
+
+    /// <inheritdoc/>
+    public void Startup(Action restart)
     {
-        // Remember
-        Configuration = configuration;
-        ExtensionManager = extensions;
-        JobManager = jobs;
-        Logger = logger;
-        Profiles = profiles;
+        _restart = restart;
 
         // Profiles to use
         var profileNames = Profiles.ProfileNames.ToArray();
@@ -60,15 +63,16 @@ public class ProfileStateCollection : IProfileStateCollection, IDisposable
         // Load current profiles
         _stateMap = profileNames.ToDictionary(
             profileName => profileName,
-            profileName => states.Create(profileName), ProfileManager.ProfileNameComparer
+            profileName => _states.Create(this, profileName), ProfileManager.ProfileNameComparer
         );
 
         // Now we can create the planner
-        m_planner = RecordingPlanner.Create(this, Configuration, Profiles, Logger, jobs);
+        m_planner = RecordingPlanner.Create(this, Configuration, Profiles, Logger, JobManager);
         m_planThread = new Thread(PlanThread) { Name = "Recording Planner", IsBackground = true };
 
         // Start planner
         m_planThread.Start();
+
     }
 
     /// <inheritdoc/>
@@ -218,7 +222,7 @@ public class ProfileStateCollection : IProfileStateCollection, IDisposable
     /// <summary>
     /// Die zugehörige Aufzeichnungsplanung über alle Geräteprofile hinweg.
     /// </summary>
-    private RecordingPlanner m_planner;
+    private RecordingPlanner m_planner = null!;
 
     /// <summary>
     /// Gesetzt, wenn die Aufzeichnungsplanung aktiv ist.

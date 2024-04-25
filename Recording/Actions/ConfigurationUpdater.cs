@@ -3,7 +3,7 @@ using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.Actions;
 
-public class ConfigurationUpdater(IVCRConfiguration configuration, IProfileStateCollection states, VCRServer server) : IConfigurationUpdater
+public class ConfigurationUpdater(IVCRConfiguration configuration, IProfileStateCollection states) : IConfigurationUpdater
 {
     /// <inheritdoc/>
     public bool? UpdateConfiguration(IEnumerable<SettingDescription> settings, bool forceRestart = false)
@@ -20,7 +20,7 @@ public class ConfigurationUpdater(IVCRConfiguration configuration, IProfileState
                 return null;
 
             // Create new process to restart the service
-            server.Restart?.Invoke();
+            states.Restart();
 
             // Finally back to the administration page
             return true;

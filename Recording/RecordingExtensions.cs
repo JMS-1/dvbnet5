@@ -40,6 +40,8 @@ public static class RecordingExtensions
 
     public static void StartRecording(this IServiceProvider services, CancellationTokenSource restart)
     {
-        services.GetRequiredService<VCRServer>().Restart = () => restart.Cancel();
+        services.GetRequiredService<VCRServer>();
+
+        services.GetRequiredService<IProfileStateCollection>().Startup(() => restart.Cancel());
     }
 }

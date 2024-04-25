@@ -21,11 +21,6 @@ namespace JMS.DVB.NET.Recording
     public partial class VCRServer(IVCRConfiguration configuration, ILogger logger, IVCRProfiles profiles, IJobManager jobManager, IProfileStateCollection states)
     {
         /// <summary>
-        /// Wird zum Neustart des Dienstes ausgelöst.
-        /// </summary>
-        public Action? Restart;
-
-        /// <summary>
         /// Wird beim Bauen automatisch eingemischt.
         /// </summary>
         private const string CURRENTDATE = "2024/04/23";

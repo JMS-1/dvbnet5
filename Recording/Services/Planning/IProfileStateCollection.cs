@@ -18,6 +18,10 @@ public interface IProfileStateCollection : IRecordingPlannerSite
 
     IExtensionManager ExtensionManager { get; }
 
+    void Startup(Action restart);
+
+    void Restart();
+
     /// <summary>
     /// Meldet die aktuellen Regeln für die Aufzeichnungsplanung.
     /// </summary>

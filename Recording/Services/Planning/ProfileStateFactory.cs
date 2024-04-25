@@ -4,13 +4,12 @@ using JMS.DVB.NET.Recording.Services.ProgramGuide;
 namespace JMS.DVB.NET.Recording.Services.Planning;
 
 public class ProfileStateFactory(
-    Lazy<IProfileStateCollection> collection,
     IProgramGuideManagerFactory guideManagerFactory,
     IVCRProfiles profiles,
     ILogger logger
 ) : IProfileStateFactory
 {
-    public IProfileState Create(string profileName)
+    public IProfileState Create(IProfileStateCollection collection, string profileName)
         => new ProfileState(collection, profileName, guideManagerFactory, profiles, logger);
 }
 

@@ -11,7 +11,7 @@ public interface IRuleUpdater
     bool? UpdateSchedulerRules(string newRules);
 }
 
-public class RuleUpdater(IProfileStateCollection states, VCRServer server) : IRuleUpdater
+public class RuleUpdater(IProfileStateCollection states) : IRuleUpdater
 {
     /// <inheritdoc/>
     public bool? UpdateSchedulerRules(string newRules)
@@ -28,7 +28,7 @@ public class RuleUpdater(IProfileStateCollection states, VCRServer server) : IRu
             return null;
 
         // Create new process to restart the service
-        server.Restart?.Invoke();
+        states.Restart();
 
         // Finally back to the administration page
         return true;

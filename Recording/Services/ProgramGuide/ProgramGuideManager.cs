@@ -33,7 +33,7 @@ public class ProgramGuideManager : IProgramGuideManager
     /// </summary>
     public ProgramGuideEntries Events => m_Events;
 
-    private readonly Lazy<IProfileStateCollection> _collection;
+    private readonly IProfileStateCollection _collection;
 
     private readonly ILogger _logger;
 
@@ -45,7 +45,7 @@ public class ProgramGuideManager : IProgramGuideManager
     /// <param name="jobs">Die zugehörige Auftragsverwaltung.</param>
     /// <param name="profileName">Der Name des verwalteten DVB.NET Geräteprofils.</param>
     public ProgramGuideManager(
-        Lazy<IProfileStateCollection> collection,
+        IProfileStateCollection collection,
         string profileName,
         IVCRProfiles profiles,
         IJobManager jobs,
@@ -266,7 +266,7 @@ public class ProgramGuideManager : IProgramGuideManager
         get
         {
             // See if we are already done
-            var profiles = _collection.Service;
+            var profiles = _collection;
             if (profiles == null)
                 return null;
 

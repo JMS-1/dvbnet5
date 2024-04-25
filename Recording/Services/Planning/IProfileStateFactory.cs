@@ -2,6 +2,6 @@ namespace JMS.DVB.NET.Recording.Services.Planning;
 
 public interface IProfileStateFactory
 {
-    IProfileState Create(string profileName);
+    IProfileState Create(IProfileStateCollection collection, string profileName);
 }
 
