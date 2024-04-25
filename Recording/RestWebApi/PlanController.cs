@@ -9,7 +9,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/plan")]
-    public class PlanController(VCRServer server, IProfileStateCollection states) : ControllerBase
+    public class PlanController(LegacyVCRServer server, IVCRServer states) : ControllerBase
     {
         /// <summary>
         /// Meldet den aktuellen Aufzeichnungsplan.

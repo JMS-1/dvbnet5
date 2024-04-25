@@ -10,7 +10,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/zapping")]
-    public class ZappingController(IProfileStateCollection states) : ControllerBase
+    public class ZappingController(IVCRServer states) : ControllerBase
     {
         /// <summary>
         /// Steuert den Zapping Modus.

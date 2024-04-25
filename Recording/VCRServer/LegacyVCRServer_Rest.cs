@@ -9,7 +9,7 @@ using JMS.DVB.NET.Recording.Status;
 
 namespace JMS.DVB.NET.Recording
 {
-    partial class VCRServer
+    partial class LegacyVCRServer
     {
         /// <summary>
         /// Ermittelt den aktuellen Aufzeichnungsplan.
@@ -19,7 +19,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="limit">Die maximale Anzahl von Ergebniszeilen.</param>
         /// <param name="factory">Methode zum Erstellen einer einzelnen Planungsinformation.</param>
         /// <returns>Der gewünschte Aufzeichnungsplan.</returns>
-        public TActivity[] GetPlan<TActivity>(DateTime end, int limit, Func<IScheduleInformation, PlanContext, IProfileStateCollection, TActivity> factory)
+        public TActivity[] GetPlan<TActivity>(DateTime end, int limit, Func<IScheduleInformation, PlanContext, IVCRServer, TActivity> factory)
         {
             // Result
             var activities = new List<TActivity>();
@@ -127,8 +127,8 @@ namespace JMS.DVB.NET.Recording
         /// <param name="forIdle">Erstellt eine Beschreibung für ein Gerät, für das keine Aufzeichnungen geplant sind.</param>
         /// <returns>Die Liste aller Informationen.</returns>
         public TInfo[] GetCurrentRecordings<TInfo>(
-            Func<FullInfo, VCRServer, IVCRProfiles, IJobManager, TInfo[]> fromActive,
-            Func<IScheduleInformation, PlanContext, VCRServer, IVCRProfiles, TInfo> fromPlan = null!,
+            Func<FullInfo, LegacyVCRServer, IVCRProfiles, IJobManager, TInfo[]> fromActive,
+            Func<IScheduleInformation, PlanContext, LegacyVCRServer, IVCRProfiles, TInfo> fromPlan = null!,
             Func<string, TInfo> forIdle = null!
         )
         {

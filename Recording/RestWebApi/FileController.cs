@@ -10,9 +10,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/file")]
-    public class FileController(VCRServer server) : ControllerBase
+    public class FileController(LegacyVCRServer server) : ControllerBase
     {
-        private readonly VCRServer _server = server;
+        private readonly LegacyVCRServer _server = server;
 
         /// <summary>
         /// Fordert ein Stück einer Datei an.

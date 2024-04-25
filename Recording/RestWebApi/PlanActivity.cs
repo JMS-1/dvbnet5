@@ -234,7 +234,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="context">Die Abbildung auf die Aufträge.</param>
         /// <param name="profiles">Die Verwaltung der Geräteprofile.</param>
         /// <returns>Die angeforderte Repräsentation.</returns>
-        public static PlanActivity Create(IScheduleInformation schedule, PlanContext context, IProfileStateCollection profiles)
+        public static PlanActivity Create(IScheduleInformation schedule, PlanContext context, IVCRServer profiles)
         {
             // Request context information
             var definition = schedule.Definition;

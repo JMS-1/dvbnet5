@@ -12,7 +12,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     [ApiController]
     [Route("api/edit")]
     public class EditController(
-        IProfileStateCollection states,
+        IVCRServer states,
         IVCRProfiles profiles,
         IJobManager jobs
     ) : ControllerBase

@@ -10,7 +10,7 @@ public class Program
         {
             var host = CreateHostBuilder(args).Build();
 
-            host.Services.GetRequiredService<VCRServer>();
+            host.Services.GetRequiredService<LegacyVCRServer>();
 
             var restart = new CancellationTokenSource();
 

@@ -3,7 +3,7 @@ using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.Actions;
 
-public class ConfigurationUpdater(IVCRConfiguration configuration, IProfileStateCollection states) : IConfigurationUpdater
+public class ConfigurationUpdater(IVCRConfiguration configuration, IVCRServer states) : IConfigurationUpdater
 {
     /// <inheritdoc/>
     public bool? UpdateConfiguration(IEnumerable<SettingDescription> settings, bool forceRestart = false)

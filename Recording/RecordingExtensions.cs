@@ -30,18 +30,18 @@ public static class RecordingExtensions
 
         services.AddSingleton<IExtensionManager, ExtensionManager>();
         services.AddSingleton<IJobManager, JobManager>();
-        services.AddSingleton<IProfileStateCollection, ProfileStateCollection>();
+        services.AddSingleton<IVCRServer, VCRServer>();
         services.AddSingleton<IVCRConfiguration, VCRConfiguration>();
         services.AddSingleton<IVCRProfiles, VCRProfiles>();
 
-        services.AddSingleton<VCRServer>();
+        services.AddSingleton<LegacyVCRServer>();
 
     }
 
     public static void StartRecording(this IServiceProvider services, CancellationTokenSource restart)
     {
-        services.GetRequiredService<VCRServer>();
+        services.GetRequiredService<LegacyVCRServer>();
 
-        services.GetRequiredService<IProfileStateCollection>().Startup(() => restart.Cancel());
+        services.GetRequiredService<IVCRServer>().Startup(() => restart.Cancel());
     }
 }

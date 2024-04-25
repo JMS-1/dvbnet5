@@ -9,7 +9,7 @@ public class ProfileStateFactory(
     ILogger logger
 ) : IProfileStateFactory
 {
-    public IProfileState Create(IProfileStateCollection collection, string profileName)
+    public IProfileState Create(IVCRServer collection, string profileName)
         => new ProfileState(collection, profileName, guideManagerFactory, profiles, logger);
 }
 

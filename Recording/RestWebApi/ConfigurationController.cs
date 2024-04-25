@@ -15,11 +15,11 @@ namespace JMS.DVB.NET.Recording.RestWebApi;
 [ApiController]
 [Route("api/configuration")]
 public class ConfigurationController(
-    IProfileStateCollection states,
+    IVCRServer states,
     IVCRConfiguration configuration,
     IConfigurationUpdater updateConfig,
     IRuleUpdater updateRules,
-    VCRServer server
+    LegacyVCRServer server
 ) : ControllerBase
 {
     /// <summary>

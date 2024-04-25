@@ -11,7 +11,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/profile")]
-    public class ProfileController(IProfileStateCollection states) : ControllerBase
+    public class ProfileController(IVCRServer states) : ControllerBase
     {
         /// <summary>
         /// Meldet alle Geräteprofile, die der <i>VCR.NET Recording Service</i> verwenden darf.

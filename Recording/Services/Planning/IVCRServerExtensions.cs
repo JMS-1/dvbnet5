@@ -3,7 +3,7 @@ using JMS.DVB.NET.Recording.Services.Configuration;
 
 namespace JMS.DVB.NET.Recording.Services.Planning;
 
-public static class IProfileStateCollectionExtensions
+public static class IVCRServerExtensions
 {
     /// <summary>
     /// Ermittelt alle Quellen eines Ger?teprofils für die Nutzung durch den <i>LIVE</i> Zugang.
@@ -14,7 +14,7 @@ public static class IProfileStateCollectionExtensions
     /// <param name="withRadio">Gesetzt, wenn Radiosender zu ber?cksichtigen sind.</param>
     /// <param name="factory">Eine Methode zum Erzeugen der Zielelemente aus den Daten einer einzelnen Quelle.</param>
     /// <returns></returns>
-    public static TTarget[] GetSources<TTarget>(this IProfileStateCollection states, string profileName, bool withTV, bool withRadio, Func<SourceSelection, IVCRProfiles, TTarget> factory)
+    public static TTarget[] GetSources<TTarget>(this IVCRServer states, string profileName, bool withTV, bool withRadio, Func<SourceSelection, IVCRProfiles, TTarget> factory)
     {
         // Find the profile
         var profile = states.FindProfile(profileName);
@@ -49,7 +49,7 @@ public static class IProfileStateCollectionExtensions
     /// <typeparam name="TInfo">Die Art der gemeldeten Information.</typeparam>
     /// <param name="factory">Methode zum Erzeugen der Informationen zu einem einzelnen Geräteprofil.</param>
     /// <returns>Die Informationen zu den Profilen.</returns>
-    public static TInfo[] GetProfiles<TInfo>(this IProfileStateCollection states, Func<IProfileState, TInfo> factory)
+    public static TInfo[] GetProfiles<TInfo>(this IVCRServer states, Func<IProfileState, TInfo> factory)
         => states.InspectProfiles(factory).ToArray();
 
     /// <summary>
@@ -58,7 +58,7 @@ public static class IProfileStateCollectionExtensions
     /// <typeparam name="TJob">Die Art der externen Darstellung.</typeparam>
     /// <param name="factory">Methode zum Erstellen der externen Darstellung.</param>
     /// <returns>Die Liste der Aufträge.</returns>
-    public static TJob[] GetJobs<TJob>(this IProfileStateCollection states, Func<VCRJob, bool, IVCRProfiles, TJob> factory)
+    public static TJob[] GetJobs<TJob>(this IVCRServer states, Func<VCRJob, bool, IVCRProfiles, TJob> factory)
         => states
             .JobManager
             .GetActiveJobs()

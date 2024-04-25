@@ -8,7 +8,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/protocol")]
-    public class ProtocolController(VCRServer server) : ControllerBase
+    public class ProtocolController(LegacyVCRServer server) : ControllerBase
     {
         /// <summary>
         /// Ermittelt einen Auszug aus dem Protokoll eines Gerätes.

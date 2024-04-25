@@ -6,7 +6,7 @@ namespace JMS.DVB.NET.Recording.Services.Planning;
 /// <summary>
 /// Verwaltet den Arbeitszustand aller Geräteprofile.
 /// </summary>
-public interface IProfileStateCollection : IRecordingPlannerSite
+public interface IVCRServer : IRecordingPlannerSite
 {
     ILogger Logger { get; }
 

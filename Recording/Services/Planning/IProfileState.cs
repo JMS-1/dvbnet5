@@ -16,7 +16,7 @@ public interface IProfileState : IDisposable
     /// <summary>
     /// Die zugehörige Verwaltungsinstanz.
     /// </summary>
-    IProfileStateCollection Collection { get; }
+    IVCRServer Collection { get; }
 
     /// <summary>
     /// Der Name des Geräteprofils.

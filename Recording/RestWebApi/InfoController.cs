@@ -11,9 +11,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     [ApiController]
     [Route("api/info")]
     public class InfoController(
-        VCRServer server,
+        LegacyVCRServer server,
         IVCRConfiguration configuration,
-        IProfileStateCollection states,
+        IVCRServer states,
         IExtensionManager extensions
     ) : ControllerBase
     {
@@ -79,7 +79,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                     IsRunning = states.IsActive,
                     //ProfilesNames = settings.Profiles.ToArray(),
                     InstalledVersion = InstalledVersion,
-                    Version = VCRServer.CurrentVersion,
+                    Version = LegacyVCRServer.CurrentVersion,
                 };
         }
 

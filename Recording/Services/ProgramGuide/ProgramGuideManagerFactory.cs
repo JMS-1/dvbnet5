@@ -9,7 +9,7 @@ public class ProgramGuideManagerFactory(
     ILogger logger
 ) : IProgramGuideManagerFactory
 {
-    public IProgramGuideManager Create(IProfileStateCollection states, string profileName)
+    public IProgramGuideManager Create(IVCRServer states, string profileName)
         => new ProgramGuideManager(states, profileName, profiles, jobs, logger);
 }
 

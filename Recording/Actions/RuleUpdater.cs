@@ -11,7 +11,7 @@ public interface IRuleUpdater
     bool? UpdateSchedulerRules(string newRules);
 }
 
-public class RuleUpdater(IProfileStateCollection states) : IRuleUpdater
+public class RuleUpdater(IVCRServer states) : IRuleUpdater
 {
     /// <inheritdoc/>
     public bool? UpdateSchedulerRules(string newRules)

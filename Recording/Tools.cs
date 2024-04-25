@@ -195,7 +195,7 @@ namespace JMS.DVB.NET.Recording
             try
             {
                 // Read it
-                var value = (string)VCRServer.ServiceRegistry.GetValue(name)!;
+                var value = (string)LegacyVCRServer.ServiceRegistry.GetValue(name)!;
                 if (string.IsNullOrEmpty(value))
                     return null;
 
@@ -228,9 +228,9 @@ namespace JMS.DVB.NET.Recording
             {
                 // Check mode
                 if (value.HasValue)
-                    VCRServer.ServiceRegistry.SetValue(name, value.Value.ToString("u"));
+                    LegacyVCRServer.ServiceRegistry.SetValue(name, value.Value.ToString("u"));
                 else
-                    VCRServer.ServiceRegistry.DeleteValue(name, false);
+                    LegacyVCRServer.ServiceRegistry.DeleteValue(name, false);
             }
             catch (Exception e)
             {

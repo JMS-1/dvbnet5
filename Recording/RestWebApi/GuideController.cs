@@ -7,7 +7,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/guide")]
-    public class GuideController(VCRServer server) : ControllerBase
+    public class GuideController(LegacyVCRServer server) : ControllerBase
     {
         /// <summary>
         /// Ermittelt einen einzelnen Eintrag der Programmzeitschrift.

@@ -14,21 +14,21 @@ namespace JMS.DVB.NET.Recording.Services.Planning;
 /// Erzeugt eine neue Verwaltungsinstanz.
 /// </remarks>
 /// <param name="server">Die primäre VCR.NET Instanz.</param>
-public class ProfileStateCollection(
+public class VCRServer(
     IVCRConfiguration configuration,
     IVCRProfiles profiles,
     ILogger logger,
     IJobManager jobs,
     IProfileStateFactory states,
     IExtensionManager extensions
-) : IProfileStateCollection, IDisposable
+) : IVCRServer, IDisposable
 {
     public IVCRProfiles Profiles { get; private set; } = profiles;
 
     /// <summary>
     /// Alle von dieser Instanz verwalteten Geräteprofile.
     /// </summary>
-    private Dictionary<string, IProfileState> _stateMap;
+    private Dictionary<string, IProfileState> _stateMap = [];
 
     public ILogger Logger { get; private set; } = logger;
 
@@ -242,7 +242,7 @@ public class ProfileStateCollection(
     /// <summary>
     /// Aktualisiert ständig die Planung.
     /// </summary>
-    private volatile Thread m_planThread;
+    private volatile Thread m_planThread = null!;
 
     /// <summary>
     /// Gesetzt, sobald die Berechnung eines neues Plans erwünscht wird.

@@ -33,7 +33,7 @@ public class ProgramGuideManager : IProgramGuideManager
     /// </summary>
     public ProgramGuideEntries Events => m_Events;
 
-    private readonly IProfileStateCollection _collection;
+    private readonly IVCRServer _collection;
 
     private readonly ILogger _logger;
 
@@ -45,7 +45,7 @@ public class ProgramGuideManager : IProgramGuideManager
     /// <param name="jobs">Die zugehörige Auftragsverwaltung.</param>
     /// <param name="profileName">Der Name des verwalteten DVB.NET Geräteprofils.</param>
     public ProgramGuideManager(
-        IProfileStateCollection collection,
+        IVCRServer collection,
         string profileName,
         IVCRProfiles profiles,
         IJobManager jobs,

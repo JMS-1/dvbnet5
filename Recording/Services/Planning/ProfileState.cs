@@ -13,7 +13,7 @@ namespace JMS.DVB.NET.Recording.Services.Planning;
 /// <param name="collection">Die zugehörige Verwaltung der aktiven Geräteprofile.</param>
 /// <param name="profileName">Der Name des zugehörigen Geräteprofils.</param>
 public class ProfileState(
-    IProfileStateCollection collection,
+    IVCRServer collection,
     string profileName,
     IProgramGuideManagerFactory guideManagerFactory,
     IVCRProfiles profiles,
@@ -28,7 +28,7 @@ public class ProfileState(
     public string ProfileName => profileName;
 
     /// <inheritdoc/>
-    public IProfileStateCollection Collection => collection;
+    public IVCRServer Collection => collection;
 
     /// <inheritdoc/>
     public IProgramGuideManager ProgramGuide { get; } = guideManagerFactory.Create(collection, profileName);
