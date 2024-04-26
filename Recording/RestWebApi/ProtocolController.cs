@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using JMS.DVB.NET.Recording.Actions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -8,7 +9,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/protocol")]
-    public class ProtocolController(LegacyVCRServer server) : ControllerBase
+    public class ProtocolController(ILogQuery logs) : ControllerBase
     {
         /// <summary>
         /// Ermittelt einen Auszug aus dem Protokoll eines Gerätes.
@@ -25,7 +26,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var endTime = DateTime.Parse(end, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
             // Forward
-            return server.QueryLog(detail, startTime.Date, endTime.Date, ProtocolEntry.Create);
+            return logs.Query(detail, startTime.Date, endTime.Date, ProtocolEntry.Create);
         }
     }
 }

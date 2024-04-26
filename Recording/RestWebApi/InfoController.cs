@@ -11,7 +11,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     [ApiController]
     [Route("api/info")]
     public class InfoController(
-        LegacyVCRServer legacyServer,
         IVCRConfiguration configuration,
         IVCRServer server,
         IVCRProfiles profiles,
@@ -19,6 +18,16 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         IExtensionManager extensions
     ) : ControllerBase
     {
+        /// <summary>
+        /// Wird beim Bauen automatisch eingemischt.
+        /// </summary>
+        private const string CURRENTDATE = "2024/04/26";
+
+        /// <summary>
+        /// Aktuelle Version des VCR.NET Recording Service.
+        /// </summary>
+        public const string CurrentVersion = "5.0 [" + CURRENTDATE + "]";
+
         /// <summary>
         /// Die exakte Version der Installation.
         /// </summary>
@@ -68,20 +77,17 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [HttpGet("info")]
         public InfoService VersionInformation()
         {
-            // Load
-            var settings = legacyServer.Settings;
-
             // Report
             return
                 new InfoService
                 {
-                    HasPendingExtensions = extensions.HasActiveProcesses,
-                    SourceScanEnabled = configuration.SourceListUpdateInterval != 0,
                     GuideUpdateEnabled = configuration.ProgramGuideUpdateEnabled,
-                    IsRunning = server.IsActive,
-                    //ProfilesNames = settings.Profiles.ToArray(),
+                    HasPendingExtensions = extensions.HasActiveProcesses,
                     InstalledVersion = InstalledVersion,
-                    Version = LegacyVCRServer.CurrentVersion,
+                    IsRunning = server.IsActive,
+                    ProfilesNames = server.ProfileNames.ToArray(),
+                    SourceScanEnabled = configuration.SourceListUpdateInterval != 0,
+                    Version = CurrentVersion,
                 };
         }
 
