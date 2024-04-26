@@ -3,6 +3,8 @@
     <ProjectReference Include="..\HardwareAbstraction\JMS.DVB.NET.HardwareAbstraction.csproj" />
     <ProjectReference Include="..\Algorithms\JMS.DVB.NET.Algorithms.csproj" />
     <ProjectReference Include="..\CardServerCore\JMS.DVB.NET.CardServerCore.csproj" />
+    <ProjectReference Include="..\DVBNETLegacy\JMS.DVB.NET.DVBNETLegacy.csproj" />
+    <ProjectReference Include="..\Ubuntu\JMS.DVB.NET.Ubuntu.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
