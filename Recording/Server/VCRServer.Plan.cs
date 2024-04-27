@@ -6,12 +6,6 @@ namespace JMS.DVB.NET.Recording.Server;
 
 public partial class VCRServer
 {
-    /// <inheritdoc/>
-    public int NumberOfActiveRecordings => (_stateMap.Count < 1) ? 0 : _stateMap.Values.Sum(profile => profile.NumberOfActiveRecordings);
-
-    /// <inheritdoc/>
-    public bool IsActive => _stateMap.Values.Any(s => s.IsActive);
-
     /// <summary>
     /// Die zugehörige Aufzeichnungsplanung über alle Geräteprofile hinweg.
     /// </summary>

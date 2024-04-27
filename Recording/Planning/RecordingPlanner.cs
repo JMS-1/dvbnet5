@@ -81,7 +81,7 @@ public class RecordingPlanner : IRecordingPlanner
         try
         {
             // Create the manager
-            m_manager = ResourceManager.Create(site.ScheduleRulesPath, ProfileManager.ProfileNameComparer);
+            m_manager = ResourceManager.Create(Tools.ScheduleRulesPath, ProfileManager.ProfileNameComparer);
         }
         catch (Exception e)
         {

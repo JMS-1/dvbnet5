@@ -5,18 +5,13 @@ namespace JMS.DVB.NET.Recording.Server;
 
 public partial class VCRServer
 {
-    /// <summary>
-    /// Der volle Pfad zu dem Regeldatei der Aufzeichnungsplanung.
-    /// </summary>
-    public string ScheduleRulesPath { get { return Path.Combine(Tools.ApplicationDirectory.FullName, "SchedulerRules.cmp"); } }
-
     /// <inheritdoc/>
     public string SchedulerRules
     {
         get
         {
             // Attach to the path
-            var rulePath = ScheduleRulesPath;
+            var rulePath = Tools.ScheduleRulesPath;
             if (File.Exists(rulePath))
                 using (var reader = new StreamReader(rulePath, true))
                     return reader.ReadToEnd().Replace("\r\n", "\n");
@@ -27,7 +22,7 @@ public partial class VCRServer
         set
         {
             // Check mode
-            var rulePath = ScheduleRulesPath;
+            var rulePath = Tools.ScheduleRulesPath;
             if (string.IsNullOrWhiteSpace(value))
             {
                 // Back to default

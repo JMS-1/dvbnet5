@@ -13,11 +13,6 @@ namespace JMS.DVB.NET.Recording.Planning
         IEnumerable<string> ProfileNames { get; }
 
         /// <summary>
-        /// Der volle Pfad zu dem Regeldatei der Aufzeichnungsplanung.
-        /// </summary>
-        string ScheduleRulesPath { get; }
-
-        /// <summary>
         /// Erstellt eine periodische Aufgabe zum Aktualisieren der Programmzeitschrift.
         /// </summary>
         /// <param name="resource">Die zugehörige Ressource.</param>
