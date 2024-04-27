@@ -4,26 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-using PathTool = System.IO.Path;
-
 namespace DVBNETTests.Recording;
 
 [TestFixture]
 public class ConfigurationTests
 {
-    class ConfigPathProvider : IVCRConfigurationExePathProvider
-    {
-        public string Path { get; private set; }
-
-        public ConfigPathProvider()
-        {
-            Path = PathTool.Combine(PathTool.GetTempPath(), Guid.NewGuid().ToString("N"));
-
-            File.Copy("TestData/Service.exe", Path);
-            File.Copy("TestData/Service.exe.config", Path + ".config");
-        }
-    }
-
     private ServiceProvider Services;
 
     [SetUp]

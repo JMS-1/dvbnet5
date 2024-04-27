@@ -40,6 +40,8 @@ public class ProgramGuideManager : IProgramGuideManager
 
     private readonly IVCRProfiles _profiles;
 
+    private readonly IRegistry _registry;
+
     /// <summary>
     /// Erzeugt eine neue Verwaltungsinstanz.
     /// </summary>
@@ -48,6 +50,7 @@ public class ProgramGuideManager : IProgramGuideManager
     public ProgramGuideManager(
         IVCRServer collection,
         string profileName,
+        IRegistry registry,
         IVCRProfiles profiles,
         IJobManager jobs,
         ILogger logger
@@ -58,6 +61,8 @@ public class ProgramGuideManager : IProgramGuideManager
         _jobs = jobs;
         _logger = logger;
         _profiles = profiles;
+        _registry = registry;
+
         ProfileName = profileName;
 
         // Calculate file
@@ -168,8 +173,8 @@ public class ProgramGuideManager : IProgramGuideManager
     /// <inheritdoc/>
     public DateTime? LastUpdateTime
     {
-        get { return Tools.GetRegistryTime(UpdateRegistryName, _logger); }
-        set { Tools.SetRegistryTime(UpdateRegistryName, value, _logger); }
+        get { return _registry.GetTime(UpdateRegistryName); }
+        set { _registry.SetTime(UpdateRegistryName, value); }
     }
 
     /// <inheritdoc/>

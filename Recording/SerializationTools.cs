@@ -11,7 +11,7 @@ namespace JMS.DVB.NET.Recording
     public static class SerializationTools
     {
         /// <summary>
-        /// L�dt eine Datenstruktur aus einer Datei.
+        /// Lädt eine Datenstruktur aus einer Datei.
         /// </summary>
         /// <typeparam name="T">Die Art der Datenstruktur.</typeparam>
         /// <param name="info">Die gewünschte Datei.</param>
@@ -34,7 +34,7 @@ namespace JMS.DVB.NET.Recording
         }
 
         /// <summary>
-        /// L�dt eine Datenstruktur aus einem Datenstrom.
+        /// Lädt eine Datenstruktur aus einem Datenstrom.
         /// </summary>
         /// <typeparam name="T">Die Art der Datenstruktur.</typeparam>
         /// <param name="stream">Der vorpositionierte Datenstrom.</param>
@@ -67,22 +67,14 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="instance">Das zu speichernde Objekt.</param>
         /// <param name="path">Der Pfad zur Datei.</param>
-        public static void Save(object instance, FileInfo path)
-        {
-            // Forward
-            Save(instance, path.FullName);
-        }
+        public static void Save(object instance, FileInfo path) => Save(instance, path.FullName);
 
         /// <summary>
         /// Speichert ein Objekt im XML Format in eine Datei.
         /// </summary>
         /// <param name="instance">Das zu speichernde Objekt.</param>
         /// <param name="path">Der Pfad zur Datei.</param>
-        public static void Save(object instance, string path)
-        {
-            // Forward
-            Save(instance, path, Encoding.Unicode);
-        }
+        public static void Save(object instance, string path) => Save(instance, path, Encoding.Unicode);
 
         /// <summary>
         /// Speichert ein Objekt im XML Format in eine Datei. Fehler werden protokolliert und
@@ -118,11 +110,7 @@ namespace JMS.DVB.NET.Recording
         /// <param name="instance">Das zu speichernde Objekt.</param>
         /// <param name="path">Der Pfad zur Datei.</param>
         /// <param name="encoding">Die zu verwendende Zeichensatzcodierung.</param>
-        public static void Save(object instance, FileInfo path, Encoding encoding)
-        {
-            // Forward
-            Save(instance, path.FullName, encoding);
-        }
+        public static void Save(object instance, FileInfo path, Encoding encoding) => Save(instance, path.FullName, encoding);
 
         /// <summary>
         /// Speichert ein Objekt im XML Format in eine Datei.
@@ -136,8 +124,9 @@ namespace JMS.DVB.NET.Recording
             try
             {
                 // Create stream and forward
-                using (var file = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
-                    Save(instance, file, encoding);
+                using var file = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+
+                Save(instance, file, encoding);
             }
             catch
             {
@@ -162,11 +151,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="instance">Das zu speichernde Objekt.</param>
         /// <param name="stream">Der Datenstrom, an dessen aktuelle Position das Objekt gespeichert werden soll.</param>
-        public static void Save(object instance, Stream stream)
-        {
-            // Forward
-            Save(instance, stream, Encoding.Unicode);
-        }
+        public static void Save(object instance, Stream stream) => Save(instance, stream, Encoding.Unicode);
 
         /// <summary>
         /// Speichert ein Objekt im XML Format in einen Datenstrom.
@@ -183,8 +168,9 @@ namespace JMS.DVB.NET.Recording
             var settings = new XmlWriterSettings { Encoding = encoding, Indent = true, CheckCharacters = false };
 
             // Create writer
-            using (var writer = XmlWriter.Create(stream, settings))
-                serializer.Serialize(writer, instance);
+            using var writer = XmlWriter.Create(stream, settings);
+
+            serializer.Serialize(writer, instance);
         }
     }
 }

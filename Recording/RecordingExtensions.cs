@@ -34,18 +34,19 @@ public static class RecordingExtensions
         services.AddTransient<IRecordingInfoFactory, RecordingInfoFactory>();
         services.AddTransient<IRecordingPlannerFactory, RecordingPlannerFactory>();
         services.AddTransient<IRecordingProxyFactory, RecordingProxyFactory>();
-        services.AddTransient<IRecordings, Recordings>();
+        services.AddTransient<IRegistry, Registry>();
         services.AddTransient<IRuleUpdater, RuleUpdater>();
         services.AddTransient<ISourceScanProxyFactory, SourceScanProxyFactory>();
         services.AddTransient<IZappingProxyFactory, ZappingProxyFactory>();
 
-        services.AddSingleton<IVCRConfigurationExePathProvider>((ctx) => new ConfigurationPathProvider());
-
         services.AddSingleton<IExtensionManager, ExtensionManager>();
         services.AddSingleton<IJobManager, JobManager>();
-        services.AddSingleton<IVCRServer, VCRServer>();
+        services.AddSingleton<IRecordings, Recordings>();
         services.AddSingleton<IVCRConfiguration, VCRConfiguration>();
         services.AddSingleton<IVCRProfiles, VCRProfiles>();
+        services.AddSingleton<IVCRServer, VCRServer>();
+
+        services.AddSingleton<IVCRConfigurationExePathProvider>((ctx) => new ConfigurationPathProvider());
     }
 
     public static void StartRecording(this IServiceProvider services, CancellationTokenSource restart)

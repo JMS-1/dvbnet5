@@ -1,7 +1,6 @@
 #pragma warning disable CA1416 // Validate platform compatibility
 
 using System.Diagnostics;
-using System.Globalization;
 using System.Text;
 using JMS.DVB.NET.Recording.Services;
 
@@ -181,65 +180,7 @@ public static class Tools
     /// Recording Service liegt.
     /// <seealso cref="ExecutablePath"/>
     /// </summary>
-    public static DirectoryInfo ApplicationDirectory { get { return RunTimeLoader.GetDirectory("Recording"); } }
-
-    /// <summary>
-    /// Ermittelt einen Zeitwert aus der Windows Registrierung.
-    /// </summary>
-    /// <param name="name">Der Name des Wertes.</param>
-    /// <returns>Der aktuelle Wert oder <i>null</i>, wenn dieser nicht existiert oder
-    /// ung�ltig ist.</returns>
-    internal static DateTime? GetRegistryTime(string name, ILogger logger)
-    {
-        // Try to load
-        try
-        {
-            // Read it
-            var value = (string)null!;
-            if (string.IsNullOrEmpty(value))
-                return null;
-
-            // To to convert
-            if (DateTime.TryParseExact(value, "u", null, DateTimeStyles.None, out DateTime result))
-                return DateTime.SpecifyKind(result, DateTimeKind.Utc);
-        }
-        catch
-        {
-            // Ignore any error
-        }
-
-        // Discard
-        SetRegistryTime(name, null, logger);
-
-        // Not known
-        return null;
-    }
-
-    /// <summary>
-    /// Aktualisiert einen Zeitwert in der Windows Registrierung.
-    /// </summary>
-    /// <param name="name">Der Name des Wertes.</param>
-    /// <param name="value">Der neue Wert oder <i>null</i>, wenn dieser entfernt
-    /// werden soll.</param>
-    internal static void SetRegistryTime(string name, DateTime? value, ILogger logger)
-    {
-        // Always be safe
-        try
-        {
-#pragma warning disable CS0642 // Possible mistaken empty statement
-            // Check mode
-            if (value.HasValue)
-                ;//LegacyVCRServer.ServiceRegistry.SetValue(name, value.Value.ToString("u"));
-            else
-                ;//LegacyVCRServer.ServiceRegistry.DeleteValue(name, false);
-#pragma warning restore CS0642 // Possible mistaken empty statement
-        }
-        catch (Exception e)
-        {
-            // Report
-            logger.Log(e);
-        }
-    }
+    public static DirectoryInfo ApplicationDirectory => RunTimeLoader.GetDirectory("Recording");
 
     /// <summary>
     /// Startet eine einzelne Erweiterung.

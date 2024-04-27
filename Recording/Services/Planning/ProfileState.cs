@@ -17,20 +17,13 @@ public class ProfileState(
     IVCRServer collection,
     string profileName,
     IProgramGuideManagerFactory guideManagerFactory,
+    IRegistry registry,
     IVCRProfiles profiles,
     ILogger logger,
     IRecordingProxyFactory recordingFactory,
     IZappingProxyFactory zappingFactory
 ) : IProfileState
 {
-    private readonly IZappingProxyFactory _zappingFactory = zappingFactory;
-
-    private readonly IRecordingProxyFactory _recordingFactory = recordingFactory;
-
-    private readonly IVCRProfiles _profiles = profiles;
-
-    private readonly ILogger _logger = logger;
-
     /// <inheritdoc/>
     public string ProfileName => profileName;
 
@@ -43,7 +36,7 @@ public class ProfileState(
     /// <summary>
     /// Meldet das zugehörige Geräteprofil.
     /// </summary>
-    public Profile? Profile => _profiles.FindProfile(profileName);
+    public Profile? Profile => profiles.FindProfile(profileName);
 
     /// <inheritdoc/>
     public bool IsResponsibleFor(SourceSelection source)
@@ -62,7 +55,7 @@ public class ProfileState(
         else if (!string.IsNullOrEmpty(connectTo))
         {
             // Activate 
-            _zappingFactory.Create(this, connectTo).Start();
+            zappingFactory.Create(this, connectTo).Start();
         }
         else if (source != null)
         {
@@ -211,10 +204,10 @@ public class ProfileState(
                 var current = m_CurrentRequest;
 
                 // In best case we are just doing nothing
-                if (ReferenceEquals(current, null))
+                if (current is null)
                 {
                     // Create a brand new regular recording request
-                    var request = _recordingFactory.Create(this, recording);
+                    var request = recordingFactory.Create(this, recording);
 
                     // Activate the request
                     request.Start();
@@ -251,10 +244,10 @@ public class ProfileState(
             var current = m_CurrentRequest;
 
             // See if it exists
-            if (ReferenceEquals(current, null))
+            if (current is null)
             {
                 // Report
-                _logger.Log(LoggingLevel.Errors, "Request to end Recording '{0}' but there is no active Recording Process", scheduleIdentifier);
+                logger.Log(LoggingLevel.Errors, "Request to end Recording '{0}' but there is no active Recording Process", scheduleIdentifier);
 
                 // Better do it ourselves
                 Collection.ConfirmOperation(scheduleIdentifier, false);
@@ -296,8 +289,7 @@ public class ProfileState(
     public bool SetStreamTarget(SourceIdentifier source, Guid uniqueIdentifier, string target)
     {
         // Get the current request
-        var request = m_CurrentRequest as RecordingProxy;
-        if (ReferenceEquals(request, null))
+        if (m_CurrentRequest is not RecordingProxy request)
             return false;
 
         // Process
@@ -320,8 +312,8 @@ public class ProfileState(
     /// <inheritdoc/>
     public DateTime? LastSourceUpdateTime
     {
-        get { return Tools.GetRegistryTime(SourceUpdateRegistryName, _logger); }
-        set { Tools.SetRegistryTime(SourceUpdateRegistryName, value, _logger); }
+        get { return registry.GetTime(SourceUpdateRegistryName); }
+        set { registry.SetTime(SourceUpdateRegistryName, value); }
     }
 
     #endregion
