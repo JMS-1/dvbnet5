@@ -141,7 +141,7 @@ public class VCRProfiles : IVCRProfiles
                 }
 
         // Use all
-        newState.Profiles = profiles.ToArray();
+        newState.Profiles = [.. profiles];
         newState.ProfileMap = profiles.ToDictionary(profile => profile.Name, newState.ProfileMap.Comparer);
 
         // Report
@@ -152,18 +152,7 @@ public class VCRProfiles : IVCRProfiles
     }
 
     /// <inheritdoc/>
-    public Profile? DefaultProfile
-    {
-        get
-        {
-            // Attach to array
-            var profiles = CurrentState.Profiles;
-            if (profiles.Length > 0)
-                return profiles[0];
-            else
-                return null;
-        }
-    }
+    public Profile? DefaultProfile => CurrentState.Profiles.FirstOrDefault();
 
     /// <inheritdoc/>
     public SourceSelection? FindSource(string profileName, string name)
@@ -174,6 +163,7 @@ public class VCRProfiles : IVCRProfiles
 
         // No profile
         var state = CurrentState;
+
         if (string.IsNullOrEmpty(profileName))
             if (state.Profiles.Length < 1)
                 return null;
@@ -201,6 +191,7 @@ public class VCRProfiles : IVCRProfiles
 
         // No profile
         var state = CurrentState;
+
         if (string.IsNullOrEmpty(profileName))
             if (state.Profiles.Length < 1)
                 return null;
@@ -212,10 +203,7 @@ public class VCRProfiles : IVCRProfiles
             return null;
 
         // Find the source
-        if (!map.TryGetValue(source, out var found))
-            return null;
-        else
-            return found;
+        return map.TryGetValue(source, out var found) ? found : null;
     }
 
     /// <inheritdoc/>
@@ -231,7 +219,7 @@ public class VCRProfiles : IVCRProfiles
 
         // Use state
         foreach (SourceSelection source in map.Values)
-            if ((null == predicate) || predicate(source))
+            if (predicate?.Invoke(source) != false)
                 yield return source;
     }
 

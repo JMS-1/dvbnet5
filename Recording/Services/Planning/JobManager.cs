@@ -40,11 +40,6 @@ public class JobManager : IJobManager
     private DirectoryInfo RootDirectory { get; set; }
 
     /// <summary>
-    /// 
-    /// </summary>
-    private IVCRProfiles Profiles { get; set; }
-
-    /// <summary>
     /// Vorhaltung aller Aufträge.
     /// </summary>
     private readonly Dictionary<Guid, VCRJob> m_Jobs = [];
@@ -52,6 +47,8 @@ public class JobManager : IJobManager
     private readonly IVCRConfiguration _configuration;
 
     private readonly ILogger _logger;
+
+    private readonly IVCRProfiles _profiles;
 
     /// <summary>
     /// Erzeugt eine neue Verwaltungsinstanz und lädt die aktuellen Auftragsliste.
@@ -63,8 +60,7 @@ public class JobManager : IJobManager
         // Remember
         _configuration = configuration;
         _logger = logger;
-
-        Profiles = profiles;
+        _profiles = profiles;
 
         // Create root directory
         var rootDirectory = RunTimeLoader.GetDirectory("Recording");
@@ -97,7 +93,7 @@ public class JobManager : IJobManager
             m_Jobs.Values.Where(job => job.UniqueID.HasValue && !job.IsActive).ToList().ForEach(Delete);
 
             // Report the rest
-            return m_Jobs.Values.ToList();
+            return [.. m_Jobs.Values];
         }
     }
 
@@ -299,7 +295,7 @@ public class JobManager : IJobManager
         get
         {
             // For legacy updates
-            var profile = Profiles.DefaultProfile;
+            var profile = _profiles.DefaultProfile;
 
             // Process
             lock (m_Jobs)
@@ -546,7 +542,7 @@ public class JobManager : IJobManager
             return;
 
         // Attach to the default profile
-        var defaultProfile = Profiles.DefaultProfile;
+        var defaultProfile = _profiles.DefaultProfile;
         if (defaultProfile == null)
             return;
 
@@ -602,7 +598,7 @@ public class JobManager : IJobManager
     /// </summary>
     /// <param name="source">Die Auswahl der Quelle oder <i>null</i>.</param>
     /// <returns>Gesetzt, wenn die Auswahl gültig ist.</returns>
-    private bool ValidateSource(SourceSelection source) => Profiles.FindSource(source) != null;
+    private bool ValidateSource(SourceSelection source) => _profiles.FindSource(source) != null;
 
     /// <summary>
     /// Prüft, ob die Daten zur Aufzeichnung zulässig sind.
@@ -689,7 +685,7 @@ public class JobManager : IJobManager
 
         // Create the source selection
         var persistedSource = schedule.Source ?? job.Source;
-        var selection = findSource(persistedSource, Profiles);
+        var selection = findSource(persistedSource, _profiles);
 
         // Station no longer available
         if (selection == null)
