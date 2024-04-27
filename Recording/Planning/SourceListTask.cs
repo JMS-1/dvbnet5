@@ -12,7 +12,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <summary>
         /// Die Methode zur Ermittelung des letzten Aktualisierungszeitpunktes.
         /// </summary>
-        private Func<DateTime?> m_LastUpdate;
+        private readonly Func<DateTime?> m_LastUpdate;
 
         /// <summary>
         /// Das Verzeichnis, in dem temporäre Dateien während der Sammlung abgelegt werden können.
@@ -52,10 +52,8 @@ namespace JMS.DVB.NET.Recording.Planning
             : base("Sendersuchlauf", Guid.NewGuid())
         {
             // Validate
-            if (forResource == null)
-                throw new ArgumentNullException(nameof(forResource));
-            if (lastUpdate == null)
-                throw new ArgumentNullException(nameof(lastUpdate));
+            ArgumentNullException.ThrowIfNull(forResource, nameof(forResource));
+            ArgumentNullException.ThrowIfNull(lastUpdate, nameof(lastUpdate));
 
             // Remember
             m_configuration = configuration;

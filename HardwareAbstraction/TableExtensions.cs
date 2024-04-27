@@ -216,8 +216,7 @@ namespace JMS.DVB
                         }
 
                         // Then DVB-C
-                        var cab = descriptor as EPG.Descriptors.CableDelivery;
-                        if (null != cab)
+                        if (descriptor is EPG.Descriptors.CableDelivery cab)
                         {
                             // Add if possible
                             if (cab.ToGroup() is G group)
@@ -228,8 +227,7 @@ namespace JMS.DVB
                         }
 
                         // Finally DVB-T
-                        var ter = descriptor as EPG.Descriptors.TerrestrialDelivery;
-                        if (null != ter)
+                        if (descriptor is EPG.Descriptors.TerrestrialDelivery ter)
                         {
                             // Add if possible
                             if (ter.ToGroup() is G group)
@@ -605,8 +603,7 @@ namespace JMS.DVB
             foreach (var descriptor in program.Descriptors)
             {
                 // Check for AC3
-                var ac3 = descriptor as EPG.Descriptors.AC3;
-                if (null != ac3)
+                if (descriptor is EPG.Descriptors.AC3 ac3)
                 {
                     // Create new entry
                     AudioInformation audio = new() { AudioType = AudioTypes.AC3, AudioStream = program.ElementaryPID, Language = program.ProgrammeName.Trim() };
@@ -619,8 +616,7 @@ namespace JMS.DVB
                 }
 
                 // Check for videotext
-                var ttx = descriptor as EPG.Descriptors.Teletext;
-                if (null != ttx)
+                if (descriptor is EPG.Descriptors.Teletext ttx)
                 {
                     // Remember
                     source.TextStream = program.ElementaryPID;
@@ -630,8 +626,7 @@ namespace JMS.DVB
                 }
 
                 // Check for DVB sub-titles
-                var sub = descriptor as EPG.Descriptors.Subtitle;
-                if (null != sub)
+                if (descriptor is EPG.Descriptors.Subtitle sub)
                 {
                     // Process all items
                     foreach (var subTitle in sub.Subtitles)

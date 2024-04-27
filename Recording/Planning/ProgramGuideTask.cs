@@ -54,14 +54,11 @@ namespace JMS.DVB.NET.Recording.Planning
             Func<DateTime?> lastUpdate,
             IVCRConfiguration configuration,
             IJobManager jobs
-        )
-            : base("Programmzeitschrift", Guid.NewGuid())
+        ) : base("Programmzeitschrift", Guid.NewGuid())
         {
             // Validate
-            if (forResource == null)
-                throw new ArgumentNullException(nameof(forResource));
-            if (lastUpdate == null)
-                throw new ArgumentNullException(nameof(lastUpdate));
+            ArgumentNullException.ThrowIfNull(forResource, nameof(forResource));
+            ArgumentNullException.ThrowIfNull(lastUpdate, nameof(lastUpdate));
 
             // Remember
             m_configuration = configuration;

@@ -57,7 +57,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         }
 
         /// <summary>
-        /// F�gt eine Quelle zur Liste der zuletzt verwendeten Quellen hinzu. Ist der
+        /// Fügt eine Quelle zur Liste der zuletzt verwendeten Quellen hinzu. Ist der
         /// Eintrag bereits vorhanden, so wird er an den Anfang der Liste verschoben.
         /// </summary>
         /// <param name="station">Der Name der Quelle.</param>
@@ -90,7 +90,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         }
 
         /// <summary>
-        /// Pr�ft die Voreinstellung für den Schlafzustand nach einem Abbruch.
+        /// Prüft die Voreinstellung für den Schlafzustand nach einem Abbruch.
         /// </summary>
         public static bool NoHibernateOnAbort
         {

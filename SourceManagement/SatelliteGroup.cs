@@ -181,10 +181,9 @@
         public override bool Equals(object? obj)
         {
             // Change type
-            var other = obj as SatelliteGroup;
 
             // By identity
-            if (other is null)
+            if (obj is not SatelliteGroup other)
                 return false;
             if (ReferenceEquals(other, this))
                 return true;

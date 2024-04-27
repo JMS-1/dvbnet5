@@ -59,8 +59,7 @@
                 throw new ArgumentNullException(nameof(source));
 
             // Check type
-            var typedSource = source as SourceType;
-            if (typedSource == null)
+            if (source is not SourceType typedSource)
                 throw new ArgumentException(source.GetType().FullName, nameof(source));
 
             // Report

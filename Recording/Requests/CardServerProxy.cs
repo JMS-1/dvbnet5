@@ -60,19 +60,19 @@ namespace JMS.DVB.NET.Recording.Requests
         )
         {
             // Validate
-            if (state == null)
-                throw new ArgumentNullException(nameof(state));
+            ArgumentNullException.ThrowIfNull(state, nameof(state));
 
             // Finish setup of fields and properties
             RequestFinished = new ManualResetEvent(false);
 
             // Remember
-            Configuration = configuration;
             _extensionManager = extensionManager;
+            Configuration = configuration;
             JobManager = jobManager;
             Logger = logger;
             Profiles = profiles;
             ProfileState = state;
+
             Representative = primary.Clone();
 
             // Make sure that we report the start

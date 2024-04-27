@@ -71,9 +71,9 @@ public static class IVCRServerExtensions
     /// <summary>
     /// Ermittelt den passendsten Eintrag aus der Programmzeitschrift.
     /// </summary>
-    /// <typeparam name="TTarget">Die Art der R�ckgabewerte.</typeparam>
+    /// <typeparam name="TTarget">Die Art der Rückgabewerte.</typeparam>
     /// <param name="profileName">Das zu betrachtende Geräteprofil.</param>
-    /// <param name="source">Die zugeh�rige Quelle.</param>
+    /// <param name="source">Die zugehörige Quelle.</param>
     /// <param name="from">Der Beginn eines Zeitraums.</param>
     /// <param name="to">Das Ende eines Zeitraums.</param>
     /// <param name="factory">Name der Metjode zum Erzeugen eines externen Eintrags.</param>

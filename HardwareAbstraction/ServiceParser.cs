@@ -115,8 +115,7 @@ namespace JMS.DVB
                         foreach (var descr in evt.Descriptors)
                         {
                             // Check type
-                            var info = descr as EPG.Descriptors.Linkage;
-                            if (null == info)
+                            if (descr is not EPG.Descriptors.Linkage info)
                                 continue;
 
                             // Check type (PREMIERE)

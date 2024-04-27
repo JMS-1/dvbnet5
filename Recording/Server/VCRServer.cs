@@ -179,8 +179,7 @@ public partial class VCRServer(
         var recording = recordingFactory.Create(item, context)!;
 
         // Check for EPG
-        var guideUpdate = item.Definition as ProgramGuideTask;
-        if (guideUpdate != null)
+        if (item.Definition is ProgramGuideTask guideUpdate)
         {
             // Start a new guide collector
             m_pendingActions += guideFactory.Create(profile, recording).Start;
@@ -188,8 +187,7 @@ public partial class VCRServer(
         else
         {
             // Check for PSI
-            var sourceUpdate = item.Definition as SourceListTask;
-            if (sourceUpdate != null)
+            if (item.Definition is SourceListTask sourceUpdate)
             {
                 // Start a new update
                 m_pendingActions += scanFactory.Create(profile, recording).Start;

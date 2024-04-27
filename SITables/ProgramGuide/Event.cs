@@ -334,10 +334,9 @@ namespace JMS.DVB.SI.ProgramGuide
                         }
 
                         // Check for rating
-                        var rating = descr as Legacy.Descriptors.ParentalRating;
 
                         // Done for now
-                        if (null != rating)
+                        if (descr is Legacy.Descriptors.ParentalRating rating)
                         {
                             // Process
                             if (rating.Ratings != null)
@@ -350,10 +349,9 @@ namespace JMS.DVB.SI.ProgramGuide
                         }
 
                         // Check for extended event
-                        var exEvent = descr as Legacy.Descriptors.ExtendedEvent;
 
                         // Register
-                        if (null != exEvent)
+                        if (descr is Legacy.Descriptors.ExtendedEvent exEvent)
                         {
                             // Remember
                             exEvents.Add(exEvent);
@@ -363,10 +361,9 @@ namespace JMS.DVB.SI.ProgramGuide
                         }
 
                         // Check for content information
-                        var content = descr as Legacy.Descriptors.Content;
 
                         // Remember
-                        if (content != null)
+                        if (descr is Legacy.Descriptors.Content content)
                         {
                             // Process
                             if (content.Categories != null)

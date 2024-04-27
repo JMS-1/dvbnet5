@@ -72,10 +72,9 @@ namespace JMS.DVB.Algorithms
         public override string ToString()
         {
             // Check type
-            var station = Source as Station;
 
             // Depends on mode
-            if (null != station)
+            if (Source is Station station)
                 return string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", Mode, station.Name, station.Provider, station.Network, station.TransportStream, station.Service, station.IsService, station.IsEncrypted, station.SourceType, Group, Location);
             else
                 return string.Format("{0}\t\t\t\t\t\t\t\t\t{1}\t{2}", Mode, Group, Location);
@@ -528,8 +527,7 @@ namespace JMS.DVB.Algorithms
                                         foreach (var source in info.Sources)
                                         {
                                             // Only stations
-                                            var station = source as Station;
-                                            if (station == null)
+                                            if (source is not Station station)
                                                 continue;
 
                                             // Attach to the filter

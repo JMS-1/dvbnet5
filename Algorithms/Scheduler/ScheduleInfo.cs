@@ -49,7 +49,6 @@
         public override string ToString()
         {
             // Test
-            var recording = Definition as IRecordingDefinition;
 
             // Format
             return
@@ -60,7 +59,7 @@
                         Time.End,
                         StartsLate ? "*" : string.Empty,
                         Resource,
-                        (recording == null) ? null : recording.Source
+                        (Definition is not IRecordingDefinition recording) ? null : recording.Source
                     );
         }
     }

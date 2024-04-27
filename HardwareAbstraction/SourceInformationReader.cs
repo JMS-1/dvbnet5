@@ -92,8 +92,7 @@ namespace JMS.DVB
                     }
 
                     // Find the related station information
-                    var station = groupInfo.Sources.FirstOrDefault(source.Equals) as Station;
-                    if (station != null)
+                    if (groupInfo.Sources.FirstOrDefault(source.Equals) is Station station)
                     {
                         // Take data from there
                         currentSettings.Provider = station.Provider;

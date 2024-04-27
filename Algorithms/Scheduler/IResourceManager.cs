@@ -95,10 +95,9 @@
 
             // Load
             var definition = schedule.Definition;
-            var recording = definition as IRecordingDefinition;
 
             // Forward
-            return manager.Start(schedule.Resource, (recording == null) ? null! : recording.Source, definition.UniqueIdentifier, definition.Name, schedule.Time.Start, schedule.Time.End);
+            return manager.Start(schedule.Resource, (definition is not IRecordingDefinition recording) ? null! : recording.Source, definition.UniqueIdentifier, definition.Name, schedule.Time.Start, schedule.Time.End);
         }
 
         /// <summary>

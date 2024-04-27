@@ -56,8 +56,7 @@ public class ProfileState(
         if (!active)
         {
             // Deactivate
-            var activeRequest = m_CurrentRequest as ZappingProxy;
-            if (activeRequest != null)
+            if (m_CurrentRequest is ZappingProxy activeRequest)
                 activeRequest.Stop();
         }
         else if (!string.IsNullOrEmpty(connectTo))
@@ -68,14 +67,12 @@ public class ProfileState(
         else if (source != null)
         {
             // Switch source
-            var request = m_CurrentRequest as ZappingProxy;
-            if (request != null)
+            if (m_CurrentRequest is ZappingProxy request)
                 return request.SetSource(source, factory);
         }
 
         // See if we have a current request
-        var statusRequest = m_CurrentRequest as ZappingProxy;
-        if (statusRequest == null)
+        if (m_CurrentRequest is not ZappingProxy statusRequest)
             return factory(null!, null!);
         else
             return statusRequest.CreateStatus(factory);
@@ -113,8 +110,8 @@ public class ProfileState(
     public bool BeginRequest(CardServerProxy request, bool throwOnBusy = true)
     {
         // Validate
-        if (ReferenceEquals(request, null))
-            throw new ArgumentNullException(nameof(request));
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+
         if (!ReferenceEquals(request.ProfileState, this))
             throw new ArgumentException(request.ProfileName, "request.ProfileState");
 

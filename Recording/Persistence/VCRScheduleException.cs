@@ -33,7 +33,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Wandelt diese Ausnahmebeschreibung in ein entsprechendes �auivalent für die Planung.
         /// </summary>
-        /// <param name="duration">Die Dauer der zugeh�rigen Aufzeichnung.</param>
+        /// <param name="duration">Die Dauer der zugehörigen Aufzeichnung.</param>
         /// <returns>Die gewünschte �quivalente Repr�sentation der Ausnahmeregel.</returns>
         public PlanException ToPlanException(TimeSpan duration)
         {

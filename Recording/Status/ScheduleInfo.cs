@@ -16,19 +16,19 @@ namespace JMS.DVB.NET.Recording.Status
         private static readonly string[] _NoFiles = { };
 
         /// <summary>
-        /// Die eindeutige Kennung der zugeh�rigen Aufzeichnungsdefinition oder <i>null</i>.
+        /// Die eindeutige Kennung der zugehörigen Aufzeichnungsdefinition oder <i>null</i>.
         /// </summary>
         [XmlElement(IsNullable = true)]
         public string ScheduleUniqueID { get; set; } = null!;
 
         /// <summary>
-        /// Die eindeutige Kennung des zugeh�rigen Auftrags oder <i>null</i>.
+        /// Die eindeutige Kennung des zugehörigen Auftrags oder <i>null</i>.
         /// </summary>
         [XmlElement(IsNullable = true)]
         public string JobUniqueID { get; set; } = null!;
 
         /// <summary>
-        /// Alle zugeh�rigen Aufzeichnungsdateien.
+        /// Alle zugehörigen Aufzeichnungsdateien.
         /// </summary>
         public string[] Files { get; set; } = null!;
 

@@ -119,8 +119,7 @@ namespace JMS.DVB.SchedulerTests
         public bool BelongsToSameSourceGroupAs(IScheduleSource source)
         {
             // Check type first
-            var typedSource = source as SourceMock;
-            if (typedSource == null)
+            if (source is not SourceMock typedSource)
                 return false;
             else
                 return (SourceGroup == typedSource.SourceGroup);

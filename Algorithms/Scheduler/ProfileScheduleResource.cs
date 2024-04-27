@@ -71,8 +71,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             public bool BelongsToSameSourceGroupAs(IScheduleSource source)
             {
                 // Check type first
-                var typedSource = source as _Source;
-                if (typedSource == null)
+                if (source is not _Source typedSource)
                     return false;
 
                 // Check groups

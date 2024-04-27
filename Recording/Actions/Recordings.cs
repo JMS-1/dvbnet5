@@ -54,8 +54,7 @@ public class Recordings(IVCRServer server, IVCRProfiles profiles, IJobManager jo
                         continue;
 
                     // Check for regular recordings - we will not report tasks
-                    var definition = schedule.Definition as IScheduleDefinition<VCRSchedule>;
-                    if (definition == null)
+                    if (schedule.Definition is not IScheduleDefinition<VCRSchedule> definition)
                         continue;
 
                     // See if we are currently recording this thing

@@ -77,7 +77,7 @@ public interface IJobManager
     /// </summary>
     /// <param name="id">Die Textdarstellung.</param>
     /// <param name="job">Der ermittelte Auftrag.</param>
-    /// <returns>Die zugeh�rige Aufzeichnung im Auftrag.</returns>
+    /// <returns>Die zugehörige Aufzeichnung im Auftrag.</returns>
     VCRSchedule? ParseUniqueWebId(string id, out VCRJob job);
 
     /// <summary>
