@@ -18,7 +18,7 @@ namespace JMS.DVB.SI
         /// Alle von dieser Analyseeinheiten auszuwertenden Arten von SI Tabellen - Tabellen
         /// anderer Art werden einfach verworfen.
         /// </summary>
-        private readonly Dictionary<byte, Type> m_Types = new();
+        private readonly Dictionary<byte, Type> m_Types = [];
 
         /// <summary>
         /// Übergangslösung für DVB.NET 3.5.1: es wird der SI Mechanismus von DVB.NET 3.5

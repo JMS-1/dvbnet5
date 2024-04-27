@@ -26,7 +26,7 @@ public class ProgramGuideProxy : CardServerProxy
     /// <summary>
     /// Alle Quellen, die bei der Aktualisierung zu berücksichtigen sind.
     /// </summary>
-    private readonly HashSet<SourceIdentifier> m_selected = new HashSet<SourceIdentifier>();
+    private readonly HashSet<SourceIdentifier> m_selected = [];
 
     /// <summary>
     /// Erstellt eine neue Aktualisierung.

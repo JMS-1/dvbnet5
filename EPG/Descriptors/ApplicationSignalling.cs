@@ -50,7 +50,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Alle Anwendungen.
         /// </summary>
-        public readonly List<Application> Applications = new List<Application>();
+        public readonly List<Application> Applications = [];
 
         /// <summary>
         /// 

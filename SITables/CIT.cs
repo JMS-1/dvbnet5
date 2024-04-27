@@ -65,7 +65,7 @@ namespace JMS.DVB.SI
         /// <summary>
         /// Die Quelle, in deren Quellgruppe (Transponder) die Programmzeitschrift bereitgestellt wird.
         /// </summary>
-        public static readonly SourceIdentifier TriggerSource = new SourceIdentifier { Network = 133, TransportStream = 3, Service = 17 };
+        public static readonly SourceIdentifier TriggerSource = new() { Network = 133, TransportStream = 3, Service = 17 };
 
         /// <summary>
         /// Erzeugt eine neue Tabellenbeschreibung.

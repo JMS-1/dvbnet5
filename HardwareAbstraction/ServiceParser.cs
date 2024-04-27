@@ -20,7 +20,7 @@ namespace JMS.DVB
         /// <summary>
         /// All services found related to the current station.
         /// </summary>
-        private readonly Dictionary<Station, string> m_ServiceNames = new();
+        private readonly Dictionary<Station, string> m_ServiceNames = [];
 
         /// <summary>
         /// Synchronize access to currently shown station.

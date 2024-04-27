@@ -75,7 +75,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <summary>
             /// Alle individuellen Vergleiche.
             /// </summary>
-            public readonly List<IComparer<TEntity>> Comparers = new List<IComparer<TEntity>>();
+            public readonly List<IComparer<TEntity>> Comparers = [];
 
             /// <summary>
             /// Erstellt eine neue Liste.

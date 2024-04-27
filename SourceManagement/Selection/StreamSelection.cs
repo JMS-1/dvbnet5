@@ -58,7 +58,7 @@ namespace JMS.DVB
         public StreamSelection Clone()
         {
             // Create core
-            StreamSelection clone = new StreamSelection();
+            StreamSelection clone = new();
 
             // Fill
             clone.AC3Tracks.Languages.AddRange(AC3Tracks.Languages);

@@ -45,7 +45,7 @@ namespace JMS.DVB.EPG
         /// <summary>
         /// Die Abbildung aller Kombinationszeichen.
         /// </summary>
-        private static readonly Dictionary<char, Dictionary<byte, char>> DiacriticMap = new Dictionary<char, Dictionary<byte, char>>();
+        private static readonly Dictionary<char, Dictionary<byte, char>> DiacriticMap = [];
 
         /// <summary>
         /// Füllt die Abbildung aller Kombinationszeichen.
@@ -551,7 +551,7 @@ namespace JMS.DVB.EPG
         public override string GetString(byte[] bytes, int index, int count)
         {
             // Result 
-            StringBuilder result = new StringBuilder(count);
+            StringBuilder result = new(count);
 
             // Construct
             while (count-- > 0)

@@ -19,7 +19,7 @@ namespace JMS.DVB.EPG.Tables
         /// <summary>
         /// Maps program numbers to the corresponding transport stream identifiers.
         /// </summary>
-        public readonly Dictionary<ushort, ushort> ProgramIdentifier = new Dictionary<ushort, ushort>();
+        public readonly Dictionary<ushort, ushort> ProgramIdentifier = [];
 
         /// <summary>
         /// Set for table identifiers <i>0x42</i> and <i>0x46</i>.

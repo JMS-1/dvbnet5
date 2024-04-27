@@ -111,11 +111,12 @@ namespace JMS.DVB.SchedulerTests
         public void Encrypted_Source_Of_A_Plan_Item_Is_Supported_By_Resource()
         {
             // Create component under test
-            var componentUnderTest = new RecordingScheduler(StringComparer.InvariantCultureIgnoreCase);
-
-            // Add
-            componentUnderTest.Add(ResourceMock.Create("r1", SourceMock.Create("s1")).SetEncryptionLimit(1));
-            componentUnderTest.Add(RecordingDefinition.Create(false, "test", Guid.NewGuid(), null, SourceMock.Create("s1", true), DateTime.UtcNow, TimeSpan.FromMinutes(12)));
+            var componentUnderTest = new RecordingScheduler(StringComparer.InvariantCultureIgnoreCase)
+            {
+                // Add
+                ResourceMock.Create("r1", SourceMock.Create("s1")).SetEncryptionLimit(1),
+                RecordingDefinition.Create(false, "test", Guid.NewGuid(), null, SourceMock.Create("s1", true), DateTime.UtcNow, TimeSpan.FromMinutes(12))
+            };
         }
 
         /// <summary>
@@ -131,11 +132,12 @@ namespace JMS.DVB.SchedulerTests
                 var exception = new PlanException { ExceptionDate = DateTime.Now.Date.AddMinutes(12) };
 
                 // Create component under test
-                var componentUnderTest = new RecordingScheduler(StringComparer.InvariantCultureIgnoreCase);
-
-                // Add
-                componentUnderTest.Add(ResourceMock.Create("r1", SourceMock.Create("s1")));
-                componentUnderTest.Add(RecordingDefinition.Create(false, "test", Guid.NewGuid(), null, SourceMock.Create("s1"), DateTime.UtcNow, TimeSpan.FromMinutes(12)), exception);
+                var componentUnderTest = new RecordingScheduler(StringComparer.InvariantCultureIgnoreCase)
+                {
+                    // Add
+                    ResourceMock.Create("r1", SourceMock.Create("s1")),
+                    { RecordingDefinition.Create(false, "test", Guid.NewGuid(), null, SourceMock.Create("s1"), DateTime.UtcNow, TimeSpan.FromMinutes(12)), exception }
+                };
             });
         }
 
@@ -152,11 +154,12 @@ namespace JMS.DVB.SchedulerTests
                 var exception2 = new PlanException { ExceptionDate = exception1.ExceptionDate };
 
                 // Create component under test
-                var componentUnderTest = new RecordingScheduler(StringComparer.InvariantCultureIgnoreCase);
-
-                // Add
-                componentUnderTest.Add(ResourceMock.Create("r1", SourceMock.Create("s1")));
-                componentUnderTest.Add(RecordingDefinition.Create(false, "test", Guid.NewGuid(), null, SourceMock.Create("s1"), DateTime.UtcNow, TimeSpan.FromMinutes(12)), exception1, exception2);
+                var componentUnderTest = new RecordingScheduler(StringComparer.InvariantCultureIgnoreCase)
+                {
+                    // Add
+                    ResourceMock.Create("r1", SourceMock.Create("s1")),
+                    { RecordingDefinition.Create(false, "test", Guid.NewGuid(), null, SourceMock.Create("s1"), DateTime.UtcNow, TimeSpan.FromMinutes(12)), exception1, exception2 }
+                };
             });
         }
 

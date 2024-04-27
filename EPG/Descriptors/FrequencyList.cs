@@ -39,7 +39,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Alle Frequenzen diese Liste.
         /// </summary>
-        public readonly List<uint> Frequencies = new List<uint>();
+        public readonly List<uint> Frequencies = [];
 
         /// <summary>
         /// Erzeugt eine neue Liste.

@@ -63,7 +63,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Complete PES packages waiting to be sent to the transport stream.
         /// </summary>
-        private readonly ArrayList Pending = new();
+        private readonly ArrayList Pending = [];
 
         /// <summary>
         /// When the last packet arrived.
@@ -73,7 +73,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Partial PES package while collecting.
         /// </summary>
-        private readonly ArrayList Parts = new();
+        private readonly ArrayList Parts = [];
 
         /// <summary>
         /// The stream identifier of this package.

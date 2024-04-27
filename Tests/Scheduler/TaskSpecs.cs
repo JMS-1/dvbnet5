@@ -133,7 +133,7 @@ namespace JMS.DVB.SchedulerTests
         /// <summary>
         /// Die für diesen Test verwendete Uhrzeit.
         /// </summary>
-        private static readonly DateTime TimeBias = new DateTime(2011, 9, 11, 15, 51, 13, DateTimeKind.Utc);
+        private static readonly DateTime TimeBias = new(2011, 9, 11, 15, 51, 13, DateTimeKind.Utc);
 
         /// <summary>
         /// Erzeugt eine neue Testumgebung.

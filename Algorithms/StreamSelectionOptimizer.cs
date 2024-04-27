@@ -129,7 +129,7 @@ namespace JMS.DVB.Algorithms
         /// <summary>
         /// Kann aktiviert werden um die Arbeit der Optimierung zu beobachten.
         /// </summary>
-        public static readonly BooleanSwitch OptimizerTraceSwitch = new BooleanSwitch("StreamOptimizerTrace", "Shows which Streams have to been removed due to Consumer Limitations");
+        public static readonly BooleanSwitch OptimizerTraceSwitch = new("StreamOptimizerTrace", "Shows which Streams have to been removed due to Consumer Limitations");
 
         /// <summary>
         /// Die Reihenfolge, in der Aspekte beim Empfang ausgeblendet werden dürfen.
@@ -284,7 +284,7 @@ namespace JMS.DVB.Algorithms
         /// <summary>
         /// Die Liste der einzelnen Aufzeichnungen.
         /// </summary>
-        private List<SelectionInfo> m_Sources = new List<SelectionInfo>();
+        private List<SelectionInfo> m_Sources = [];
 
         /// <summary>
         /// An diese Stelle werden alle vorgenommenen Veränderungen protokolliert.
@@ -417,7 +417,7 @@ namespace JMS.DVB.Algorithms
                     return 0;
 
                 // Stream managers in use
-                List<SourceStreamsManager> managers = new List<SourceStreamsManager>();
+                List<SourceStreamsManager> managers = [];
                 try
                 {
                     // Create one by one

@@ -46,7 +46,7 @@
         /// <summary>
         /// Verwaltet die aktiven Geräte.
         /// </summary>
-        private static readonly Dictionary<string, Hardware> m_ActiveHardware = new();
+        private static readonly Dictionary<string, Hardware> m_ActiveHardware = [];
 
         /// <summary>
         /// Meldet einen Client für die Verwendung der Geräteverwaltung an.

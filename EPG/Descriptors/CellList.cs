@@ -8,7 +8,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Eine Liste mit DVB-T Zellinformationen.
         /// </summary>
-        public readonly List<CellInformation> Cells = new List<CellInformation>();
+        public readonly List<CellInformation> Cells = [];
 
         /// <summary>
         /// Erzeugt eine neue Liste.
@@ -27,7 +27,7 @@ namespace JMS.DVB.EPG.Descriptors
             Section section = container.Section;
 
             // Helper
-            List<CellInformation> cells = new List<CellInformation>();
+            List<CellInformation> cells = [];
 
             // Load
             while (length > 0)

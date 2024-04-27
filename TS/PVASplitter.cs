@@ -134,12 +134,12 @@ namespace JMS.DVB.TS
 		/// <summary>
 		/// Die noch zu bearbeitenden Pakete.
 		/// </summary>
-		private Queue<byte[]> m_Waiting = new Queue<byte[]>();
+		private Queue<byte[]> m_Waiting = new();
 
 		/// <summary>
 		/// Benachrichtigt den <see cref="Thread"/> zur Bearbeitung der Pakete.
 		/// </summary>
-		private AutoResetEvent m_ReadQueue = new AutoResetEvent(false);
+		private AutoResetEvent m_ReadQueue = new(false);
 
 		/// <summary>
 		/// Der eigentliche Verteiler.

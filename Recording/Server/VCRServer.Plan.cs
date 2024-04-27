@@ -50,7 +50,7 @@ public partial class VCRServer
     /// <summary>
     /// Synchronisiert die Freigabe auf Planungsbefehle.
     /// </summary>
-    private readonly object m_planAvailableSync = new object();
+    private readonly object m_planAvailableSync = new();
 
     /// <summary>
     /// Sammelt Startvorgänge.

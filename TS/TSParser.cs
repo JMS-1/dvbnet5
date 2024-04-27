@@ -28,7 +28,7 @@ namespace JMS.DVB.TS
             /// <summary>
             /// Der zugeh�rige Rekonstruktionskomponente für den Nutzdatenstrom.
             /// </summary>
-            private PESBuilder m_Builder = new PESBuilder(parser, callback);
+            private PESBuilder m_Builder = new(parser, callback);
 
             /// <summary>
             /// Beginnt die Rekonstruktion der Nutzdaten von neuem.
@@ -67,17 +67,17 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Verwaltet alle Verbraucher von einzelnen Datenstr�men innerhalb des Gesamtdatenstroms.
         /// </summary>
-        private readonly Dictionary<ushort, TSBuilder> m_Consumers = new();
+        private readonly Dictionary<ushort, TSBuilder> m_Consumers = [];
 
         /// <summary>
         /// Verwaltet alle Verbraucher, die Datenstr�me aus den Gesamtdaten vollst�ndig abzweigen.
         /// </summary>
-        private readonly Dictionary<ushort, Action<byte[]>> m_Extractors = new();
+        private readonly Dictionary<ushort, Action<byte[]>> m_Extractors = [];
 
         /// <summary>
         /// Enth�lt eine Statistik über die Anteile der individuellen Datenstr�me am Gesamtdatenstrom.
         /// </summary>
-        private readonly Dictionary<ushort, long> m_PacketStatistics = new();
+        private readonly Dictionary<ushort, long> m_PacketStatistics = [];
 
         /// <summary>
         /// Gesetzt, wenn die Statistik über die Anzeile der einzelnen Datenstr�me gef�hrt werden soll.

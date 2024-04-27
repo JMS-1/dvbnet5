@@ -14,7 +14,7 @@ namespace JMS.DVB
         /// des Sendersuchlaufs.
         /// </summary>
         [XmlElement("Scan")]
-        public readonly List<string> ScanLocations = new List<string>();
+        public readonly List<string> ScanLocations = [];
 
         /// <summary>
         /// Erzeugt eine neue Referenz.

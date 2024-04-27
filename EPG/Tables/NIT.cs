@@ -78,7 +78,7 @@ namespace JMS.DVB.EPG.Tables
             ForThisStream = (0x40 == section.TableIdentifier);
 
             // Result
-            List<NetworkEntry> entries = new List<NetworkEntry>();
+            List<NetworkEntry> entries = [];
 
             // Fill
             for (svcoff += 2; svclen > 0;)

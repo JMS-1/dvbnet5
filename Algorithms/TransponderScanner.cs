@@ -90,7 +90,7 @@ namespace JMS.DVB.Algorithms
         /// <summary>
         /// Mit dieser Einstellung werden die Vorgänge während einer Aktualisierung der Quellen (Sendersuchlauf) protokolliert.
         /// </summary>
-        public static readonly TraceSwitch ScannerTraceSwitch = new TraceSwitch("ScannerTrace", "Reports various Steps while Updating the Source List of a Profile");
+        public static readonly TraceSwitch ScannerTraceSwitch = new("ScannerTrace", "Reports various Steps while Updating the Source List of a Profile");
 
         /// <summary>
         /// Wird aktiviert, bevor ein neuer Ursprung aktiviert wird. Wird <i>false</i> zurück
@@ -159,7 +159,7 @@ namespace JMS.DVB.Algorithms
         /// <summary>
         /// Das Ergebnis einer NIT Analyse.
         /// </summary>
-        private readonly Dictionary<GroupLocation, ScanLocation> m_AnalyseResult = new();
+        private readonly Dictionary<GroupLocation, ScanLocation> m_AnalyseResult = [];
 
         /// <summary>
         /// Das Ergebnis eines Sendersuchlaufs.
@@ -194,7 +194,7 @@ namespace JMS.DVB.Algorithms
         /// <summary>
         /// Die Anzahl der bei einem Sendersuchlauf gefundenden Quellen.
         /// </summary>
-        public Dictionary<SourceTypes, int> SourcesFound = new Dictionary<SourceTypes, int>();
+        public Dictionary<SourceTypes, int> SourcesFound = [];
 
         /// <summary>
         /// Erzeugt eine neue Instanz für einen Sendersuchlauf.
@@ -616,10 +616,10 @@ namespace JMS.DVB.Algorithms
                             return;
 
                         // Groups found on this location
-                        Dictionary<SourceGroup, bool> found = new Dictionary<SourceGroup, bool>();
+                        Dictionary<SourceGroup, bool> found = [];
 
                         // Groups with valid network information - only those are considered
-                        List<SourceGroup> nitAvailable = new List<SourceGroup>();
+                        List<SourceGroup> nitAvailable = [];
 
                         // Load counter
                         CurrentLocationGroupsPending = location.Groups.Count;
@@ -749,14 +749,14 @@ namespace JMS.DVB.Algorithms
         public void UpdateProfile()
         {
             // Create a map of all current locations
-            Dictionary<GroupLocation, GroupLocation> newLocations = new();
+            Dictionary<GroupLocation, GroupLocation> newLocations = [];
 
             // Fill current locations
             foreach (GroupLocation location in m_ScanResults)
                 newLocations[location] = location;
 
             // All previous locations
-            List<GroupLocation> oldLocations = new List<GroupLocation>();
+            List<GroupLocation> oldLocations = [];
 
             // Fill all which are still active
             foreach (GroupLocation location in Profile.Locations)
@@ -783,7 +783,7 @@ namespace JMS.DVB.Algorithms
                 unprocessedLocations.Remove(newLocation);
 
                 // Create a map of all source groups we found
-                Dictionary<SourceIdentifier, SourceIdentifier> found = new Dictionary<SourceIdentifier, SourceIdentifier>();
+                Dictionary<SourceIdentifier, SourceIdentifier> found = [];
 
                 // Fill it
                 foreach (SourceGroup newGroup in newLocation.Groups)
@@ -791,7 +791,7 @@ namespace JMS.DVB.Algorithms
                         found[newSource] = newSource;
 
                 // Already processed
-                Dictionary<SourceIdentifier, bool> updatedSources = new Dictionary<SourceIdentifier, bool>();
+                Dictionary<SourceIdentifier, bool> updatedSources = [];
 
                 // Now see which old sources are no longer available
                 foreach (SourceGroup oldGroup in location.Groups)

@@ -39,7 +39,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Alle zusätzlichen Datentypen, die bei der Serialisierung berücksichtigt werden sollen.
         /// </summary>
-        private static readonly HashSet<Type> m_ExtraTypes = new();
+        private static readonly HashSet<Type> m_ExtraTypes = [];
 
         /// <summary>
         /// Initialisiert allgemeine Felder.
@@ -294,7 +294,7 @@ namespace JMS.DVB.CardServer
         public override Response Execute(ServerImplementation server)
         {
             // Create response
-            T response = new T();
+            T response = new();
 
             // Be full safe - will always report a legal instance
             try

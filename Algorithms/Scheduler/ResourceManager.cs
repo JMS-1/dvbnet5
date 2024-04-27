@@ -13,7 +13,7 @@
             /// <summary>
             /// Die Liste aller verwalteten Geräte.
             /// </summary>
-            private readonly ResourceCollection m_Resources = new();
+            private readonly ResourceCollection m_Resources = [];
 
             /// <summary>
             /// Die aktuelle Liste der Aufzeichnungen.

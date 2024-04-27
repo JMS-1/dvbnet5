@@ -18,10 +18,11 @@ namespace JMS.DVB.SchedulerTests
             Assert.Throws<ArgumentNullException>(() =>
             {
                 // Create the component under test
-                var componentUnderTest = new RecordingScheduler(StringComparer.InvariantCultureIgnoreCase);
-
-                // Register a null resource
-                componentUnderTest.Add(default(IScheduleResource)!);
+                var componentUnderTest = new RecordingScheduler(StringComparer.InvariantCultureIgnoreCase)
+                {
+                    // Register a null resource
+                    default(IScheduleResource)!
+                };
             });
         }
 
@@ -66,10 +67,11 @@ namespace JMS.DVB.SchedulerTests
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
                 // Create the component under test
-                var componentUnderTest = new RecordingScheduler(StringComparer.InvariantCultureIgnoreCase);
-
-                // Register device
-                componentUnderTest.Add(ResourceMock.Create("a").SetEncryptionLimit(-1));
+                var componentUnderTest = new RecordingScheduler(StringComparer.InvariantCultureIgnoreCase)
+                {
+                    // Register device
+                    ResourceMock.Create("a").SetEncryptionLimit(-1)
+                };
             });
         }
     }

@@ -256,7 +256,7 @@ namespace JMS.DVB.SI.ProgramGuide
             {
                 // Reset
                 if (m_Categories == null)
-                    m_Categories = new HashSet<ContentCategory>();
+                    m_Categories = [];
                 else
                     m_Categories.Clear();
 
@@ -309,7 +309,7 @@ namespace JMS.DVB.SI.ProgramGuide
 
             // Once only
             m_Ratings = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
-            m_Categories = new HashSet<ContentCategory>();
+            m_Categories = [];
 
             // Descriptors we can have
             Legacy.Descriptors.ShortEvent? shortEvent = null;

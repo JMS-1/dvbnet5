@@ -158,7 +158,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <summary>
         /// Alle aktiven Aufzeichnungen.
         /// </summary>
-        private readonly Dictionary<Guid, VCRRecordingInfo> m_active = new();
+        private readonly Dictionary<Guid, VCRRecordingInfo> m_active = [];
 
         /// <summary>
         /// Gesetzt, wenn die Aufzeichnungsgruppe vorzeitig beendet wurde.
@@ -178,7 +178,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <summary>
         /// Wird aktiviert, wenn eine Bearbeitung einer zusätzlichen Anforderung stattfinden soll.
         /// </summary>
-        private readonly AutoResetEvent m_wakeUp = new AutoResetEvent(false);
+        private readonly AutoResetEvent m_wakeUp = new(false);
 
         /// <summary>
         /// Wird gesetzt, sobald der Aufzeichnungsthread beendet ist.
@@ -596,7 +596,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <summary>
         /// Eine Liste von Arbeitsaufträgen, die abgearbeitet werden sollen.
         /// </summary>
-        private List<Action> m_Requests = new List<Action>();
+        private List<Action> m_Requests = [];
 
         /// <summary>
         /// Führt alle ausstehenden Aktionen aus.

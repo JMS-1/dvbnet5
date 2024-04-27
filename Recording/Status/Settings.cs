@@ -12,7 +12,7 @@ namespace JMS.DVB.NET.Recording.Status
         /// <summary>
         /// The profiles that can be used.
         /// </summary>
-        public readonly List<string> Profiles = new List<string>();
+        public readonly List<string> Profiles = [];
 
         /// <summary>
         /// Set if the VCR.NET Recording Service is allowed to hibernate the system.

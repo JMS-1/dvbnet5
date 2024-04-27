@@ -421,7 +421,7 @@ namespace JMS.DVB.EPG
             }
 
             // Allocate buffer
-            List<byte> scratch = new List<byte>(bytes);
+            List<byte> scratch = new(bytes);
 
             // Process all
             while (bytes-- > 0)

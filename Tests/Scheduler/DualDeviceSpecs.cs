@@ -21,7 +21,7 @@ namespace JMS.DVB.SchedulerTests
         /// <summary>
         /// Der Bezugspunkt für alle Zeitmessungen.
         /// </summary>
-        public static readonly DateTime TimeBias = new DateTime(2011, 10, 22, 12, 19, 27, DateTimeKind.Utc);
+        public static readonly DateTime TimeBias = new(2011, 10, 22, 12, 19, 27, DateTimeKind.Utc);
 
         /// <summary>
         /// Eine Aufzeichnung kann in einen vorherigen Planungsblock aufgenommen werden.

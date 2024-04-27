@@ -57,7 +57,7 @@ namespace JMS.DVB.EPG
             uint frequency = Tools.MergeBytesToDoubleWord(section[offset + 5], section[offset + 4], section[offset + 3], section[offset + 2]);
 
             // Create new
-            FrequencyLink info = new FrequencyLink
+            FrequencyLink info = new()
             {
                 Length = 7 + extlen,
                 Identifier = cellId,

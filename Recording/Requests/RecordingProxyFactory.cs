@@ -15,6 +15,6 @@ public class RecordingProxyFactory(
 {
     /// <inheritdoc/>
     public RecordingProxy Create(IProfileState state, VCRRecordingInfo firstRecording)
-        => new RecordingProxy(state, firstRecording, logger, jobManager, configuration, profiles, extensionManager);
+        => new(state, firstRecording, logger, jobManager, configuration, profiles, extensionManager);
 }
 

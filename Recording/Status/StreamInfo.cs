@@ -14,7 +14,7 @@ namespace JMS.DVB.NET.Recording.Status
         /// Alle Teilaufzeichnungen, die zu dieser Quelle gleichzeitig ausgef�hrt werden.
         /// </summary>
         [XmlElement("Schedule")]
-        public readonly List<ScheduleInfo> Schedules = new List<ScheduleInfo>();
+        public readonly List<ScheduleInfo> Schedules = [];
 
         /// <summary>
         /// Gesetzt, wenn keine Aufzeichnungdatei angelegt wird.

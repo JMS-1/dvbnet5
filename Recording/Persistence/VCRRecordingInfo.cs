@@ -131,7 +131,7 @@ public class VCRRecordingInfo
     /// Alle während der Aufzeichnung entstandenen Dateien.
     /// </summary>
     [XmlElement("File")]
-    public readonly List<FileInformation> RecordingFiles = new List<FileInformation>();
+    public readonly List<FileInformation> RecordingFiles = [];
 
     /// <summary>
     /// Die zugehörige Quelle.
@@ -356,7 +356,6 @@ public class VCRRecordingInfo
         return patterns;
     }
 
-
     /// <summary>
     /// Prüft, ob diese Aufzeichnung zu einem gerade aufgezeichneten Datenstrom gehört.
     /// </summary>
@@ -393,7 +392,7 @@ public class VCRRecordingInfo
             return false;
 
         // Identity match
-        return (scheduleIdentifier.Value == schedule.Value);
+        return scheduleIdentifier.Value == schedule.Value;
     }
 
     /// <summary>

@@ -100,7 +100,7 @@ public class ProfileState(
     /// <summary>
     /// Synchronisiert den Zugriff auf die aktuelle Operation.
     /// </summary>
-    private object m_RequestLock = new object();
+    private object m_RequestLock = new();
 
     /// <summary>
     /// Der aktuelle Zugriff auf die zugehörige DVB.NET Hardwareabstraktion. Der Aufrufer hält alle

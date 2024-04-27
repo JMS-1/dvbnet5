@@ -8,12 +8,12 @@
         /// <summary>
         /// Alle bisher empfangenen Module.
         /// </summary>
-        private readonly Dictionary<ushort, Module> m_Modules = new();
+        private readonly Dictionary<ushort, Module> m_Modules = [];
 
         /// <summary>
         /// Liste zur Teilweisen Freischaltung des Empfangs.
         /// </summary>
-        private readonly Dictionary<ushort, bool> m_Enabled = new();
+        private readonly Dictionary<ushort, bool> m_Enabled = [];
 
         /// <summary>
         /// Methode, die bei Komplettierung eines Moduls aufgerufen wird.

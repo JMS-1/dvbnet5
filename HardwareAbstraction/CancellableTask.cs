@@ -9,7 +9,7 @@
         /// <summary>
         /// Steuert das vorzeitige Beenden.
         /// </summary>
-        private volatile CancellationTokenSource m_cancel = new CancellationTokenSource();
+        private volatile CancellationTokenSource m_cancel = new();
 
         /// <summary>
         /// Erzeugt eine neue Instanz.

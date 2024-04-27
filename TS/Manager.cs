@@ -114,7 +114,7 @@ namespace JMS.DVB.TS
         /// <remarks>
         /// The map is indexed with the transport stream identifier.
         /// </remarks>
-        private readonly Hashtable m_Buffers = new();
+        private readonly Hashtable m_Buffers = [];
 
         /// <summary>
         /// The <see cref="PVASplitter"/> needs a PTS guidance since PVA
@@ -147,7 +147,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// All our streams.
         /// </summary>
-        private readonly ArrayList m_Streams = new ArrayList();
+        private readonly ArrayList m_Streams = [];
 
         /// <summary>
         /// The <see cref="Tables.PAT"/> for this transport stream - there can be only
@@ -215,7 +215,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// For the moment a synchronizer only.
         /// </summary>
-        private readonly object m_Queue = new object();
+        private readonly object m_Queue = new();
 
         /// <summary>
         /// Set when a HDTV video stream is added.
@@ -545,7 +545,7 @@ namespace JMS.DVB.TS
             if (!string.IsNullOrEmpty(name)) ProgramMap.SetAudioLanguage(pid, name);
 
             // Create
-            DolbyStream dolby = new DolbyStream(this, pid, isPCR);
+            DolbyStream dolby = new(this, pid, isPCR);
 
             // Remember
             m_Streams.Add(dolby);
@@ -570,7 +570,7 @@ namespace JMS.DVB.TS
             short pid = AddStream(StreamTypes.TeleText, 255, false, true, null!, null, out isPCR);
 
             // Create
-            TTXStream ttx = new TTXStream(this, pid, isPCR);
+            TTXStream ttx = new(this, pid, isPCR);
 
             // Remember
             m_Streams.Add(ttx);
@@ -596,7 +596,7 @@ namespace JMS.DVB.TS
             short pid = AddStream(StreamTypes.SubTitles, 255, false, true, info, null, out isPCR);
 
             // Create
-            SubtitleStream sub = new SubtitleStream(this, pid, isPCR);
+            SubtitleStream sub = new(this, pid, isPCR);
 
             // Remember
             m_Streams.Add(sub);

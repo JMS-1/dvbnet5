@@ -49,18 +49,18 @@ public class RecordingProxy(
     /// <summary>
     /// Alle gerade aktive Aufzeichnungen.
     /// </summary>
-    private readonly List<VCRRecordingInfo> m_recordings = new List<VCRRecordingInfo>();
+    private readonly List<VCRRecordingInfo> m_recordings = [];
 
     /// <summary>
     /// Alle bisher angemeldeten Aufzeichnungen - die vollständige Liste wird ausschließlich
     /// für Protokolleinträge verwendet.
     /// </summary>
-    private readonly List<VCRRecordingInfo> m_allRecordings = new List<VCRRecordingInfo>();
+    private readonly List<VCRRecordingInfo> m_allRecordings = [];
 
     /// <summary>
     /// Alle Dateien, die jemals erzeugt wurden.
     /// </summary>
-    private readonly HashSet<FileInformation> m_files = new HashSet<FileInformation>();
+    private readonly HashSet<FileInformation> m_files = [];
 
     #endregion
 
@@ -387,7 +387,7 @@ public class RecordingProxy(
             if (!names.TryGetValue(recording.FileName, out var recordings))
             {
                 // Create new
-                recordings = new List<VCRRecordingInfo>();
+                recordings = [];
 
                 // To map and ordered list
                 names.Add(recording.FileName, recordings);

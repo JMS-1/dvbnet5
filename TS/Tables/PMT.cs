@@ -22,22 +22,22 @@ namespace JMS.DVB.TS.Tables
         /// <summary>
         /// The languages for the audio streams.
         /// </summary>
-        private readonly Dictionary<short, string> m_AudioNames = new();
+        private readonly Dictionary<short, string> m_AudioNames = [];
 
         /// <summary>
         /// Maps each stream to the related <see cref="StreamTypes"/>.
         /// </summary>
-        private readonly Dictionary<short, StreamTypes> m_Type = new();
+        private readonly Dictionary<short, StreamTypes> m_Type = [];
 
         /// <summary>
         /// Maps each stream to the related AAC information.
         /// </summary>
-        private readonly Dictionary<short, ushort?> m_AAC = new();
+        private readonly Dictionary<short, ushort?> m_AAC = [];
 
         /// <summary>
         /// Encoding if known.
         /// </summary>
-        private readonly Dictionary<short, byte> m_Encoding = new();
+        private readonly Dictionary<short, byte> m_Encoding = [];
 
         /// <summary>
         /// The transport stream identifier of the PCR.
@@ -65,7 +65,7 @@ namespace JMS.DVB.TS.Tables
         /// <summary>
         /// DVB sub title streams in this program.
         /// </summary>
-        private readonly Dictionary<short, SubtitleInfo[]> DVBSubtitles = new();
+        private readonly Dictionary<short, SubtitleInfo[]> DVBSubtitles = [];
 
         /// <summary>
         /// Number of Dolby Digital (AC3) audio streams in this program.
@@ -145,7 +145,7 @@ namespace JMS.DVB.TS.Tables
                     SubtitleInfo[] subInfos = DVBSubtitles[pid];
 
                     // Create the descriptor
-                    Subtitle subDescr = new Subtitle();
+                    Subtitle subDescr = new();
 
                     // Check mode
                     if ((null == subInfos) || (subInfos.Length < 1))
@@ -168,7 +168,7 @@ namespace JMS.DVB.TS.Tables
                     if (!m_AudioNames.TryGetValue(pid, out var language)) language = "deu";
 
                     // Create language descriptor
-                    ISOLanguage audioDescriptor = new ISOLanguage();
+                    ISOLanguage audioDescriptor = new();
 
                     // Append language item
                     audioDescriptor.Languages.Add(new LanguageItem(language, ac3 ? EPG.AudioTypes.Undefined : EPG.AudioTypes.CleanEffects));

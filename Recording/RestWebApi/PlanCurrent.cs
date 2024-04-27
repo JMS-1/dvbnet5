@@ -393,6 +393,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="profileName">Der Name des Geräteprofils.</param>
         /// <returns>Die zugehörige Beschreibung.</returns>
-        public static PlanCurrent Create(string profileName) => new PlanCurrent { ProfileName = profileName, IsIdle = true };
+        public static PlanCurrent Create(string profileName) => new() { ProfileName = profileName, IsIdle = true };
     }
 }

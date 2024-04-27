@@ -102,7 +102,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <summary>
         /// Alle bereits vermerkten Bereiche.
         /// </summary>
-        private readonly List<Range> m_ranges = new List<Range>();
+        private readonly List<Range> m_ranges = [];
 
         /// <summary>
         /// Ergänzt einen neuen Bereich.

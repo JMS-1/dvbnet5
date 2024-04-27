@@ -21,7 +21,7 @@ namespace JMS.DVB.SchedulerTests
         /// <summary>
         /// Der Bezugspunkt für alle Zeitmessungen.
         /// </summary>
-        public static readonly DateTime TimeBias = new DateTime(2011, 9, 7, 22, 28, 13, DateTimeKind.Utc);
+        public static readonly DateTime TimeBias = new(2011, 9, 7, 22, 28, 13, DateTimeKind.Utc);
 
         /// <summary>
         /// Ein verschlüsselter Sender kann nur auf einem Gerät mit Entschlüsselung ausgeführt werden.

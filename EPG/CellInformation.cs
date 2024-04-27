@@ -100,7 +100,7 @@
             int longitude_ext = ext2 + 256 * (ext1 & 0x0f);
 
             // Create new
-            CellInformation info = new CellInformation
+            CellInformation info = new()
             {
                 Length = 10 + extlen,
                 Identifier = cellId,

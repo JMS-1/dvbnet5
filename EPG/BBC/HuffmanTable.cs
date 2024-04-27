@@ -143,7 +143,7 @@ namespace JMS.DVB.EPG.BBC
         public void Save(string path, FileMode mode)
         {
             // Forward
-            using FileStream stream = new FileStream(path, mode, FileAccess.Write, FileShare.None);
+            using FileStream stream = new(path, mode, FileAccess.Write, FileShare.None);
 
             Save(stream);
         }
@@ -354,7 +354,7 @@ namespace JMS.DVB.EPG.BBC
                             }
 
                             // Create new sequence
-                            StringBuilder escape = new StringBuilder(sequence);
+                            StringBuilder escape = new(sequence);
 
                             // Append the item
                             AppendHex(escape, (byte)item);
@@ -619,7 +619,7 @@ namespace JMS.DVB.EPG.BBC
             HuffmanTable.ValidateSequence(sequence);
 
             // All of it
-            Dictionary<string, string> sequences = new();
+            Dictionary<string, string> sequences = [];
 
             // Load
             if (!string.IsNullOrEmpty(AlternateSequences))

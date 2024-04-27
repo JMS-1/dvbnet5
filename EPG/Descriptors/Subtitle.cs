@@ -8,7 +8,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Enth�lt die Beschreibung aller DVB Untertitel.
         /// </summary>
-        public readonly List<SubtitleInfo> Subtitles = new List<SubtitleInfo>();
+        public readonly List<SubtitleInfo> Subtitles = [];
 
         /// <summary>
         /// Erzeugt eine neue Beschreibung.

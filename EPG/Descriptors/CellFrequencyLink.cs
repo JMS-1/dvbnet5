@@ -8,7 +8,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Die Kennungen und Frequenzen der anderen Zellen.
         /// </summary>
-        public readonly List<FrequencyLink> Links = new List<FrequencyLink>();
+        public readonly List<FrequencyLink> Links = [];
 
         /// <summary>
         /// Erzeugt eine neue Referenzliste.
@@ -27,7 +27,7 @@ namespace JMS.DVB.EPG.Descriptors
             Section section = container.Section;
 
             // Helper
-            List<FrequencyLink> links = new List<FrequencyLink>();
+            List<FrequencyLink> links = [];
 
             // Load
             while (length > 0)

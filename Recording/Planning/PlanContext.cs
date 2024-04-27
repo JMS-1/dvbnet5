@@ -7,7 +7,11 @@ namespace JMS.DVB.NET.Recording.Planning
     /// <summary>
     /// Meldet Detailinformationen zu einer Liste von Aufzeichnungen.
     /// </summary>
-    public class PlanContext : IEnumerable<IScheduleInformation>
+    /// <remarks>
+    /// Erstellt eine neue Detailinformation.
+    /// </remarks>
+    /// <param name="running">Alle laufenden Aufzeichnungen.</param>
+    public class PlanContext(IEnumerable<ScheduleInformation> running) : IEnumerable<IScheduleInformation>
     {
         /// <summary>
         /// Vergleicht Planungen nach dem Startzeitpunkt.
@@ -43,27 +47,17 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <summary>
         /// Erlaubt es, zu jeder Aufzeichnung den zugehörigen Auftrag nachzuschlagen.
         /// </summary>
-        private readonly Dictionary<Guid, VCRJob> m_jobsBySchedule = new Dictionary<Guid, VCRJob>();
+        private readonly Dictionary<Guid, VCRJob> m_jobsBySchedule = [];
 
         /// <summary>
         /// Alle laufenden Aufzeichnungen.
         /// </summary>
-        private readonly Dictionary<Guid, ScheduleInformation> m_running;
+        private readonly Dictionary<Guid, ScheduleInformation> m_running = (running ?? []).ToDictionary(info => info.Schedule.Definition.UniqueIdentifier);
 
         /// <summary>
         /// Der gesamte Aufzeichnungsplan.
         /// </summary>
-        private List<IScheduleInformation> m_schedules = new List<IScheduleInformation>();
-
-        /// <summary>
-        /// Erstellt eine neue Detailinformation.
-        /// </summary>
-        /// <param name="running">Alle laufenden Aufzeichnungen.</param>
-        internal PlanContext(IEnumerable<ScheduleInformation> running)
-        {
-            // Remember
-            m_running = (running ?? Enumerable.Empty<ScheduleInformation>()).ToDictionary(info => info.Schedule.Definition.UniqueIdentifier);
-        }
+        private List<IScheduleInformation> m_schedules = [];
 
         /// <summary>
         /// Ermittelt Daten zu einer laufenden Aufzeichnung.
@@ -127,7 +121,7 @@ namespace JMS.DVB.NET.Recording.Planning
         public void LoadPlan(IEnumerable<IScheduleInformation> planItems)
         {
             // Load
-            m_schedules = (planItems ?? Enumerable.Empty<IScheduleInformation>()).ToList();
+            m_schedules = (planItems ?? []).ToList();
 
             // Finish
             m_schedules.Sort(ByStartComparer);

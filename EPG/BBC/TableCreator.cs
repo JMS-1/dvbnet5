@@ -57,7 +57,7 @@
         /// <summary>
         /// Beschreibt alle gemeldeten Übergänge.
         /// </summary>
-        private Dictionary<char, List<TransitionInfo>> m_Transitions = new();
+        private Dictionary<char, List<TransitionInfo>> m_Transitions = [];
 
         /// <summary>
         /// Die interne Repräsentations der Übrergänge.

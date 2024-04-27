@@ -8,7 +8,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Informations on dedicated pages.
         /// </summary>
-		public readonly List<TeletextItem> Items = new List<TeletextItem>();
+		public readonly List<TeletextItem> Items = [];
 
         /// <summary>
         /// 
@@ -38,7 +38,7 @@ namespace JMS.DVB.EPG.Descriptors
             Section section = container.Section;
 
             // Helper
-            List<TeletextItem> items = new List<TeletextItem>();
+            List<TeletextItem> items = [];
 
             // Load
             while (length > 0)

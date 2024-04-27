@@ -52,7 +52,7 @@ namespace JMS.DVB.EPG.Tables
 			OriginalNetworkIdentifier = Tools.MergeBytesToWord(section[6], section[5]);
 
 			// Create helper
-			ArrayList services = new ArrayList();
+			ArrayList services = [];
 
 			// Process
 			for (ServiceEntry? entry; null != (entry = ServiceEntry.Create(this, offset, length));)

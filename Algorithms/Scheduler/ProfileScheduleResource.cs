@@ -136,7 +136,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <summary>
             /// Alle Quellen, die wir bereits einmal getestet haben.
             /// </summary>
-            private readonly ConcurrentDictionary<SourceSelection, bool> m_accessTests = new ConcurrentDictionary<SourceSelection, bool>(ReferenceComparer<SourceSelection>.Default);
+            private readonly ConcurrentDictionary<SourceSelection, bool> m_accessTests = new(ReferenceComparer<SourceSelection>.Default);
 
             /// <summary>
             /// Der Änderungszähler der Geräteprofile - wir wissen, dass der Zähler immer bei 0 beginnt, i.e. wir erzwingen immer ein einmaliges Zurücksetzen.

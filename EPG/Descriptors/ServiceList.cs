@@ -8,7 +8,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Alle Dienste aufgeschl�sselt nach der Art des Dienstes.
         /// </summary>
-        public readonly Dictionary<ushort, ServiceTypes> Services = new Dictionary<ushort, ServiceTypes>();
+        public readonly Dictionary<ushort, ServiceTypes> Services = [];
 
         /// <summary>
         /// Erzeugt eine neue Liste.

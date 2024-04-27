@@ -94,7 +94,7 @@
         /// <summary>
         /// Alle Aufzeichnungen, die auf diesem Gerät ausgeführt werden sollen.
         /// </summary>
-        private List<_RecordingItem> m_Recordings = new List<_RecordingItem>();
+        private List<_RecordingItem> m_Recordings = [];
 
         /// <summary>
         /// Die Zähler für die Entschlüsselung.
@@ -137,7 +137,7 @@
             Resource = resource;
 
             // Register a single decryption counter
-            DecryptionCounters = decryptionCounter ?? new() { schedulePlan.RegisterDecryption(Resource.Decryption.MaximumParallelSources) };
+            DecryptionCounters = decryptionCounter ?? [schedulePlan.RegisterDecryption(Resource.Decryption.MaximumParallelSources)];
 
             // Check for allocation
             if (allocations != null)

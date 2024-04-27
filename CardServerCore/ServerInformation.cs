@@ -14,7 +14,7 @@
         /// <summary>
         /// Die Informationen zu allen aktiven Quellen.
         /// </summary>
-        public readonly List<StreamInformation> Streams = new List<StreamInformation>();
+        public readonly List<StreamInformation> Streams = [];
 
         /// <summary>
         /// Meldet oder legt fest, ob gerade die elektronische Programmzeitschrift (EPG)

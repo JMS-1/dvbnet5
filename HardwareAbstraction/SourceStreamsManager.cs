@@ -823,7 +823,7 @@ namespace JMS.DVB
             if (!subtitles.TryGetValue(subtitle.SubtitleStream, out var list))
             {
                 // Create new
-                list = new List<EPG.SubtitleInfo>();
+                list = [];
 
                 // Remember it
                 subtitles[subtitle.SubtitleStream] = list;

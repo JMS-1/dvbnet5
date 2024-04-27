@@ -71,7 +71,7 @@ namespace JMS.DVB.SchedulerTests
         /// <summary>
         /// Alle Quellen, die dieses Gerät kennt.
         /// </summary>
-        public List<IScheduleSource> Sources = new List<IScheduleSource>();
+        public List<IScheduleSource> Sources = [];
 
         /// <summary>
         /// Erzeugt eine neue Simulation.

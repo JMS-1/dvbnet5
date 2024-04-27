@@ -87,12 +87,12 @@ namespace JMS.DVB.EPG
         /// <summary>
         /// 
         /// </summary>
-        private static Dictionary<string, string> m_LanguageMap = new Dictionary<string, string>();
+        private static Dictionary<string, string> m_LanguageMap = [];
 
         /// <summary>
         /// 
         /// </summary>
-        private static Dictionary<string, string> m_LanguageMapEx = new Dictionary<string, string>();
+        private static Dictionary<string, string> m_LanguageMapEx = [];
 
         /// <summary>
         /// 

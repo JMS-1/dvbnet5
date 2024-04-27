@@ -290,7 +290,7 @@ public class ConfigurationController(
     /// </summary>
     /// <returns>Die aktuellen Regeln.</returns>
     [HttpGet("rules")]
-    public SchedulerRules ReadSchedulerRules() => new SchedulerRules { RuleFileContents = server.SchedulerRules };
+    public SchedulerRules ReadSchedulerRules() => new() { RuleFileContents = server.SchedulerRules };
 
     /// <summary>
     /// Aktualisiert das Regelwerk für die Aufzeichnungsplanung.

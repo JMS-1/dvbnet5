@@ -22,7 +22,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Nicht weiter ausgewertet Informationen zum Format.
         /// </summary>
-        public readonly List<byte> RawFormat = new List<byte>();
+        public readonly List<byte> RawFormat = [];
 
         /// <summary>
         /// 

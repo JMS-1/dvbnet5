@@ -111,7 +111,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                     throw new ArgumentOutOfRangeException(nameof(to));
 
                 // Finish
-                Sources = new List<IScheduleSource>();
+                Sources = [];
 
                 // Remember
                 Start = from;
@@ -632,7 +632,7 @@ namespace JMS.DVB.Algorithms.Scheduler
 
                         // Now we can check the time line
                         if (!map.TryGetValue(representative, out var timeline))
-                            map.Add(representative, timeline = new());
+                            map.Add(representative, timeline = []);
 
                         // Register
                         timeline.Add(range);

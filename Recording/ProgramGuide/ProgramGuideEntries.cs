@@ -14,7 +14,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <seealso cref="SourceIdentifier"/>
         /// </summary>
         [XmlIgnore]
-        private Dictionary<SourceIdentifier, OrderedEntries> m_Events = new Dictionary<SourceIdentifier, OrderedEntries>();
+        private Dictionary<SourceIdentifier, OrderedEntries> m_Events = [];
 
         /// <summary>
         /// Eine leere Liste von Sendungen.
@@ -51,7 +51,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
 
             // Attach to holder
             if (!m_Events.TryGetValue(key, out var events))
-                m_Events.Add(key, events = new());
+                m_Events.Add(key, events = []);
 
             // Forward
             events.Add(newEvent);

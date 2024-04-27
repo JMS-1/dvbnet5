@@ -98,7 +98,7 @@ namespace JMS.DVB.CardServer
         internal InMemoryCardServer()
         {
             // Create helpers
-            Streams = new Dictionary<SourceIdenfierWithKey, ActiveStream>();
+            Streams = [];
         }
 
         /// <summary>

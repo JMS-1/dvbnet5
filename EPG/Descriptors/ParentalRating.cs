@@ -33,7 +33,7 @@ namespace JMS.DVB.EPG.Descriptors
 			Section section = container.Section;
 
 			// Collector
-			ArrayList all = new ArrayList();
+			ArrayList all = [];
 
 			// Process content
 			for (; length > 3; length -= 4, offset += 4)

@@ -97,7 +97,7 @@ namespace JMS.DVB.EPG.Tables
 			m_ServiceIdentifier = Tools.MergeBytesToWord(section[1], section[0]);
 
 			// Create helper
-			List<EventEntry> entries = new List<EventEntry>();
+			List<EventEntry> entries = [];
 
 			// Process
 			for (EventEntry entry; null != (entry = EventEntry.Create(this, offset, length));)

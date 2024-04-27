@@ -31,7 +31,7 @@ namespace JMS.DVB.EPG.Descriptors
             Section section = container.Section;
 
             // Collector
-            List<int> all = new List<int>();
+            List<int> all = [];
 
             // Process content
             for (; length > 1; length -= 2)

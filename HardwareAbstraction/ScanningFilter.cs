@@ -258,7 +258,7 @@ namespace JMS.DVB
         /// <summary>
         /// Die Liste der Quellen, die beim Sendersuchlauf verändert werden.
         /// </summary>
-        public readonly List<SourceModifier> SourceDetails = new List<SourceModifier>();
+        public readonly List<SourceModifier> SourceDetails = [];
 
         /// <summary>
         /// Erzeugt eine neue Hilfsklasse.
@@ -313,7 +313,7 @@ namespace JMS.DVB
         /// <summary>
         /// Die Liste der Quellgruppen (Transponder), die vom Sendersuchlauf auszuschliessen sind.
         /// </summary>
-        public readonly List<T> ExcludedGroups = new List<T>();
+        public readonly List<T> ExcludedGroups = [];
 
         /// <summary>
         /// Erzeugt eine neue Hilfsklasse.

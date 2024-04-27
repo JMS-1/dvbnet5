@@ -169,7 +169,7 @@ namespace JMS.DVB
                     if (m_profiles == null)
                     {
                         // Create
-                        m_profiles = new List<Profile>();
+                        m_profiles = [];
 
                         // Attach to the path
                         var profileDirectory = ProfilePath;
@@ -228,7 +228,7 @@ namespace JMS.DVB
                 throw new ArgumentException(name, nameof(name));
 
             // Create the new instance
-            T profile = new T();
+            T profile = new();
 
             // Attach the file information to it
             profile.ProfilePath = new FileInfo(Path.Combine(ProfilePath.FullName, name + "." + ProfileExtension));

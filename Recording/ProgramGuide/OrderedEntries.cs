@@ -10,7 +10,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// <summary>
         /// All events collected so far.
         /// </summary>
-        private readonly List<ProgramGuideEntry> m_Events = new List<ProgramGuideEntry>();
+        private readonly List<ProgramGuideEntry> m_Events = [];
 
         /// <summary>
         /// Create a new collection instance.

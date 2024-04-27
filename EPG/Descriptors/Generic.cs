@@ -12,7 +12,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Die nicht ausgewerteten Rohdaten - vor allem zu Testzwecken.
         /// </summary>
-        public readonly List<byte> RawData = new List<byte>();
+        public readonly List<byte> RawData = [];
 
         /// <summary>
         /// Create a new descriptor instance.

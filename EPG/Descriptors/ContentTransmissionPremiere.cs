@@ -50,7 +50,7 @@ namespace JMS.DVB.EPG.Descriptors
             length -= 6;
 
             // Times to use
-            List<DateTime> dates = new List<DateTime>();
+            List<DateTime> dates = [];
 
             // Process all
             while (length >= 2)

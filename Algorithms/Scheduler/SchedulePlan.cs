@@ -262,7 +262,7 @@
         /// <summary>
         /// Alle Zähler für die verfügbaren Entschlüsselungen.
         /// </summary>
-        public Dictionary<Guid, AllocationMap> DecryptionCounters = new();
+        public Dictionary<Guid, AllocationMap> DecryptionCounters = [];
 
         /// <summary>
         /// Alle Geräte in dieser Planung. Diese sind aufsteigend nach der Prioriät geordnet, das unwichtigste
@@ -502,7 +502,7 @@
 
                     // Allocate a timeline
                     if (!summary.TryGetValue(representative, out var timeline))
-                        summary.Add(representative, timeline = new AllocationMap.AllocationTimeline());
+                        summary.Add(representative, timeline = []);
 
                     // Merge in all
                     foreach (var range in sourceUsage.Value)

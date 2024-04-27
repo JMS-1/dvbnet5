@@ -67,7 +67,7 @@ public class RecordingPlanner : IRecordingPlanner
     /// <summary>
     /// Verwaltet alle verwendeten Geräteprofile.
     /// </summary>
-    private readonly Dictionary<string, IScheduleResource> m_resources = new Dictionary<string, IScheduleResource>(ProfileManager.ProfileNameComparer);
+    private readonly Dictionary<string, IScheduleResource> m_resources = new(ProfileManager.ProfileNameComparer);
 
     /// <summary>
     /// Alle aktuellen periodischen Aufgaben.
@@ -82,7 +82,7 @@ public class RecordingPlanner : IRecordingPlanner
     /// <summary>
     /// Alle laufenden Aufzeichnungen.
     /// </summary>
-    private readonly Dictionary<Guid, ScheduleInformation> m_started = new Dictionary<Guid, ScheduleInformation>();
+    private readonly Dictionary<Guid, ScheduleInformation> m_started = [];
 
     private readonly ILogger _logger;
 

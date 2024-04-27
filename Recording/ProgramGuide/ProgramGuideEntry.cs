@@ -168,7 +168,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
                 return input;
 
             // Helper
-            StringBuilder clean = new StringBuilder();
+            StringBuilder clean = new();
 
             // Process
             for (int cur = 0; cur < input.Length;)
@@ -217,7 +217,7 @@ namespace JMS.DVB.NET.Recording.ProgramGuide
         /// Meldet die Quelle zu diesem Eintrag.
         /// </summary>
         [XmlIgnore]
-        public SourceIdentifier Source => new SourceIdentifier(NetworkIdentifier, TransportIdentifier, ServiceIdentifier);
+        public SourceIdentifier Source => new(NetworkIdentifier, TransportIdentifier, ServiceIdentifier);
 
         #region IComparable Members
 

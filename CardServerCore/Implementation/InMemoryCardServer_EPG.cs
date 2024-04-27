@@ -30,12 +30,12 @@ namespace JMS.DVB.CardServer
         /// Alle Quellgruppen (Transponder), die bei der Aktualisierung der Programmzeitschrift anzusteuern
         /// sind.
         /// </summary>
-        private readonly Dictionary<GroupKey, bool> m_EPGGroups = new();
+        private readonly Dictionary<GroupKey, bool> m_EPGGroups = [];
 
         /// <summary>
         /// Alle Quellen, zu denen Daten in die Programmzeitschrift aufgenommen werden sollen. 
         /// </summary>
-        private readonly Dictionary<SourceIdentifier, SourceSelection> m_EPGSources = new();
+        private readonly Dictionary<SourceIdentifier, SourceSelection> m_EPGSources = [];
 
         /// <summary>
         /// Die Liste der zu bearbeitenden Quellgruppen (Transponder) für die Aktualisierung der
@@ -52,7 +52,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Alle bisher ermittelten Daten zur Programmzeitschrift.
         /// </summary>
-        private static readonly Dictionary<SourceIdentifier, Dictionary<DateTime, ProgramGuideItem>> m_EPGItems = new();
+        private static readonly Dictionary<SourceIdentifier, Dictionary<DateTime, ProgramGuideItem>> m_EPGItems = [];
 
         /// <summary>
         /// Die Anzahl der bisher ermittelten Einträge für die Programmzeitschrift.
@@ -215,7 +215,7 @@ namespace JMS.DVB.CardServer
                 if (!m_EPGItems.TryGetValue(source, out var list))
                 {
                     // Create new
-                    list = new();
+                    list = [];
 
                     // Add it
                     m_EPGItems[source] = list;
@@ -250,8 +250,8 @@ namespace JMS.DVB.CardServer
             LegacyEPG.Descriptors.ShortEvent? shortEvent = null;
 
             // Collector
-            List<LegacyEPG.Descriptors.ExtendedEvent> exEvents = new();
-            HashSet<ContentCategory> categories = new();
+            List<LegacyEPG.Descriptors.ExtendedEvent> exEvents = [];
+            HashSet<ContentCategory> categories = [];
 
             // Check all descriptors
             foreach (var descr in descriptors)
@@ -562,7 +562,7 @@ namespace JMS.DVB.CardServer
         private ProgramGuideItem[] CreateGuideItems()
         {
             // Result
-            List<ProgramGuideItem> schedules = new();
+            List<ProgramGuideItem> schedules = [];
 
             // Lock out - actually this should not be necessary
             lock (m_EPGItems)

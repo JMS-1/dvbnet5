@@ -74,7 +74,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="nameComparer">Der Algorithmus zum Vergleich von Gerätenamen.</param>
         /// <param name="rules">Der Inhalt der Regeldatei.</param>
         public RecordingScheduler(IEqualityComparer<string> nameComparer, byte[] rules)
-            : this(new(), new(), null!, (rules == null) ? CustomComparer.Default(nameComparer) : CustomComparer.Create(rules, nameComparer))
+            : this([], [], null!, (rules == null) ? CustomComparer.Default(nameComparer) : CustomComparer.Create(rules, nameComparer))
         {
         }
 

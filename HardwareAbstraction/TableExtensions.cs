@@ -197,7 +197,7 @@ namespace JMS.DVB
                 return null;
 
             // Create the new instance
-            L info = new L { Location = location };
+            L info = new() { Location = location };
 
             // Process all groups in all tables
             foreach (var table in tables)
@@ -253,7 +253,7 @@ namespace JMS.DVB
         private static CableGroup ToGroup(this EPG.Descriptors.CableDelivery descriptor)
         {
             // Create core
-            CableGroup group = new CableGroup
+            CableGroup group = new()
             {
                 Frequency = descriptor.Frequency,
                 SpectrumInversion = SpectrumInversions.Auto,
@@ -285,7 +285,7 @@ namespace JMS.DVB
         {
             // Create core
             TerrestrialGroup group =
-                new TerrestrialGroup
+                new()
                 {
                     Frequency = descriptor.Frequency
                 };
@@ -609,7 +609,7 @@ namespace JMS.DVB
                 if (null != ac3)
                 {
                     // Create new entry
-                    AudioInformation audio = new AudioInformation { AudioType = AudioTypes.AC3, AudioStream = program.ElementaryPID, Language = program.ProgrammeName.Trim() };
+                    AudioInformation audio = new() { AudioType = AudioTypes.AC3, AudioStream = program.ElementaryPID, Language = program.ProgrammeName.Trim() };
 
                     // Remember it
                     source.AudioTracks.Add(audio);

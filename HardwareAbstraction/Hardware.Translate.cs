@@ -13,12 +13,12 @@ namespace JMS.DVB
         /// <summary>
         /// Beschreibt die Abbildung der Abstraktionsklassen vor DVB.NET 4.0 auf die aktuelle Implementierung.
         /// </summary>
-        private static readonly Dictionary<string, Type> s_LegacyMapping = new();
+        private static readonly Dictionary<string, Type> s_LegacyMapping = [];
 
         /// <summary>
         /// Methoden zur Umsetzung alter Konfigurationen in die aktuellen.
         /// </summary>
-        private static readonly Dictionary<string, Func<Profile, Type, Hardware>> s_Translators = new();
+        private static readonly Dictionary<string, Func<Profile, Type, Hardware>> s_Translators = [];
 
         /// <summary>
         /// Die Parameter des Geräteprofils zum Zeitpunkt der Erzeugung der Abstraktion.

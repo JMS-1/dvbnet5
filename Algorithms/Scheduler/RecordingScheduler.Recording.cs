@@ -204,7 +204,7 @@
         /// <summary>
         /// Alle verwalteten Aufzeichnungen.
         /// </summary>
-        private List<_Recording> m_PlanItems = new List<_Recording>();
+        private List<_Recording> m_PlanItems = [];
 
         /// <summary>
         /// Meldet eine Aufzeichnung zur Planung an.

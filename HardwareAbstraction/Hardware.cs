@@ -62,12 +62,12 @@ namespace JMS.DVB
         /// Mit diesem Schalter kann ausgewählt werden, in welchem Umfang Manipulationen der Verbraucher
         /// protokolliert werden sollen.
         /// </summary>
-        public static readonly BooleanSwitch ConsumerTraceSwitch = new BooleanSwitch("ConsumerTrace", "Reports raw Operations on PID Consumers");
+        public static readonly BooleanSwitch ConsumerTraceSwitch = new("ConsumerTrace", "Reports raw Operations on PID Consumers");
 
         /// <summary>
         /// Dieser Schalter erlaubt es, dass Umschalten von Quellgruppen (Transponder) zu protokollieren.
         /// </summary>
-        public static readonly BooleanSwitch TunerTraceSwitch = new BooleanSwitch("TunerTrace", "Reports Selection of Source Groups");
+        public static readonly BooleanSwitch TunerTraceSwitch = new("TunerTrace", "Reports Selection of Source Groups");
 
         /// <summary>
         /// Enthält alle Daten zu einem registrierten Datenstrom.
@@ -319,12 +319,12 @@ namespace JMS.DVB
         /// <summary>
         /// Alle Datenströme geordnet nach der Datenstromkennung (PID).
         /// </summary>
-        private readonly Dictionary<ushort, StreamInformation> m_streamsByPID = new();
+        private readonly Dictionary<ushort, StreamInformation> m_streamsByPID = [];
 
         /// <summary>
         /// Alle Datenströme, geordnet nach der automatisch vergebenen eindeutigen Kennung.
         /// </summary>
-        private readonly Dictionary<Guid, StreamInformation> m_streamsById = new();
+        private readonly Dictionary<Guid, StreamInformation> m_streamsById = [];
 
         /// <summary>
         /// Synchronisiert den Zugriff auf die internen Datenstrukturen.

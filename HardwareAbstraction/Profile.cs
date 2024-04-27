@@ -36,7 +36,7 @@ namespace JMS.DVB
         /// Weitere Einstellungen für die Hardwareabstraktion.
         /// </summary>
         [XmlElement("Parameter")]
-        public readonly List<ProfileParameter> Parameters = new List<ProfileParameter>();
+        public readonly List<ProfileParameter> Parameters = [];
 
         /// <summary>
         /// Der vollständige Pfad zur Datei, aus der diese Beschreibung entnommen wurde.
@@ -454,7 +454,7 @@ namespace JMS.DVB
         protected Profile()
         {
             // Create helper
-            TypedScanLocations = new List<ScanTemplate<TLocationType>>();
+            TypedScanLocations = [];
             ScanningFilter = new ScanningFilter<TGroupType>();
         }
 
@@ -472,7 +472,7 @@ namespace JMS.DVB
         /// <summary>
         /// Enthält alle möglichen Ursprünge und die damit verbundenen Gruppen von Quellen.
         /// </summary>
-        public readonly List<TLocationType> GroupLocations = new List<TLocationType>();
+        public readonly List<TLocationType> GroupLocations = [];
 
         /// <summary>
         /// Prüft, ob ein Geräteprofil zu einem anderen kompatibel ist. Kompatibel sind jeweils

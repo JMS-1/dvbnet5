@@ -17,7 +17,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Selector Bytes.
         /// </summary>
-        public readonly List<byte> Selectors = new List<byte>();
+        public readonly List<byte> Selectors = [];
 
         /// <summary>
         /// 

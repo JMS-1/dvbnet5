@@ -35,7 +35,7 @@ namespace JMS.DVB.NET.Recording
         /// <summary>
         /// Synchronisiert Einträge in das spezielle Protokoll.
         /// </summary>
-        public static object m_LoggingLock = new object();
+        public static object m_LoggingLock = new();
 
         /// <summary>
         /// Wird aktiviert, wenn Protokollinformationen in das Fenster des Debuggers geschrieben werden sollen.

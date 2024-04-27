@@ -37,7 +37,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Sorgt dafür, dass die Version nur einmalig ermittelt wird.
         /// </summary>
-        private static object _VersionLock = new object();
+        private static object _VersionLock = new();
 
         /// <summary>
         /// Meldet die exakte Version der Installation.

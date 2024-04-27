@@ -183,7 +183,7 @@ namespace JMS.DVB.EPG
             Section section = container.Section;
 
             // Helper
-            ArrayList all = new ArrayList();
+            ArrayList all = [];
 
             // Process as long as possible
             for (; ; )

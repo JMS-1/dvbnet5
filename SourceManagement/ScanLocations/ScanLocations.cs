@@ -202,7 +202,7 @@ namespace JMS.DVB
                         ScanLocations sources = Load(extension);
 
                         // Map with all unique identifiers found
-                        Dictionary<string, bool> map = new();
+                        Dictionary<string, bool> map = [];
 
                         // Fill in
                         foreach (ScanLocation location in sources.Locations)

@@ -21,7 +21,7 @@ namespace JMS.DVB.TS
             /// <summary>
             /// Beschreibt eine inaktive Verbindung.
             /// </summary>
-            public static readonly ConnectionInfo Empty = new ConnectionInfo("localhost", 0, null!, null!);
+            public static readonly ConnectionInfo Empty = new("localhost", 0, null!, null!);
 
             /// <summary>
             /// Der Name des Empf�ngersystems.
@@ -88,12 +88,12 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Zu versendende Pakete.
         /// </summary>
-        private readonly List<byte[]> m_queue = new List<byte[]>();
+        private readonly List<byte[]> m_queue = [];
 
         /// <summary>
         /// Synchronisation mit dem Versendethread.
         /// </summary>
-        private readonly AutoResetEvent m_queueWakeup = new AutoResetEvent(true);
+        private readonly AutoResetEvent m_queueWakeup = new(true);
 
         /// <summary>
         /// Our current worker thread.

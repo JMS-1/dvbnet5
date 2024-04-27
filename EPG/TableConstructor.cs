@@ -16,7 +16,7 @@ namespace JMS.DVB.EPG
         /// <summary>
         /// Ein Zwischenspeicher.
         /// </summary>
-        private List<byte> m_Buffer = new List<byte>(184);
+        private List<byte> m_Buffer = new(184);
 
         /// <summary>
         /// Erzeugt einen Eintrag für die L�nge.

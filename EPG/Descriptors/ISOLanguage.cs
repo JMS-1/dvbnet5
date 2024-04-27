@@ -8,7 +8,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// An individual language item.
         /// </summary>
-		public readonly List<LanguageItem> Languages = new List<LanguageItem>();
+		public readonly List<LanguageItem> Languages = [];
 
         /// <summary>
         /// 

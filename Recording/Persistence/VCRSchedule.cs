@@ -11,13 +11,12 @@ namespace JMS.DVB.NET.Recording.Persistence
         /// <summary>
         /// Das maximal erlaubte Datum - ausreichend in der Zukunft.
         /// </summary>
-        public static readonly DateTime MaxMovableDay = new DateTime(2999, 12, 31);
+        public static readonly DateTime MaxMovableDay = new(2999, 12, 31);
 
         /// <summary>
         /// Abbildung der .NET Wochentage auf die interne Darstellung in <see cref="VCRDay"/>.
         /// </summary>
-        static private Dictionary<DayOfWeek, VCRDay> m_DayMapper =
-            new Dictionary<DayOfWeek, VCRDay>
+        static private readonly Dictionary<DayOfWeek, VCRDay> m_DayMapper = new()
             {
                 { DayOfWeek.Monday, VCRDay.Monday },
                 { DayOfWeek.Tuesday, VCRDay.Tuesday },

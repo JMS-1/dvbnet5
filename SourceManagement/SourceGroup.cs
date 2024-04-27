@@ -20,7 +20,7 @@ namespace JMS.DVB
         /// </summary>        
         [XmlArray("Stations")]
         [XmlArrayItem(typeof(Station))]
-        public readonly List<SourceIdentifier> Sources = new List<SourceIdentifier>();
+        public readonly List<SourceIdentifier> Sources = [];
 
         /// <summary>
         /// Initialisiert eine neue Beschreibung.

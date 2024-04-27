@@ -127,7 +127,7 @@ namespace JMS.DVB.EPG.BBC
                 return new CompressionInfos();
 
             // Forward
-            using FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using FileStream stream = new(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 
             return Load(stream);
         }
