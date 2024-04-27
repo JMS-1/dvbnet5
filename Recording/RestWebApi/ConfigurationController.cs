@@ -619,5 +619,11 @@ public class ConfigurationController(
         // Process
         return updateConfig.UpdateConfiguration(update.Values);
     }
+
+    /// <summary>
+    /// Nur für die Entwicklung.
+    /// </summary>
+    [HttpPut]
+    public void Restart() => server.Restart();
 }
 

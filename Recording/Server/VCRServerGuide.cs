@@ -1,15 +1,10 @@
 ﻿using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Planning;
-using JMS.DVB.NET.Recording.Requests;
-using JMS.DVB.NET.Recording.Services.Configuration;
-using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.Server;
 
 public partial class VCRServer
 {
-    private readonly IProgramGuideProxyFactory _guideFactory = guideFactory;
-
     /// <inheritdoc/>
     public void ForceProgramGuideUpdate()
     {
@@ -29,7 +24,7 @@ public partial class VCRServer
     /// <param name="resource">Die zu verwendende Ressource.</param>
     /// <param name="profile">Das zugehörige Geräteprofil.</param>
     /// <returns>Der gewünschte Auftrag.</returns>
-    PeriodicScheduler IRecordingPlannerSite.CreateProgramGuideTask(IScheduleResource resource, Profile profile, IVCRConfiguration configuration, IJobManager jobs)
+    PeriodicScheduler IRecordingPlannerSite.CreateProgramGuideTask(IScheduleResource resource, Profile profile)
     {
         // Protect against misuse
         if (_stateMap.TryGetValue(profile.Name, out var state))

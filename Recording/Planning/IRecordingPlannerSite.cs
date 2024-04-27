@@ -1,6 +1,4 @@
 ﻿using JMS.DVB.Algorithms.Scheduler;
-using JMS.DVB.NET.Recording.Services.Configuration;
-using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.Planning
 {
@@ -25,7 +23,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="resource">Die zugehörige Ressource.</param>
         /// <param name="profile">Die vollen Informationen zum Geräteprofil.</param>
         /// <returns>Die Beschreibung der Aufgabe oder <i>null</i>.</returns>
-        PeriodicScheduler CreateProgramGuideTask(IScheduleResource resource, Profile profile, IVCRConfiguration configuration, IJobManager jobs);
+        PeriodicScheduler CreateProgramGuideTask(IScheduleResource resource, Profile profile);
 
         /// <summary>
         /// Erstellt eine periodische Aufgabe zum Aktualisieren der Quellen.
@@ -33,7 +31,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="resource">Die zugehörige Ressource.</param>
         /// <param name="profile">Die vollen Informationen zum Geräteprofil.</param>
         /// <returns>Die Beschreibung der Aufgabe oder <i>null</i>.</returns>
-        PeriodicScheduler CreateSourceScanTask(IScheduleResource resource, Profile profile, IVCRConfiguration configuration, IJobManager jobs);
+        PeriodicScheduler CreateSourceScanTask(IScheduleResource resource, Profile profile);
 
         /// <summary>
         /// Überträgt alle Aufträge in einen Ablaufplanung.
@@ -42,7 +40,7 @@ namespace JMS.DVB.NET.Recording.Planning
         /// <param name="disabled">Alle deaktivierten Aufträge.</param>
         /// <param name="planner">Die zugehörige Aufzeichnungsplanung.</param>
         /// <param name="context">Eine neue Umgebung für die Erstellung des aktuellen Plans.</param>
-        void AddRegularJobs(RecordingScheduler scheduler, Func<Guid, bool> disabled, RecordingPlanner planner, PlanContext context, IVCRProfiles profiles);
+        void AddRegularJobs(RecordingScheduler scheduler, Func<Guid, bool> disabled, RecordingPlanner planner, PlanContext context);
 
         /// <summary>
         /// Meldet eine Warteperiode.

@@ -1,4 +1,5 @@
 using JMS.DVB.NET.Recording.Actions;
+using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Requests;
 using JMS.DVB.NET.Recording.Server;
 using JMS.DVB.NET.Recording.Services;
@@ -30,6 +31,8 @@ public static class RecordingExtensions
         services.AddTransient<IProgramGuideEntries, ProgramGuideEntries>();
         services.AddTransient<IProgramGuideManagerFactory, ProgramGuideManagerFactory>();
         services.AddTransient<IProgramGuideProxyFactory, ProgramGuideProxyFactory>();
+        services.AddTransient<IRecordingInfoFactory, RecordingInfoFactory>();
+        services.AddTransient<IRecordingPlannerFactory, RecordingPlannerFactory>();
         services.AddTransient<IRecordingProxyFactory, RecordingProxyFactory>();
         services.AddTransient<IRecordings, Recordings>();
         services.AddTransient<IRuleUpdater, RuleUpdater>();

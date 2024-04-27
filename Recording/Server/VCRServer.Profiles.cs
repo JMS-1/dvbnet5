@@ -1,20 +1,15 @@
 ﻿using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Services;
-using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.Server;
 
 public partial class VCRServer
 {
-    private readonly IVCRProfiles _profiles = profiles;
-
     /// <summary>
     /// Alle von dieser Instanz verwalteten Geräteprofile.
     /// </summary>
     private Dictionary<string, IProfileState> _stateMap = [];
-
-    private readonly IProfileStateFactory _states = states;
 
     /// <inheritdoc/>
     public IEnumerable<TInfo> InspectProfiles<TInfo>(Func<IProfileState, TInfo> factory) => _stateMap.Values.Select(factory);
@@ -29,7 +24,7 @@ public partial class VCRServer
             if (string.IsNullOrEmpty(profileName) || profileName.Equals("*"))
             {
                 // Attach to the default profile
-                var defaultProfile = _profiles.DefaultProfile;
+                var defaultProfile = profiles.DefaultProfile;
                 if (defaultProfile == null)
                     return null;
 
@@ -48,7 +43,7 @@ public partial class VCRServer
         // Forward
         var state = this[profileName];
         if (state == null)
-            _logger.LogError("Es gibt kein Geräteprofil '{0}'", profileName);
+            logger.LogError("Es gibt kein Geräteprofil '{0}'", profileName);
 
         // Report
         return state;
@@ -71,7 +66,7 @@ public partial class VCRServer
             catch (Exception e)
             {
                 // Report
-                _logger.Log(e);
+                logger.Log(e);
 
                 // See if we are allowed to ignore
                 if (!ignoreErrors)
