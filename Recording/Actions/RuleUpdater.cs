@@ -1,4 +1,4 @@
-using JMS.DVB.NET.Recording.Services.Planning;
+using JMS.DVB.NET.Recording.Server;
 
 namespace JMS.DVB.NET.Recording.Actions;
 
@@ -13,10 +13,6 @@ public class RuleUpdater(IVCRServer server) : IRuleUpdater
 
         // Process
         server.SchedulerRules = newRules;
-
-        // Do not restart in debug mode
-        if (Tools.DebugMode)
-            return null;
 
         // Create new process to restart the service
         server.Restart();

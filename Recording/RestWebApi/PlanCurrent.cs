@@ -6,6 +6,7 @@ using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Status;
 using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
+using JMS.DVB.NET.Recording.Server;
 
 
 namespace JMS.DVB.NET.Recording.RestWebApi

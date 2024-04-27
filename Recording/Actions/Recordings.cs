@@ -1,6 +1,7 @@
 using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Planning;
+using JMS.DVB.NET.Recording.Server;
 using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Status;
@@ -28,7 +29,11 @@ public class Recordings(IVCRServer server, IVCRProfiles profiles, IJobManager jo
             server
                 .InspectProfiles(profile => profile.CurrentRecording)
                 .Where(current => current != null)
-                .ToDictionary(current => current!.Recording.Source.ProfileName, current => fromActive(current!, server, profiles, jobs), idleProfiles.Comparer);
+                .ToDictionary(
+                    current => current!.Recording.Source.ProfileName,
+                    current => fromActive(current!, server, profiles, jobs),
+                    idleProfiles.Comparer
+                );
 
         // Check for idle profiles
         idleProfiles.ExceptWith(perProfile.Keys);

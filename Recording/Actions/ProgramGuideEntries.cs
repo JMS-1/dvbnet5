@@ -1,6 +1,6 @@
 using JMS.DVB.NET.Recording.ProgramGuide;
+using JMS.DVB.NET.Recording.Server;
 using JMS.DVB.NET.Recording.Services.Configuration;
-using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Services.ProgramGuide;
 
 namespace JMS.DVB.NET.Recording.Actions;
@@ -28,9 +28,11 @@ public class ProgramGuideEntries(IVCRServer server, IVCRProfiles profiles) : IPr
 
         // Convert filter
         var filterIntern = filterConverter(filter, profiles);
+        if (filterIntern == null)
+            return [];
 
         // Locate profile and forward call
-        var profileName = filterIntern!.ProfileName;
+        var profileName = filterIntern.ProfileName;
         if (string.IsNullOrEmpty(profileName))
             return [];
 

@@ -38,11 +38,6 @@ namespace JMS.DVB.NET.Recording
         public static object m_LoggingLock = new object();
 
         /// <summary>
-        /// Wird gesetzt, wenn der Start mit der /Console Option erfolgt.
-        /// </summary>
-        public static bool DebugMode = false;
-
-        /// <summary>
         /// Wird aktiviert, wenn Protokollinformationen in das Fenster des Debuggers geschrieben werden sollen.
         /// </summary>
         public static bool EnableTracing = false;

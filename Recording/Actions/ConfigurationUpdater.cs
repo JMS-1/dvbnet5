@@ -1,5 +1,5 @@
+using JMS.DVB.NET.Recording.Server;
 using JMS.DVB.NET.Recording.Services.Configuration;
-using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.Actions;
 
@@ -15,10 +15,6 @@ public class ConfigurationUpdater(IVCRConfiguration configuration, IVCRServer se
         // Process
         if (configuration.CommitUpdate(settings) || forceRestart)
         {
-            // Do not restart in debug mode
-            if (Tools.DebugMode)
-                return null;
-
             // Create new process to restart the service
             server.Restart();
 

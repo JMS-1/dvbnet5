@@ -62,8 +62,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         public override bool Equals(object? obj)
         {
             // Check type
-            var other = obj as FileInformation;
-            if (ReferenceEquals(other, null))
+            if (obj is not FileInformation other)
                 return false;
             if (ReferenceEquals(other, this))
                 return true;
@@ -77,10 +76,7 @@ namespace JMS.DVB.NET.Recording.Persistence
                 return false;
 
             // Check strings
-            if (string.IsNullOrEmpty(Path))
-                return true;
-            else
-                return string.Equals(Path.ToLowerInvariant(), other.Path.ToLowerInvariant());
+            return string.IsNullOrEmpty(Path) || string.Equals(Path.ToLowerInvariant(), other.Path.ToLowerInvariant());
         }
 
         /// <summary>

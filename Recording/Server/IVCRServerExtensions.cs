@@ -3,8 +3,9 @@ using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Planning;
 
-namespace JMS.DVB.NET.Recording.Services.Planning;
+namespace JMS.DVB.NET.Recording.Server;
 
 public static class IVCRServerExtensions
 {

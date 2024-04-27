@@ -1,11 +1,12 @@
-﻿using System.Text;
-using JMS.DVB.Algorithms.Scheduler;
-using JMS.DVB.NET.Recording.Persistence;
+﻿using JMS.DVB.Algorithms.Scheduler;
+using JMS.DVB.NET.Recording.Actions;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Requests;
+using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Planning;
 
-namespace JMS.DVB.NET.Recording.Services.Planning;
+namespace JMS.DVB.NET.Recording.Server;
 
 /// <summary>
 /// Verwaltet den Arbeitszustand aller Geräteprofile.
@@ -14,34 +15,22 @@ namespace JMS.DVB.NET.Recording.Services.Planning;
 /// Erzeugt eine neue Verwaltungsinstanz.
 /// </remarks>
 /// <param name="server">Die primäre VCR.NET Instanz.</param>
-public class VCRServer(
+public partial class VCRServer(
     IVCRConfiguration configuration,
     IVCRProfiles profiles,
     ILogger logger,
     IJobManager jobs,
     IProfileStateFactory states,
+    IRecordingInfoFactory recordingFactory,
     IProgramGuideProxyFactory guideFactory,
     ISourceScanProxyFactory scanFactory
 ) : IVCRServer, IDisposable
 {
-    private readonly IVCRProfiles _profiles = profiles;
-
-    /// <summary>
-    /// Alle von dieser Instanz verwalteten Geräteprofile.
-    /// </summary>
-    private Dictionary<string, IProfileState> _stateMap = [];
-
     private readonly ILogger _logger = logger;
 
     private readonly IJobManager _jobs = jobs;
 
     private readonly IVCRConfiguration _configuration = configuration;
-
-    private readonly IProfileStateFactory _states = states;
-
-    private readonly IProgramGuideProxyFactory _guideFactory = guideFactory;
-
-    private readonly ISourceScanProxyFactory _scanFactory = scanFactory;
 
     private Action? _restart;
 
@@ -79,101 +68,10 @@ public class VCRServer(
     }
 
     /// <inheritdoc/>
-    public IEnumerable<TInfo> InspectProfiles<TInfo>(Func<IProfileState, TInfo> factory) => _stateMap.Values.Select(factory);
-
-    /// <inheritdoc/>
     public int NumberOfActiveRecordings => (_stateMap.Count < 1) ? 0 : _stateMap.Values.Sum(profile => profile.NumberOfActiveRecordings);
 
     /// <inheritdoc/>
-    public IProfileState? this[string profileName]
-    {
-        get
-        {
-            // Validate
-            if (string.IsNullOrEmpty(profileName) || profileName.Equals("*"))
-            {
-                // Attach to the default profile
-                var defaultProfile = _profiles.DefaultProfile;
-                if (defaultProfile == null)
-                    return null;
-
-                // Use it
-                profileName = defaultProfile.Name;
-            }
-
-            // Load
-            if (_stateMap.TryGetValue(profileName, out var profile))
-                return profile;
-            else
-                return null;
-        }
-    }
-
-    /// <inheritdoc/>
-    public IProfileState? FindProfile(string profileName)
-    {
-        // Forward
-        var state = this[profileName];
-        if (state == null)
-            _logger.LogError("Es gibt kein Geräteprofil '{0}'", profileName);
-
-        // Report
-        return state;
-    }
-
-    /// <inheritdoc/>
-    public void ForceProgramGuideUpdate()
-    {
-        // Report
-        Tools.ExtendedLogging("Full immediate Program Guide Update requested");
-
-        // Forward to all
-        ForEachProfile(state => state.ProgramGuide.LastUpdateTime = null);
-
-        // Replan
-        BeginNewPlan();
-    }
-
-    /// <inheritdoc/>
-    public void ForceSoureListUpdate()
-    {
-        // Report
-        Tools.ExtendedLogging("Full immediate Source List Update requested");
-
-        // Forward
-        ForEachProfile(state => state.LastSourceUpdateTime = null);
-
-        // Replan
-        BeginNewPlan();
-    }
-
-    /// <inheritdoc/>
     public bool IsActive => _stateMap.Values.Any(s => s.IsActive);
-
-    /// <summary>
-    /// Wendet eine Methode auf alle verwalteten Profile an.
-    /// </summary>
-    /// <param name="method">Die gewünschte Methode.</param>
-    /// <param name="ignoreErrors">Gesetzt, wenn Fehler ignoriert werden sollen.</param>
-    private void ForEachProfile(Action<IProfileState> method, bool ignoreErrors = false)
-    {
-        // Forward to all
-        foreach (var state in _stateMap.Values)
-            try
-            {
-                // Forward
-                method(state);
-            }
-            catch (Exception e)
-            {
-                // Report
-                _logger.Log(e);
-
-                // See if we are allowed to ignore
-                if (!ignoreErrors)
-                    throw;
-            }
-    }
 
     #region IDisposable Members
 
@@ -328,9 +226,7 @@ public class VCRServer(
                 }
 
                 // Run start and stop actions outside the planning lock (to avoid deadlocks) but inside the hibernation protection (to forbid hibernation)
-                var toStart = m_pendingActions;
-                if (toStart != null)
-                    toStart();
+                m_pendingActions?.Invoke();
             }
             catch (Exception e)
             {
@@ -462,51 +358,6 @@ public class VCRServer(
     #region Verarbeitung des nächsten Arbeitsschrittes der Aufzeichnungsplanung
 
     /// <summary>
-    /// Der volle Pfad zu dem Regeldatei der Aufzeichnungsplanung.
-    /// </summary>
-    public string ScheduleRulesPath { get { return Path.Combine(Tools.ApplicationDirectory.FullName, "SchedulerRules.cmp"); } }
-
-    /// <summary>
-    /// Meldet die Namen der verwendeten Geräteprofile.
-    /// </summary>
-    IEnumerable<string> IRecordingPlannerSite.ProfileNames { get { return _stateMap.Keys; } }
-
-    /// <summary>
-    /// Erstellt einen periodischen Auftrag für die Aktualisierung der Programmzeitschrift.
-    /// </summary>
-    /// <param name="resource">Die zu verwendende Ressource.</param>
-    /// <param name="profile">Das zugehörige Geräteprofil.</param>
-    /// <returns>Der gewünschte Auftrag.</returns>
-    PeriodicScheduler IRecordingPlannerSite.CreateProgramGuideTask(IScheduleResource resource, Profile profile, IVCRConfiguration configuration, IJobManager jobs)
-    {
-        // Protect against misuse
-        if (_stateMap.TryGetValue(profile.Name, out var state))
-            return new ProgramGuideTask(resource, state, configuration, jobs);
-        else
-            return null!;
-    }
-
-    /// <summary>
-    /// Erstellt einen periodischen Auftrag für die Aktualisierung der Liste der Quellen.
-    /// </summary>
-    /// <param name="resource">Die zu verwendende Ressource.</param>
-    /// <param name="profile">Das zugehörige Geräteprofil.</param>
-    /// <returns>Der gewünschte Auftrag.</returns>
-    PeriodicScheduler IRecordingPlannerSite.CreateSourceScanTask(
-        IScheduleResource resource,
-        Profile profile,
-        IVCRConfiguration configuration,
-        IJobManager jobs
-    )
-    {
-        // Protect against misuse
-        if (_stateMap.TryGetValue(profile.Name, out var state))
-            return new SourceListTask(resource, state, configuration, jobs);
-        else
-            return null!;
-    }
-
-    /// <summary>
     /// Ergänzt alle bekannten Aufzeichnungen zu einer Planungsinstzanz.
     /// </summary>
     /// <param name="scheduler">Die Verwaltung der Aufzeichnungen.</param>
@@ -608,7 +459,7 @@ public class VCRServer(
         m_pendingStart = true;
 
         // Create the recording
-        var recording = VCRRecordingInfo.Create(item, context, _configuration, _profiles)!;
+        var recording = recordingFactory.Create(item, context)!;
 
         // Check for EPG
         var guideUpdate = item.Definition as ProgramGuideTask;
@@ -635,56 +486,5 @@ public class VCRServer(
     }
 
     #endregion
-
-    /// <inheritdoc/>
-    public string SchedulerRules
-    {
-        get
-        {
-            // Attach to the path
-            var rulePath = ScheduleRulesPath;
-            if (File.Exists(rulePath))
-                using (var reader = new StreamReader(rulePath, true))
-                    return reader.ReadToEnd().Replace("\r\n", "\n");
-
-            // Not set
-            return null!;
-        }
-        set
-        {
-            // Check mode
-            var rulePath = ScheduleRulesPath;
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                // Back to default
-                if (File.Exists(rulePath))
-                    File.Delete(rulePath);
-            }
-            else
-            {
-                // Update line feeds
-                var content = value.Replace("\r\n", "\n").Replace("\n", "\r\n");
-                var scratchFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
-
-                // Write to scratch file
-                File.WriteAllText(scratchFile, content, Encoding.UTF8);
-
-                // With cleanup
-                try
-                {
-                    // See if resource manager could be created
-                    ResourceManager.Create(scratchFile, ProfileManager.ProfileNameComparer).Dispose();
-
-                    // Try to overwrite
-                    File.Copy(scratchFile, rulePath, true);
-                }
-                finally
-                {
-                    // Get rid of scratch file
-                    File.Delete(scratchFile);
-                }
-            }
-        }
-    }
 
 }
