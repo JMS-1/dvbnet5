@@ -394,9 +394,8 @@ public class JobManager : IJobManager
                 continue;
 
             // Check
-            if (profile != null)
-                if (!profile.IsResponsibleFor(logEntry.Source))
-                    continue;
+            if (profile?.IsResponsibleFor(logEntry.Source) == false)
+                continue;
 
             // Attach the name
             logEntry.LogIdentifier = file.Name.ToLower();

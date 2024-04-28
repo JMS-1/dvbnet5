@@ -18,7 +18,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="source">Die zugehörige Quelle.</param>
         /// <param name="pattern">Informationen zum Abruf des Eintrags.</param>
         /// <returns>Der gewünschte Eintrag.</returns>
-        [HttpGet]
+        [HttpGet("{profile}")]
         public GuideItem Find(string profile, string source, string pattern)
         {
             // Check mode

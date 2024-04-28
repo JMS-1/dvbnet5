@@ -114,7 +114,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="source">Eine Quelle.</param>
         /// <param name="scheduleIdentifier">Die eindeutige Kennung einer Aufzeichnung.</param>
         /// <param name="target">Das neue Ziel des Netzwerkversands.</param>
-        [HttpPost("target")]
+        [HttpPost("target/{profile}")]
         public void SetStreamTarget(string profile, string source, Guid scheduleIdentifier, string target)
             => server.FindProfile(profile)?.SetStreamTarget(SourceIdentifier.Parse(source), scheduleIdentifier, target);
     }

@@ -1,10 +1,12 @@
-﻿using JMS.DVB.Algorithms.Scheduler;
+﻿using System.Reflection;
+using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Actions;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Requests;
 using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Logging;
 using JMS.DVB.NET.Recording.Services.Planning;
+using Microsoft.Extensions.DependencyModel.Resolution;
 
 namespace JMS.DVB.NET.Recording.Server;
 
@@ -29,8 +31,33 @@ public partial class VCRServer(
 {
     private Action? _restart;
 
+
     /// <inheritdoc/>
     public void Restart() => _restart?.Invoke();
+
+    private volatile bool _active = true;
+
+    private readonly object _cleaning = new();
+
+    private async Task RunCleanup()
+    {
+        while (_active)
+            await Task
+               .Delay(5000)
+               .ContinueWith(t => Task.Run(() =>
+               {
+                   try
+                   {
+                       lock (_cleaning)
+                           if (_active)
+                               jobs.PeriodicCleanup();
+                   }
+                   catch (Exception e)
+                   {
+                       logger.Log(e);
+                   }
+               }));
+    }
 
     /// <inheritdoc/>
     public void Startup(Action restart)
@@ -60,6 +87,8 @@ public partial class VCRServer(
         // Start planner
         m_planThread.Start();
 
+        // Start cleanup
+        ThreadPool.QueueUserWorkItem(async (state) => await RunCleanup());
     }
 
     /// <summary>
@@ -67,6 +96,10 @@ public partial class VCRServer(
     /// </summary>
     public void Dispose()
     {
+        // Stop cleanup
+        lock (_cleaning)
+            _active = false;
+
         // Load plan thread
         var planThread = m_planThread;
 
