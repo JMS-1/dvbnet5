@@ -262,7 +262,7 @@ public class ProfileState(
     }
 
     /// <inheritdoc/>
-    public CardServerProxy? ChangeStreamEnd(Guid streamIdentifier, DateTime newEndTime, bool disableHibernation)
+    public CardServerProxy? ChangeStreamEnd(Guid streamIdentifier, DateTime newEndTime)
     {
         // Be safe
         lock (m_RequestLock)
@@ -276,7 +276,7 @@ public class ProfileState(
             current.SetRestartThreshold(streamIdentifier);
 
             // Modify
-            current.ChangeEndTime(streamIdentifier, newEndTime, disableHibernation);
+            current.ChangeEndTime(streamIdentifier, newEndTime);
 
             // Report success
             return current;

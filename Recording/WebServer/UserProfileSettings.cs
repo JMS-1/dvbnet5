@@ -90,16 +90,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         }
 
         /// <summary>
-        /// Prüft die Voreinstellung für den Schlafzustand nach einem Abbruch.
-        /// </summary>
-        public static bool NoHibernateOnAbort
-        {
-            get { return (bool)Profile["NoHibernateOnAbort"]; }
-            set { Profile["NoHibernateOnAbort"] = value; }
-        }
-
-        /// <summary>
-        /// Gesetzt, wen verschl�sselte Sender ber�cksichtigt werden sollen.
+        /// Gesetzt, wen verschlüsselte Sender berücksichtigt werden sollen.
         /// </summary>
         public static bool PayTV
         {
@@ -108,7 +99,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         }
 
         /// <summary>
-        /// Meldet, ob Fernsehsender ber�cksichtigt werden sollen.
+        /// Meldet, ob Fernsehsender berücksichtigt werden sollen.
         /// </summary>
         public static bool Radio
         {
@@ -117,7 +108,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         }
 
         /// <summary>
-        /// Meldet, ob unverschl�sselte Sender ber�cksichtigt werden sollen.
+        /// Meldet, ob unverschlüsselte Sender berücksichtigt werden sollen.
         /// </summary>
         public static bool FreeTV
         {
@@ -126,7 +117,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         }
 
         /// <summary>
-        /// Meldet, ob Radiosender ber�cksichtigt werden sollen.
+        /// Meldet, ob Radiosender berücksichtigt werden sollen.
         /// </summary>
         public static bool Television
         {

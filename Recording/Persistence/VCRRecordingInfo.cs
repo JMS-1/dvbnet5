@@ -168,18 +168,6 @@ public class VCRRecordingInfo
     private VCRJob m_RelatedJob = null!;
 
     /// <summary>
-    /// Verhindert, dass nach der Ausführung dieses Auftrags der Schlafzustand eingeleitet wird.
-    /// </summary>
-    [XmlIgnore]
-    public bool DisableHibernation { get { return m_DisableHibernation; } set { m_DisableHibernation = value; } }
-
-    /// <summary>
-    /// Verhindert, dass nach der Ausführung dieses Auftrags der Schlafzustand eingeleitet wird.
-    /// </summary>
-    [NonSerialized]
-    private bool m_DisableHibernation;
-
-    /// <summary>
     /// Ein eindeutiger Name für den Fall, dass es sich um einen Protokolleintrag handelt.
     /// </summary>
     [XmlIgnore]
@@ -212,7 +200,6 @@ public class VCRRecordingInfo
             {
                 Source = (Source == null) ? null! : new SourceSelection { DisplayName = Source.DisplayName, SelectionKey = Source.SelectionKey },
                 Streams = (Streams == null) ? null! : Streams.Clone(),
-                DisableHibernation = DisableHibernation,
                 ScheduleUniqueID = ScheduleUniqueID,
                 m_physicalStart = m_physicalStart,
                 JobUniqueID = JobUniqueID,

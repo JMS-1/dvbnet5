@@ -46,12 +46,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public bool GuideUpdateEnabled { get; set; }
 
         /// <summary>
-        /// Gesetzt, wenn ein Schlafzustand eigentlich ausgelöst werden sollte.
-        /// </summary>
-        [DataMember(Name = "hibernationPending")]
-        public bool HasPendingHibernation { get; set; }
-
-        /// <summary>
         /// Gesetzt, wenn noch Erweiterungen aktiv sind.
         /// </summary>
         [DataMember(Name = "extensionsRunning")]
@@ -62,11 +56,5 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         [DataMember(Name = "profileNames")]
         public string[] ProfilesNames { get; set; } = null!;
-
-        /// <summary>
-        /// Die minimale Verweildauer (in Minuten) im Schlafzustand.
-        /// </summary>
-        [DataMember(Name = "sleepMinimum")]
-        public uint MinimumHibernationDelay { get; set; }
     }
 }

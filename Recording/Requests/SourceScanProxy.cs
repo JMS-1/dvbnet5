@@ -67,7 +67,7 @@ public class SourceScanProxy : CardServerProxy
     {
         // See if we are finished
         if (state.UpdateProgress.GetValueOrDefault(0) >= 1)
-            ChangeEndTime(Representative.ScheduleUniqueID!.Value, DateTime.UtcNow.AddDays(-365), false);
+            ChangeEndTime(Representative.ScheduleUniqueID!.Value, DateTime.UtcNow.AddDays(-365));
     }
 
     /// <summary>

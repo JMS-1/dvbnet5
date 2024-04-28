@@ -33,7 +33,6 @@ public class ZappingProxyFactory(
                 ScheduleUniqueID = Guid.NewGuid(),
                 EndsAt = now.AddMinutes(2),
                 Name = VCRJob.ZappingName,
-                DisableHibernation = true,
                 StartsLate = false,
                 IsHidden = false,
                 StartsAt = now,

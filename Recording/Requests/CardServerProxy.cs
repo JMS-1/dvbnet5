@@ -129,16 +129,11 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="streamIdentifier">Die eindeutige Kennung des betroffenen Datenstroms.</param>
         /// <param name="newEndTime">Der neue Endzeitpunkt.</param>
-        /// <param name="disableHibernation">Gesetzt, wenn der Übergang in den Schlafzustand deaktiviert werden soll.</param>
-        public virtual void ChangeEndTime(Guid streamIdentifier, DateTime newEndTime, bool disableHibernation)
+        public virtual void ChangeEndTime(Guid streamIdentifier, DateTime newEndTime)
         {
             // Not us
             if (streamIdentifier != Representative.ScheduleUniqueID!.Value)
                 return;
-
-            // Disable hibernation
-            if (disableHibernation)
-                Representative.DisableHibernation = true;
 
             // Send to planner
             if (ProfileState.Collection.ChangeEndTime(streamIdentifier, newEndTime))

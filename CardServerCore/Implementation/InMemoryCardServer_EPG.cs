@@ -396,7 +396,6 @@ namespace JMS.DVB.CardServer
                 if (!EPGItemCountCheckInterval.HasValue)
                     EPGItemCountCheckInterval = 10;
 
-
                 // Time since we last checked the item count
                 var countDelta = DateTime.UtcNow - m_EPGLastItemCheck;
 

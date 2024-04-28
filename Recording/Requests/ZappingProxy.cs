@@ -49,8 +49,7 @@ public class ZappingProxy : CardServerProxy
     /// </summary>
     /// <param name="streamIdentifier">Die eindeutige Kennung dieser Aufzeichnung.</param>
     /// <param name="newEndTime">Der Zeitversatz, der angewendet werden soll.</param>
-    /// <param name="disableHibernation">Gesetzt, wenn der Übergang in den Schlafzustand verhindert werden soll.</param>
-    public override void ChangeEndTime(Guid streamIdentifier, DateTime newEndTime, bool disableHibernation)
+    public override void ChangeEndTime(Guid streamIdentifier, DateTime newEndTime)
     {
         // Check for us
         if (streamIdentifier != Representative.ScheduleUniqueID!.Value)

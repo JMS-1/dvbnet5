@@ -40,18 +40,13 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Verändert den Endzeitpunkt.
         /// </summary>
         /// <param name="profile">Der Name eines Geräteprofils.</param>
-        /// <param name="disableHibernate">Gesetzt, wenn der Übergang in den Schlafzustand vermieden werden soll.</param>
         /// <param name="schedule">Die Identifikation einer laufenden Aufzeichnung.</param>
         /// <param name="endTime">Der neue Endzeitpunkt.</param>
         [HttpPut("endtime/{profile}")]
-        public void SetNewEndTime(string profile, bool disableHibernate, string schedule, string endTime)
+        public void SetNewEndTime(string profile, string schedule, string endTime)
             => server
                 .FindProfile(profile)?
-                .ChangeStreamEnd(
-                    new Guid(schedule),
-                    DateTime.Parse(endTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                    disableHibernate && (server.NumberOfActiveRecordings == 1)
-                );
+                .ChangeStreamEnd(new Guid(schedule), DateTime.Parse(endTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind));
 
         /// <summary>
         /// Ermittelt alle aktiven Aufträge eines Geräteprofils.

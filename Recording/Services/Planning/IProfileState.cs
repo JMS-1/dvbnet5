@@ -71,9 +71,8 @@ public interface IProfileState : IDisposable
     /// </summary>
     /// <param name="streamIdentifier">Die eindeutige Kennung des zu verwendenden Datenstroms.</param>
     /// <param name="newEndTime">Der neue Endzeitpunkt.</param>
-    /// <param name="disableHibernation">Gesetzt, wenn der Übergang in den Schlafzustand deaktiviert werden soll.</param>
     /// <returns>Die Aktivität auf dem Geräteprofil, die verändert wurde.</returns>
-    CardServerProxy? ChangeStreamEnd(Guid streamIdentifier, DateTime newEndTime, bool disableHibernation);
+    CardServerProxy? ChangeStreamEnd(Guid streamIdentifier, DateTime newEndTime);
 
     /// <summary>
     /// Beginnt eine Aufzeichnung auf diesem Geräteprofil. Eventuell wird diese mit 

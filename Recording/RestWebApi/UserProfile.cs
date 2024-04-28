@@ -91,12 +91,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public int RowsInRecentSources { get; set; }
 
         /// <summary>
-        /// Gesetzt, um beim Abbruch einer Aufzeichnung den Übergang in den Schlafzustand zu unterbinden.
-        /// </summary>
-        [DataMember(Name = "suppressHibernate")]
-        public bool NoHibernateOnAbort { get; set; }
-
-        /// <summary>
         /// Meldet oder ändert die gespeicherten Suchen der Programmzeitschrift.
         /// </summary>
         [DataMember(Name = "guideSearches")]
@@ -116,7 +110,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                     DefaultSourceEncryptionSelector = UserProfileSettings.FreeTV ? (UserProfileSettings.PayTV ? "FP" : "F") : (UserProfileSettings.PayTV ? "P" : ""),
                     RecentSources = UserProfileSettings.RecentChannels.Cast<string>().OrderBy(name => name).ToArray(),
                     RowsInRecentSources = UserProfileSettings.MaxRecentChannels,
-                    NoHibernateOnAbort = UserProfileSettings.NoHibernateOnAbort,
                     GuideFavorites = UserProfileSettings.GuideFavorites,
                     BackToGuideAfterAdd = UserProfileSettings.BackToEPG,
                     PreferSubtitles = UserProfileSettings.UseSubTitles,
@@ -136,7 +129,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public void Update()
         {
             // Direct copy
-            UserProfileSettings.NoHibernateOnAbort = NoHibernateOnAbort;
             UserProfileSettings.BackToEPG = BackToGuideAfterAdd;
             UserProfileSettings.UseSubTitles = PreferSubtitles;
             UserProfileSettings.UseMP2 = PreferAllLanguages;

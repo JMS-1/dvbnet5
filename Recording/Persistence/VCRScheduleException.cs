@@ -9,7 +9,7 @@ namespace JMS.DVB.NET.Recording.Persistence
     public class VCRScheduleException
     {
         /// <summary>
-        /// Liest oder setzt, an welchem Tag die Ausnahme ber�cksichtigt werden soll.
+        /// Liest oder setzt, an welchem Tag die Ausnahme berücksichtigt werden soll.
         /// </summary>
         public DateTime When { get; set; }
 

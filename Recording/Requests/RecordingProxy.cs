@@ -314,15 +314,10 @@ public class RecordingProxy(
     /// </summary>
     /// <param name="streamIdentifier">Die eindeutige Kennung des betroffenen Datenstroms.</param>
     /// <param name="newEndTime">Der neue Endzeitpunkt.</param>
-    /// <param name="disableHibernation">Gesetzt, wenn der Übergang in den Schlafzustand deaktiviert werden soll.</param>
-    public override void ChangeEndTime(Guid streamIdentifier, DateTime newEndTime, bool disableHibernation)
+    public override void ChangeEndTime(Guid streamIdentifier, DateTime newEndTime)
     {
         // Report
         Tools.ExtendedLogging("Setting End for {0} to {1}", ProfileName, newEndTime);
-
-        // Disable hibernation if this is the last recording in our list
-        if (disableHibernation)
-            Representative.DisableHibernation = true;
 
         // Protected update
         lock (m_recordings)

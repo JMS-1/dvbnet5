@@ -111,7 +111,7 @@ public class ProgramGuideProxy : CardServerProxy
     {
         // See if we are finished
         if (state.ProgramGuideProgress.GetValueOrDefault(0) >= 1)
-            ChangeEndTime(Representative.ScheduleUniqueID!.Value, DateTime.UtcNow.AddDays(-1), false);
+            ChangeEndTime(Representative.ScheduleUniqueID!.Value, DateTime.UtcNow.AddDays(-1));
     }
 
     /// <summary>
