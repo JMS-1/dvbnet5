@@ -1,4 +1,4 @@
-namespace JMS.DVB.NET.Recording.Services;
+namespace JMS.DVB.NET.Recording.Services.Logging;
 
 /// <summary>
 /// Used to select which information should be reported to 

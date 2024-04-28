@@ -3,6 +3,7 @@ using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Logging;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Status;
 
@@ -17,7 +18,7 @@ namespace JMS.DVB.NET.Recording.Requests;
 public class RecordingProxy(
     IProfileState state,
     VCRRecordingInfo firstRecording,
-    ILogger logger,
+    ILogger<RecordingProxy> logger,
     IJobManager jobManager,
     IVCRConfiguration configuration,
     IVCRProfiles profiles,

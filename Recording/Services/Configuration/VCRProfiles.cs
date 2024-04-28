@@ -1,4 +1,6 @@
-﻿namespace JMS.DVB.NET.Recording.Services.Configuration;
+﻿using JMS.DVB.NET.Recording.Services.Logging;
+
+namespace JMS.DVB.NET.Recording.Services.Configuration;
 
 /// <summary>
 /// Verwaltet die Geräteprofile des VCR.NET Recording Service.
@@ -6,7 +8,7 @@
 /// <remarks>LEAF SERVICE</remarks>
 public class VCRProfiles : IVCRProfiles
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<VCRProfiles> _logger;
 
     private readonly IVCRConfiguration _configuration;
 
@@ -55,7 +57,7 @@ public class VCRProfiles : IVCRProfiles
     /// </summary>
     private volatile _State CurrentState = new();
 
-    public VCRProfiles(ILogger logger, IVCRConfiguration configuration)
+    public VCRProfiles(ILogger<VCRProfiles> logger, IVCRConfiguration configuration)
     {
         _configuration = configuration;
         _logger = logger;

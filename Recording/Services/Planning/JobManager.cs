@@ -2,6 +2,7 @@ using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.RestWebApi;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Logging;
 
 namespace JMS.DVB.NET.Recording.Services.Planning;
 
@@ -46,7 +47,7 @@ public class JobManager : IJobManager
 
     private readonly IVCRConfiguration _configuration;
 
-    private readonly ILogger _logger;
+    private readonly ILogger<JobManager> _logger;
 
     private readonly IVCRProfiles _profiles;
 
@@ -55,7 +56,7 @@ public class JobManager : IJobManager
     /// </summary>
     /// <param name="rootDirectory">Meldet das Verzeichnis, unterhalb dessen alle
     /// Aufträge und Protokolle angelegt werden.</param>
-    public JobManager(IVCRProfiles profiles, IVCRConfiguration configuration, ILogger logger)
+    public JobManager(IVCRProfiles profiles, IVCRConfiguration configuration, ILogger<JobManager> logger)
     {
         // Remember
         _configuration = configuration;

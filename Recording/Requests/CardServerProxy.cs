@@ -2,6 +2,7 @@
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Logging;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Status;
 
@@ -35,7 +36,7 @@ namespace JMS.DVB.NET.Recording.Requests
 
         protected readonly IVCRProfiles Profiles;
 
-        protected readonly ILogger Logger;
+        protected readonly ILogger<CardServerProxy> Logger;
 
         protected readonly IJobManager JobManager;
 
@@ -51,7 +52,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <exception cref="ArgumentNullException">Es wurde kein Profil angegeben.</exception>
         protected CardServerProxy(
             IProfileState state,
-            ILogger logger,
+            ILogger<CardServerProxy> logger,
             IJobManager jobManager,
             IVCRConfiguration configuration,
             IVCRProfiles profiles,
@@ -796,16 +797,14 @@ namespace JMS.DVB.NET.Recording.Requests
         /// </summary>
         /// <param name="environment">Die Umgebungsvariablen für die Erweiterung.</param>
         protected void FireRecordingStartedExtensions(Dictionary<string, string> environment)
-        => _extensionManager
-            .AddWithCleanup("RecordingStarted", environment, Logger);
+            => _extensionManager.AddWithCleanup("RecordingStarted", environment);
 
         /// <summary>
         /// Aktiviert eine VCR.NET Erweiterung.
         /// </summary>
         /// <param name="environment">Die Umgebungsvariablen für die Erweiterung.</param>
         protected void FireRecordingFinishedExtensions(Dictionary<string, string> environment)
-            => _extensionManager
-                .AddWithCleanup("RecordingFinished", environment, Logger);
+            => _extensionManager.AddWithCleanup("RecordingFinished", environment);
 
         #endregion
     }

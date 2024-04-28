@@ -1,6 +1,5 @@
 ﻿using System.Configuration;
 using System.Reflection;
-using JMS.DVB.NET.Recording.Services;
 using Microsoft.Extensions.Logging;
 
 namespace JMS.DVB.NET.Recording.Services.Configuration;
@@ -148,7 +147,7 @@ public class VCRConfiguration : IVCRConfiguration
         Add(SettingNames.EPGJoinThreshold, (uint?)null);
         Add(SettingNames.EPGStations);
         Add(SettingNames.FileNamePattern, "%Job% - %Schedule% - %Start%");
-        Add(SettingNames.LoggingLevel, LoggingLevel.Full);
+        Add(SettingNames.LoggingLevel, Logging.LoggingLevel.Full);
         Add(SettingNames.LogLifeTime, (uint)5);
         Add(SettingNames.MergeScanResult, true);
         Add(SettingNames.Profiles);
@@ -444,7 +443,7 @@ public class VCRConfiguration : IVCRConfiguration
     public uint ArchiveLifeTime => ReadSetting<uint>(SettingNames.ArchiveLifeTime);
 
     /// <inheritdoc/>
-    public LoggingLevel LoggingLevel => ReadSetting<LoggingLevel>(SettingNames.LoggingLevel);
+    public Logging.LoggingLevel LoggingLevel => ReadSetting<Logging.LoggingLevel>(SettingNames.LoggingLevel);
 
     /// <inheritdoc/>
     public ushort WebServerTcpPort => ReadSetting<ushort>(SettingNames.TCPPort);

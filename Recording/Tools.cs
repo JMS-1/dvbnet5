@@ -2,7 +2,7 @@
 
 using System.Diagnostics;
 using System.Text;
-using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Logging;
 
 namespace JMS.DVB.NET.Recording;
 
@@ -188,7 +188,7 @@ public static class Tools
     /// <param name="extension">Die gewünschte Erweiterung.</param>
     /// <param name="environment">Parameter für die Erweiterung.</param>
     /// <returns>Der gestartete Prozess oder <i>null</i>, wenn ein Start nicht m�glich war.</returns>
-    public static Process? RunExtension(FileInfo extension, Dictionary<string, string> environment, ILogger logger)
+    public static Process? RunExtension<T>(FileInfo extension, Dictionary<string, string> environment, ILogger<T> logger)
     {
         // Be safe
         try
@@ -299,7 +299,7 @@ public static class Tools
     /// <param name="extensionType">Die gewünschte Art von Erweiterungen.</param>
     /// <param name="environment">Aller Parameter für die Erweiterungen.</param>
     /// <returns>Die Prozessinformationen zu allen gestarten Erweiterungen.</returns>
-    public static IEnumerable<Process> RunExtensions(string extensionType, Dictionary<string, string> environment, ILogger logger)
+    public static IEnumerable<Process> RunExtensions<T>(string extensionType, Dictionary<string, string> environment, ILogger<T> logger)
     {
         // Forward
         return RunExtensions(GetExtensions(extensionType), environment, logger);
@@ -311,7 +311,7 @@ public static class Tools
     /// <param name="extensionType">Die gewünschte Art von Erweiterungen.</param>
     /// <param name="environment">Aller Parameter für die Erweiterungen.</param>
     /// <returns>Die Prozessinformationen zu allen gestarten Erweiterungen.</returns>
-    public static void RunSynchronousExtensions(string extensionType, Dictionary<string, string> environment, ILogger logger)
+    public static void RunSynchronousExtensions<T>(string extensionType, Dictionary<string, string> environment, ILogger<T> logger)
     {
         // Forward
         foreach (var process in RunExtensions(GetExtensions(extensionType), environment, logger))
@@ -343,7 +343,7 @@ public static class Tools
     /// <param name="extensions">Die zu startenden Erweiterungen.</param>
     /// <param name="environment">Aller Parameter für die Erweiterungen.</param>
     /// <returns>Die Prozessinformationen zu allen gestarten Erweiterungen.</returns>
-    public static IEnumerable<Process> RunExtensions(IEnumerable<FileInfo> extensions, Dictionary<string, string> environment, ILogger logger)
+    public static IEnumerable<Process> RunExtensions<T>(IEnumerable<FileInfo> extensions, Dictionary<string, string> environment, ILogger<T> logger)
     {
         // Process all
         foreach (var running in extensions.Select(extension => RunExtension(extension, environment, logger)).Where(process => process != null))

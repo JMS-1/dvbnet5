@@ -5,6 +5,7 @@ using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Status;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Logging;
 
 namespace JMS.DVB.NET.Recording.Requests;
 
@@ -36,7 +37,7 @@ public class ProgramGuideProxy : CardServerProxy
     public ProgramGuideProxy(
         IProfileState state,
         VCRRecordingInfo recording,
-        ILogger logger,
+        ILogger<ProgramGuideProxy> logger,
         IJobManager jobManager,
         IVCRConfiguration configuration,
         IVCRProfiles profiles,

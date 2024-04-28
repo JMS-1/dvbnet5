@@ -2,6 +2,7 @@
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Logging;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Status;
 
@@ -32,7 +33,7 @@ public class ZappingProxy : CardServerProxy
         IProfileState profile,
         VCRRecordingInfo primary,
         string target,
-        ILogger logger,
+        ILogger<ZappingProxy> logger,
         IJobManager jobManager,
         IVCRConfiguration configuration,
         IVCRProfiles profiles,

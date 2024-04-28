@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics;
+using JMS.DVB.NET.Recording.Services.Logging;
 
 namespace JMS.DVB.NET.Recording.Services;
 
 /// <summary>
 /// Verwaltet Erweiterungen und deren Instanzen.
 /// </summary>
-public class ExtensionManager : IExtensionManager
+public class ExtensionManager(ILogger<ExtensionManager> logger) : IExtensionManager
 {
     /// <summary>
     /// Eine leere Liste von Prozessen.
@@ -18,7 +19,7 @@ public class ExtensionManager : IExtensionManager
     private readonly List<Process> m_activeProcesses = [];
 
     /// <inheritdoc/>
-    public void AddWithCleanup(string extensionName, Dictionary<string, string> environment, ILogger logger)
+    public void AddWithCleanup(string extensionName, Dictionary<string, string> environment)
         => AddWithCleanup(Tools.RunExtensions(extensionName, environment, logger).ToArray());
 
     /// <inheritdoc/>

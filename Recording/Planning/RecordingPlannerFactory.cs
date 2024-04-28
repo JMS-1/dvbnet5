@@ -1,8 +1,8 @@
-using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Logging;
 
 namespace JMS.DVB.NET.Recording.Planning;
 
-public class RecordingPlannerFactory(ILogger logger) : IRecordingPlannerFactory
+public class RecordingPlannerFactory(ILogger<RecordingPlanner> logger) : IRecordingPlannerFactory
 {
     /// <inheritdoc/>
     public IRecordingPlanner Create(IRecordingPlannerSite site)

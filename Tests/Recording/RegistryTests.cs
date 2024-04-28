@@ -1,5 +1,5 @@
-using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
@@ -15,9 +15,9 @@ public class RegistryTests
     {
         var services = new ServiceCollection();
 
-        var loggingMock = new Mock<ILogger>();
+        var logger = new Mock<ILogger<Registry>>();
 
-        services.AddSingleton(loggingMock.Object);
+        services.AddSingleton(logger.Object);
 
         services.AddTransient<IRegistry, Registry>();
         services.AddSingleton<IVCRConfigurationExePathProvider, ConfigPathProvider>();

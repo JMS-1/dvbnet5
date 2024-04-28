@@ -1,6 +1,7 @@
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Logging;
 using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.Requests;
@@ -10,7 +11,7 @@ public class ZappingProxyFactory(
     IVCRProfiles profiles,
     IJobManager jobManager,
     IExtensionManager extensionManager,
-    ILogger logger
+    ILogger<ZappingProxy> logger
 ) : IZappingProxyFactory
 {
     /// <inheritdoc/>

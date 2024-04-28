@@ -3,6 +3,7 @@ using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Requests;
 using JMS.DVB.NET.Recording.Server;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Logging;
 using JMS.DVB.NET.Recording.Services.ProgramGuide;
 using JMS.DVB.NET.Recording.Status;
 
@@ -19,7 +20,7 @@ public class ProfileState(
     IProgramGuideManagerFactory guideManagerFactory,
     IRegistry registry,
     IVCRProfiles profiles,
-    ILogger logger,
+    ILogger<ProfileState> logger,
     IRecordingProxyFactory recordingFactory,
     IZappingProxyFactory zappingFactory
 ) : IProfileState

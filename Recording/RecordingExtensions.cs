@@ -4,6 +4,7 @@ using JMS.DVB.NET.Recording.Requests;
 using JMS.DVB.NET.Recording.Server;
 using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Logging;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Services.ProgramGuide;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,11 +22,10 @@ public static class RecordingExtensions
 
     public static void UseRecording(this IServiceCollection services)
     {
-        services.AddTransient(typeof(Lazy<>));
+        services.AddTransient(typeof(ILogger<>), typeof(Logger<>));
 
         services.AddTransient<IChangeExceptions, ChangeExceptions>();
         services.AddTransient<IConfigurationUpdater, ConfigurationUpdater>();
-        services.AddTransient<ILogger, Logger>();
         services.AddTransient<ILogQuery, LogQuery>();
         services.AddTransient<IProfileStateFactory, ProfileStateFactory>();
         services.AddTransient<IProgramGuideEntries, ProgramGuideEntries>();

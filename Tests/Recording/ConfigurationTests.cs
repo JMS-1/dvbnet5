@@ -16,7 +16,8 @@ public class ConfigurationTests
     {
         var services = new ServiceCollection();
 
-        services.AddTransient<ILogger<IVCRConfiguration>, NullLogger<IVCRConfiguration>>();
+        services.AddTransient(typeof(ILogger<>), typeof(NullLogger<>));
+
         services.AddSingleton<IVCRConfigurationExePathProvider, ConfigPathProvider>();
 
         services.AddTransient<IVCRConfiguration, VCRConfiguration>();

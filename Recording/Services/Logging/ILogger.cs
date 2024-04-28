@@ -1,6 +1,6 @@
-namespace JMS.DVB.NET.Recording.Services;
+namespace JMS.DVB.NET.Recording.Services.Logging;
 
-public interface ILogger
+public interface ILogger<out T>
 {
     /// <summary>
     /// Trägt eine Meldung ins Ereignisprotokoll ein, wenn die Schwere der Meldung

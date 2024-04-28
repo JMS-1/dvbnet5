@@ -2,6 +2,7 @@
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Logging;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Status;
 
@@ -30,7 +31,7 @@ public class SourceScanProxy : CardServerProxy
     public SourceScanProxy(
         IProfileState state,
         VCRRecordingInfo recording,
-        ILogger logger,
+        ILogger<SourceScanProxy> logger,
         IJobManager jobManager,
         IVCRConfiguration configuration,
         IVCRProfiles profiles,

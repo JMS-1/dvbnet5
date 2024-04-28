@@ -1,5 +1,5 @@
 ﻿using JMS.DVB.Algorithms.Scheduler;
-using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Logging;
 
 namespace JMS.DVB.NET.Recording.Planning;
 
@@ -36,13 +36,13 @@ public class RecordingPlanner : IRecordingPlanner
     /// </summary>
     private readonly Dictionary<Guid, ScheduleInformation> m_started = [];
 
-    private readonly ILogger _logger;
+    private readonly ILogger<RecordingPlanner> _logger;
 
     /// <summary>
     /// Erstellt eine neue Planung.
     /// </summary>
     /// <param name="site">Die zugehörige Arbeitsumgebung.</param>
-    public RecordingPlanner(IRecordingPlannerSite site, ILogger logger)
+    public RecordingPlanner(IRecordingPlannerSite site, ILogger<RecordingPlanner> logger)
     {
         // Remember
         _logger = logger;

@@ -1,5 +1,5 @@
 ﻿using JMS.DVB.NET.Recording.Planning;
-using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Logging;
 using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.Server;

@@ -1,6 +1,6 @@
 ﻿using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Planning;
-using JMS.DVB.NET.Recording.Services;
+using JMS.DVB.NET.Recording.Services.Logging;
 
 namespace JMS.DVB.NET.Recording.Server;
 

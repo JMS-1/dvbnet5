@@ -15,5 +15,5 @@ public interface IExtensionManager
     /// </summary>
     /// <param name="extensionName">Der Name der Erweiterung.</param>
     /// <param name="environment">Die für die Erweiterung zu verwendenden Umgebungsvariablen.</param>
-    void AddWithCleanup(string extensionName, Dictionary<string, string> environment, ILogger logger);
+    void AddWithCleanup(string extensionName, Dictionary<string, string> environment);
 }

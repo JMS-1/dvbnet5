@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Xml.Serialization;
+using JMS.DVB.NET.Recording.Services.Logging;
 
 namespace JMS.DVB.NET.Recording.Services.Configuration;
 
@@ -51,11 +52,11 @@ public class RegistryFile
 
 public class Registry : IRegistry
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<Registry> _logger;
 
     private readonly FileInfo _path;
 
-    public Registry(ILogger logger, IVCRConfigurationExePathProvider configurationExePath)
+    public Registry(ILogger<Registry> logger, IVCRConfigurationExePathProvider configurationExePath)
     {
         _logger = logger;
 

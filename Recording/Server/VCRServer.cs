@@ -2,8 +2,8 @@
 using JMS.DVB.NET.Recording.Actions;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Requests;
-using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Logging;
 using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.Server;
@@ -18,7 +18,7 @@ namespace JMS.DVB.NET.Recording.Server;
 public partial class VCRServer(
     IVCRConfiguration configuration,
     IVCRProfiles profiles,
-    ILogger logger,
+    ILogger<VCRServer> logger,
     IJobManager jobs,
     IProfileStateFactory states,
     IRecordingPlannerFactory plannerFactory,

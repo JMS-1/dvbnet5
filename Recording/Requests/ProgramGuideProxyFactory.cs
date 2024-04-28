@@ -2,6 +2,7 @@ using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Logging;
 
 namespace JMS.DVB.NET.Recording.Requests;
 
@@ -10,7 +11,7 @@ public class ProgramGuideProxyFactory(
     IVCRProfiles profiles,
     IJobManager jobManager,
     IExtensionManager extensionManager,
-    ILogger logger
+    ILogger<ProgramGuideProxy> logger
 ) : IProgramGuideProxyFactory
 {
     /// <inheritdoc/>

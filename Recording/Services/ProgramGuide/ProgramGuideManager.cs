@@ -2,6 +2,7 @@
 using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Server;
 using JMS.DVB.NET.Recording.Services.Configuration;
+using JMS.DVB.NET.Recording.Services.Logging;
 using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.Services.ProgramGuide;
@@ -36,7 +37,7 @@ public class ProgramGuideManager : IProgramGuideManager
 
     private readonly IVCRServer _collection;
 
-    private readonly ILogger _logger;
+    private readonly ILogger<ProgramGuideManager> _logger;
 
     private readonly IVCRProfiles _profiles;
 
@@ -53,7 +54,7 @@ public class ProgramGuideManager : IProgramGuideManager
         IRegistry registry,
         IVCRProfiles profiles,
         IJobManager jobs,
-        ILogger logger
+        ILogger<ProgramGuideManager> logger
     )
     {
         // Remember
