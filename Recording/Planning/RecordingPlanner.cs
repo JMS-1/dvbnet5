@@ -182,12 +182,9 @@ public class RecordingPlanner : IRecordingPlanner
                 return;
             }
 
-            // End processing
+            // Must be some wrong version
             if (activity is not StopActivity stop)
-            {
-                // Must be some wrong version
                 throw new NotSupportedException(activity.GetType().AssemblyQualifiedName);
-            }
 
             // Lookup the item and report to site
             if (!m_started.TryGetValue(stop.UniqueIdentifier, out var stopSchedule))
@@ -195,6 +192,8 @@ public class RecordingPlanner : IRecordingPlanner
 
             // Report to site
             _site.Stop(stopSchedule.Schedule, this);
+
+            return;
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using JMS.DVB.Algorithms.Scheduler;
+﻿using System.Timers;
+using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Services.Logging;
 
@@ -94,6 +95,10 @@ public partial class VCRServer
                     // See if we are allowed to take the next step in plan - we schedule only one activity at a time
                     if (m_pendingSchedule == null)
                     {
+                        // Reset timer
+                        using (m_timer)
+                            m_timer = null;
+
                         // Analyse plan
                         planner.DispatchNextActivity(DateTime.UtcNow);
 

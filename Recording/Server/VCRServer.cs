@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Threading;
 using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Actions;
 using JMS.DVB.NET.Recording.Planning;
@@ -38,6 +39,8 @@ public partial class VCRServer(
     private volatile bool _active = true;
 
     private readonly object _cleaning = new();
+
+    private Timer? m_timer;
 
     private async Task RunCleanup()
     {
@@ -84,6 +87,9 @@ public partial class VCRServer(
         m_planner = plannerFactory.Create(this);
         m_planThread = new Thread(PlanThread) { Name = "Recording Planner", IsBackground = true };
 
+        // Configure timer
+        m_timer = new Timer((state) => BeginNewPlan());
+
         // Start planner
         m_planThread.Start();
 
@@ -119,6 +125,10 @@ public partial class VCRServer(
         if (planThread != null)
             planThread.Join();
 
+        // Forget timer
+        using (m_timer)
+            m_timer = null;
+
         // Forget planner
         using (m_planner)
             m_planner = null!;
@@ -142,6 +152,12 @@ public partial class VCRServer(
     /// <param name="until">Zu diesem Zeitpunkt soll die nächste Prüfung stattfinden.</param>
     void IRecordingPlannerSite.Idle(DateTime until)
     {
+        // Get the wait time
+        var secondsToWait = Math.Max((until - DateTime.UtcNow).TotalSeconds, 0.0);
+
+        // Activate timer
+        using (m_timer)
+            m_timer = new Timer((state) => BeginNewPlan(), null, TimeSpan.FromSeconds(secondsToWait + 1.0), Timeout.InfiniteTimeSpan);
     }
 
     /// <summary>
