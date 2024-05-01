@@ -8,7 +8,7 @@
         dataColumns: number
 
         // Kindelemente.
-        children: JSX.Element[]
+        children?: React.ReactNode
     }
 
     // React.Js Komponente zur Anzeige einer Detailzeile.

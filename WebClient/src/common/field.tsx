@@ -11,7 +11,7 @@
         help?: string
 
         // Kindelemente.
-        children: JSX.Element | JSX.Element[]
+        children?: React.ReactNode
     }
 
     // Beschreibt ein Eingabefeld.

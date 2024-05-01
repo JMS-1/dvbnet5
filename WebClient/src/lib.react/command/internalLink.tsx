@@ -13,7 +13,7 @@ namespace JMSLib.ReactUi {
         description?: string
 
         // Kindelemente.
-        children: JSX.Element[]
+        children?: React.ReactNode
     }
 
     // React.Js Komponente zur Anzeige eines internen Verweises.

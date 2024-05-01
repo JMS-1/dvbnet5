@@ -10,7 +10,7 @@ namespace JMSLib.ReactUi {
         sameWindow?: boolean
 
         // Kindelemente.
-        children: JSX.Element[]
+        children?: React.ReactNode
     }
 
     // React.Js Komponente zur Anzeige eines externen Verweises.
