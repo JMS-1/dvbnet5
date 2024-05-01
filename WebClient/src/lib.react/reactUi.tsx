@@ -3,6 +3,9 @@
     export interface IComponent<TViewModelType> {
         // Das Präsentationsmodell (Ui View Model).
         uvm: TViewModelType
+
+        // Kindelemente.
+        children?: React.ReactNode
     }
 
     // Beschreibt einen nicht vorhandenen Zustand einer React.Js Komponente.
