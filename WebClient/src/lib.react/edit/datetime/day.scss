@@ -1,0 +1,85 @@
+﻿.jmslib-editday {
+    padding: 4px;
+    font-size: smaller;
+    border-radius: 2px;
+    vertical-align: top;
+    display: inline-block;
+    border: 1px solid black;
+
+    > div:first-child {
+        z-index: 0;
+        position: relative;
+
+        > img {
+            z-index: 1;
+            cursor: pointer;
+
+            &:first-child {
+                float: left;
+            }
+
+            &:last-child {
+                float: right;
+            }
+        }
+
+        > div {
+            left: 0;
+            right: 0;
+            z-index: -1;
+            position: absolute;
+            text-align: center;
+            display: inline-block;
+
+            > select {
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+        }
+    }
+
+    > div:last-child {
+        > .jmslib-command:first-child {
+            float: left;
+        }
+
+        > .jmslib-command:last-child {
+            float: right;
+        }
+    }
+
+    > table {
+        clear: both;
+        display: block;
+
+        td {
+            width: 2rem;
+            text-align: center;
+        }
+
+        > thead {
+            font-weight: bold;
+        }
+
+        > tbody {
+            td {
+                cursor: pointer;
+                background: lightgray;
+                border: 1px solid darkgray;
+
+                &:not(.jmslib-editday-month) {
+                    color: darkgray;
+                }
+
+                &.jmslib-editday-selected {
+                    cursor: default;
+                    font-weight: bold;
+                }
+
+                &.jmslib-editday-today {
+                    background: antiquewhite;
+                }
+            }
+        }
+    }
+}

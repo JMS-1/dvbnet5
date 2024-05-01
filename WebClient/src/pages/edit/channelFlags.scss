@@ -1,0 +1,11 @@
+﻿.vcrnet-editchannelflags {
+    display: inline-block;
+
+    > label > input {
+        margin-left: 10px;
+    }
+
+    > label:first-child > input {
+        margin-left: 0;
+    }
+}

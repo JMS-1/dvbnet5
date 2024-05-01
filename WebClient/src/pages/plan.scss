@@ -1,0 +1,36 @@
+﻿.vcrnet-plan {
+    .vcrnet-table {
+        margin-top: 10px;
+        min-width: 1050px;
+
+        > thead, > tbody {
+            > tr {
+                > td:nth-child(5) {
+                    border-right-width: 0;
+                    white-space: normal;
+                }
+
+                > td:nth-child(6) {
+                    border-left-width: 0;
+                    width: 12px;
+                }
+            }
+        }
+    }
+
+    .vcrnet-inline-help > div > table:last-child td:first-child {
+        vertical-align: top;
+    }
+
+    .vcrnet-plan-filter > .jmslib-editbuttonlist > .jmslib-command {
+        width: 3.5rem;
+
+        &:first-child {
+            width: 2rem;
+        }
+    }
+}
+
+@import "plan/row";
+@import "plan/guide";
+@import "plan/exception";

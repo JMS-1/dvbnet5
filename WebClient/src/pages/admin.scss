@@ -1,0 +1,56 @@
+﻿@import "../lib.react/constants";
+
+.vcrnet-admin {
+    width: 90%;
+    padding: 4px;
+    white-space: nowrap;
+
+    > div {
+        display: inline-block;
+        // Das ist die Navigationsleiste der Konfigurationsseite.
+        &:first-child {
+            > div {
+                margin: 10px;
+                border-radius: 4px;
+                border: 1px solid black;
+                box-shadow: gray 2px 1px;
+
+                &:hover {
+                    background: $commandHoverBackgroundColor;
+                }
+
+                &.jmslib-command-checked {
+                    background: $commandActiveBackgroundColor;
+
+                    a {
+                        cursor: default;
+                    }
+                }
+
+                a {
+                    color: black;
+                    display: block;
+                    padding: 4px 8px;
+                    text-decoration: none;
+                }
+            }
+        }
+        // Hier kommt dann der aktuelle Konfigurationsbereich.
+        &:last-child {
+            vertical-align: top;
+            white-space: normal;
+            margin: 0px 20px;
+            width: 90%;
+        }
+    }
+}
+
+@import "admin/section";
+
+@import "admin/guide";
+@import "admin/other";
+@import "admin/rules";
+@import "admin/devices";
+@import "admin/sources";
+@import "admin/security";
+@import "admin/directories";

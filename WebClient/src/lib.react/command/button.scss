@@ -1,0 +1,54 @@
+﻿@import "../mixins";
+@import "../constants";
+
+.jmslib-command {
+    @include no-select();
+    border: 1px solid $commandBorderColor;
+    background: $commandBackgroundColor;
+    padding: 0.3rem 0.6rem;
+    display: inline-block;
+    border-radius: 3px;
+    text-align: center;
+    font-size: 0.7rem;
+
+    &, &:hover, &:active {
+        text-decoration: none;
+        color: black;
+    }
+
+    &.jmslib-command-disabled {
+        opacity: 0.5;
+        cursor: default;
+    }
+
+    &.jmslib-command-checked {
+        background: $commandActiveBackgroundColor;
+    }
+
+    &:not(.jmslib-command-disabled) {
+        &:hover {
+            cursor: default;
+
+            &:not(.jmslib-command-checked) {
+                background: $commandHoverBackgroundColor;
+                cursor: pointer;
+
+                &[title=""] {
+                    border-color: $commandHoverBorderColor;
+                }
+            }
+        }
+
+        &:active {
+            background: $commandHoverBorderColor;
+        }
+    }
+
+    &.jmslib-command-dangerous {
+        color: $textErrorColor;
+    }
+
+    &:not([title=""]) {
+        border-color: $textErrorColor;
+    }
+}

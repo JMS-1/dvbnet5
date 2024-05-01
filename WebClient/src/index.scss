@@ -1,59 +1,65 @@
-@import "mixins";
+@import 'lib.react/styles';
+
+@import 'vcrnet';
+@import 'common/styles';
+@import 'pages/styles';
+
+@import 'mixins';
 
 :root {
-  font-size: 24px;
+    font-size: 24px;
 }
 
 html,
 body {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 html > body {
-  position: relative;
-  margin: 0;
-  overflow: hidden;
-  line-height: 1.2;
-  font-size: 1rem;
-
-  > client-root {
     position: relative;
-    display: block;
-    width: 100%;
-    height: 100%;
+    margin: 0;
     overflow: hidden;
-    background: #dddddd;
+    line-height: 1.2;
+    font-size: 1rem;
 
-    input,
-    select,
-    textarea,
-    button {
-      font-size: 1em;
-    }
+    > client-root {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #dddddd;
 
-    button {
-      border-radius: 0.5em;
-      padding: 0.3em 0.5em;
+        input,
+        select,
+        textarea,
+        button {
+            font-size: 1em;
+        }
+
+        button {
+            border-radius: 0.5em;
+            padding: 0.3em 0.5em;
+        }
     }
-  }
 }
 
 ::-webkit-scrollbar {
-  width: 12px;
+    width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 10px;
+    background: transparent;
+    border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #bbbbbb;
-  border-radius: 10px;
-  min-height: 10%;
+    background: #bbbbbb;
+    border-radius: 10px;
+    min-height: 10%;
 }
 
 ::-webkit-scrollbar-corner {
-  background: transparent;
+    background: transparent;
 }

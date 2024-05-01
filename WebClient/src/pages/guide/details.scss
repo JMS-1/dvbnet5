@@ -1,0 +1,15 @@
+﻿.vcrnet-guideentrydetails {
+    padding: 5px 10px;
+
+    > div {
+        margin-top: 5px;
+
+        .jmslib-command, .vcrnet-editfield > div {
+            vertical-align: middle;
+        }
+
+        .vcrnet-editfield {
+            display: inline-block;
+        }
+    }
+}

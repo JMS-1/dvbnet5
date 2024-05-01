@@ -1,0 +1,43 @@
+﻿@import "../../constants";
+
+$spacing: 4px;
+
+.vcrnet-admin-guide {
+    > form {
+        .jmslib-editmultilist {
+            width: 30rem;
+            margin-right: 10px;
+            display: inline-block;
+            margin-bottom: $editLineSpacing;
+
+            + .jmslib-command {
+                vertical-align: top;
+            }
+        }
+
+        .jmslib-editflag {
+            display: block;
+            margin-bottom: $editLineSpacing;
+        }
+
+        .vcrnet-editfield {
+            margin-bottom: $editLineSpacing;
+
+            > div:first-child {
+                margin-right: $spacing;
+            }
+
+            .jmslib-editlist + .vcrnet-editchannel {
+                margin-left: $spacing;
+
+                + .jmslib-command {
+                    margin-left: $spacing;
+                }
+            }
+        }
+    }
+
+    > div:first-of-type {
+        margin-bottom: $editLineSpacing;
+    }
+}

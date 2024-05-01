@@ -1,0 +1,35 @@
+﻿@import "../../lib.react/constants";
+@import "../../lib.react/mixins";
+
+.vcrnet-planexception {
+    @include no-select();
+    padding: 10px;
+
+    > table {
+        width: 100%;
+
+        > tbody > tr {
+            > td:nth-child(1) {
+                padding-right: 10px;
+                width: 10rem;
+            }
+
+            > td:nth-child(2) {
+                width: 12rem;
+            }
+
+            > td.vcrnet-planexception-discard {
+                color: red;
+            }
+        }
+    }
+
+    > div:last-child {
+        font-size: small;
+        margin-top: 6px;
+
+        > .jmslib-command:not(:first-child) {
+            margin-left: $buttonSpacing;
+        }
+    }
+}

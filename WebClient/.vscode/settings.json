@@ -1,14 +1,5 @@
 {
-    "[javascript]": {
-        "editor.formatOnSave": false
-    },
-    "[typescript]": {
-        "editor.formatOnSave": false
-    },
-    "[typescriptreact]": {
-        "editor.formatOnSave": false
-    },
-    "css.validate": false,
+    "css.validate": true,
     "editor.codeActionsOnSave": {
         "source.fixAll": "never",
         "source.fixAll.eslint": "explicit",
@@ -22,8 +13,8 @@
     "files.exclude": {
         "**/node_modules": true
     },
-    "less.validate": false,
-    "scss.validate": false,
+    "less.validate": true,
+    "scss.validate": true,
     "stylelint.enable": true,
     "typescript.tsdk": "node_modules/typescript/lib"
 }

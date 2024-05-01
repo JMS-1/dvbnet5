@@ -1,0 +1,21 @@
+﻿@import "../../constants";
+
+.vcrnet-device-control {
+    padding-top: 10px;
+
+    > .jmslib-slider {
+        margin: $editLineSpacing 0;
+    }
+
+    > .vcrnet-device-target:not(:first-child) {
+        margin-top: $editLineSpacing;
+    }
+
+    > table {
+        margin: $editLineSpacing 0;
+    }
+
+    .jmslib-command {
+        margin-right: 4px;
+    }
+}

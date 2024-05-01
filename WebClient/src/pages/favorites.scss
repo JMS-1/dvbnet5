@@ -1,0 +1,12 @@
+﻿.vcrnet-favorites {
+    > table {
+        margin-top: 10px;
+        margin-left: 1rem;
+
+        tr > td:first-child {
+            text-align: center;
+        }
+    }
+}
+
+@import "favorites/entry";
