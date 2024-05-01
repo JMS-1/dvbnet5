@@ -1,0 +1,18 @@
+{
+    "tasks": [
+        {
+            "label": "build",
+            "problemMatcher": ["$tsc"],
+            "script": "build",
+            "type": "npm"
+        },
+        {
+            "isBackground": true,
+            "label": "watch",
+            "problemMatcher": ["$tsc"],
+            "script": "watch",
+            "type": "npm"
+        }
+    ],
+    "version": "2.0.0"
+}

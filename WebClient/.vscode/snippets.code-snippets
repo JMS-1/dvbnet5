@@ -1,0 +1,22 @@
+{
+    "TSX": {
+        "prefix": "component",
+        "body": [
+            "import { clsx } from 'clsx'",
+            "import * as React from 'react'",
+            "",
+            "import styles from './${1:${TM_FILENAME_BASE}}.module.scss'",
+            "",
+            "interface I${2}Props {",
+            "\tclassName?: string",
+            "}",
+            "",
+            "export const ${2:${TM_FILENAME_BASE/(.*)$/${1:/capitalize}/}}: React.FC<I${2}Props> = (props) => {",
+            "\treturn <div className={clsx(styles.${1}, props.className)}>[${1}]</div>",
+            "}",
+            ""
+        ],
+        "description": "Component Template",
+        "scope": "typescriptreact"
+    }
+}
