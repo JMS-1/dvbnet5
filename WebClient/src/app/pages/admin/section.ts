@@ -58,7 +58,7 @@
         }
 
         // Sendet die aktuellen Daten des Konfigurationsbereichs an den VCR.NET Recording Service zur Übernahme derselben.
-        protected abstract saveAsync(): Promise<boolean>
+        protected abstract saveAsync(): Promise<boolean | undefined>
 
         // Beginnt mit der Speicherung der aktuellen Daten des Konfigurationsbereichs im VCR.NET Recording Service.
         private save(): Promise<void> {

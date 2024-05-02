@@ -53,7 +53,7 @@
         getHelpComponentProvider<TComponentType extends IHelpComponent>(): IHelpComponentProvider<TComponentType>
 
         // Wechselt den Navigationsbereich.
-        switchPage(name: string, sections: string[]): void
+        switchPage(name: string, sections?: string[]): void
     }
 
     // Die von der Oberfläche bereitzustellende Arbeitsumgebung für die Anwendung.
@@ -188,14 +188,14 @@
             VCRServer.getUserProfile()
                 .then((profile) => {
                     // Benutzereinstellungen übernehmen.
-                    this.profile = profile
+                    this.profile = profile!
 
                     // Versionsinformationen anfordern.
                     return VCRServer.getServerVersion()
                 })
                 .then((info) => {
                     // Versionsinformationen aktualisieren.
-                    this.version = info
+                    this.version = info!
 
                     // Navigationsbereich starten.
                     page.reset(sections || [])

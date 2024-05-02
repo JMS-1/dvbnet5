@@ -130,9 +130,9 @@ namespace VCRNETClient.App.Admin {
                 this.merge.data = settings
 
                 // Die Art erfordert eine Sonderbehandlung.
-                if (settings.interval === null) this.mode.value = ScanConfigMode.disabled
-                else if (settings.interval < 0) {
-                    settings.interval = 0
+                if (settings?.interval === null) this.mode.value = ScanConfigMode.disabled
+                else if ((settings?.interval ?? 0) < 0) {
+                    settings!.interval = 0
 
                     this.mode.value = ScanConfigMode.manual
                 } else this.mode.value = ScanConfigMode.automatic
@@ -163,7 +163,7 @@ namespace VCRNETClient.App.Admin {
         }
 
         // Fordert den VCR.NET Recording Service zur Aktualisierung der Konfiguration an.
-        protected saveAsync(): Promise<boolean> {
+        protected saveAsync(): Promise<boolean | undefined> {
             // Die Art wird in die Konfigurationsdaten zurückgespiegelt.
             var settings = <VCRServer.SourceScanSettingsContract>this.hours.data
 

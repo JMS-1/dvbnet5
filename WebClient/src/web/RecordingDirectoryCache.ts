@@ -1,13 +1,12 @@
 ﻿module VCRServer {
-
     // Verwaltet die Aufzeichnungsverzeichnisse
     export class RecordingDirectoryCache {
         // Die zwischengespeicherten Verzeichnisse
-        private static promise: Promise<string[]>;
+        private static promise: Promise<string[]> | null
 
         // Vergisst alles, was wir wissen
         static reset(): void {
-            RecordingDirectoryCache.promise = null;
+            RecordingDirectoryCache.promise = null
         }
 
         // Ruft die Verzeichnisse ab
@@ -15,15 +14,13 @@
             // Erstmalig laden
             if (!RecordingDirectoryCache.promise) {
                 // Verwaltung erzeugen.
-                RecordingDirectoryCache.promise = new Promise<string[]>((success, failure) => {
-                    getRecordingDirectories().then(data => success(data));
-                });
+                RecordingDirectoryCache.promise = new Promise<string[]>((success) => {
+                    getRecordingDirectories().then((data) => success(data!))
+                })
             }
 
             // Verwaltung melden.
-            return RecordingDirectoryCache.promise;
+            return RecordingDirectoryCache.promise
         }
     }
-
 }
-

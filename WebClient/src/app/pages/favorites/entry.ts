@@ -125,7 +125,7 @@
             Favorite._loader = Favorite._loader.then(() =>
                 VCRServer.countProgramGuide(filter).then((count) => {
                     // Wert vermerken.
-                    this._count = Favorite._countCache[this._cacheKey] = count
+                    this._count = Favorite._countCache[this._cacheKey] = count!
 
                     // Oberfläche zur Aktualisierung auffordern.
                     if (this.view) this.view.refreshUi()

@@ -1,57 +1,54 @@
 ﻿module VCRServer {
-
     // Repräsentiert die Klasse OtherSettings
     export interface OtherSettingsContract extends SettingsContract {
         // Gesetzt, um den Übergang in den Schlafzustand erlauben
-        mayHibernate: boolean;
+        mayHibernate: boolean
 
         // Gesetzt, um StandBy für den Schlafzustand zu verwenden
-        useStandBy: boolean;
+        useStandBy: boolean
 
         // Die Verweildauer von Aufträgen im Archiv (in Wochen)
-        archive: number;
+        archive: number
 
         // Die Verweildauer von Protokollen (in Wochen)
-        protocol: number;
+        protocol: number
 
         // Die Vorlaufzeit beim Aufwecken aus dem Schlafzustand (in Sekunden)
-        hibernationDelay: number;
+        hibernationDelay: number
 
         // Gesetzt, um eine PCR Erzeugunbg bei H.264 Material zu vermeiden
-        noH264PCR: boolean;
+        noH264PCR: boolean
 
         // Gesetzt, um eine PCR Erzeugung aus MPEG-2 Material zu vermeiden
-        noMPEG2PCR: boolean;
+        noMPEG2PCR: boolean
 
         // Die minimale Verweildauer im Schlafzustand
-        forcedHibernationDelay: number;
+        forcedHibernationDelay: number
 
         // Gesetzt, wenn die minimale Verweildauer im Schlafzustand ignoriert werden soll
-        suppressHibernationDelay: boolean;
+        suppressHibernationDelay: boolean
 
         // Gesetzt, um auch das Basic Protokoll zur Autentisierung zu erlauben
-        basicAuth: boolean;
+        basicAuth: boolean
 
         // Gesetzt, um die Verbindung zu verschlüsseln
-        ssl: boolean;
+        ssl: boolean
 
         // Der TCP/IP Port für verschlüsselte Verbindungen
-        sslPort: number;
+        sslPort: number
 
         // Der TCP/IP Port für reguläre Anfragen
-        webPort: number;
+        webPort: number
 
         // Die Art der Protokollierung
-        logging: string;
+        logging: string
     }
 
-    export function getOtherSettings(): Promise<OtherSettingsContract> {
-        return doUrlCall(`configuration?other`);
+    export function getOtherSettings(): Promise<OtherSettingsContract | undefined> {
+        return doUrlCall(`configuration?other`)
     }
 
-    export function setOtherSettings(data: OtherSettingsContract): Promise<boolean> {
-        return doUrlCall(`configuration?other`, `PUT`, data);
+    export function setOtherSettings(data: OtherSettingsContract): Promise<boolean | undefined> {
+        return doUrlCall(`configuration?other`, `PUT`, data)
     }
-
 }
-

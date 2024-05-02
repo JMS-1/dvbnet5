@@ -100,13 +100,13 @@ namespace VCRNETClient.App.Admin {
             // Konfiguration anfordern.
             VCRServer.getDirectorySettings().then((settings) => {
                 // Liste der erlaubten Verzeichnisse laden.
-                this.directories.allowedValues = settings.directories.map((d) => JMSLib.App.uiValue(d))
+                this.directories.allowedValues = settings?.directories.map((d) => JMSLib.App.uiValue(d)) ?? []
 
                 // Pflege des Dateinamenmusters vorbereiten.
                 this.pattern.data = settings
 
                 // Wurzelverzeichnisse laden.
-                VCRServer.browseDirectories(``, true).then((dirs) => this.setDirectories(dirs))
+                VCRServer.browseDirectories(``, true).then((dirs) => this.setDirectories(dirs!))
             })
         }
 
@@ -136,14 +136,14 @@ namespace VCRNETClient.App.Admin {
 
             // Alle Unterverzeichnisse ermitteln.
             var folder = this.browse.value
-            if (folder) VCRServer.browseDirectories(folder, true).then((dirs) => this.setDirectories(dirs))
+            if (folder) VCRServer.browseDirectories(folder, true).then((dirs) => this.setDirectories(dirs!))
         }
 
         // Das übergeordnete Verzeichnis soll angezeigt werden.
         private doBrowseUp(): void {
             // In eine höhere Ansicht wechseln.
             var folder = this.browse.allowedValues[0].value
-            if (folder) VCRServer.browseDirectories(folder, false).then((dirs) => this.setDirectories(dirs))
+            if (folder) VCRServer.browseDirectories(folder, false).then((dirs) => this.setDirectories(dirs!))
         }
 
         // Ausgewählte Verzeichnisse aus der Liste entfernen.
@@ -157,7 +157,7 @@ namespace VCRNETClient.App.Admin {
         }
 
         // Sendet die veränderte Konfiguration an den VCR.NET Recording Service.
-        protected saveAsync(): Promise<boolean> {
+        protected saveAsync(): Promise<boolean | undefined> {
             // Die aktuell erlaubten Verzeichnisse werden als Verzeichnisliste übernommen.
             var settings: VCRServer.DirectorySettingsContract = this.pattern.data
 

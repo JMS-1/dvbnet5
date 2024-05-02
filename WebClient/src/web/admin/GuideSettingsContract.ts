@@ -1,33 +1,30 @@
 ﻿module VCRServer {
-
     // Repräsentiert die Klasse GuideSettings
     export interface GuideSettingsContract extends SettingsContract {
         // Das Zeitintervall (in Stunden) für vorgezogene Aktualisierungen
-        joinHours: string;
+        joinHours: string
 
         // Das minimale Intervall (in Stunden) zwischen Aktualisierungen
-        minDelay: string;
+        minDelay: string
 
         // Die maximale Dauer einer Aktualisierung (in Minuten)
-        duration: number;
+        duration: number
 
         // Die vollen Stunden, zu denen eine Aktualisierung stattfinden soll
-        hours: number[];
+        hours: number[]
 
         // Alle Quellen, die bei der Aktualisierung mit berücksichtigt werden sollen
-        sources: string[];
+        sources: string[]
 
         // Gesetzt, um auch die britische Programmzeitschrift auszuwerten
-        includeUK: boolean;
+        includeUK: boolean
     }
 
-    export function getGuideSettings(): Promise<GuideSettingsContract> {
-        return doUrlCall(`configuration?guide`);
+    export function getGuideSettings(): Promise<GuideSettingsContract | undefined> {
+        return doUrlCall(`configuration?guide`)
     }
 
-    export function setGuideSettings(data: GuideSettingsContract): Promise<boolean> {
-        return doUrlCall(`configuration?guide`, `PUT`, data);
+    export function setGuideSettings(data: GuideSettingsContract): Promise<boolean | undefined> {
+        return doUrlCall(`configuration?guide`, `PUT`, data)
     }
-
 }
-

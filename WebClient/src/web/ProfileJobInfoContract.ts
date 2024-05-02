@@ -1,17 +1,14 @@
 ﻿module VCRServer {
-
     // Repräsentiert die Klasse ProfileJobInfo
     export interface ProfileJobInfoContract {
         // Der Name des Auftrags
-        name: string;
+        name: string
 
         // Die eindeutige Kennung des Auftrags
-        id: string;
+        id: string
     }
 
-    export function getProfileJobInfos(device: string): Promise<ProfileJobInfoContract[]> {
-        return doUrlCall(`profile/${device}?activeJobs`);
+    export function getProfileJobInfos(device: string): Promise<ProfileJobInfoContract[] | undefined> {
+        return doUrlCall(`profile/${device}?activeJobs`)
     }
-
 }
-

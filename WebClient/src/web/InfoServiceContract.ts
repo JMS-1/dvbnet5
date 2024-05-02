@@ -1,29 +1,26 @@
 ﻿module VCRServer {
-
     // Repräsentiert die Klasse InfoService
     export interface InfoServiceContract {
         // Die aktuelle Version des Dienstes in der Notation MAJOR.MINOR [DD.MM.YYYY]
-        version: string;
+        version: string
 
         // Die aktuelle Version der Installation in der Notation MAJOR.MINOR.BUILD
-        msiVersion: string;
+        msiVersion: string
 
         // Gesetzt, wenn mindestens ein Gerät eine Aufzeichnung oder Aufgabe ausführt
-        active: boolean;
+        active: boolean
 
         // Gesetzt, wenn der Anwender ein Administrator ist
-        userIsAdmin: boolean;
+        userIsAdmin: boolean
 
         // Gesetzt, wenn die Aktualisierung der Quellen verfügbar ist
-        canScan: boolean;
+        canScan: boolean
 
         // Gesetzt, wenn die Aktualisierung der Programmzeitschrift verfügbar ist
-        hasGuides: boolean;
+        hasGuides: boolean
     }
 
-    export function getServerVersion(): Promise<InfoServiceContract> {
-        return doUrlCall(`info`);
+    export function getServerVersion(): Promise<InfoServiceContract | undefined> {
+        return doUrlCall(`info`)
     }
-
 }
-

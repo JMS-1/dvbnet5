@@ -118,7 +118,7 @@ namespace VCRNETClient.App {
         readonly encrpytion = new JMSLib.App.SelectSingleFromList(
             this._filter,
             `cryptFilter`,
-            null,
+            undefined,
             () => this.query(),
             GuidePage._cryptOptions
         )
@@ -127,7 +127,7 @@ namespace VCRNETClient.App {
         readonly sourceType = new JMSLib.App.SelectSingleFromList(
             this._filter,
             `typeFilter`,
-            null,
+            undefined,
             () => this.query(),
             GuidePage._typeOptions
         )
@@ -136,7 +136,7 @@ namespace VCRNETClient.App {
         readonly days = new JMSLib.App.SelectSingleFromList<string>(
             this._filter,
             `start`,
-            null,
+            undefined,
             () => this.resetIndexAndQuery(),
             []
         )
@@ -145,7 +145,7 @@ namespace VCRNETClient.App {
         readonly hours = new JMSLib.App.SelectSingleFromList(
             { value: -1 },
             `value`,
-            null,
+            undefined,
             () => this.resetIndexAndQuery(),
             GuidePage._hours
         )
@@ -159,7 +159,7 @@ namespace VCRNETClient.App {
         )
 
         // Aktuelle Anmeldung für verzögerte Suchanfragen.
-        private _timeout: number
+        private _timeout?: number
 
         // Befehl zur Anzeige des Anfangs der Ergebnisliste.
         readonly firstPage = new JMSLib.App.Command(
@@ -179,7 +179,7 @@ namespace VCRNETClient.App {
         readonly nextPage = new JMSLib.App.Command(
             () => this.changePage(+1),
             `Nächste Seite`,
-            () => this._hasMore
+            () => !!this._hasMore
         )
 
         // Befehl zum Zurücksetzen aller aktuellen Einschränkungen.
@@ -213,7 +213,7 @@ namespace VCRNETClient.App {
         ).addRequiredValidator()
 
         // Gesetzt, wenn eine nächste Seite der Ergebnisliste existiert.
-        private _hasMore = false
+        private _hasMore? = false
 
         // Beschreibt den Gesamtauszug der Programmzeitschrift zum aktuell ausgewählten Gerät.
         private _profileInfo: VCRServer.GuideInfoContract
@@ -293,11 +293,11 @@ namespace VCRNETClient.App {
             this.disableQuery(() => {
                 this._filter.cryptFilter = VCRServer.GuideEncryption.ALL
                 this._filter.typeFilter = VCRServer.GuideSource.ALL
-                this._filter.content = null
+                this._filter.content = null!
                 this._fulltextQuery = true
                 this._filter.station = ``
-                this._filter.start = null
-                this._filter.title = null
+                this._filter.start = null!
+                this._filter.title = null!
                 this._filter.index = 0
 
                 this.queryString.value = ``
@@ -372,11 +372,11 @@ namespace VCRNETClient.App {
                 })
                 .then((jobs) => {
                     // Liste der bekannten Aufträge aktualisieren.
-                    var selection = jobs.map((job) => JMSLib.App.uiValue(job.id, job.name))
+                    var selection = jobs?.map((job) => JMSLib.App.uiValue(job.id, job.name))
 
-                    selection.unshift(JMSLib.App.uiValue(``, `(neuen Auftrag anlegen)`))
+                    selection?.unshift(JMSLib.App.uiValue(``, `(neuen Auftrag anlegen)`))
 
-                    this._jobSelector.allowedValues = selection
+                    this._jobSelector.allowedValues = selection ?? []
 
                     // Von jetzt arbeiten wir wieder normal.
                     this._disableQuery = false
@@ -398,7 +398,7 @@ namespace VCRNETClient.App {
         // Die Liste der möglichen Starttage ermitteln.
         private refreshDays(): void {
             // Als Basis kann immer die aktuelle Uhrzeit verwendet werden.
-            var days = [JMSLib.App.uiValue<string>(null, `Jetzt`)]
+            var days = [JMSLib.App.uiValue<string>('', `Jetzt`)]
 
             // Das geht nur, wenn mindestens ein Eintrag in der Programmzeitschrift der aktuellen Quelle vorhanden ist.
             if (this._profileInfo.first && this._profileInfo.last) {
@@ -444,7 +444,7 @@ namespace VCRNETClient.App {
             this._fulltextQuery = true
 
             // Nach einer viertel Sekunde Suche starten.
-            this._timeout = setTimeout(() => {
+            this._timeout = window.setTimeout(() => {
                 // Wir werden gar nicht mehr angezeigt.
                 if (!this.view) return
 
@@ -475,7 +475,7 @@ namespace VCRNETClient.App {
             this.clearTimeout()
 
             // Ausstehende Änderung der Startzeit einmischen.
-            if (this.hours.value >= 0) {
+            if ((this.hours.value ?? 0) >= 0) {
                 // Vollen Startzeitpunkt bestimmen.
                 var start = this._filter.start ? new Date(this._filter.start) : new Date()
 
@@ -483,7 +483,7 @@ namespace VCRNETClient.App {
                     start.getFullYear(),
                     start.getMonth(),
                     start.getDate(),
-                    this.hours.value
+                    this.hours.value ?? 0
                 ).toISOString()
 
                 // Das machen wir immer nur einmal - die Auswahl wirkt dadurch wie eine Schaltfläche.
@@ -491,10 +491,10 @@ namespace VCRNETClient.App {
             }
 
             // Suchbedingung vorbereiten und übernehmen.
-            var query = this.queryString.value.trim()
+            var query = this.queryString.value?.trim()
 
-            this._filter.title = !query ? null : `${this._fulltextQuery ? `*` : `=`}${query}`
-            this._filter.content = this.withContent.value && this._fulltextQuery ? this._filter.title : null
+            this._filter.title = !query ? null! : `${this._fulltextQuery ? `*` : `=`}${query}`
+            this._filter.content = this.withContent.value && this._fulltextQuery ? this._filter.title : null!
 
             // Auszug aus der Programmzeitschrift abrufen.
             VCRServer.queryProgramGuide(this._filter).then((items) => {

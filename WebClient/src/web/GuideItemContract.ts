@@ -1,44 +1,48 @@
 ﻿module VCRServer {
-
     // Repräsentiert die Klasse GuideItem
     export interface GuideItemContract {
         // Der Startzeitpunkt in ISO Notation
-        start: string;
+        start: string
 
         // Die Dauer in Sekunden
-        duration: number;
+        duration: number
 
         // Der Name der Sendung
-        name: string;
+        name: string
 
         // Die Sprache, in der die Sendung ausgestrahlt wird
-        language: string;
+        language: string
 
         // Die Quelle
-        station: string;
+        station: string
 
         // Die Liste der Alterfreigaben
-        ratings: string[];
+        ratings: string[]
 
         // Die Liste der Kategorien
-        categories: string[];
+        categories: string[]
 
         // Die ausführliche Beschreibung
-        description: string;
+        description: string
 
         // Die Kurzbeschreibung
-        shortDescription: string;
+        shortDescription: string
 
         // Gesetzt, wenn das Ende der Sendung in der Zukunft liegt
-        active: boolean;
+        active: boolean
 
         // Die eindeutige Kennung der Sendung
-        id: string;
+        id: string
     }
 
-    export function getGuideItem(device: string, source: string, start: Date, end: Date): Promise<GuideItemContract> {
-        return doUrlCall(`guide?profile=${encodeURIComponent(device)}&source=${source}&pattern=${start.getTime()}-${end.getTime()}`);
+    export function getGuideItem(
+        device: string,
+        source: string,
+        start: Date,
+        end: Date
+    ): Promise<GuideItemContract | undefined> {
+        return doUrlCall(
+            `guide?profile=${encodeURIComponent(device)}&source=${source}&pattern=${start.getTime()}-${end.getTime()}`
+        )
     }
-
 }
-

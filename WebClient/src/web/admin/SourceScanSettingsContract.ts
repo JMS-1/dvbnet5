@@ -17,11 +17,11 @@
         merge: boolean
     }
 
-    export function getSourceScanSettings(): Promise<SourceScanSettingsContract> {
+    export function getSourceScanSettings(): Promise<SourceScanSettingsContract | undefined> {
         return doUrlCall(`configuration?scan`)
     }
 
-    export function setSourceScanSettings(data: SourceScanSettingsContract): Promise<boolean> {
+    export function setSourceScanSettings(data: SourceScanSettingsContract): Promise<boolean | undefined> {
         return doUrlCall(`configuration?scan`, `PUT`, data)
     }
 }

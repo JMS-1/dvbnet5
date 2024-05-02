@@ -149,7 +149,7 @@ namespace VCRNETClient.App.Admin {
             VCRServer.getGuideSettings()
                 .then((settings) => {
                     // Daten mit den Präsentationsmodellen verbinden.
-                    this.isActive.value = settings.duration > 0
+                    this.isActive.value = (settings?.duration ?? 0) > 0
                     this.duration.data = settings
                     this.latency.data = settings
                     this.hours.data = settings
@@ -157,7 +157,7 @@ namespace VCRNETClient.App.Admin {
                     this.ukTv.data = settings
 
                     // Die aktuelle Liste der Quellen laden.
-                    this.sources.allowedValues = settings.sources.map((s) => JMSLib.App.uiValue(s))
+                    this.sources.allowedValues = settings?.sources.map((s) => JMSLib.App.uiValue(s)) ?? []
 
                     // Liste der Geräteprofile anfordern.
                     return VCRServer.ProfileCache.getAllProfiles()
@@ -218,7 +218,7 @@ namespace VCRNETClient.App.Admin {
         }
 
         // Die Konfiguration zur Aktualisierung an den VCR.NET Recording Service übertragen.
-        protected saveAsync(): Promise<boolean> {
+        protected saveAsync(): Promise<boolean | undefined> {
             // Die Auswahlliste der Quellen ist die Liste der zu berücksichtigenden Quellen.
             var settings = <VCRServer.GuideSettingsContract>this.hours.data
 

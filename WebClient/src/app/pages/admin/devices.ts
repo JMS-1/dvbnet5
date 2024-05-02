@@ -33,17 +33,18 @@ namespace VCRNETClient.App.Admin {
         protected loadAsync(): void {
             VCRServer.getProfileSettings().then((settings) => {
                 // Präsentationsmodelle aus den Rohdaten erstellen.
-                this.devices = settings.profiles.map(
-                    (p) =>
-                        new Device(
-                            p,
-                            () => this.refresh(),
-                            () => this.defaultDevice.value ?? ''
-                        )
-                )
+                this.devices =
+                    settings?.profiles.map(
+                        (p) =>
+                            new Device(
+                                p,
+                                () => this.refresh(),
+                                () => this.defaultDevice.value ?? ''
+                            )
+                    ) ?? []
 
                 // Liste der Geräte ermitteln und in die Auswahl für das bevorzugte Gerät übernehmen.
-                this.defaultDevice.allowedValues = settings.profiles.map((p) => JMSLib.App.uiValue(p.name))
+                this.defaultDevice.allowedValues = settings?.profiles.map((p) => JMSLib.App.uiValue(p.name)) ?? []
                 this.defaultDevice.data = settings
 
                 // Initiale Prüfung durchführen.
@@ -79,7 +80,7 @@ namespace VCRNETClient.App.Admin {
         }
 
         // Sendet die Konfiguration zur asynchronen Aktualisierung an den VCR.NET Recording Service.
-        protected saveAsync(): Promise<boolean> {
+        protected saveAsync(): Promise<boolean | undefined> {
             return VCRServer.setProfileSettings(this.defaultDevice.data)
         }
     }

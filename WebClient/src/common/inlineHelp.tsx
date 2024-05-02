@@ -1,6 +1,4 @@
-﻿/// <reference path="../vcrnet.tsx" />
-
-namespace VCRNETClient.Ui {
+﻿namespace VCRNETClient.Ui {
     // Konfiguration zur Anzeige einer eingebetteten Beschreibung.
     interface IInlineHelpStatic {
         // Die Überschrift.
