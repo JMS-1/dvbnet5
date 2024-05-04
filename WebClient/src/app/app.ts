@@ -1,4 +1,21 @@
-﻿// Schnittstelle der Anwendung.
+﻿import { switchView } from '../lib/http/config'
+import { IView } from '../lib/site'
+import { InfoServiceContract, getServerVersion } from '../web/InfoServiceContract'
+import { UserProfileContract, getUserProfile } from '../web/UserProfileContract'
+import { IAdminPage, AdminPage } from './pages/admin'
+import { IDevicesPage, DevicesPage } from './pages/devices'
+import { IEditPage, EditPage } from './pages/edit'
+import { IFavoritesPage, FavoritesPage } from './pages/favorites'
+import { IGuidePage, GuidePage } from './pages/guide'
+import { IHelpPage, IHelpComponent, IHelpComponentProvider, HelpPage } from './pages/help'
+import { IHomePage, HomePage } from './pages/home'
+import { IJobPage, JobPage } from './pages/jobs'
+import { ILogPage, LogPage } from './pages/log'
+import { IPage, Page } from './pages/page'
+import { IPlanPage, PlanPage } from './pages/plan'
+import { ISettingsPage, SettingsPage } from './pages/settings'
+
+// Schnittstelle der Anwendung.
 export interface IApplication {
     // Die Überschrift der Anwendung als Ganzes.
     readonly title: string
@@ -46,7 +63,7 @@ export interface IApplication {
     readonly devicesPage: IDevicesPage
 
     // Einstellungen des Benutzers.
-    readonly profile: VCRServer.UserProfileContract
+    readonly profile: UserProfileContract
 
     // Meldet die Verwaltung der Hilfeseiten - dies erfolgt primär im Kontext der Oberfläche.
     getHelpComponentProvider<TComponentType extends IHelpComponent>(): IHelpComponentProvider<TComponentType>
@@ -56,7 +73,7 @@ export interface IApplication {
 }
 
 // Die von der Oberfläche bereitzustellende Arbeitsumgebung für die Anwendung.
-export interface IApplicationSite extends JMSLib.App.IView {
+export interface IApplicationSite extends IView {
     // Wechselt zu einem anderen Navigationsbereich.
     goto(page: string | null): void
 
@@ -106,16 +123,16 @@ export class Application implements IApplication {
     isRestarting = false
 
     // Version des VCR.NET Recording Service.
-    version: VCRServer.InfoServiceContract
+    version: InfoServiceContract
 
     // Einstellungen des Benutzers.
-    profile: VCRServer.UserProfileContract
+    profile: UserProfileContract
 
     // Der aktuelle Navigationsbereich.
-    page?: App.IPage | null
+    page?: IPage | null
 
     // Der interne Arbeitsstand der Anwendung.
-    private _pendingPage?: App.IPage
+    private _pendingPage?: IPage
 
     get isBusy(): boolean {
         return !!this._pendingPage
@@ -172,7 +189,7 @@ export class Application implements IApplication {
 
     switchPage(name: string, sections: string[]): void {
         // Melden, dass alle ausstehenden asynchronen Anfragen von nun an nicht mehr interessieren.
-        JMSLib.App.switchView()
+        switchView()
 
         // Den Singleton der gewünschten Seite ermitteln.
         var page = this._pageMapper[name] || this.homePage
@@ -184,13 +201,13 @@ export class Application implements IApplication {
         this.refreshUi()
 
         // Benutzereinstellungen anfordern.
-        VCRServer.getUserProfile()
+        getUserProfile()
             .then((profile) => {
                 // Benutzereinstellungen übernehmen.
                 this.profile = profile!
 
                 // Versionsinformationen anfordern.
-                return VCRServer.getServerVersion()
+                return getServerVersion()
             })
             .then((info) => {
                 // Versionsinformationen aktualisieren.

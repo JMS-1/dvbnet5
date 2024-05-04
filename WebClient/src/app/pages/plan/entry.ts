@@ -1,5 +1,15 @@
-﻿// Erweiterte Schnittstelle (View Model) zur Anzeige eines Eintrags des Aufzeichnunsplans.
-export interface IPlanEntry extends JMSLib.App.IConnectable {
+﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
+import { IConnectable, IView } from '../../../lib/site'
+import { ITimeBar, TimeBar } from '../../../lib/timebar'
+import { Guide } from '../../../pages/guide'
+import { GuideItemContract, getGuideItem } from '../../../web/GuideItemContract'
+import { PlanActivityContract } from '../../../web/PlanActivityContract'
+import { Application } from '../../app'
+import { GuideInfo, IGuideInfo } from '../guide/entry'
+import { IPlanException, PlanException } from './exception'
+
+// Erweiterte Schnittstelle (View Model) zur Anzeige eines Eintrags des Aufzeichnunsplans.
+export interface IPlanEntry extends IConnectable {
     // Ein Kürzel für die Qualität der Aufzeichnung, etwa ob dieser verspätet beginnt.
     readonly mode?: string
 
@@ -52,10 +62,10 @@ export interface IPlanEntry extends JMSLib.App.IConnectable {
     readonly showException: boolean
 
     // Die am besten passenden Informationen aus der Programmzeitschrift.
-    readonly guideItem: Guide.IGuideInfo | null
+    readonly guideItem: IGuideInfo | null
 
     // Beschreibt die Zeit von Aufzeichung und Eintrag der Programmzeitschrift.
-    readonly guideTime: JMSLib.App.ITimeBar
+    readonly guideTime: ITimeBar
 
     // Schaltet die Detailanzeige um.
     toggleDetail(epg: boolean): void
@@ -65,11 +75,11 @@ export interface IPlanEntry extends JMSLib.App.IConnectable {
 export class PlanEntry implements IPlanEntry {
     // Erstellt ein neues Präsentationsmodell.
     constructor(
-        private model: VCRServer.PlanActivityContract,
+        private model: PlanActivityContract,
         private _toggleDetail: (entry: PlanEntry, epg: boolean) => void,
-        application: App.Application,
+        application: Application,
         reload: () => void,
-        private readonly _findInGuide: (model: VCRServer.GuideItemContract) => void
+        private readonly _findInGuide: (model: GuideItemContract) => void
     ) {
         // Zeiten umrechnen
         this.duration = parseInt(model.duration)
@@ -149,12 +159,12 @@ export class PlanEntry implements IPlanEntry {
 
     // Der Startzeitpunkt formatiert für die Darstellung.
     get displayStart(): string {
-        return JMSLib.App.DateTimeUtils.formatStartTime(this.start)
+        return DateTimeUtils.formatStartTime(this.start)
     }
 
     // Der Endzeitpunkt, formatiert für die Darstellung - es werden nur Stunden und Minuten angezeigt.
     get displayEnd(): string {
-        return JMSLib.App.DateTimeUtils.formatEndTime(this.end)
+        return DateTimeUtils.formatEndTime(this.end)
     }
 
     // Die zugehörige Ausnahmeregel.
@@ -191,7 +201,7 @@ export class PlanEntry implements IPlanEntry {
     }
 
     // Das zugehörige Oberflächenelement.
-    view: JMSLib.App.IView
+    view: IView
 
     // Fordert die Oberfläche zur Aktualisierung auf.
     private refreshUi(): void {
@@ -199,16 +209,16 @@ export class PlanEntry implements IPlanEntry {
     }
 
     // Beschreibt die Zeit von Aufzeichung und Eintrag der Programmzeitschrift.
-    private _guideTime: JMSLib.App.TimeBar
+    private _guideTime: TimeBar
 
-    get guideTime(): JMSLib.App.ITimeBar {
+    get guideTime(): ITimeBar {
         return this._guideTime
     }
 
     // Beschreibt die Zeit von Aufzeichung und Eintrag der Programmzeitschrift.
-    private _guideItem: Guide.GuideInfo | null
+    private _guideItem: GuideInfo | null
 
-    get guideItem(): Guide.IGuideInfo | null {
+    get guideItem(): IGuideInfo | null {
         // Das ist grundsätzlich nicht möglich.
         if (!this.model.epg || !this.model.epgDevice || !this.model.source) return null
 
@@ -216,18 +226,13 @@ export class PlanEntry implements IPlanEntry {
         if (this._guideItem !== undefined) return this._guideItem
 
         // In der Programmzeitschrift suchen und den am besten passenden Eintrag ermitteln.
-        VCRServer.getGuideItem(this.model.epgDevice, this.model.source, this.start, this.end).then((item) => {
+        getGuideItem(this.model.epgDevice, this.model.source, this.start, this.end).then((item) => {
             // Eventuell Präsentationsmodell für den Eintrag erstellen.
-            this._guideItem = item ? new Guide.GuideInfo(item, this._findInGuide) : null
+            this._guideItem = item ? new GuideInfo(item, this._findInGuide) : null
 
             // Zusätzlich ein Präsentationsmodell für die Zeitschiene erstellen.
             if (this._guideItem)
-                this._guideTime = new JMSLib.App.TimeBar(
-                    this.start,
-                    this.end,
-                    this._guideItem.start,
-                    this._guideItem.end
-                )
+                this._guideTime = new TimeBar(this.start, this.end, this._guideItem.start, this._guideItem.end)
 
             // Overfläche zur Aktualisierung auffordern.
             this.refreshUi()

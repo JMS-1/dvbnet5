@@ -1,10 +1,16 @@
-﻿// Erweiterte Schnittstelle zur Pflege einer einzelnen Ausnahmeregel.
-export interface IPlanException extends JMSLib.App.IConnectable {
+﻿import { ICommand, Command } from '../../../lib/command/command'
+import { DateTimeUtils } from '../../../lib/dateTimeUtils'
+import { INumberWithSlider, NumberWithSlider } from '../../../lib/edit/number/slider'
+import { IConnectable, IView } from '../../../lib/site'
+import { PlanExceptionContract, updateException } from '../../../web/PlanExceptionContract'
+
+// Erweiterte Schnittstelle zur Pflege einer einzelnen Ausnahmeregel.
+export interface IPlanException extends IConnectable {
     // Der Regler zur Einstellung der Startzeitverschiebung.
-    readonly startSlider: JMSLib.App.INumberWithSlider
+    readonly startSlider: INumberWithSlider
 
     // Der Regler zur Einstellung der Laufzeitveränderung.
-    readonly durationSlider: JMSLib.App.INumberWithSlider
+    readonly durationSlider: INumberWithSlider
 
     // Die Darstellung für den Zustand der Ausnahme.
     readonly exceptionMode: string
@@ -19,26 +25,26 @@ export interface IPlanException extends JMSLib.App.IConnectable {
     readonly currentDuration: number
 
     // Verwendet die ursprüngliche Aufzeichnungsdaten.
-    readonly originalTime: JMSLib.App.ICommand
+    readonly originalTime: ICommand
 
     // Deaktiviert die Aufzeichnung vollständig.
-    readonly skip: JMSLib.App.ICommand
+    readonly skip: ICommand
 
     // Aktualisiert die Aufzeichnung.
-    readonly update: JMSLib.App.ICommand
+    readonly update: ICommand
 }
 
 // Erweiterte Schnittstelle zur Pflege einer einzelnen Ausnahmeregel.
 export class PlanException implements IPlanException {
     // Erstellt ein neies Präsentationsmodell.
     constructor(
-        private model: VCRServer.PlanExceptionContract,
+        private model: PlanExceptionContract,
         private _entryId: string,
         private _reload: () => void
     ) {
         this._originalStart = new Date(model.originalStart as string)
-        this.startSlider = new JMSLib.App.NumberWithSlider(model, 'startShift', () => this.refreshUi(), -480, +480)
-        this.durationSlider = new JMSLib.App.NumberWithSlider(
+        this.startSlider = new NumberWithSlider(model, 'startShift', () => this.refreshUi(), -480, +480)
+        this.durationSlider = new NumberWithSlider(
             model,
             'timeDelta',
             () => this.refreshUi(),
@@ -51,19 +57,19 @@ export class PlanException implements IPlanException {
     private _originalStart: Date
 
     // Der Regler zur Einstellung der Startzeitverschiebung.
-    readonly startSlider: JMSLib.App.NumberWithSlider
+    readonly startSlider: NumberWithSlider
 
     // Der Regler zur Einstellung der Laufzeitveränderung.
-    readonly durationSlider: JMSLib.App.NumberWithSlider
+    readonly durationSlider: NumberWithSlider
 
     // Befehl zum Zurücksetzen des Aufzeichnungsbereichs of die originalen Werte.
-    readonly originalTime = new JMSLib.App.Command(() => this.setToOriginal(), 'Ursprüngliche Planung')
+    readonly originalTime = new Command(() => this.setToOriginal(), 'Ursprüngliche Planung')
 
     // Befehl zum Deaktivieren der Aufzeichnung.
-    readonly skip = new JMSLib.App.Command(() => this.setToDisable(), 'Nicht aufzeichnen')
+    readonly skip = new Command(() => this.setToDisable(), 'Nicht aufzeichnen')
 
     // Befehl zum Abspeichern der Änderungen.
-    readonly update = new JMSLib.App.Command(() => this.save(), 'Einstellungen übernehmen')
+    readonly update = new Command(() => this.save(), 'Einstellungen übernehmen')
 
     // Die Darstellung für den Zustand der Ausnahme.
     get exceptionMode(): string {
@@ -76,7 +82,7 @@ export class PlanException implements IPlanException {
     }
 
     get currentStart(): string {
-        return JMSLib.App.DateTimeUtils.formatStartTime(this.start())
+        return DateTimeUtils.formatStartTime(this.start())
     }
 
     // Meldet den Endzeitpunkt als Text.
@@ -85,7 +91,7 @@ export class PlanException implements IPlanException {
     }
 
     get currentEnd(): string {
-        return JMSLib.App.DateTimeUtils.formatEndTime(this.end())
+        return DateTimeUtils.formatEndTime(this.end())
     }
 
     // Meldet die aktuelle Dauer.
@@ -118,16 +124,13 @@ export class PlanException implements IPlanException {
     // Aktualisiert die Ausnahmeregel.
     private save(): void {
         // Änderung anfordern und Ergebnis asynchron bearbeiten.
-        VCRServer.updateException(
-            this._entryId,
-            this.model.referenceDay,
-            this.model.startShift,
-            this.model.timeDelta
-        ).then(this._reload)
+        updateException(this._entryId, this.model.referenceDay, this.model.startShift, this.model.timeDelta).then(
+            this._reload
+        )
     }
 
     // Beachrichtigungen einrichten.
-    view: JMSLib.App.IView
+    view: IView
 
     // Fordert die Oberfläche zur Aktualisierung auf.
     refreshUi(): void {

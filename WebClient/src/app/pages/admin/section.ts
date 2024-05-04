@@ -1,22 +1,26 @@
-﻿// Gemeinsame Schnittstelle für alle Konfigurationsbereiche der Administration.
-export interface ISection extends JMSLib.App.IConnectable {
+﻿import { ICommand, Command } from '../../../lib/command/command'
+import { IConnectable, IView } from '../../../lib/site'
+import { IAdminPage, AdminPage } from '../admin'
+
+// Gemeinsame Schnittstelle für alle Konfigurationsbereiche der Administration.
+export interface ISection extends IConnectable {
     // Die zugehörige Konfigurationsseite.
     readonly page: IAdminPage
 
     // Der Befehl zum Speichern der Daten des Konfigurationsbereichs.
-    readonly update: JMSLib.App.ICommand
+    readonly update: ICommand
 }
 
 // Basisklasse für einen Konfigurationsbereich.
 export abstract class Section implements ISection {
     // Der Befehl zum Speichern der Daten des Konfigurationsbereichs.
-    private _update: JMSLib.App.Command<void>
+    private _update: Command<void>
 
     // Meldet den Befehl zum Speichern, eventuell nach dem dieser einmalig erzeugt wurde.
-    get update(): JMSLib.App.Command<void> {
+    get update(): Command<void> {
         // Beim ersten Aufruf muss der Befehl erzeugt werden.
         if (!this._update)
-            this._update = new JMSLib.App.Command(
+            this._update = new Command(
                 () => this.save(),
                 this.saveCaption,
                 () => this.isValid
@@ -29,7 +33,7 @@ export abstract class Section implements ISection {
     constructor(public readonly page: AdminPage) {}
 
     // Das aktuell zur Anzeige veränderte Oberflächenelement.
-    view: JMSLib.App.IView
+    view: IView
 
     // Benachrichtigt das aktuelle Oberflächenelement über Veränderungen in der Anzeige.
     protected refreshUi(): void {

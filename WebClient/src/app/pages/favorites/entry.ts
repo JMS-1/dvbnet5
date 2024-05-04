@@ -1,5 +1,12 @@
-﻿// Schnittstelle zur Anzeige und Pflege einer gespeicherten Suche.
-export interface IFavorite extends JMSLib.App.IConnectable {
+﻿import { ICommand, Command } from '../../../lib/command/command'
+import { IConnectable, IView } from '../../../lib/site'
+import { GuideEncryption } from '../../../web/GuideEncryption'
+import { GuideFilterContract, countProgramGuide } from '../../../web/GuideFilterContract'
+import { GuideSource } from '../../../web/GuideSource'
+import { SavedGuideQueryContract } from '../../../web/SavedGuideQueryContract'
+
+// Schnittstelle zur Anzeige und Pflege einer gespeicherten Suche.
+export interface IFavorite extends IConnectable {
     // Die Beschreibung der gespeicherten Suche.
     readonly title: string
 
@@ -7,10 +14,10 @@ export interface IFavorite extends JMSLib.App.IConnectable {
     readonly count?: number | null
 
     // Entfernt die gespeicherte Suche.
-    readonly remove: JMSLib.App.ICommand
+    readonly remove: ICommand
 
     // Zeit die Sendungen der gespeicherten Suche in der Programmzeitschrift an.
-    readonly show: JMSLib.App.ICommand
+    readonly show: ICommand
 }
 
 // Präsentationsmodell  zurn Anzeige und Pflege einer gespeicherten Suche.
@@ -25,26 +32,26 @@ export class Favorite implements IFavorite {
 
     // Legt ein Präsentationsmodell an.
     constructor(
-        public readonly model: VCRServer.SavedGuideQueryContract,
+        public readonly model: SavedGuideQueryContract,
         show: (favorite: Favorite) => void,
         remove: (favorite: Favorite) => Promise<void>,
         private _refresh: () => void
     ) {
-        this.remove = new JMSLib.App.Command<void>(() => remove(this), 'Löschen')
-        this.show = new JMSLib.App.Command<void>(() => show(this), 'Anzeigen')
+        this.remove = new Command<void>(() => remove(this), 'Löschen')
+        this.show = new Command<void>(() => show(this), 'Anzeigen')
 
         // Wir schlagen die Anzahl immer nur ein einziges Mal nach.
         this._cacheKey = JSON.stringify(model)
     }
 
     // Das aktuell angemeldete Oberflächenelement.
-    view: JMSLib.App.IView
+    view: IView
 
     // Entfernt die gespeicherte Suche.
-    readonly remove: JMSLib.App.Command<void>
+    readonly remove: Command<void>
 
     // Zeit die Sendungen der gespeicherten Suche in der Programmzeitschrift an.
-    readonly show: JMSLib.App.Command<void>
+    readonly show: Command<void>
 
     // Die Beschreibung der gespeicherten Suche.
     get title(): string {
@@ -53,12 +60,12 @@ export class Favorite implements IFavorite {
         // Einige Einschränkungen machen nur Sinn, wenn keine Quelle ausgewählt ist.
         if ((this.model.source || '') === '') {
             // Verschlüsselung.
-            if (this.model.encryption === VCRServer.GuideEncryption.FREE) display += 'unverschlüsselten '
-            else if (this.model.encryption === VCRServer.GuideEncryption.PAY) display += 'verschlüsselten '
+            if (this.model.encryption === GuideEncryption.FREE) display += 'unverschlüsselten '
+            else if (this.model.encryption === GuideEncryption.PAY) display += 'verschlüsselten '
 
             // Art der Quelle.
-            if (this.model.sourceType === VCRServer.GuideSource.TV) display += 'Fernseh-'
-            else if (this.model.sourceType === VCRServer.GuideSource.RADIO) display += 'Radio-'
+            if (this.model.sourceType === GuideSource.TV) display += 'Fernseh-'
+            else if (this.model.sourceType === GuideSource.RADIO) display += 'Radio-'
         }
 
         // Gerät.
@@ -108,7 +115,7 @@ export class Favorite implements IFavorite {
         this._count = null
 
         // Suchbedingung in die Protokollnotation wandeln - naja, das ist nicht wirklich schwer.
-        var filter: VCRServer.GuideFilterContract = {
+        var filter: GuideFilterContract = {
             content: this.model.titleOnly ? '' : this.model.text,
             cryptFilter: this.model.encryption,
             typeFilter: this.model.sourceType,
@@ -122,7 +129,7 @@ export class Favorite implements IFavorite {
 
         // Laden anstossen.
         Favorite._loader = Favorite._loader.then(() =>
-            VCRServer.countProgramGuide(filter).then((count) => {
+            countProgramGuide(filter).then((count) => {
                 // Wert vermerken.
                 this._count = Favorite._countCache[this._cacheKey] = count!
 

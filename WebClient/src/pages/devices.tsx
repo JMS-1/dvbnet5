@@ -1,7 +1,18 @@
 ﻿import * as React from 'react'
+import { IDevicesPage } from '../app/pages/devices'
+import { HelpLink } from '../common/helpLink'
+import { InlineHelp } from '../common/inlineHelp'
+import { ExternalLink } from '../lib.react/command/externalLink'
+import { InternalLink } from '../lib.react/command/internalLink'
+import { Pictogram } from '../lib.react/command/pictogram'
+import { DetailRow } from '../lib.react/detailRow'
+import { ComponentWithSite } from '../lib.react/reactUi'
+import { DeviceControl } from './devices/control'
+import { Device } from './devices/entry'
+import { DeviceGuide } from './devices/guide'
 
 // React.Ks Komponente zur Anzeige der Geräteübersicht.
-export class Devices extends JMSLib.ReactUi.ComponentWithSite<App.IDevicesPage> {
+export class Devices extends ComponentWithSite<IDevicesPage> {
     // Oberflächenelemente erstellen.
     render(): JSX.Element {
         return (
@@ -28,14 +39,14 @@ export class Devices extends JMSLib.ReactUi.ComponentWithSite<App.IDevicesPage> 
                         {this.props.uvm.infos.map((i, index) => [
                             <Device key={index} page={this.props.uvm} uvm={i} />,
                             i.showGuide.value && (
-                                <JMSLib.ReactUi.DetailRow prefixColumns={1} dataColumns={6}>
+                                <DetailRow prefixColumns={1} dataColumns={6}>
                                     <DeviceGuide key={`${index}Guide`} uvm={i} />
-                                </JMSLib.ReactUi.DetailRow>
+                                </DetailRow>
                             ),
                             i.showControl.value && (
-                                <JMSLib.ReactUi.DetailRow prefixColumns={1} dataColumns={6}>
+                                <DetailRow prefixColumns={1} dataColumns={6}>
                                     <DeviceControl key={`${index}Control`} page={this.props.uvm} uvm={i.controller} />
-                                </JMSLib.ReactUi.DetailRow>
+                                </DetailRow>
                             ),
                         ])}
                     </tbody>
@@ -65,25 +76,25 @@ export class Devices extends JMSLib.ReactUi.ComponentWithSite<App.IDevicesPage> 
                     <tbody>
                         <tr>
                             <td>
-                                <JMSLib.ReactUi.Pictogram name='running' />
+                                <Pictogram name='running' />
                             </td>
                             <td>Die Aufzeichnung oder Aufgabe wird in diesem Moment ausgeführt.</td>
                         </tr>
                         <tr>
                             <td>
-                                <JMSLib.ReactUi.Pictogram name='intime' />
+                                <Pictogram name='intime' />
                             </td>
                             <td>Eine zukünftige Aufzeichnung wird wie programmiert ausgeführt.</td>
                         </tr>
                         <tr>
                             <td>
-                                <JMSLib.ReactUi.Pictogram name='late' />
+                                <Pictogram name='late' />
                             </td>
                             <td>Eine zukünftige Aufzeichnung beginnt verspätet, eventuell fehlt der Anfang.</td>
                         </tr>
                         <tr>
                             <td>
-                                <JMSLib.ReactUi.Pictogram name='null' />
+                                <Pictogram name='null' />
                             </td>
                             <td>
                                 Die Aufzeichnung oder Aufgabe wird gerade beendet - dies kann einige Sekunden dauern.
@@ -93,23 +104,23 @@ export class Devices extends JMSLib.ReactUi.ComponentWithSite<App.IDevicesPage> 
                 </table>
                 <br />
                 Wenn gerade eine Aufzeichnung oder Aufgabe ausgeführt wird, so kann das zugehörige Symbol
-                <JMSLib.ReactUi.Pictogram name='running' /> ausgewählt werden um den Endzeitpunkt dieser Aktivtät zu
-                verändern - oder sie gänzlich zu beenden
+                <Pictogram name='running' /> ausgewählt werden um den Endzeitpunkt dieser Aktivtät zu verändern - oder
+                sie gänzlich zu beenden
                 <HelpLink topic='currentstream' page={this.props.uvm} />. Handelt es sich bei der Aktivität um eine
                 Aufzeichnung, so ist es zusätzlich möglich diese LIVE oder zeitversetzt mit dem{' '}
-                <JMSLib.ReactUi.ExternalLink url='http://www.psimarron.net/DVBNETViewer/html/vcrcurrent.html'>
+                <ExternalLink url='http://www.psimarron.net/DVBNETViewer/html/vcrcurrent.html'>
                     DVB.NET / VCR.NET Viewer
-                </JMSLib.ReactUi.ExternalLink>{' '}
+                </ExternalLink>{' '}
                 zu betrachten - sofern dieser lokal installiert ist und geeignet konfiguriert wurde
                 <HelpLink topic='streaming' page={this.props.uvm} />.
                 <br />
                 <br />
                 Sollte zu einer Aufzeichnung ein Eintrag in der Programmzeitschrift
-                <JMSLib.ReactUi.InternalLink view={this.props.uvm.application.guidePage.route} pict='guide' />{' '}
-                existieren, so kann dieser durch Auswahl des Verweises auf dem Startzeitpunkt eingeblendet werden -
-                angezeigt wird der Eintrag, der am besten zum gesamten Aufzeichnungszeitraum passt. Ebenso ist es bei
-                einem Eintrag zu einer Aufzeichnung über den Verweis auf dem Namen der Aufzeichnung möglich, die
-                zugehörigen Einstellungen direkt zu verändern.
+                <InternalLink view={this.props.uvm.application.guidePage.route} pict='guide' /> existieren, so kann
+                dieser durch Auswahl des Verweises auf dem Startzeitpunkt eingeblendet werden - angezeigt wird der
+                Eintrag, der am besten zum gesamten Aufzeichnungszeitraum passt. Ebenso ist es bei einem Eintrag zu
+                einer Aufzeichnung über den Verweis auf dem Namen der Aufzeichnung möglich, die zugehörigen
+                Einstellungen direkt zu verändern.
                 <br />
                 <br />
                 Führt ein Gerät gerade eine oder mehrere

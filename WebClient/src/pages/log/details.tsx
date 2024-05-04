@@ -1,7 +1,11 @@
 ﻿import * as React from 'react'
+import { Component } from '../../lib.react/reactUi'
+import { ILogEntry } from '../../app/pages/log/entry'
+import { ExternalLink } from '../../lib.react/command/externalLink'
+import { Pictogram } from '../../lib.react/command/pictogram'
 
 // React.Js Komponente zur Anzeige der Details eines Protokolleintrags.
-export class LogDetails extends JMSLib.ReactUi.Component<App.Log.ILogEntry> {
+export class LogDetails extends Component<ILogEntry> {
     // Oberflächenelemente erstellen.
     render(): JSX.Element {
         return (
@@ -35,9 +39,9 @@ export class LogDetails extends JMSLib.ReactUi.Component<App.Log.ILogEntry> {
                                     <td>Datei ansehen:</td>
                                     <td>
                                         {this.props.uvm.files.map((f, index) => (
-                                            <JMSLib.ReactUi.ExternalLink key={index} url={f} sameWindow={true}>
-                                                <JMSLib.ReactUi.Pictogram name='recording' />
-                                            </JMSLib.ReactUi.ExternalLink>
+                                            <ExternalLink key={index} url={f} sameWindow={true}>
+                                                <Pictogram name='recording' />
+                                            </ExternalLink>
                                         ))}
                                     </td>
                                 </tr>

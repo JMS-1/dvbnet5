@@ -1,38 +1,53 @@
-﻿// Schnittstelle zur Pflege einer einzelnen Aufzeichnung.
+﻿import { ICommand, Command } from '../../lib/command/command'
+import { DateTimeUtils } from '../../lib/dateTimeUtils'
+import { uiValue, IUiValue } from '../../lib/edit/list'
+import { EditJobContract } from '../../web/EditJobContract'
+import { EditScheduleContract, deleteSchedule } from '../../web/EditScheduleContract'
+import { createScheduleFromGuide, updateSchedule } from '../../web/JobScheduleDataContract'
+import { JobScheduleInfoContract } from '../../web/JobScheduleInfoContract'
+import { ProfileCache } from '../../web/ProfileCache'
+import { ProfileSourcesCache } from '../../web/ProfileSourcesCache'
+import { RecordingDirectoryCache } from '../../web/RecordingDirectoryCache'
+import { Application } from '../app'
+import { IJobEditor, JobEditor } from './edit/job'
+import { IScheduleEditor, ScheduleEditor } from './edit/schedule'
+import { IPage, Page } from './page'
+
+// Schnittstelle zur Pflege einer einzelnen Aufzeichnung.
 export interface IEditPage extends IPage {
     // Die Daten des zugehörigen Auftrags.
-    readonly job?: Edit.IJobEditor
+    readonly job?: IJobEditor
 
     // Die Daten der Aufzeichnung.
-    readonly schedule?: Edit.IScheduleEditor
+    readonly schedule?: IScheduleEditor
 
     // Befehl zum Speichern der Aufzeichnung.
-    readonly save: JMSLib.App.ICommand
+    readonly save: ICommand
 
     // Befehl zum Löschen der Aufzeichnung.
-    readonly del: JMSLib.App.ICommand
+    readonly del: ICommand
 }
 
 // Das Präsentationsmodell zur Pflege einer Aufzeichnung.
 export class EditPage extends Page implements IEditPage {
     // Die Originaldaten der Aufzeichnung.
-    private _jobScheduleInfo?: VCRServer.JobScheduleInfoContract
+    private _jobScheduleInfo?: JobScheduleInfoContract
 
     // Die Daten des zugehörigen Auftrags.
-    job?: Edit.JobEditor
+    job?: JobEditor
 
     // Die Daten der Aufzeichnung.
-    schedule?: Edit.ScheduleEditor
+    schedule?: ScheduleEditor
 
     // Befehl zum Speichern der Aufzeichnung.
-    readonly save = new JMSLib.App.Command(
+    readonly save = new Command(
         () => this.onSave(),
         'Übernehmen',
         () => !!this.isValid
     )
 
     // Befehl zum Löschen der Aufzeichnung.
-    readonly del = new JMSLib.App.Command(() => this.onDelete(), 'Löschen')
+    readonly del = new Command(() => this.onDelete(), 'Löschen')
 
     // Meldet, ob alle Eingaben konsistent sind.
     private get isValid() {
@@ -64,23 +79,23 @@ export class EditPage extends Page implements IEditPage {
         this._fromGuide = false
 
         // Die Auswahlliste der Aufzeichnungsverzeichnisse.
-        var folderSelection = [JMSLib.App.uiValue('', '(Voreinstellung verwenden)')]
+        var folderSelection = [uiValue('', '(Voreinstellung verwenden)')]
 
         // Die Auswahlliste der Geräte.
-        var profileSelection: JMSLib.App.IUiValue<string>[]
+        var profileSelection: IUiValue<string>[]
 
         // Zuerst die Liste der Aufzeichnungsverzeichnisse abfragen.
-        VCRServer.RecordingDirectoryCache.getPromise()
+        RecordingDirectoryCache.getPromise()
             .then((folders) => {
                 // Die möglichen Verzeichnisse anhängen.
-                folderSelection.push(...folders.map((f) => JMSLib.App.uiValue(f)))
+                folderSelection.push(...folders.map((f) => uiValue(f)))
 
                 // Geräteprofile anfordern.
-                return VCRServer.ProfileCache.getAllProfiles()
+                return ProfileCache.getAllProfiles()
             })
             .then((profiles) => {
                 // Auswahl für den Anwender vorbereiten.
-                profileSelection = profiles.map((p) => JMSLib.App.uiValue(p.name))
+                profileSelection = profiles.map((p) => uiValue(p.name))
 
                 // Auf das Neuanlegen prüfen.
                 if (sections.length > 0) {
@@ -95,14 +110,14 @@ export class EditPage extends Page implements IEditPage {
                     this._fromGuide = !!epgId
 
                     // Aufzeichnung asynchron abrufen - entweder existiert eine solche oder sie wird aus der Programmzeitschrift neu angelegt.
-                    return VCRServer.createScheduleFromGuide(id, epgId)
+                    return createScheduleFromGuide(id, epgId)
                 }
 
                 // Löschen geht sicher nicht.
                 this.del.isVisible = false
 
                 // Leere Aufzeichnung angelegen.
-                var newJob = <VCRServer.EditJobContract>{
+                var newJob = <EditJobContract>{
                     withSubtitles: this.application.profile.subtitles,
                     withVideotext: this.application.profile.videotext,
                     allLanguages: this.application.profile.languages,
@@ -115,7 +130,7 @@ export class EditPage extends Page implements IEditPage {
                 }
 
                 // Beschreibung der Aufzeichnung vorbereiten.
-                var info = <VCRServer.JobScheduleInfoContract>{
+                var info = <JobScheduleInfoContract>{
                     job: newJob,
                     jobId: '',
                     scheduleId: '',
@@ -129,10 +144,10 @@ export class EditPage extends Page implements IEditPage {
     }
 
     // Erstellt eine neue leere Aufzeichnung.
-    private createEmptySchedule(): VCRServer.EditScheduleContract {
+    private createEmptySchedule(): EditScheduleContract {
         var now = new Date(Date.now())
 
-        return <VCRServer.EditScheduleContract>{
+        return <EditScheduleContract>{
             firstStart: new Date(
                 now.getFullYear(),
                 now.getMonth(),
@@ -155,9 +170,9 @@ export class EditPage extends Page implements IEditPage {
 
     // Die Daten einer existierenden Aufzeichnung stehen bereit.
     private setJobSchedule(
-        info: VCRServer.JobScheduleInfoContract,
-        profiles: JMSLib.App.IUiValue<string>[],
-        folders: JMSLib.App.IUiValue<string>[]
+        info: JobScheduleInfoContract,
+        profiles: IUiValue<string>[],
+        folders: IUiValue<string>[]
     ): void {
         // Liste der zuletzt verwendeten Quellen abrufen.
         var favorites = this.application.profile.recentSources || []
@@ -167,11 +182,11 @@ export class EditPage extends Page implements IEditPage {
 
         // Präsentationsmodelle anlegen.
         this._jobScheduleInfo = info
-        this.job = new Edit.JobEditor(this, info.job, profiles, favorites, folders, () => {
+        this.job = new JobEditor(this, info.job, profiles, favorites, folders, () => {
             this.schedule && this.schedule.source.sourceName.validate()
             this.onChanged()
         })
-        this.schedule = new Edit.ScheduleEditor(
+        this.schedule = new ScheduleEditor(
             this,
             info.schedule,
             favorites,
@@ -188,7 +203,7 @@ export class EditPage extends Page implements IEditPage {
         var profile = this.job?.device.value
 
         // Das kann man ruhig öfter mal machen, da das Ergebnis nach dem ersten asynchronen Abruf gespeichert wird.
-        return VCRServer.ProfileSourcesCache.getSources(profile!).then((sources) => {
+        return ProfileSourcesCache.getSources(profile!).then((sources) => {
             // Nur übernehmen, wenn das Gerät noch passt.
             if (this.job?.device.value === profile) {
                 // Diese Zuweisung ist optimiert und macht einfach nichts, wenn exakt die selbe Liste eingetragen werden soll.
@@ -220,13 +235,13 @@ export class EditPage extends Page implements IEditPage {
     // Beginnt mit der asynchronen Aktualisierung der Daten der Aufzeichnung.
     private onSave(): Promise<void> {
         // Kopie der Aufzeichnungsdaten anlegen.
-        var schedule = { ...this._jobScheduleInfo?.schedule } as VCRServer.EditScheduleContract
+        var schedule = { ...this._jobScheduleInfo?.schedule } as EditScheduleContract
 
         // Dauer unter Berücksichtigung der Zeitumstellung anpassen.
-        schedule.duration = JMSLib.App.DateTimeUtils.getRealDurationInMinutes(schedule.firstStart, schedule.duration)
+        schedule.duration = DateTimeUtils.getRealDurationInMinutes(schedule.firstStart, schedule.duration)
 
         // Asynchrone Operation anfordern.
-        return VCRServer.updateSchedule(this._jobScheduleInfo?.jobId ?? '', this._jobScheduleInfo?.scheduleId ?? '', {
+        return updateSchedule(this._jobScheduleInfo?.jobId ?? '', this._jobScheduleInfo?.scheduleId ?? '', {
             job: this._jobScheduleInfo?.job!,
             schedule,
         }).then(() => {
@@ -241,10 +256,9 @@ export class EditPage extends Page implements IEditPage {
     private onDelete(): Promise<void> | void {
         // Beim zweiten Aufruf wird der asynchrone Befehl an den VCR.NET Recording Service geschickt.
         if (this.del.isDangerous)
-            return VCRServer.deleteSchedule(
-                this._jobScheduleInfo?.jobId ?? '',
-                this._jobScheduleInfo?.scheduleId ?? ''
-            ).then(() => this.application.gotoPage(this.application.planPage.route))
+            return deleteSchedule(this._jobScheduleInfo?.jobId ?? '', this._jobScheduleInfo?.scheduleId ?? '').then(
+                () => this.application.gotoPage(this.application.planPage.route)
+            )
 
         // Beim ersten Versuch wird einfach nur ein Feedback angezeigt.
         this.del.isDangerous = true

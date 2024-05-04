@@ -1,7 +1,13 @@
-﻿export class Tasks extends HelpComponent {
+﻿import * as React from 'react'
+import { IPage } from '../../app/pages/page'
+import { ExternalLink } from '../../lib.react/command/externalLink'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { HelpComponent } from './helpComponent'
+
+export class Tasks extends HelpComponent {
     readonly title = 'Sonderaufgaben'
 
-    render(page: App.IPage): JSX.Element {
+    render(page: IPage): JSX.Element {
         return (
             <div>
                 Neben der Ausführung der vom Anwender programmierten Aufzeichnungen kann der VCR.NET Recording Service
@@ -9,35 +15,24 @@
                 <br />
                 <br />
                 Zum einen sind da die konfigurierbaren periodischen Aufgaben zur Aktualisierung von{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};epgconfig`}>
-                    Programmzeitschrift
-                </JMSLib.ReactUi.InternalLink>{' '}
-                und der{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};psiconfig`}>
-                    Liste der verfügbaren Quellen
-                </JMSLib.ReactUi.InternalLink>
-                . Bei der Aktualisierung der Programmzeitschrift wird für ausgewählte Quellen die von den Sendeanstalten
-                angebotene{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};epg`}>
-                    elektronische Programmzeitschrift
-                </JMSLib.ReactUi.InternalLink>{' '}
+                <InternalLink view={`${page.route};epgconfig`}>Programmzeitschrift</InternalLink> und der{' '}
+                <InternalLink view={`${page.route};psiconfig`}>Liste der verfügbaren Quellen</InternalLink>. Bei der
+                Aktualisierung der Programmzeitschrift wird für ausgewählte Quellen die von den Sendeanstalten
+                angebotene <InternalLink view={`${page.route};epg`}>elektronische Programmzeitschrift</InternalLink>{' '}
                 (EPG) ausgewertet und für die spätere Programmierung von Aufzeichnungen zusammengeführt. Bei der
                 Aktualisierung der Liste der Quellen (Sendersuchlauf) wird für jedes relevante DVB Gerät geprüft, welche{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};sourcechooser`}>Quellen</JMSLib.ReactUi.InternalLink>{' '}
-                grundsätzlich empfangen werden können. Je nach Konfiguration im zugehörigen DVB.NET Geräteprofil können
-                auf diese Weise auch neu bereitgestellte Quellen ohne weiteres Zutun erkannt werden.
+                <InternalLink view={`${page.route};sourcechooser`}>Quellen</InternalLink> grundsätzlich empfangen werden
+                können. Je nach Konfiguration im zugehörigen DVB.NET Geräteprofil können auf diese Weise auch neu
+                bereitgestellte Quellen ohne weiteres Zutun erkannt werden.
                 <br />
                 <br />
                 Zum anderen ist es möglich, für jedes DVB Gerät den so genannten <em>Live</em> Modus zu aktivieren.
                 Ähnlich wie bei einer einzelnen Aufzeichnung wird dabei eine Quelle angewählt. Allerdings wird keine
                 Aufzeichnungsdatei erstellt, sondern es werden vielmehr die Informationen, die eigentlich in einer
                 solchen abgelegt würden, an eine Netzwerkadresse versendet. Diverse frei verfügbare{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};tsplayer`}>Programme</JMSLib.ReactUi.InternalLink> wie
-                VLC können einen so erzeugten Datenstrom empfangen und darstellen. Speziell für diese Aufgabe entwickelt
-                wurde der{' '}
-                <JMSLib.ReactUi.ExternalLink url='http://www.psimarron.net/DVBNETViewer/'>
-                    DVB.NET / VCR.NET Viewer
-                </JMSLib.ReactUi.ExternalLink>
+                <InternalLink view={`${page.route};tsplayer`}>Programme</InternalLink> wie VLC können einen so erzeugten
+                Datenstrom empfangen und darstellen. Speziell für diese Aufgabe entwickelt wurde der{' '}
+                <ExternalLink url='http://www.psimarron.net/DVBNETViewer/'>DVB.NET / VCR.NET Viewer</ExternalLink>
                 . Dieser kann die Informationen nicht nur als Bild und Ton visualisieren, sondern auch den VCR.NET
                 Recording Service dazu bewegen, die Quelle nach Wunsch des Anwenders zu ändern. Der Viewer ist damit
                 vergleichbar mit einem primitiven Fernseher, der als Empfängereinheit jedes DVB Gerät nutzen kann, das
@@ -66,11 +61,8 @@
                 <br />
                 Anders als bei Aufzeichnungen nutzt der <em>Live</em> Modus ein DVB Gerät immer exklusiv. Es ist daher
                 nicht wie bei{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};parallelrecording`}>
-                    parallelen Aufzeichnungen
-                </JMSLib.ReactUi.InternalLink>{' '}
-                möglich zwei Quellen der gleichen Gruppe im <em>Live</em> Modus an zwei Empfänger zur Anzeige zu
-                schicken.
+                <InternalLink view={`${page.route};parallelrecording`}>parallelen Aufzeichnungen</InternalLink> möglich
+                zwei Quellen der gleichen Gruppe im <em>Live</em> Modus an zwei Empfänger zur Anzeige zu schicken.
             </div>
         )
     }

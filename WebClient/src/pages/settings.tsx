@@ -1,7 +1,17 @@
 ﻿import * as React from 'react'
+import { ISettingsPage } from '../app/pages/settings'
+import { Field } from '../common/field'
+import { HelpLink } from '../common/helpLink'
+import { InlineHelp } from '../common/inlineHelp'
+import { ButtonCommand } from '../lib.react/command/button'
+import { InternalLink } from '../lib.react/command/internalLink'
+import { EditBoolean } from '../lib.react/edit/boolean/flag'
+import { SingleSelect } from '../lib.react/edit/list'
+import { EditNumber } from '../lib.react/edit/number/number'
+import { ComponentWithSite } from '../lib.react/reactUi'
 
 // React.Js Komponente zur Pflege der Benutzereinstellungen.
-export class Settings extends JMSLib.ReactUi.ComponentWithSite<App.ISettingsPage> {
+export class Settings extends ComponentWithSite<ISettingsPage> {
     // Oberflächenelemente erzeugen.
     render(): JSX.Element {
         return (
@@ -11,43 +21,43 @@ export class Settings extends JMSLib.ReactUi.ComponentWithSite<App.ISettingsPage
                 <form>
                     {this.getPlanHelp()}
                     <Field page={this.props.uvm} label={`${this.props.uvm.planDays.text}:`}>
-                        <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.planDays} chars={5} />
+                        <EditNumber uvm={this.props.uvm.planDays} chars={5} />
                     </Field>
                     {this.getSourceHelp()}
                     <div className='vcrnet-settings-field'>
                         Inhalte der Senderlisten bei Aufzeichnungen:
-                        <JMSLib.ReactUi.SingleSelect uvm={this.props.uvm.sourceType} />
-                        <JMSLib.ReactUi.SingleSelect uvm={this.props.uvm.encryption} />
+                        <SingleSelect uvm={this.props.uvm.sourceType} />
+                        <SingleSelect uvm={this.props.uvm.encryption} />
                     </div>
                     <Field page={this.props.uvm} label={`${this.props.uvm.maxFavorites.text}:`}>
-                        <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.maxFavorites} chars={5} />
+                        <EditNumber uvm={this.props.uvm.maxFavorites} chars={5} />
                     </Field>
                     <div className='vcrnet-settings-field'>
                         Bevorzugte Zusatzoptionen für Aufzeichnungen:
-                        <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.dolby} />
-                        <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.allAudio} />
-                        <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.ttx} />
-                        <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.subs} />
+                        <EditBoolean uvm={this.props.uvm.dolby} />
+                        <EditBoolean uvm={this.props.uvm.allAudio} />
+                        <EditBoolean uvm={this.props.uvm.ttx} />
+                        <EditBoolean uvm={this.props.uvm.subs} />
                     </div>
                     {this.getSleepHelp()}
                     <div className='vcrnet-settings-field'>
-                        <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.noSleep} />
+                        <EditBoolean uvm={this.props.uvm.noSleep} />
                     </div>
                     {this.getGuideHelp()}
                     <Field page={this.props.uvm} label={`${this.props.uvm.guideRows.text}:`}>
-                        <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.guideRows} chars={5} />
+                        <EditNumber uvm={this.props.uvm.guideRows} chars={5} />
                     </Field>
                     <Field page={this.props.uvm} label={`${this.props.uvm.preGuide.text}:`}>
-                        <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.preGuide} chars={5} />
+                        <EditNumber uvm={this.props.uvm.preGuide} chars={5} />
                     </Field>
                     <Field page={this.props.uvm} label={`${this.props.uvm.postGuide.text}:`}>
-                        <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.postGuide} chars={5} />
+                        <EditNumber uvm={this.props.uvm.postGuide} chars={5} />
                     </Field>
                     <div className='vcrnet-settings-field'>
-                        <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.backToGuide} />
+                        <EditBoolean uvm={this.props.uvm.backToGuide} />
                     </div>
                     <div>
-                        <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.update} />
+                        <ButtonCommand uvm={this.props.uvm.update} />
                     </div>
                 </form>
             </div>
@@ -59,11 +69,10 @@ export class Settings extends JMSLib.ReactUi.ComponentWithSite<App.ISettingsPage
         return (
             <InlineHelp title='Erläuterungen'>
                 Im Aufzeichnungsplan
-                <JMSLib.ReactUi.InternalLink view={this.props.uvm.application.planPage.route} pict='plan' /> werden die
-                Daten aller geplanten Aufzeichnungen in einer Liste angezeigt. Um eine gewisse Übersichtlichkeit zu
-                erhalten wird allerdings nur eine begrenzte Anzahl von Aufzeichnungen auf einmal angezeigt. Die im
-                Folgenden angezeigte Zahl legt fest, wie viele Tage pro Seite im Aufzeichnungsplan berücksichtigt werden
-                sollen.
+                <InternalLink view={this.props.uvm.application.planPage.route} pict='plan' /> werden die Daten aller
+                geplanten Aufzeichnungen in einer Liste angezeigt. Um eine gewisse Übersichtlichkeit zu erhalten wird
+                allerdings nur eine begrenzte Anzahl von Aufzeichnungen auf einmal angezeigt. Die im Folgenden
+                angezeigte Zahl legt fest, wie viele Tage pro Seite im Aufzeichnungsplan berücksichtigt werden sollen.
             </InlineHelp>
         )
     }
@@ -85,9 +94,8 @@ export class Settings extends JMSLib.ReactUi.ComponentWithSite<App.ISettingsPage
         return (
             <InlineHelp title='Erläuterungen'>
                 Wird eine aktive Aufzeichnung
-                <JMSLib.ReactUi.InternalLink view={this.props.uvm.application.devicesPage.route} pict='devices' />{' '}
-                vorzeitig beendet, so wird der VCR.NET Recording Service prüfen, ob der Rechner in den Schlafzustand
-                versetzt werden soll.
+                <InternalLink view={this.props.uvm.application.devicesPage.route} pict='devices' /> vorzeitig beendet,
+                so wird der VCR.NET Recording Service prüfen, ob der Rechner in den Schlafzustand versetzt werden soll.
                 <HelpLink topic='hibernation' page={this.props.uvm} /> Diese Verhalten kann pro Abbruch gesondert
                 deaktiviert werden und die folgende Einstellung legt das bevorzugte Verhalten fest.
             </InlineHelp>
@@ -110,16 +118,16 @@ export class Settings extends JMSLib.ReactUi.ComponentWithSite<App.ISettingsPage
                 <br />
                 <br />
                 Hier wird auch festgelegt, wie viele Einträge die Programmzeitschrift
-                <JMSLib.ReactUi.InternalLink view={this.props.uvm.application.guidePage.route} pict='guide' /> pro Seite
-                anzeigen soll. Zu große Werte erhöhen nicht nur die Zeit zur Anzeige einer Seite sondern sorgen oft auch
-                dafür, dass nicht alle Sendungen einer Seite auf einen Blick erfasst werden können.
+                <InternalLink view={this.props.uvm.application.guidePage.route} pict='guide' /> pro Seite anzeigen soll.
+                Zu große Werte erhöhen nicht nur die Zeit zur Anzeige einer Seite sondern sorgen oft auch dafür, dass
+                nicht alle Sendungen einer Seite auf einen Blick erfasst werden können.
                 <br />
                 <br />
                 Wenn die Programmierung einer Aufzeichnung aus der Programmzeitschrift abgeschlossen ist wird
                 normalerweise zum Aufzeichnungsplan
-                <JMSLib.ReactUi.InternalLink view={this.props.uvm.application.planPage.route} pict='plan' /> gewechselt.
-                Ist die unten als letztes angebotene Einstellung aktiviert wird in diesem Fall erneut die
-                Programmzeitschrift aufgerufen.
+                <InternalLink view={this.props.uvm.application.planPage.route} pict='plan' /> gewechselt. Ist die unten
+                als letztes angebotene Einstellung aktiviert wird in diesem Fall erneut die Programmzeitschrift
+                aufgerufen.
             </InlineHelp>
         )
     }

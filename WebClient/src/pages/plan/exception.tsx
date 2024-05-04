@@ -1,13 +1,19 @@
 ﻿import * as React from 'react'
+import { IPlanPage } from '../../app/pages/plan'
+import { IPlanException } from '../../app/pages/plan/exception'
+import { HelpLink } from '../../common/helpLink'
+import { ButtonCommand } from '../../lib.react/command/button'
+import { EditNumberSlider } from '../../lib.react/edit/number/slider'
+import { IComponent, ComponentExWithSite } from '../../lib.react/reactUi'
 
 // Schnittstelle zur Pflege einer Ausnahmeregel.
-interface IPlanExceptionStatic extends JMSLib.ReactUi.IComponent<App.Plan.IPlanException> {
+interface IPlanExceptionStatic extends IComponent<IPlanException> {
     // Die aktuell angezeigte Seite.
-    page: App.IPlanPage
+    page: IPlanPage
 }
 
 // React.Js Komponente zur Pflege einer einzelnen Ausnahmeregel.
-export class PlanException extends JMSLib.ReactUi.ComponentExWithSite<App.Plan.IPlanException, IPlanExceptionStatic> {
+export class PlanException extends ComponentExWithSite<IPlanException, IPlanExceptionStatic> {
     // Erstellt die Oberflächenelemente zur Pflege.
     render(): JSX.Element {
         return (
@@ -43,22 +49,22 @@ export class PlanException extends JMSLib.ReactUi.ComponentExWithSite<App.Plan.I
                             <td>Startverschiebung</td>
                             <td>{`${this.props.uvm.startSlider.value} Minute${Math.abs(this.props.uvm.startSlider.value ?? 0) === 1 ? '' : 'n'}`}</td>
                             <td>
-                                <JMSLib.ReactUi.EditNumberSlider uvm={this.props.uvm.startSlider} />
+                                <EditNumberSlider uvm={this.props.uvm.startSlider} />
                             </td>
                         </tr>
                         <tr>
                             <td>Laufzeitanpassung</td>
                             <td>{`${this.props.uvm.durationSlider.value} Minute${Math.abs(this.props.uvm.durationSlider.value ?? 0) === 1 ? '' : 'n'}`}</td>
                             <td>
-                                <JMSLib.ReactUi.EditNumberSlider uvm={this.props.uvm.durationSlider} />
+                                <EditNumberSlider uvm={this.props.uvm.durationSlider} />
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <div>
-                    <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.originalTime} />
-                    <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.skip} />
-                    <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.update} />
+                    <ButtonCommand uvm={this.props.uvm.originalTime} />
+                    <ButtonCommand uvm={this.props.uvm.skip} />
+                    <ButtonCommand uvm={this.props.uvm.update} />
                 </div>
             </fieldset>
         )

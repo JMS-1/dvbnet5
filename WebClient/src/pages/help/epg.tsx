@@ -1,7 +1,12 @@
-﻿export class ProgramGuide extends HelpComponent {
+﻿import * as React from 'react'
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { HelpComponent } from './helpComponent'
+
+export class ProgramGuide extends HelpComponent {
     readonly title = 'Die Programmzeitschrift'
 
-    render(page: App.IPage): JSX.Element {
+    render(page: IPage): JSX.Element {
         return (
             <div>
                 Die elektronische Programmzeitschrift (EPG) ist ein optionales Leistungsmerkmal, dass von vielen
@@ -15,15 +20,12 @@
                 <br />
                 <br />
                 Der VCR.NET Recording Service kann dazu{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};epgconfig`}>
-                    konfiguriert
-                </JMSLib.ReactUi.InternalLink>{' '}
-                werden, für eine ausgewählte Liste von Quellen die Programmzeitschrift periodisch zu aktualisieren -
-                üblich ist ein oder zweimal am Tag. Auf Basis dieser Daten lassen sich dann Aufzeichnungen
-                programmieren. Zur Auswahl
-                <JMSLib.ReactUi.InternalLink view={page.application.guidePage.route} pict='guide' /> stehen dabei erst
-                einmal alle Informationen aller Quellen aller DVB Geräte, die der VCR.NET Recording Service verwenden
-                darf. Um die richtige Sendung zu finden gibt es neben der Inhaltssuche auf einen Freitext weitere
+                <InternalLink view={`${page.route};epgconfig`}>konfiguriert</InternalLink> werden, für eine ausgewählte
+                Liste von Quellen die Programmzeitschrift periodisch zu aktualisieren - üblich ist ein oder zweimal am
+                Tag. Auf Basis dieser Daten lassen sich dann Aufzeichnungen programmieren. Zur Auswahl
+                <InternalLink view={page.application.guidePage.route} pict='guide' /> stehen dabei erst einmal alle
+                Informationen aller Quellen aller DVB Geräte, die der VCR.NET Recording Service verwenden darf. Um die
+                richtige Sendung zu finden gibt es neben der Inhaltssuche auf einen Freitext weitere
                 Filtermöglichkeiten. So ist es möglich, sich auf die Sendungen einer einzelnen Quelle zu beschränken
                 oder alle Sendung ab einer bestimmten Uhrzeit eines bestimmten Tages anzeigen zu lassen.
                 <br />
@@ -32,13 +34,10 @@
                 der Auswahl eine neue Aufzeichnung angelegt - auf Wunsch kann auch eine Aufzeichnung zu einem
                 existierenden Auftrag ergänzt werden. Die Zeiten aus der Programmzeitschrift werden um Vor- und
                 Nachlaufzeiten gemäß den Voreinstellungen
-                <JMSLib.ReactUi.InternalLink view={page.application.settingsPage.route} pict='settings' /> des Anwenders
-                erweitert. Die eigentliche Programmierung muss noch einmal bestätigt werden, wobei dann auch noch
-                Detailänderungen möglich sind - zum Beispiel um direkt eine{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};repeatingschedules`}>
-                    Serienaufzeichnung
-                </JMSLib.ReactUi.InternalLink>{' '}
-                anzulegen.
+                <InternalLink view={page.application.settingsPage.route} pict='settings' /> des Anwenders erweitert. Die
+                eigentliche Programmierung muss noch einmal bestätigt werden, wobei dann auch noch Detailänderungen
+                möglich sind - zum Beispiel um direkt eine{' '}
+                <InternalLink view={`${page.route};repeatingschedules`}>Serienaufzeichnung</InternalLink> anzulegen.
             </div>
         )
     }

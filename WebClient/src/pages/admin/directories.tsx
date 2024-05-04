@@ -1,10 +1,20 @@
 ﻿import * as React from 'react'
+import { DirectoriesSection, IAdminDirectoriesPage } from '../../app/pages/admin/directories'
+import { Field } from '../../common/field'
+import { HelpLink } from '../../common/helpLink'
+import { InlineHelp } from '../../common/inlineHelp'
+import { ButtonCommand } from '../../lib.react/command/button'
+import { SingleSelect } from '../../lib.react/edit/list'
+import { MultiSelect } from '../../lib.react/edit/multiList'
+import { EditText } from '../../lib.react/edit/text/text'
+import { IAdminSectionFactory } from '../admin'
+import { AdminSection } from './section'
 
 // React.js Komponente zur Konfiguration der Aufzeichnungsverzeichnisse.
-export class AdminDirectories extends AdminSection<App.Admin.IAdminDirectoriesPage> {
+export class AdminDirectories extends AdminSection<IAdminDirectoriesPage> {
     // Das zugehörige Ui View Model.
-    static get uvm(): IAdminSectionFactory<App.Admin.IAdminDirectoriesPage> {
-        return App.Admin.DirectoriesSection
+    static get uvm(): IAdminSectionFactory<IAdminDirectoriesPage> {
+        return DirectoriesSection
     }
 
     // Die Überschrift für diesen Bereich.
@@ -20,9 +30,9 @@ export class AdminDirectories extends AdminSection<App.Admin.IAdminDirectoriesPa
                 wie sich die Namen von Aufzeichnungsdateien aus den Daten einer Aufzeichnung zusammensetzen sollen.
                 {this.getFolderHelp()}
                 <div>
-                    <JMSLib.ReactUi.MultiSelect uvm={this.props.uvm.directories} items={10} />
+                    <MultiSelect uvm={this.props.uvm.directories} items={10} />
                     <div>
-                        <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.remove} />
+                        <ButtonCommand uvm={this.props.uvm.remove} />
                     </div>
                 </div>
                 {this.getAddHelp()}
@@ -30,23 +40,23 @@ export class AdminDirectories extends AdminSection<App.Admin.IAdminDirectoriesPa
                     <fieldset>
                         <legend>Neues Verzeichnis</legend>
                         <Field page={this.props.uvm.page} label={`${this.props.uvm.share.text}:`}>
-                            <JMSLib.ReactUi.EditText uvm={this.props.uvm.share} chars={80} />
+                            <EditText uvm={this.props.uvm.share} chars={80} />
                         </Field>
                         {this.props.uvm.showBrowse && (
                             <div>
                                 <i>oder</i>
                                 <Field page={this.props.uvm.page} label={`${this.props.uvm.browse.text}:`}>
-                                    <JMSLib.ReactUi.SingleSelect uvm={this.props.uvm.browse} />
+                                    <SingleSelect uvm={this.props.uvm.browse} />
                                 </Field>
                             </div>
                         )}
                         <div>
-                            {this.props.uvm.showBrowse && <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.parent} />}
-                            <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.add} />
+                            {this.props.uvm.showBrowse && <ButtonCommand uvm={this.props.uvm.parent} />}
+                            <ButtonCommand uvm={this.props.uvm.add} />
                         </div>
                     </fieldset>
                     <Field page={this.props.uvm.page} label={`${this.props.uvm.pattern.text}:`}>
-                        <JMSLib.ReactUi.EditText uvm={this.props.uvm.pattern} chars={60} />
+                        <EditText uvm={this.props.uvm.pattern} chars={60} />
                     </Field>
                 </form>
                 {this.getPatternHelp()}

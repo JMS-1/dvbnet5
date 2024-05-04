@@ -1,4 +1,6 @@
-﻿// Repräsentiert die Klasse GuideItem
+﻿import { doUrlCall } from './vcrserver'
+
+// Repräsentiert die Klasse GuideItem
 export interface GuideItemContract {
     // Der Startzeitpunkt in ISO Notation
     start: string

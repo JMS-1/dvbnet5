@@ -1,7 +1,13 @@
-﻿export class SourceChooser extends HelpComponent {
+﻿import * as React from 'react'
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { HelpComponent } from './helpComponent'
+import { ScreenShot } from './screenShot'
+
+export class SourceChooser extends HelpComponent {
     readonly title = 'Quellen (Sender)'
 
-    render(page: App.IPage): JSX.Element {
+    render(page: IPage): JSX.Element {
         return (
             <div>
                 Jedes DVB Gerät kann bestimmte Quellen (Radio- und Fernsehsender) empfangen. Die Anzahl dieser Quellen
@@ -18,10 +24,10 @@
                         Interessant ist die Voreinstellung der ersten Auswahlliste direkt neben dem Namen der Quelle.
                         Bei dieser Auswahl werden die zuletzt verwendeten Quellen in alphabetischer Anordnung angezeigt
                         - jeder Anwender kann individuell festlegen
-                        <JMSLib.ReactUi.InternalLink view={page.application.settingsPage.route} pict='settings' />, wie
-                        viele Quellen die Liste maximal enthalten darf. Nach einiger gewissen Nutzungszeit des VCR.NET
-                        Recording Service zeigt sich im Allgemeinen, dass diese Liste fast immer die gewünschte Quelle
-                        enthält. Ist die Liste leer, so werden automatisch alle möglichen Quellen zur Auswahl angeboten.
+                        <InternalLink view={page.application.settingsPage.route} pict='settings' />, wie viele Quellen
+                        die Liste maximal enthalten darf. Nach einiger gewissen Nutzungszeit des VCR.NET Recording
+                        Service zeigt sich im Allgemeinen, dass diese Liste fast immer die gewünschte Quelle enthält.
+                        Ist die Liste leer, so werden automatisch alle möglichen Quellen zur Auswahl angeboten.
                     </li>
                     <li>
                         Da meistens der Name der gewünschten Quelle bekannt ist kann alternativ der Einstieg auch über
@@ -55,11 +61,8 @@
                     </li>
                 </ul>
                 Wird in einer Aufzeichnung keine Quelle angegeben, so wird die Quelle des{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};jobsandschedules`}>
-                    Auftrags
-                </JMSLib.ReactUi.InternalLink>{' '}
-                verwendet. Ist auch diese nicht definiert, so kann die Programmierung nicht erfolgreich abgeschlossen
-                werden.
+                <InternalLink view={`${page.route};jobsandschedules`}>Auftrags</InternalLink> verwendet. Ist auch diese
+                nicht definiert, so kann die Programmierung nicht erfolgreich abgeschlossen werden.
             </div>
         )
     }

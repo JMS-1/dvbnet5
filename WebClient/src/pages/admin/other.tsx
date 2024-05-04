@@ -1,10 +1,19 @@
 ﻿import * as React from 'react'
+import { IAdminOtherPage, OtherSection } from '../../app/pages/admin/other'
+import { Field } from '../../common/field'
+import { HelpLink } from '../../common/helpLink'
+import { InlineHelp } from '../../common/inlineHelp'
+import { EditBoolean } from '../../lib.react/edit/boolean/flag'
+import { SingleSelect } from '../../lib.react/edit/list'
+import { EditNumber } from '../../lib.react/edit/number/number'
+import { IAdminSectionFactory } from '../admin'
+import { AdminSection } from './section'
 
 // React.Js Komponente zur Konfiguration sonstiger Einstellungen.
-export class AdminOther extends AdminSection<App.Admin.IAdminOtherPage> {
+export class AdminOther extends AdminSection<IAdminOtherPage> {
     // Das zugehörige Ui View Model.
-    static get uvm(): IAdminSectionFactory<App.Admin.IAdminOtherPage> {
-        return App.Admin.OtherSection
+    static get uvm(): IAdminSectionFactory<IAdminOtherPage> {
+        return OtherSection
     }
 
     // Die Überschrift für diesen Bereich.
@@ -20,43 +29,43 @@ export class AdminOther extends AdminSection<App.Admin.IAdminOtherPage> {
                 <form>
                     {this.getWebHelp()}
                     <Field label={`${this.props.uvm.port.text}:`} page={this.props.uvm.page}>
-                        <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.port} chars={8} />
+                        <EditNumber uvm={this.props.uvm.port} chars={8} />
                     </Field>
                     <div>
-                        <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.ssl} />
+                        <EditBoolean uvm={this.props.uvm.ssl} />
                     </div>
                     <Field label={`${this.props.uvm.securePort.text}:`} page={this.props.uvm.page}>
-                        <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.securePort} chars={8} />
+                        <EditNumber uvm={this.props.uvm.securePort} chars={8} />
                     </Field>
                     <div>
-                        <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.basicAuth} />
+                        <EditBoolean uvm={this.props.uvm.basicAuth} />
                     </div>
                     {this.getSleepHelp()}
                     <Field label={`${this.props.uvm.hibernation.text}:`} page={this.props.uvm.page}>
-                        <JMSLib.ReactUi.SingleSelect uvm={this.props.uvm.hibernation} />
+                        <SingleSelect uvm={this.props.uvm.hibernation} />
                     </Field>
                     <Field label={`${this.props.uvm.preSleep.text}:`} page={this.props.uvm.page}>
-                        <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.preSleep} chars={8} />
+                        <EditNumber uvm={this.props.uvm.preSleep} chars={8} />
                     </Field>
                     <Field label={`${this.props.uvm.minSleep.text}:`} page={this.props.uvm.page}>
-                        <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.minSleep} chars={8} />
+                        <EditNumber uvm={this.props.uvm.minSleep} chars={8} />
                     </Field>
-                    <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.ignoreMinSleep} />
+                    <EditBoolean uvm={this.props.uvm.ignoreMinSleep} />
                     {this.getLogHelp()}
                     <Field label={`${this.props.uvm.logKeep.text}:`} page={this.props.uvm.page}>
-                        <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.logKeep} chars={8} />
+                        <EditNumber uvm={this.props.uvm.logKeep} chars={8} />
                     </Field>
                     <Field label={`${this.props.uvm.jobKeep.text}:`} page={this.props.uvm.page}>
-                        <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.jobKeep} chars={8} />
+                        <EditNumber uvm={this.props.uvm.jobKeep} chars={8} />
                     </Field>
                     <div>
-                        <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.noH264PCR} />
+                        <EditBoolean uvm={this.props.uvm.noH264PCR} />
                     </div>
                     <div>
-                        <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.noMPEG2PCR} />
+                        <EditBoolean uvm={this.props.uvm.noMPEG2PCR} />
                     </div>
                     <Field label={`${this.props.uvm.logging.text}:`} page={this.props.uvm.page}>
-                        <JMSLib.ReactUi.SingleSelect uvm={this.props.uvm.logging} />
+                        <SingleSelect uvm={this.props.uvm.logging} />
                     </Field>
                 </form>
                 {this.getSaveHelp()}

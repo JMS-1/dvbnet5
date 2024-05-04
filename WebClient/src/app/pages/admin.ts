@@ -1,18 +1,32 @@
-﻿// Interne Verwaltungseinheit für Konfigurationsbereiche.
-class SectionInfo implements Admin.ISectionInfoFactory {
+﻿import { Command } from '../../lib/command/command'
+import { DateTimeUtils } from '../../lib/dateTimeUtils'
+import { IValueFromList, IUiValue, uiValue, SelectSingleFromList } from '../../lib/edit/list'
+import { Application } from '../app'
+import { DevicesSection } from './admin/devices'
+import { DirectoriesSection } from './admin/directories'
+import { GuideSection } from './admin/guide'
+import { OtherSection } from './admin/other'
+import { RulesSection } from './admin/rules'
+import { ScanSection } from './admin/scan'
+import { ISectionInfoFactory, Section, ISectionInfo, ISection } from './admin/section'
+import { SecuritySection } from './admin/security'
+import { IPage, Page } from './page'
+
+// Interne Verwaltungseinheit für Konfigurationsbereiche.
+class SectionInfo implements ISectionInfoFactory {
     // Meldet den eindeutigen Namen des Konfigurationsbereichs.
     get route(): string {
         return this._factory.route
     }
 
     // Erstellt eine neue Verwaltung.
-    constructor(private readonly _factory: { new (section: AdminPage): Admin.Section; route: string }) {}
+    constructor(private readonly _factory: { new (section: AdminPage): Section; route: string }) {}
 
     // Die Präsentationsinstanz des zugehörigen Konfigurationsbereichs.
-    private _section: Admin.Section
+    private _section: Section
 
     // Meldet die Präsentation des zugehörigen Konfigurationsbereichs - bei Bedarf wird eine neue erstellt.
-    getOrCreate(adminPage: AdminPage): Admin.Section | undefined {
+    getOrCreate(adminPage: AdminPage): Section | undefined {
         // Beim ersten Aufruf eine neue Präsentationsinstanz anlegen.
         if (!this._section) this._section = new this._factory(adminPage)
 
@@ -23,32 +37,32 @@ class SectionInfo implements Admin.ISectionInfoFactory {
 // Schnittstelle zur Anzeige der Administration.
 export interface IAdminPage extends IPage {
     // Eine Auswahl für den aktuell anzuzeigenden Konfigurationsbereich.
-    readonly sections: JMSLib.App.IValueFromList<Admin.ISectionInfo>
+    readonly sections: IValueFromList<ISectionInfo>
 
     // Erstellt eine Instanz des aktuellen Konfigurationsbereichs.
-    getOrCreateCurrentSection(): Admin.ISection | undefined
+    getOrCreateCurrentSection(): ISection | undefined
 }
 
 // Das Präsentationsmodell für die Konfiguration des VCR.NET Recording Service.
 export class AdminPage extends Page implements IAdminPage {
     // Einmalig berechnet die Liste aller Stunden des Tages.
-    static readonly hoursOfDay: JMSLib.App.IUiValue<number>[] = Array.apply(null, Array(24)).map(
-        (_d: number, i: number) => JMSLib.App.uiValue(i, JMSLib.App.DateTimeUtils.formatNumber(i))
+    static readonly hoursOfDay: IUiValue<number>[] = Array.apply(null, Array(24)).map((_d: number, i: number) =>
+        uiValue(i, DateTimeUtils.formatNumber(i))
     )
 
     // Die Liste aller Konfigurationsbereiche in der Reihenfolge, in der sie dem Anwender präsentiert werden sollen.
-    private readonly _sections: JMSLib.App.IUiValue<SectionInfo>[] = [
-        JMSLib.App.uiValue(new SectionInfo(Admin.SecuritySection), 'Sicherheit'),
-        JMSLib.App.uiValue(new SectionInfo(Admin.DirectoriesSection), 'Verzeichnisse'),
-        JMSLib.App.uiValue(new SectionInfo(Admin.DevicesSection), 'Geräte'),
-        JMSLib.App.uiValue(new SectionInfo(Admin.GuideSection), 'Programmzeitschrift'),
-        JMSLib.App.uiValue(new SectionInfo(Admin.ScanSection), 'Quellen'),
-        JMSLib.App.uiValue(new SectionInfo(Admin.RulesSection), 'Planungsregeln'),
-        JMSLib.App.uiValue(new SectionInfo(Admin.OtherSection), 'Sonstiges'),
+    private readonly _sections: IUiValue<SectionInfo>[] = [
+        uiValue(new SectionInfo(SecuritySection), 'Sicherheit'),
+        uiValue(new SectionInfo(DirectoriesSection), 'Verzeichnisse'),
+        uiValue(new SectionInfo(DevicesSection), 'Geräte'),
+        uiValue(new SectionInfo(GuideSection), 'Programmzeitschrift'),
+        uiValue(new SectionInfo(ScanSection), 'Quellen'),
+        uiValue(new SectionInfo(RulesSection), 'Planungsregeln'),
+        uiValue(new SectionInfo(OtherSection), 'Sonstiges'),
     ]
 
     // Präsentationsmodell zur Auswahl des aktuellen Konfigurationsbereichs.
-    readonly sections = new JMSLib.App.SelectSingleFromList({}, 'value', undefined, undefined, this._sections)
+    readonly sections = new SelectSingleFromList({}, 'value', undefined, undefined, this._sections)
 
     // Erstellt ein neues Präsentationsmodell für die Seite.
     constructor(application: Application) {
@@ -69,7 +83,7 @@ export class AdminPage extends Page implements IAdminPage {
     }
 
     // Aktualisiert eine Teilkonfiguration.
-    update(request: Promise<boolean | undefined>, command: JMSLib.App.Command<void>): Promise<void> {
+    update(request: Promise<boolean | undefined>, command: Command<void>): Promise<void> {
         // Auf das Ende der asynchronen Ausführung warten.
         return request.then(
             (restartRequired) => {
@@ -88,7 +102,7 @@ export class AdminPage extends Page implements IAdminPage {
     }
 
     // Erstellt eine Instanz des aktuellen Konfigurationsbereichs.
-    getOrCreateCurrentSection(): Admin.ISection | undefined {
+    getOrCreateCurrentSection(): ISection | undefined {
         return this.sections.value?.getOrCreate(this)
     }
 

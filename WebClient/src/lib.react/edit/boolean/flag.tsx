@@ -1,7 +1,9 @@
 ﻿import * as React from 'react'
+import { IFlag } from '../../../lib/edit/boolean/flag'
+import { ComponentWithSite } from '../../reactUi'
 
 // React.Js Komponente zur visuellen Pflege eines Wahrheitswertes.
-export class EditBoolean extends ComponentWithSite<App.IFlag> {
+export class EditBoolean extends ComponentWithSite<IFlag> {
     // Erstellt die Anzeige der Komponente.
     render(): JSX.Element {
         return (

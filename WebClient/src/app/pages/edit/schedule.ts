@@ -1,24 +1,35 @@
-﻿// Schnittstelle zur Pflege einer Aufzeichnung.
+﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
+import { IFlag, FlagSet } from '../../../lib/edit/boolean/flag'
+import { IDaySelector, DayEditor } from '../../../lib/edit/datetime/day'
+import { INumber } from '../../../lib/edit/number/number'
+import { EditScheduleContract } from '../../../web/EditScheduleContract'
+import { IPage } from '../page'
+import { IDurationEditor, DurationEditor } from './duration'
+import { IScheduleException, ScheduleException } from './exception'
+import { IJobScheduleEditor, JobScheduleEditor } from './jobSchedule'
+import { Number } from '../../../lib/edit/number/number'
+
+// Schnittstelle zur Pflege einer Aufzeichnung.
 export interface IScheduleEditor extends IJobScheduleEditor {
     // Datum der ersten Aufzeichnung.
-    readonly firstStart: JMSLib.App.IDaySelector
+    readonly firstStart: IDaySelector
 
     // Laufzeit der Aufzeichnung.
     readonly duration: IDurationEditor
 
     // Wiederholungsmuster als Ganzes und aufgespalten als Wahrheitswert pro Wochentag.
-    readonly repeat: JMSLib.App.INumber
+    readonly repeat: INumber
 
-    readonly onMonday: JMSLib.App.IFlag
-    readonly onTuesday: JMSLib.App.IFlag
-    readonly onWednesday: JMSLib.App.IFlag
-    readonly onThursday: JMSLib.App.IFlag
-    readonly onFriday: JMSLib.App.IFlag
-    readonly onSaturday: JMSLib.App.IFlag
-    readonly onSunday: JMSLib.App.IFlag
+    readonly onMonday: IFlag
+    readonly onTuesday: IFlag
+    readonly onWednesday: IFlag
+    readonly onThursday: IFlag
+    readonly onFriday: IFlag
+    readonly onSaturday: IFlag
+    readonly onSunday: IFlag
 
     // Ende der Wiederholung.
-    readonly lastDay: JMSLib.App.IDaySelector
+    readonly lastDay: IDaySelector
 
     // Bekannte Ausnahmen der Wiederholungsregel.
     readonly hasExceptions: boolean
@@ -27,11 +38,11 @@ export interface IScheduleEditor extends IJobScheduleEditor {
 }
 
 // Beschreibt die Daten einer Aufzeichnung.
-export class ScheduleEditor extends JobScheduleEditor<VCRServer.EditScheduleContract> implements IScheduleEditor {
+export class ScheduleEditor extends JobScheduleEditor<EditScheduleContract> implements IScheduleEditor {
     // Erstellt ein neues Präsentationsmodell.
     constructor(
         page: IPage,
-        model: VCRServer.EditScheduleContract,
+        model: EditScheduleContract,
         favoriteSources: string[],
         onChange: () => void,
         hasJobSource: () => boolean
@@ -42,56 +53,22 @@ export class ScheduleEditor extends JobScheduleEditor<VCRServer.EditScheduleCont
         if (!model.lastDay) model.lastDay = ScheduleEditor.maximumDate.toISOString()
 
         // Pflegbare Eigenschaften anlegen.
-        this.repeat = new JMSLib.App.Number(model, 'repeatPattern', 'Wiederholung', () => this.onChange(onChange))
+        this.repeat = new Number(model, 'repeatPattern', 'Wiederholung', () => this.onChange(onChange))
         this.duration = new DurationEditor(model, 'firstStart', 'duration', 'Zeitraum', () => this.onChange(onChange))
-        this.firstStart = new JMSLib.App.DayEditor(model, 'firstStart', 'Datum', onChange).addValidator(() =>
+        this.firstStart = new DayEditor(model, 'firstStart', 'Datum', onChange).addValidator(() =>
             this.validateFirstRecording()
         )
-        this.lastDay = new JMSLib.App.DayEditor(
-            model,
-            'lastDay',
-            'wiederholen bis zum',
-            () => this.onChange(onChange),
-            true
-        )
+        this.lastDay = new DayEditor(model, 'lastDay', 'wiederholen bis zum', () => this.onChange(onChange), true)
             .addRequiredValidator()
             .addValidator((day) => ScheduleEditor.validateDateRange(day))
 
-        this.onMonday = new JMSLib.App.FlagSet(
-            ScheduleEditor.flagMonday,
-            this.repeat,
-            JMSLib.App.DateTimeUtils.germanDays[1]
-        )
-        this.onTuesday = new JMSLib.App.FlagSet(
-            ScheduleEditor.flagTuesday,
-            this.repeat,
-            JMSLib.App.DateTimeUtils.germanDays[2]
-        )
-        this.onWednesday = new JMSLib.App.FlagSet(
-            ScheduleEditor.flagWednesday,
-            this.repeat,
-            JMSLib.App.DateTimeUtils.germanDays[3]
-        )
-        this.onThursday = new JMSLib.App.FlagSet(
-            ScheduleEditor.flagThursday,
-            this.repeat,
-            JMSLib.App.DateTimeUtils.germanDays[4]
-        )
-        this.onFriday = new JMSLib.App.FlagSet(
-            ScheduleEditor.flagFriday,
-            this.repeat,
-            JMSLib.App.DateTimeUtils.germanDays[5]
-        )
-        this.onSaturday = new JMSLib.App.FlagSet(
-            ScheduleEditor.flagSaturday,
-            this.repeat,
-            JMSLib.App.DateTimeUtils.germanDays[6]
-        )
-        this.onSunday = new JMSLib.App.FlagSet(
-            ScheduleEditor.flagSunday,
-            this.repeat,
-            JMSLib.App.DateTimeUtils.germanDays[0]
-        )
+        this.onMonday = new FlagSet(ScheduleEditor.flagMonday, this.repeat, DateTimeUtils.germanDays[1])
+        this.onTuesday = new FlagSet(ScheduleEditor.flagTuesday, this.repeat, DateTimeUtils.germanDays[2])
+        this.onWednesday = new FlagSet(ScheduleEditor.flagWednesday, this.repeat, DateTimeUtils.germanDays[3])
+        this.onThursday = new FlagSet(ScheduleEditor.flagThursday, this.repeat, DateTimeUtils.germanDays[4])
+        this.onFriday = new FlagSet(ScheduleEditor.flagFriday, this.repeat, DateTimeUtils.germanDays[5])
+        this.onSaturday = new FlagSet(ScheduleEditor.flagSaturday, this.repeat, DateTimeUtils.germanDays[6])
+        this.onSunday = new FlagSet(ScheduleEditor.flagSunday, this.repeat, DateTimeUtils.germanDays[0])
 
         // Ausnahmeregeln.
         this.exceptions = (model.exceptions || []).map(
@@ -123,16 +100,16 @@ export class ScheduleEditor extends JobScheduleEditor<VCRServer.EditScheduleCont
     }
 
     // Datum der ersten Aufzeichnung.
-    readonly firstStart: JMSLib.App.DayEditor
+    readonly firstStart: DayEditor
 
     // Uhrzeit der ersten Aufzeichnung.
     readonly duration: DurationEditor
 
     // Muster zur Wiederholung.
-    readonly repeat: JMSLib.App.Number
+    readonly repeat: Number
 
     // Ende der Wiederholung
-    readonly lastDay: JMSLib.App.DayEditor
+    readonly lastDay: DayEditor
 
     // Bekannte Ausnahmen der Wiederholungsregel.
     get hasExceptions(): boolean {
@@ -158,37 +135,37 @@ export class ScheduleEditor extends JobScheduleEditor<VCRServer.EditScheduleCont
     // Das Bit für Montag.
     static readonly flagMonday: number = 0x01
 
-    readonly onMonday: JMSLib.App.FlagSet
+    readonly onMonday: FlagSet
 
     // Das Bit für Dienstag.
     static readonly flagTuesday: number = 0x02
 
-    readonly onTuesday: JMSLib.App.FlagSet
+    readonly onTuesday: FlagSet
 
     // Das Bit für Mittwoch.
     static readonly flagWednesday: number = 0x04
 
-    readonly onWednesday: JMSLib.App.FlagSet
+    readonly onWednesday: FlagSet
 
     // Das Bit für Donnerstag.
     static readonly flagThursday: number = 0x08
 
-    readonly onThursday: JMSLib.App.FlagSet
+    readonly onThursday: FlagSet
 
     // Das Bit für Freitag.
     static readonly flagFriday: number = 0x10
 
-    readonly onFriday: JMSLib.App.FlagSet
+    readonly onFriday: FlagSet
 
     // Das Bit für Samstag.
     static readonly flagSaturday: number = 0x20
 
-    readonly onSaturday: JMSLib.App.FlagSet
+    readonly onSaturday: FlagSet
 
     // Das Bit für Sonntag.
     static readonly flagSunday: number = 0x40
 
-    readonly onSunday: JMSLib.App.FlagSet
+    readonly onSunday: FlagSet
 
     // Die Bitmasken aller Wochentage in der Ordnung von JavaScript (Date.getDay()).
     private static readonly _flags = [
@@ -202,7 +179,7 @@ export class ScheduleEditor extends JobScheduleEditor<VCRServer.EditScheduleCont
     ]
 
     // Prüft ob eon ausgewähltes Datum im unterstützten Bereich liegt.
-    private static validateDateRange(day: JMSLib.App.DayEditor): string | undefined {
+    private static validateDateRange(day: DayEditor): string | undefined {
         var lastDay = new Date(day.value ?? 0)
 
         if (lastDay < ScheduleEditor.minimumDate) return `Datum liegt zu weit in der Vergangenheit.`
@@ -218,10 +195,7 @@ export class ScheduleEditor extends JobScheduleEditor<VCRServer.EditScheduleCont
         var start = new Date(this.firstStart.value ?? 0)
 
         // Die echte Dauer unter Berücksichtigung der Zeitumstellung ermitteln.
-        var duration = JMSLib.App.DateTimeUtils.getRealDurationInMinutes(
-            this.firstStart.value ?? '',
-            this.duration.value ?? 0
-        )
+        var duration = DateTimeUtils.getRealDurationInMinutes(this.firstStart.value ?? '', this.duration.value ?? 0)
 
         // Ende der ersten Aufzeichnung ermitteln - das sollte in den meisten Fällen schon passen.
         var end = new Date(

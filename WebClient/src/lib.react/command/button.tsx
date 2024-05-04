@@ -1,13 +1,15 @@
 ﻿import * as React from 'react'
+import { ICommand } from '../../lib/command/command'
+import { IComponent, ComponentExWithSite } from '../reactUi'
 
 // Schnittstelle zur Anzeige einer Schaltfläche.
-interface IButtonCommand extends IComponent<App.ICommand> {
+interface IButtonCommand extends IComponent<ICommand> {
     // Zusätzliche CSS Klassen.
     className?: string
 }
 
 // React.Js Komponente zur Anzeige einer Aktion über eine Schaltfläche.
-export class ButtonCommand extends ComponentExWithSite<App.ICommand, IButtonCommand> {
+export class ButtonCommand extends ComponentExWithSite<ICommand, IButtonCommand> {
     // Oberflächenelemente erzeugen.
     render(): JSX.Element | false {
         return (

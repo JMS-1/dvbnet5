@@ -1,13 +1,19 @@
 ﻿import * as React from 'react'
+import { IFavoritesPage } from '../app/pages/favorites'
+import { InlineHelp } from '../common/inlineHelp'
+import { Pictogram } from '../lib.react/command/pictogram'
+import { SingleSelectButton } from '../lib.react/edit/buttonList'
+import { ComponentWithSite } from '../lib.react/reactUi'
+import { Favorite } from './favorites/entry'
 
 // React.Js Komponente zur Anzeige der gespeicherten Suchen.
-export class Favorites extends JMSLib.ReactUi.ComponentWithSite<App.IFavoritesPage> {
+export class Favorites extends ComponentWithSite<IFavoritesPage> {
     // Oberflächenelemente anzeigen.
     render(): JSX.Element {
         return (
             <div className='vcrnet-favorites'>
                 {this.getHelp()}
-                <JMSLib.ReactUi.SingleSelectButton uvm={this.props.uvm.onlyWithCount} merge={true} />
+                <SingleSelectButton uvm={this.props.uvm.onlyWithCount} merge={true} />
                 <table className='vcrnet-table'>
                     <thead>
                         <tr>
@@ -35,9 +41,9 @@ export class Favorites extends JMSLib.ReactUi.ComponentWithSite<App.IFavoritesPa
                 möglich, den Favoriten als Suche in der Programmzeitschrift anzuzeigen.
                 <br />
                 <br />
-                Ein Favorit kann durch das Symbol <JMSLib.ReactUi.Pictogram name='delete' /> rechts neben der
-                Beschreibung der Suchbedingung jederzeit gelöscht werden. Dieser Vorgang wird unmittelbar und
-                unwiederbringlich ohne weitere Rückfrage ausgeführt.
+                Ein Favorit kann durch das Symbol <Pictogram name='delete' /> rechts neben der Beschreibung der
+                Suchbedingung jederzeit gelöscht werden. Dieser Vorgang wird unmittelbar und unwiederbringlich ohne
+                weitere Rückfrage ausgeführt.
             </InlineHelp>
         )
     }

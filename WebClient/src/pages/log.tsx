@@ -1,7 +1,18 @@
 ﻿import * as React from 'react'
+import { ILogPage } from '../app/pages/log'
+import { Field } from '../common/field'
+import { HelpLink } from '../common/helpLink'
+import { InlineHelp } from '../common/inlineHelp'
+import { ExternalLink } from '../lib.react/command/externalLink'
+import { InternalLink } from '../lib.react/command/internalLink'
+import { ToggleCommand } from '../lib.react/command/toggle'
+import { DetailRow } from '../lib.react/detailRow'
+import { SingleSelect } from '../lib.react/edit/list'
+import { ComponentWithSite } from '../lib.react/reactUi'
+import { LogDetails } from './log/details'
 
 // React.Js Komponente zur Anzeige des Protokolls.
-export class Log extends JMSLib.ReactUi.ComponentWithSite<App.ILogPage> {
+export class Log extends ComponentWithSite<ILogPage> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {
         return (
@@ -12,11 +23,11 @@ export class Log extends JMSLib.ReactUi.ComponentWithSite<App.ILogPage> {
                 {this.getHelp()}
                 <form className='vcrnet-bar'>
                     <Field page={this.props.uvm} label={`${this.props.uvm.profiles.text}:`}>
-                        <JMSLib.ReactUi.SingleSelect uvm={this.props.uvm.profiles} />
-                        <JMSLib.ReactUi.SingleSelect uvm={this.props.uvm.startDay} />
-                        <JMSLib.ReactUi.ToggleCommand uvm={this.props.uvm.showGuide} />
-                        <JMSLib.ReactUi.ToggleCommand uvm={this.props.uvm.showScan} />
-                        <JMSLib.ReactUi.ToggleCommand uvm={this.props.uvm.showLive} />
+                        <SingleSelect uvm={this.props.uvm.profiles} />
+                        <SingleSelect uvm={this.props.uvm.startDay} />
+                        <ToggleCommand uvm={this.props.uvm.showGuide} />
+                        <ToggleCommand uvm={this.props.uvm.showScan} />
+                        <ToggleCommand uvm={this.props.uvm.showLive} />
                     </Field>
                 </form>
                 <table className='vcrnet-table'>
@@ -31,19 +42,17 @@ export class Log extends JMSLib.ReactUi.ComponentWithSite<App.ILogPage> {
                         {this.props.uvm.entries.map((e, index) => [
                             <tr key={index}>
                                 <td>
-                                    <JMSLib.ReactUi.InternalLink
-                                        view={() => (e.showDetail.value = !e.showDetail.value)}
-                                    >
+                                    <InternalLink view={() => (e.showDetail.value = !e.showDetail.value)}>
                                         {e.start}
-                                    </JMSLib.ReactUi.InternalLink>
+                                    </InternalLink>
                                 </td>
                                 <td>{e.endTime}</td>
                                 <td>{e.source}</td>
                             </tr>,
                             e.showDetail.value && (
-                                <JMSLib.ReactUi.DetailRow key={`${index}Detail`} dataColumns={3}>
+                                <DetailRow key={`${index}Detail`} dataColumns={3}>
                                     <LogDetails uvm={e} />
-                                </JMSLib.ReactUi.DetailRow>
+                                </DetailRow>
                             ),
                         ])}
                     </tbody>
@@ -73,9 +82,9 @@ export class Log extends JMSLib.ReactUi.ComponentWithSite<App.ILogPage> {
                 dieser eventuell noch nicht gelöschte Aufzeichnungsdateien verbunden.
                 <HelpLink topic='filecontents' page={this.props.uvm} /> Durch Anwahl des jeweiligen Symbols können diese
                 zur Anzeige durch den{' '}
-                <JMSLib.ReactUi.ExternalLink url='http://www.psimarron.net/DVBNETViewer/html/vcrfile.html'>
+                <ExternalLink url='http://www.psimarron.net/DVBNETViewer/html/vcrfile.html'>
                     DVB.NET / VCR.NET Viewer
-                </JMSLib.ReactUi.ExternalLink>{' '}
+                </ExternalLink>{' '}
                 abgerufen werden.
             </InlineHelp>
         )

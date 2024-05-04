@@ -1,32 +1,38 @@
-﻿// Schnittstelle zur Pflege eines Auftrags.
+﻿import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+import { IValueFromList, IUiValue, SelectSingleFromList } from '../../../lib/edit/list'
+import { EditJobContract } from '../../../web/EditJobContract'
+import { IPage } from '../page'
+import { IJobScheduleEditor, JobScheduleEditor } from './jobSchedule'
+
+// Schnittstelle zur Pflege eines Auftrags.
 export interface IJobEditor extends IJobScheduleEditor {
     // Das Aufzeichnungsverzeichnis.
-    readonly folder: JMSLib.App.IValueFromList<string>
+    readonly folder: IValueFromList<string>
 
     // Das zu verwendende DVB Gerät.
-    readonly device: JMSLib.App.IValueFromList<string>
+    readonly device: IValueFromList<string>
 
     // Gesetzt, wenn die Aufzeichnung immer auf dem Gerät stattfinden soll.
-    readonly deviceLock: JMSLib.App.IFlag
+    readonly deviceLock: IFlag
 }
 
 // Bietet die Daten eines Auftrags zur Pflege an.
-export class JobEditor extends JobScheduleEditor<VCRServer.EditJobContract> implements IJobEditor {
+export class JobEditor extends JobScheduleEditor<EditJobContract> implements IJobEditor {
     // Erstellt ein neues Präsentationsmodell.
     constructor(
         page: IPage,
-        model: VCRServer.EditJobContract,
-        devices: JMSLib.App.IUiValue<string>[],
+        model: EditJobContract,
+        devices: IUiValue<string>[],
         favoriteSources: string[],
-        folders: JMSLib.App.IUiValue<string>[],
+        folders: IUiValue<string>[],
         onChange: () => void
     ) {
         super(page, model, favoriteSources, onChange)
 
         // Pflegekomponenten erstellen
-        this.deviceLock = new JMSLib.App.Flag(this.model, 'lockedToDevice', '(auf diesem Gerät aufzeichnen)', onChange)
-        this.folder = new JMSLib.App.SelectSingleFromList(this.model, 'directory', 'Verzeichnis', onChange, folders)
-        this.device = new JMSLib.App.SelectSingleFromList(
+        this.deviceLock = new Flag(this.model, 'lockedToDevice', '(auf diesem Gerät aufzeichnen)', onChange)
+        this.folder = new SelectSingleFromList(this.model, 'directory', 'Verzeichnis', onChange, folders)
+        this.device = new SelectSingleFromList(
             this.model,
             'device',
             'DVB.NET Geräteprofil',
@@ -45,13 +51,13 @@ export class JobEditor extends JobScheduleEditor<VCRServer.EditJobContract> impl
     }
 
     // Das Aufzeichnungsverzeichnis.
-    readonly folder: JMSLib.App.SelectSingleFromList<string>
+    readonly folder: SelectSingleFromList<string>
 
     // Das zu verwendende DVB Gerät.
-    readonly device: JMSLib.App.SelectSingleFromList<string>
+    readonly device: SelectSingleFromList<string>
 
     // Gesetzt, wenn die Aufzeichnung immer auf dem Gerät stattfinden soll.
-    readonly deviceLock: JMSLib.App.Flag
+    readonly deviceLock: Flag
 
     // Gesetzt, wenn die Einstellungen des Auftrags gültig sind.
     isValid(): boolean {

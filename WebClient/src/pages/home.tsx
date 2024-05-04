@@ -1,7 +1,15 @@
 ﻿import * as React from 'react'
+import { IHomePage } from '../app/pages/home'
+import { HelpLink } from '../common/helpLink'
+import { ExternalLink } from '../lib.react/command/externalLink'
+import { InternalLink } from '../lib.react/command/internalLink'
+import { Pictogram } from '../lib.react/command/pictogram'
+import { ComponentWithSite } from '../lib.react/reactUi'
+import { Task } from './home/task'
+import { VersionCheck } from './home/versionCheck'
 
 // Die React.Js Komponente zur Anzeige der Startseite.
-export class Home extends JMSLib.ReactUi.ComponentWithSite<App.IHomePage> {
+export class Home extends ComponentWithSite<IHomePage> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {
         var versionCheck = this.props.uvm.checkVersion
@@ -15,58 +23,56 @@ export class Home extends JMSLib.ReactUi.ComponentWithSite<App.IHomePage> {
                     Willkommen zur Benutzeroberfläche des VCR.NET Recording Service. Von hier aus geht es direkt zu:
                     <ul>
                         <li>
-                            <JMSLib.ReactUi.InternalLink pict='plan' view={application.planPage.route}>
+                            <InternalLink pict='plan' view={application.planPage.route}>
                                 dem Aufzeichnungsplan
-                            </JMSLib.ReactUi.InternalLink>{' '}
+                            </InternalLink>{' '}
                             mit den anstehenden Aufzeichnungen
                             <HelpLink page={this.props.uvm} topic='parallelrecording' />
                         </li>
                         <li>
-                            <JMSLib.ReactUi.InternalLink pict='devices' view={application.devicesPage.route}>
+                            <InternalLink pict='devices' view={application.devicesPage.route}>
                                 den laufenden Aufzeichnungen
-                            </JMSLib.ReactUi.InternalLink>{' '}
+                            </InternalLink>{' '}
                             mit den Aktivitäten der einzelnen DVB Geräte
                         </li>
                         <li>
-                            <JMSLib.ReactUi.InternalLink pict='guide' view={application.guidePage.route}>
+                            <InternalLink pict='guide' view={application.guidePage.route}>
                                 der Programmzeitschrift
-                            </JMSLib.ReactUi.InternalLink>{' '}
+                            </InternalLink>{' '}
                             zum Anlegen neuer Aufzeichnungen
                             <HelpLink page={this.props.uvm} topic='epg' />
                         </li>
                         <li>
-                            <JMSLib.ReactUi.InternalLink pict='new' view={application.editPage.route}>
+                            <InternalLink pict='new' view={application.editPage.route}>
                                 einer neuen Aufzeichnung
-                            </JMSLib.ReactUi.InternalLink>
+                            </InternalLink>
                         </li>
                     </ul>
                     <ul>
                         <li>
-                            <JMSLib.ReactUi.InternalLink pict='jobs' view={application.jobPage.route}>
+                            <InternalLink pict='jobs' view={application.jobPage.route}>
                                 den vorhandenen Aufzeichnungen
-                            </JMSLib.ReactUi.InternalLink>
+                            </InternalLink>
                             , um diese zu verändern oder ins Archiv zu übertragen
                         </li>
                         <li>
-                            <JMSLib.ReactUi.InternalLink view={`${application.jobPage.route};archive`}>
+                            <InternalLink view={`${application.jobPage.route};archive`}>
                                 den archivierten Aufzeichnungen
-                            </JMSLib.ReactUi.InternalLink>
+                            </InternalLink>
                             , um diese anzusehen, zu verändern, zu reaktivieren oder endgültig zu löschen
                             <HelpLink page={this.props.uvm} topic='archive' />
                         </li>
                         <li>
-                            <JMSLib.ReactUi.InternalLink view={application.logPage.route}>
-                                den Protokollen
-                            </JMSLib.ReactUi.InternalLink>{' '}
-                            von bereits durchgeführten Aufzeichnungen
+                            <InternalLink view={application.logPage.route}>den Protokollen</InternalLink> von bereits
+                            durchgeführten Aufzeichnungen
                             <HelpLink page={this.props.uvm} topic='log' />
                         </li>
                     </ul>
                     <ul>
                         <li>
-                            <JMSLib.ReactUi.InternalLink pict='settings' view={application.settingsPage.route}>
+                            <InternalLink pict='settings' view={application.settingsPage.route}>
                                 den individuellen Anpassungen
-                            </JMSLib.ReactUi.InternalLink>{' '}
+                            </InternalLink>{' '}
                             der Web Oberfläche
                         </li>
                     </ul>
@@ -79,9 +85,9 @@ export class Home extends JMSLib.ReactUi.ComponentWithSite<App.IHomePage> {
                             {showGuide.isReadonly ? (
                                 showGuide.text
                             ) : (
-                                <JMSLib.ReactUi.InternalLink view={() => (showGuide.value = !showGuide.value)}>
+                                <InternalLink view={() => (showGuide.value = !showGuide.value)}>
                                     {showGuide.text}
-                                </JMSLib.ReactUi.InternalLink>
+                                </InternalLink>
                             )}
                             <HelpLink page={this.props.uvm} topic='epgconfig' />
                         </li>
@@ -100,9 +106,9 @@ export class Home extends JMSLib.ReactUi.ComponentWithSite<App.IHomePage> {
                             {showScan.isReadonly ? (
                                 showScan.text
                             ) : (
-                                <JMSLib.ReactUi.InternalLink view={() => (showScan.value = !showScan.value)}>
+                                <InternalLink view={() => (showScan.value = !showScan.value)}>
                                     {showScan.text}
-                                </JMSLib.ReactUi.InternalLink>
+                                </InternalLink>
                             )}
                             <HelpLink page={this.props.uvm} topic='psiconfig' />
                         </li>
@@ -118,17 +124,17 @@ export class Home extends JMSLib.ReactUi.ComponentWithSite<App.IHomePage> {
                         )}
                         <li>
                             prüfen, ob inzwischen eine{' '}
-                            <JMSLib.ReactUi.InternalLink view={() => (versionCheck.value = !versionCheck.value)}>
+                            <InternalLink view={() => (versionCheck.value = !versionCheck.value)}>
                                 neuere Version
-                            </JMSLib.ReactUi.InternalLink>{' '}
+                            </InternalLink>{' '}
                             des VCR.NET Recording Service angeboten wird
                         </li>
                         {versionCheck.value && <VersionCheck uvm={this.props.uvm} />}
                         <li>
                             {this.props.uvm.showAdmin ? (
-                                <JMSLib.ReactUi.InternalLink pict='admin' view={application.adminPage.route}>
+                                <InternalLink pict='admin' view={application.adminPage.route}>
                                     die Konfiguration des VCR.NET Recording Service verändern
-                                </JMSLib.ReactUi.InternalLink>
+                                </InternalLink>
                             ) : (
                                 'die Konfiguration des VCR.NET Recording Service verändern'
                             )}
@@ -139,28 +145,23 @@ export class Home extends JMSLib.ReactUi.ComponentWithSite<App.IHomePage> {
                     <div className='vcrnet-warningtext'>
                         Hinweis: Der VCR.NET Recording Service führt gerade eine oder mehrere Aufzeichnungen oder
                         Aktualisierungen von Programmzeitschrift respektive Senderliste aus.
-                        <JMSLib.ReactUi.InternalLink view={this.props.uvm.application.devicesPage.route} pict='info' />
+                        <InternalLink view={this.props.uvm.application.devicesPage.route} pict='info' />
                     </div>
                 )}
                 <div>
                     Weitere Informationen zum VCR.NET Recording Service findet man hier im Bereich der{' '}
-                    <JMSLib.ReactUi.InternalLink view={`${application.helpPage.route};overview`}>
-                        Fragen &amp; Antworten
-                    </JMSLib.ReactUi.InternalLink>
-                    , auf der{' '}
-                    <JMSLib.ReactUi.ExternalLink url='http://www.psimarron.net/vcrnet'>
-                        Homepage im Internet
-                    </JMSLib.ReactUi.ExternalLink>{' '}
-                    oder im{' '}
-                    <JMSLib.ReactUi.ExternalLink url='http://www.watchersnet.de/Default.aspx?tabid=52&g=topics&f=17'>
+                    <InternalLink view={`${application.helpPage.route};overview`}>Fragen &amp; Antworten</InternalLink>,
+                    auf der <ExternalLink url='http://www.psimarron.net/vcrnet'>Homepage im Internet</ExternalLink> oder
+                    im{' '}
+                    <ExternalLink url='http://www.watchersnet.de/Default.aspx?tabid=52&g=topics&f=17'>
                         offiziellen Forum
-                    </JMSLib.ReactUi.ExternalLink>
+                    </ExternalLink>
                     .
                 </div>
                 <div className='vcrnet-home-copyright'>
-                    <JMSLib.ReactUi.ExternalLink url='http://www.psimarron.net'>
-                        <JMSLib.ReactUi.Pictogram name='psimarron' />
-                    </JMSLib.ReactUi.ExternalLink>
+                    <ExternalLink url='http://www.psimarron.net'>
+                        <Pictogram name='psimarron' />
+                    </ExternalLink>
                     <span>Dr. Jochen Manns, 2003-19</span>
                 </div>
             </div>

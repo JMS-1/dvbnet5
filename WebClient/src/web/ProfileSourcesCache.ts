@@ -1,4 +1,6 @@
-﻿// Beschreibt einen einzelne Quelle, so wie sie dem Anwender zur Auswahl angeboten wird
+﻿import { ProfileSourceContract, getProfileSources } from './ProfileSourceContract'
+
+// Beschreibt einen einzelne Quelle, so wie sie dem Anwender zur Auswahl angeboten wird
 export class SourceEntry {
     constructor(rawData: ProfileSourceContract) {
         this.isTelevision = rawData.tvNotRadio

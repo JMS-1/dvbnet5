@@ -1,22 +1,28 @@
-﻿// Schnittstelle zur Pflege der gespeicherten Suchen.
+﻿import { IValueFromList, IUiValue, uiValue, SelectSingleFromList } from '../../lib/edit/list'
+import { SavedGuideQueryContract, updateSearchQueries } from '../../web/SavedGuideQueryContract'
+import { Application } from '../app'
+import { IFavorite, Favorite } from './favorites/entry'
+import { IPage, Page } from './page'
+
+// Schnittstelle zur Pflege der gespeicherten Suchen.
 export interface IFavoritesPage extends IPage {
     // Alle gespeicherten Suchen.
-    readonly favorites: Favorites.IFavorite[]
+    readonly favorites: IFavorite[]
 
     // Erlaubt die Einschränklung der Anzeige auf nur die Suchen, zu denen aktuell auch Sendungen in der Programmzeitschrift existieren.
-    readonly onlyWithCount: JMSLib.App.IValueFromList<boolean>
+    readonly onlyWithCount: IValueFromList<boolean>
 }
 
 // Präsentationsmodell zur Anzeige und Pflege der gespeicherten Suchen.
 export class FavoritesPage extends Page implements IFavoritesPage {
     // Die Einstellungen des Filters.
-    private static _filter: JMSLib.App.IUiValue<boolean>[] = [
-        JMSLib.App.uiValue(true, 'Alle Favoriten'),
-        JMSLib.App.uiValue(false, 'Nur Favoriten mit Sendungen'),
+    private static _filter: IUiValue<boolean>[] = [
+        uiValue(true, 'Alle Favoriten'),
+        uiValue(false, 'Nur Favoriten mit Sendungen'),
     ]
 
     // Erlaubt die Einschränklung der Anzeige auf nur die Suchen, zu denen aktuell auch Sendungen in der Programmzeitschrift existieren.
-    readonly onlyWithCount = new JMSLib.App.SelectSingleFromList(
+    readonly onlyWithCount = new SelectSingleFromList(
         { value: true },
         'value',
         undefined,
@@ -25,9 +31,9 @@ export class FavoritesPage extends Page implements IFavoritesPage {
     )
 
     // Alle gespeicherten Suchen.
-    private _entries: Favorites.Favorite[]
+    private _entries: Favorite[]
 
-    get favorites(): Favorites.IFavorite[] {
+    get favorites(): IFavorite[] {
         // Eventuell wollen wir nur die Favoriten sehen, zu denen es auch Daten gibt.
         if (this.onlyWithCount.value) return this._entries
         else return this._entries.filter((e) => e.count !== 0)
@@ -39,10 +45,10 @@ export class FavoritesPage extends Page implements IFavoritesPage {
     }
 
     // Ermittelt die Liste der gespeicherten Suche neu - dabei wird auch eine neue Anfrage der Anzahl der Sender gestellt.
-    private readFavorites(): Favorites.Favorite[] {
+    private readFavorites(): Favorite[] {
         return JSON.parse(this.application.profile.guideSearches || '[]').map(
-            (e: VCRServer.SavedGuideQueryContract) =>
-                new Favorites.Favorite(
+            (e: SavedGuideQueryContract) =>
+                new Favorite(
                     e,
                     (f) => this.show(f),
                     (f) => this.remove(f),
@@ -54,7 +60,7 @@ export class FavoritesPage extends Page implements IFavoritesPage {
     // Bereitet die Anzeige des Präsentationsmodells vor.
     reset(sections: string[]): void {
         // Neue Sequenz von Ladevorgängen aufsetzen.
-        Favorites.Favorite.resetLoader()
+        Favorite.resetLoader()
 
         // Die Liste der Favoriten neu aus der Konfiguration erstellen.
         this._entries = this.readFavorites()
@@ -69,16 +75,16 @@ export class FavoritesPage extends Page implements IFavoritesPage {
     }
 
     // Zeigt das Ergebnis einer gespeicherten Suche in der Programmzeitschrift an.
-    private show(favorite: Favorites.Favorite): void {
+    private show(favorite: Favorite): void {
         this.application.guidePage.loadFilter(favorite.model)
     }
 
     // Entfernt eine gespeicherte Suche aus der Liste der gespeicherten Suchen.
-    private remove(favorite: Favorites.Favorite): Promise<void> {
+    private remove(favorite: Favorite): Promise<void> {
         var favorites = this._entries.filter((f) => f !== favorite)
 
         // Dazu müssen wir uns eine asynchrone Bestätigung vom VCR.NET Recording Service holen.
-        return VCRServer.updateSearchQueries(favorites.map((f) => f.model)).then(() => {
+        return updateSearchQueries(favorites.map((f) => f.model)).then(() => {
             // Liste aktualisieren.
             this._entries = favorites
 
@@ -88,9 +94,9 @@ export class FavoritesPage extends Page implements IFavoritesPage {
     }
 
     // Ergänzt einen Favoritien.
-    add(favorite: VCRServer.SavedGuideQueryContract): Promise<void> {
+    add(favorite: SavedGuideQueryContract): Promise<void> {
         // Ist der Aufruf erfolgreich so wechseln wir zur Ansicht der Favoriten - üblicherweise kommen wir aus der Programmzeitschrift.
-        return VCRServer.updateSearchQueries([favorite].concat(this.readFavorites().map((f) => f.model))).then(() =>
+        return updateSearchQueries([favorite].concat(this.readFavorites().map((f) => f.model))).then(() =>
             this.application.gotoPage(this.route)
         )
     }

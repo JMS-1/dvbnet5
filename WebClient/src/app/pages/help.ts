@@ -1,4 +1,7 @@
-﻿// Informationen zu einzelnen Aspekten der Hilfe.
+﻿import { Application } from '../app'
+import { IPage, Page } from './page'
+
+// Informationen zu einzelnen Aspekten der Hilfe.
 export interface IHelpComponent {
     readonly title: string
 }

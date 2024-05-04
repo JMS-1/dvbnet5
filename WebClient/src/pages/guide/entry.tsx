@@ -1,7 +1,10 @@
 ﻿import * as React from 'react'
+import { Component } from '../../lib.react/reactUi'
+import { IGuideEntry } from '../../app/pages/guide/entry'
+import { InternalLink } from '../../lib.react/command/internalLink'
 
 // React.Js Komponente zur Anzeige einer Sendung aus der Programmzeitschrift.
-export class GuideEntry extends JMSLib.ReactUi.Component<App.Guide.IGuideEntry> {
+export class GuideEntry extends Component<IGuideEntry> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {
         return (
@@ -10,9 +13,7 @@ export class GuideEntry extends JMSLib.ReactUi.Component<App.Guide.IGuideEntry> 
                 <td>{this.props.uvm.endDisplay}</td>
                 <td>{this.props.uvm.source}</td>
                 <td>
-                    <JMSLib.ReactUi.InternalLink view={() => this.props.uvm.toggleDetail()}>
-                        {this.props.uvm.name}
-                    </JMSLib.ReactUi.InternalLink>
+                    <InternalLink view={() => this.props.uvm.toggleDetail()}>{this.props.uvm.name}</InternalLink>
                 </td>
             </tr>
         )

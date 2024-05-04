@@ -1,4 +1,6 @@
-﻿// Verwaltet die Zusammenfassung der Daten der Programmzeitschrift für einzelne Geräte
+﻿import { GuideInfoContract, getGuideInfo } from './GuideInfoContract'
+
+// Verwaltet die Zusammenfassung der Daten der Programmzeitschrift für einzelne Geräte
 export class GuideInfoCache {
     private static promises: { [device: string]: Promise<GuideInfoContract> } = {}
 

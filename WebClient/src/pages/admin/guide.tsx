@@ -1,10 +1,24 @@
 ﻿import * as React from 'react'
+import { GuideSection, IAdminGuidePage } from '../../app/pages/admin/guide'
+import { Field } from '../../common/field'
+import { HelpLink } from '../../common/helpLink'
+import { InlineHelp } from '../../common/inlineHelp'
+import { ButtonCommand } from '../../lib.react/command/button'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { EditBoolean } from '../../lib.react/edit/boolean/flag'
+import { SingleSelect } from '../../lib.react/edit/list'
+import { MultiSelectButton } from '../../lib.react/edit/multiButtonList'
+import { MultiSelect } from '../../lib.react/edit/multiList'
+import { EditNumber } from '../../lib.react/edit/number/number'
+import { IAdminSectionFactory } from '../admin'
+import { EditChannel } from '../edit/channel'
+import { AdminSection } from './section'
 
 // React.Js Komponentezur Pflege der Konfiguration der Aktualisierung der Programmzeitschrift.
-export class AdminGuide extends AdminSection<App.Admin.IAdminGuidePage> {
+export class AdminGuide extends AdminSection<IAdminGuidePage> {
     // Das zugehörige Ui View Model.
-    static get uvm(): IAdminSectionFactory<App.Admin.IAdminGuidePage> {
-        return App.Admin.GuideSection
+    static get uvm(): IAdminSectionFactory<IAdminGuidePage> {
+        return GuideSection
     }
 
     // Die Überschrift für diesen Bereich.
@@ -19,38 +33,35 @@ export class AdminGuide extends AdminSection<App.Admin.IAdminGuidePage> {
                     <HelpLink topic='epg' page={this.props.uvm.page} /> periodisch aktualisieren
                     <HelpLink topic='epgconfig' page={this.props.uvm.page} /> und dann zur Programmierung von neuen
                     Aufzeichnungen anbieten.
-                    <JMSLib.ReactUi.InternalLink
-                        view={this.props.uvm.page.application.editPage.route}
-                        pict='new'
-                    />{' '}
-                    Hier werden die Eckdaten für die Aktualisierung festgelegt.
+                    <InternalLink view={this.props.uvm.page.application.editPage.route} pict='new' /> Hier werden die
+                    Eckdaten für die Aktualisierung festgelegt.
                 </div>
-                <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.isActive} />
+                <EditBoolean uvm={this.props.uvm.isActive} />
                 {this.props.uvm.isActive.value && (
                     <form>
                         {this.getSourceHelp()}
                         <div>
-                            <JMSLib.ReactUi.MultiSelect uvm={this.props.uvm.sources} items={10} />
-                            <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.remove} />
+                            <MultiSelect uvm={this.props.uvm.sources} items={10} />
+                            <ButtonCommand uvm={this.props.uvm.remove} />
                         </div>
                         <Field page={this.props.uvm.page} label={`${this.props.uvm.device.text}:`}>
-                            <JMSLib.ReactUi.SingleSelect uvm={this.props.uvm.device} />
+                            <SingleSelect uvm={this.props.uvm.device} />
                             <EditChannel uvm={this.props.uvm.source} />
-                            <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.add} />
+                            <ButtonCommand uvm={this.props.uvm.add} />
                         </Field>
-                        <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.ukTv} />
+                        <EditBoolean uvm={this.props.uvm.ukTv} />
                         {this.getDurationHelp()}
                         <Field page={this.props.uvm.page} label={`${this.props.uvm.duration.text}:`}>
-                            <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.duration} chars={5} />
+                            <EditNumber uvm={this.props.uvm.duration} chars={5} />
                         </Field>
                         <Field page={this.props.uvm.page} label={`${this.props.uvm.hours.text}:`}>
-                            <JMSLib.ReactUi.MultiSelectButton uvm={this.props.uvm.hours} merge={true} />
+                            <MultiSelectButton uvm={this.props.uvm.hours} merge={true} />
                         </Field>
                         <Field page={this.props.uvm.page} label={`${this.props.uvm.delay.text}:`}>
-                            <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.delay} chars={5} />
+                            <EditNumber uvm={this.props.uvm.delay} chars={5} />
                         </Field>
                         <Field page={this.props.uvm.page} label={`${this.props.uvm.latency.text}:`}>
-                            <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.latency} chars={5} />
+                            <EditNumber uvm={this.props.uvm.latency} chars={5} />
                         </Field>
                     </form>
                 )}

@@ -1,10 +1,20 @@
 ﻿import * as React from 'react'
+import { IAdminScanPage, ScanSection } from '../../app/pages/admin/scan'
+import { Field } from '../../common/field'
+import { HelpLink } from '../../common/helpLink'
+import { InlineHelp } from '../../common/inlineHelp'
+import { EditBoolean } from '../../lib.react/edit/boolean/flag'
+import { SingleSelect } from '../../lib.react/edit/list'
+import { MultiSelectButton } from '../../lib.react/edit/multiButtonList'
+import { EditNumber } from '../../lib.react/edit/number/number'
+import { IAdminSectionFactory } from '../admin'
+import { AdminSection } from './section'
 
 // React.Js Komponente zur Konfiguration des Sendersuchlaufs.
-export class AdminSources extends AdminSection<App.Admin.IAdminScanPage> {
+export class AdminSources extends AdminSection<IAdminScanPage> {
     // Das zugehörige Ui View Model.
-    static get uvm(): IAdminSectionFactory<App.Admin.IAdminScanPage> {
-        return App.Admin.ScanSection
+    static get uvm(): IAdminSectionFactory<IAdminScanPage> {
+        return ScanSection
     }
 
     // Die Überschrift für diesen Bereich.
@@ -21,26 +31,26 @@ export class AdminSources extends AdminSection<App.Admin.IAdminScanPage> {
                     Zeitplans erfolgen.
                 </div>
                 <div>
-                    <JMSLib.ReactUi.SingleSelect uvm={this.props.uvm.mode} />
+                    <SingleSelect uvm={this.props.uvm.mode} />
                 </div>
                 {this.props.uvm.showConfiguration && (
                     <form>
                         {this.getDurationHelp()}
                         <Field page={this.props.uvm.page} label={`${this.props.uvm.duration.text}:`}>
-                            <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.duration} chars={5} />
+                            <EditNumber uvm={this.props.uvm.duration} chars={5} />
                         </Field>
-                        <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.merge} />
+                        <EditBoolean uvm={this.props.uvm.merge} />
                         {this.props.uvm.configureAutomatic && (
                             <div>
                                 {this.getHourHelp()}
                                 <Field page={this.props.uvm.page} label={`${this.props.uvm.hours.text}:`}>
-                                    <JMSLib.ReactUi.MultiSelectButton uvm={this.props.uvm.hours} merge={true} />
+                                    <MultiSelectButton uvm={this.props.uvm.hours} merge={true} />
                                 </Field>
                                 <Field page={this.props.uvm.page} label={`${this.props.uvm.gapDays.text}:`}>
-                                    <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.gapDays} chars={5} />
+                                    <EditNumber uvm={this.props.uvm.gapDays} chars={5} />
                                 </Field>
                                 <Field page={this.props.uvm.page} label={`${this.props.uvm.latency.text}:`}>
-                                    <JMSLib.ReactUi.EditNumber uvm={this.props.uvm.latency} chars={5} />
+                                    <EditNumber uvm={this.props.uvm.latency} chars={5} />
                                 </Field>
                             </div>
                         )}

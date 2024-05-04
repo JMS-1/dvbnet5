@@ -1,5 +1,8 @@
-﻿// Die äußere Sicht auf eine Seite der Anwendung.
-export interface IPage extends JMSLib.App.IConnectable {
+﻿import { IConnectable, IView } from '../../lib/site'
+import { IApplication, Application } from '../app'
+
+// Die äußere Sicht auf eine Seite der Anwendung.
+export interface IPage extends IConnectable {
     // Rückgriff auf die Anwendung als Ganzes.
     readonly application: IApplication
 
@@ -37,7 +40,7 @@ export interface IPage extends JMSLib.App.IConnectable {
 // Basisklasse zur Implementierung von Seiten.
 export abstract class Page implements IPage {
     // Das zugehörige Oberflächenelement.
-    view: JMSLib.App.IView
+    view: IView
 
     // Meldet Änderungen an das zugehörige Oberflächenelement.
     protected refreshUi(): void {

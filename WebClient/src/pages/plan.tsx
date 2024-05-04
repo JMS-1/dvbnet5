@@ -1,7 +1,19 @@
 ﻿import * as React from 'react'
+import { IPlanPage } from '../app/pages/plan'
+import { HelpLink } from '../common/helpLink'
+import { InlineHelp } from '../common/inlineHelp'
+import { InternalLink } from '../lib.react/command/internalLink'
+import { Pictogram } from '../lib.react/command/pictogram'
+import { ToggleCommand } from '../lib.react/command/toggle'
+import { DetailRow } from '../lib.react/detailRow'
+import { SingleSelectButton } from '../lib.react/edit/buttonList'
+import { ComponentWithSite } from '../lib.react/reactUi'
+import { PlanException } from './plan/exception'
+import { PlanGuide } from './plan/guide'
+import { PlanRow } from './plan/row'
 
 // React.Js Komponente zur Anzeige des Aufzeichnungsplans.
-export class Plan extends JMSLib.ReactUi.ComponentWithSite<App.IPlanPage> {
+export class Plan extends ComponentWithSite<IPlanPage> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {
         var jobs = this.props.uvm.jobs
@@ -12,8 +24,8 @@ export class Plan extends JMSLib.ReactUi.ComponentWithSite<App.IPlanPage> {
                 <HelpLink page={this.props.uvm} topic='parallelrecording' />
                 {this.getHelp()}
                 <div className='vcrnet-plan-filter vcrnet-bar'>
-                    <JMSLib.ReactUi.SingleSelectButton uvm={this.props.uvm.startFilter} merge={true} />
-                    <JMSLib.ReactUi.ToggleCommand uvm={this.props.uvm.showTasks} />
+                    <SingleSelectButton uvm={this.props.uvm.startFilter} merge={true} />
+                    <ToggleCommand uvm={this.props.uvm.showTasks} />
                 </div>
                 {jobs && (
                     <table className='vcrnet-table'>
@@ -32,18 +44,14 @@ export class Plan extends JMSLib.ReactUi.ComponentWithSite<App.IPlanPage> {
                             {jobs.map((job, index) => [
                                 <PlanRow uvm={job} key={index} />,
                                 job.showEpg && (
-                                    <JMSLib.ReactUi.DetailRow prefixColumns={1} dataColumns={6} key={`${index}Details`}>
+                                    <DetailRow prefixColumns={1} dataColumns={6} key={`${index}Details`}>
                                         <PlanGuide uvm={job} page={this.props.uvm} />
-                                    </JMSLib.ReactUi.DetailRow>
+                                    </DetailRow>
                                 ),
                                 job.showException && (
-                                    <JMSLib.ReactUi.DetailRow
-                                        prefixColumns={1}
-                                        dataColumns={6}
-                                        key={`${index}Exceptions`}
-                                    >
+                                    <DetailRow prefixColumns={1} dataColumns={6} key={`${index}Exceptions`}>
                                         <PlanException uvm={job.exception} page={this.props.uvm} />
-                                    </JMSLib.ReactUi.DetailRow>
+                                    </DetailRow>
                                 ),
                             ])}
                         </tbody>
@@ -60,7 +68,7 @@ export class Plan extends JMSLib.ReactUi.ComponentWithSite<App.IPlanPage> {
                 Über die Datumsauswahl im linken Bereich kann der zeitliche Anfang des angezeigten Ausschnitts
                 festgelegt werden. Das Ende des Ausschnitts ergibt sich daraus und aus der gewünschten Anzahl von zu
                 berücksichtigenden Tagen.
-                <JMSLib.ReactUi.InternalLink view={this.props.uvm.application.settingsPage.route} pict='settings' />
+                <InternalLink view={this.props.uvm.application.settingsPage.route} pict='settings' />
                 <br />
                 <br />
                 Die beiden Schaltflächen direkt rechts neben der Datumsauswahl erlauben es zusätzlich zu den regulären
@@ -77,19 +85,19 @@ export class Plan extends JMSLib.ReactUi.ComponentWithSite<App.IPlanPage> {
                     <tbody>
                         <tr>
                             <td>
-                                <JMSLib.ReactUi.Pictogram name='intime' />
+                                <Pictogram name='intime' />
                             </td>
                             <td>Die Aufzeichnung wird wie programmiert ausgeführt.</td>
                         </tr>
                         <tr>
                             <td>
-                                <JMSLib.ReactUi.Pictogram name='late' />
+                                <Pictogram name='late' />
                             </td>
                             <td>Die Aufzeichnung beginnt verspätet, eventuell fehlt der Anfang.</td>
                         </tr>
                         <tr>
                             <td>
-                                <JMSLib.ReactUi.Pictogram name='lost' />
+                                <Pictogram name='lost' />
                             </td>
                             <td>Die Aufzeichnung kann nicht ausgeführt werden.</td>
                         </tr>
@@ -109,7 +117,7 @@ export class Plan extends JMSLib.ReactUi.ComponentWithSite<App.IPlanPage> {
                     <tbody>
                         <tr>
                             <td>
-                                <JMSLib.ReactUi.Pictogram name='exceptOff' />
+                                <Pictogram name='exceptOff' />
                             </td>
                             <td>
                                 Handelt es sich um eine sich wiederholende Aufzeichnung

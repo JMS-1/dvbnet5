@@ -1,4 +1,6 @@
-﻿// Repräsentiert die Klasse InfoService
+﻿import { doUrlCall } from './vcrserver'
+
+// Repräsentiert die Klasse InfoService
 export interface InfoServiceContract {
     // Die aktuelle Version des Dienstes in der Notation MAJOR.MINOR [DD.MM.YYYY]
     version: string

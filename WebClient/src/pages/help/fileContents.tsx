@@ -1,7 +1,13 @@
-﻿export class FileContents extends HelpComponent {
+﻿import * as React from 'react'
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { HelpComponent } from './helpComponent'
+import { ScreenShot } from './screenShot'
+
+export class FileContents extends HelpComponent {
     readonly title = 'Inhalt einer Aufzeichnungsdatei'
 
-    render(page: App.IPage): JSX.Element {
+    render(page: IPage): JSX.Element {
         return (
             <div>
                 Für jede programmierte Aufzeichnung erstellt der VCR.NET Recording Service eine Datei mit der Endung TS
@@ -45,10 +51,7 @@
                         Quelle eine elektronische Programmzeitschrift anbietet, was aber in der Praxis immer der Fall
                         ist. In einzelnen Fällen kann es notwendig sein, diese Integration zu deaktivieren, was aber nur
                         über die Konfiguration des{' '}
-                        <JMSLib.ReactUi.InternalLink view={`${page.route};dvbnet`}>
-                            DVB.NET Geräteprofils
-                        </JMSLib.ReactUi.InternalLink>{' '}
-                        möglich ist.
+                        <InternalLink view={`${page.route};dvbnet`}>DVB.NET Geräteprofils</InternalLink> möglich ist.
                     </li>
                 </ul>
                 Am Rande sei bemerkt, dass auch viele Radiosender alternative Tonspuren anbieten. Je nach
@@ -56,14 +59,12 @@
                 <br />
                 <br />
                 Bei der Programmierung einer Aufzeichnung kann nach der{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};sourcechooser`}>
-                    Auswahl
-                </JMSLib.ReactUi.InternalLink>{' '}
-                einer Quelle festgelegt werden, welche der aufgeführten optionalen Informationen in die
-                Aufzeichnungsdatei gelangen sollen. Ist eine technische Bereitstellung der gewünschten Informationen
-                möglich, so erfüllt der VCR.NET Recording Server die mit der Programmierung geäußerten Wünsche,
-                ansonsten werden die Einstellungen kommentarlos ignoriert - etwa wenn ein Videotext aufgezeichnet werden
-                soll, die Quelle aber keinen anbietet weil es sich um einen Radiosender handelt.
+                <InternalLink view={`${page.route};sourcechooser`}>Auswahl</InternalLink> einer Quelle festgelegt
+                werden, welche der aufgeführten optionalen Informationen in die Aufzeichnungsdatei gelangen sollen. Ist
+                eine technische Bereitstellung der gewünschten Informationen möglich, so erfüllt der VCR.NET Recording
+                Server die mit der Programmierung geäußerten Wünsche, ansonsten werden die Einstellungen kommentarlos
+                ignoriert - etwa wenn ein Videotext aufgezeichnet werden soll, die Quelle aber keinen anbietet weil es
+                sich um einen Radiosender handelt.
                 <br />
                 <ScreenShot description='Optionen festlegen' name='FAQ/streamoptions' />
                 Die einzelnen Auswahlpunkte haben dabei folgende Bedeutung (von links nach rechts):

@@ -1,7 +1,13 @@
-﻿export class ControlCenter extends HelpComponent {
+﻿import * as React from 'react'
+import { IPage } from '../../app/pages/page'
+import { ExternalLink } from '../../lib.react/command/externalLink'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { HelpComponent } from './helpComponent'
+
+export class ControlCenter extends HelpComponent {
     readonly title = 'VCR.NET Kontrollzentrum'
 
-    render(page: App.IPage): JSX.Element {
+    render(page: IPage): JSX.Element {
         return (
             <div>
                 Der VCR.NET Recording Service ist ein völlig eigenständiger Windows Dienst, der über seine Web
@@ -23,16 +29,14 @@
                 gerade nicht aktiv ist und bei einem entfernten System kann es zusätzlich an der Konfiguration der
                 Firewalls liegen. Ist eine <span className='vccBlue'>blaue</span> Hinterlegung zu sehen, so führt der
                 VCR.NET Recording Service mindestens eine Aktivität
-                <JMSLib.ReactUi.InternalLink view={page.application.devicesPage.route} pict='devices' /> aus und es
-                empfiehlt sich, den zugehörigen Rechner nicht neu zu starten oder in den{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};hibernation`}>
-                    Schlafzustand
-                </JMSLib.ReactUi.InternalLink>{' '}
-                zu versetzen. Das gilt auch für eine <span className='vccYellow'>gelbe</span> Hinterlegung, bei der zwar
-                kein DVB Gerät in Benutzung ist, eine Aktivität aber kurz bevor steht. Im Normalzustand ist das
-                Kamerasymbol <span className='vccGreen'>Grün</span> hinterlegt und der VCR.NET Recording Service wartet
-                auf die nächste anstehende Aufzeichnung - fehlt die grüne Hinterlegung, so ist der Aufzeichnungsplan
-                <JMSLib.ReactUi.InternalLink view={page.application.planPage.route} pict='plan' /> leer.
+                <InternalLink view={page.application.devicesPage.route} pict='devices' /> aus und es empfiehlt sich, den
+                zugehörigen Rechner nicht neu zu starten oder in den{' '}
+                <InternalLink view={`${page.route};hibernation`}>Schlafzustand</InternalLink> zu versetzen. Das gilt
+                auch für eine <span className='vccYellow'>gelbe</span> Hinterlegung, bei der zwar kein DVB Gerät in
+                Benutzung ist, eine Aktivität aber kurz bevor steht. Im Normalzustand ist das Kamerasymbol{' '}
+                <span className='vccGreen'>Grün</span> hinterlegt und der VCR.NET Recording Service wartet auf die
+                nächste anstehende Aufzeichnung - fehlt die grüne Hinterlegung, so ist der Aufzeichnungsplan
+                <InternalLink view={page.application.planPage.route} pict='plan' /> leer.
                 <br />
                 <br />
                 Hier nun einige weitere Funktionalitäten des Kontrollzentrums - in einigen Fällen wird eine korrekte
@@ -43,22 +47,19 @@
                     </li>
                     <li>
                         Aktivierung des{' '}
-                        <JMSLib.ReactUi.InternalLink view={`${page.route};streaming`}>
+                        <InternalLink view={`${page.route};streaming`}>
                             <em>Live</em> Modus
-                        </JMSLib.ReactUi.InternalLink>{' '}
+                        </InternalLink>{' '}
                         auf einem gerade nicht benutzten DVB Gerät - das macht nur bei lokal installiertem{' '}
-                        <JMSLib.ReactUi.ExternalLink url='http://www.psimarron.net/DVBNETViewer/'>
+                        <ExternalLink url='http://www.psimarron.net/DVBNETViewer/'>
                             DVB.NET / VCR.NET Viewer
-                        </JMSLib.ReactUi.ExternalLink>{' '}
+                        </ExternalLink>{' '}
                         Sinn.
                     </li>
                     <li>Betrachten einer laufenden Aufzeichnung.</li>
                     <li>
                         Unterstützung des Übergangs in den{' '}
-                        <JMSLib.ReactUi.InternalLink view={`${page.route};hibernation`}>
-                            Schlafzustand
-                        </JMSLib.ReactUi.InternalLink>
-                        .
+                        <InternalLink view={`${page.route};hibernation`}>Schlafzustand</InternalLink>.
                     </li>
                 </ul>
             </div>

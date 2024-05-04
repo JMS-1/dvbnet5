@@ -1,7 +1,15 @@
 ﻿import * as React from 'react'
+import { IEditPage } from '../app/pages/edit'
+import { HelpLink } from '../common/helpLink'
+import { InlineHelp } from '../common/inlineHelp'
+import { ButtonCommand } from '../lib.react/command/button'
+import { ComponentWithSite } from '../lib.react/reactUi'
+import { EditException } from './edit/exception'
+import { JobData } from './edit/job'
+import { ScheduleData } from './edit/schedule'
 
 // React.Js Komponente zur Pflege einer Aufzeichnung.
-export class Edit extends JMSLib.ReactUi.ComponentWithSite<App.IEditPage> {
+export class Edit extends ComponentWithSite<IEditPage> {
     // Oberflächenelemente erstellen.
     render(): JSX.Element {
         const schedule = this.props.uvm.schedule
@@ -49,8 +57,8 @@ export class Edit extends JMSLib.ReactUi.ComponentWithSite<App.IEditPage> {
                 )}
                 {this.renderButtonHelp()}
                 <div>
-                    <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.save} />
-                    <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.del} />
+                    <ButtonCommand uvm={this.props.uvm.save} />
+                    <ButtonCommand uvm={this.props.uvm.del} />
                 </div>
             </div>
         )

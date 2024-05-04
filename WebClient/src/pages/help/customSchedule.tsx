@@ -1,13 +1,18 @@
-﻿export class CustomSchedule extends HelpComponent {
+﻿import * as React from 'react'
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { HelpComponent } from './helpComponent'
+
+export class CustomSchedule extends HelpComponent {
     readonly title = 'Regeln für die Planung von Aufzeichnungen'
 
-    render(page: App.IPage): JSX.Element {
+    render(page: IPage): JSX.Element {
         return (
             <div>
                 Der VCR.NET Recording Service verwendet nach der Installation ein festes Regelwerk zur Planung von
                 Aufzeichnungen für den Fall, dass mehrere DVB.NET Geräteprofile verwendet werden. Über die Konfiguration
-                <JMSLib.ReactUi.InternalLink view={`${page.application.adminPage.route};rules`} pict='admin' /> kann
-                dieses speziellen Bedürfnissen angepasst werden.
+                <InternalLink view={`${page.application.adminPage.route};rules`} pict='admin' /> kann dieses speziellen
+                Bedürfnissen angepasst werden.
                 <br />
                 <br />
                 Für die Aufzeichnungsplanung ermittelt der VCR.NET Recording Service in einer ersten Phase Zeitbereiche

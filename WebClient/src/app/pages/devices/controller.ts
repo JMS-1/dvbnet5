@@ -1,10 +1,18 @@
-﻿// Schnittstelle zur Anzeige und Manipulation einer Aktivität.
-export interface IDeviceController extends JMSLib.App.IConnectable {
+﻿import { ICommand, Command } from '../../../lib/command/command'
+import { DateTimeUtils } from '../../../lib/dateTimeUtils'
+import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+import { INumberWithSlider, NumberWithSlider } from '../../../lib/edit/number/slider'
+import { IConnectable, IView } from '../../../lib/site'
+import { PlanCurrentContract, updateEndTime } from '../../../web/PlanCurrentContract'
+import { getDeviceRoot } from '../../../web/vcrserver'
+
+// Schnittstelle zur Anzeige und Manipulation einer Aktivität.
+export interface IDeviceController extends IConnectable {
     // Aktueller Endzeitpunkt.
     readonly end: string
 
     // Einstellung für die verbleibende Restzeit.
-    readonly remaining: JMSLib.App.INumberWithSlider
+    readonly remaining: INumberWithSlider
 
     // Verweis zur LIVE Betrachtung.
     readonly live: string
@@ -16,35 +24,35 @@ export interface IDeviceController extends JMSLib.App.IConnectable {
     readonly target: string
 
     // Befehl um das sofortige Beenden vorzubereiten.
-    readonly stopNow: JMSLib.App.ICommand
+    readonly stopNow: ICommand
 
     // Einstellung zum Umgang mit dem Schlafzustand beim Vorzeitigen beenden.
-    readonly noHibernate: JMSLib.App.IFlag
+    readonly noHibernate: IFlag
 
     // Befehl zur Aktualisierung der Endzeit.
-    readonly update: JMSLib.App.ICommand
+    readonly update: ICommand
 }
 
 // Präsentationsmodell zur Ansicht und Pflege einer laufenden Aufzeichnung.
 export class Controller implements IDeviceController {
     // Aktuell verbundenes Oberflächenelement.
-    view: JMSLib.App.IView
+    view: IView
 
     // Einstellung für die verbleibende Restzeit.
-    readonly remaining = new JMSLib.App.NumberWithSlider({}, 'value', () => this.refreshUi(), 0, 480)
+    readonly remaining = new NumberWithSlider({}, 'value', () => this.refreshUi(), 0, 480)
 
     // Befehl um das sofortige Beenden vorzubereiten.
-    readonly stopNow = new JMSLib.App.Command(
+    readonly stopNow = new Command(
         () => this.remaining.sync(0),
         'Vorzeitig beenden',
         () => this.remaining.value !== 0
     )
 
     // Einstellung zum Umgang mit dem Schlafzustand beim Vorzeitigen beenden.
-    readonly noHibernate = new JMSLib.App.Flag({}, 'value', 'Übergang in den Schlafzustand unterdrücken')
+    readonly noHibernate = new Flag({}, 'value', 'Übergang in den Schlafzustand unterdrücken')
 
     // Befehl zur Aktualisierung der Endzeit.
-    readonly update = new JMSLib.App.Command(() => this.save(), 'Übernehmen')
+    readonly update = new Command(() => this.save(), 'Übernehmen')
 
     // Verweis zur LIVE Betrachtung.
     readonly live: string
@@ -53,7 +61,7 @@ export class Controller implements IDeviceController {
     readonly timeshift: string
 
     constructor(
-        private readonly _model: VCRServer.PlanCurrentContract,
+        private readonly _model: PlanCurrentContract,
         suppressHibernate: boolean,
         private readonly _reload: () => void
     ) {
@@ -65,7 +73,7 @@ export class Controller implements IDeviceController {
         if (_model.streamIndex < 0) return
 
         // Verweise zur Ansicht mit dem DVB.NET / VCR.NET Viewer aufsetzen.
-        var url = `${VCRServer.getDeviceRoot()}${encodeURIComponent(_model.device)}/${_model.streamIndex}/`
+        var url = `${getDeviceRoot()}${encodeURIComponent(_model.device)}/${_model.streamIndex}/`
 
         this.live = `${url}Live`
         this.timeshift = `${url}TimeShift`
@@ -87,7 +95,7 @@ export class Controller implements IDeviceController {
 
     // Aktueller Endzeitpunkt formatiert als Uhrzeit.
     get end(): string {
-        return JMSLib.App.DateTimeUtils.formatEndTime(this.currentEnd)
+        return DateTimeUtils.formatEndTime(this.currentEnd)
     }
 
     // Aktueller Ziel für den Netzwerkversand.
@@ -106,8 +114,8 @@ export class Controller implements IDeviceController {
         var end = (this.remaining.value ?? 0) > 0 ? this.currentEnd : this.start
 
         // Asynchronen Aufruf absetzen und im Erfolgsfall die Aktivitäten neu laden.
-        return VCRServer.updateEndTime(this._model.device, !!this.noHibernate.value, this._model.referenceId, end).then(
-            () => this._reload()
+        return updateEndTime(this._model.device, !!this.noHibernate.value, this._model.referenceId, end).then(() =>
+            this._reload()
         )
     }
 }

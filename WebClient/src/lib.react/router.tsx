@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+import { Component, IComponent, IEmpty } from './reactUi'
 
 // Schnittstelle eines Präsentationsmodell, das als Ziel einer Navigation dienen kann.
 export interface IRoutablePage {
@@ -10,12 +11,12 @@ export interface IRoutablePage {
 export interface IPageFactory<TPageType extends IRoutablePage> {
     // Ermittelt zu dem Präsentationsmodell Navigationsziel eine geeignet React.Js Komponente.
     [route: string]: {
-        new (props?: JMSLib.ReactUi.IComponent<any>, context?: IEmpty): JMSLib.ReactUi.Component<TPageType>
+        new (props?: IComponent<any>, context?: IEmpty): Component<TPageType>
     }
 }
 
 // Basisklasse zur Implementierung eines Navigationsverteilers.
-export abstract class Router<TPageType extends IRoutablePage> extends JMSLib.ReactUi.Component<TPageType> {
+export abstract class Router<TPageType extends IRoutablePage> extends Component<TPageType> {
     // Alle bekannten Navigationsziele und deren React.Js Komponentenerzeuger.
     private static _pages: IPageFactory<any>
 

@@ -1,4 +1,9 @@
-﻿// Repräsentiert die Klasse GuideFilter
+﻿import { GuideEncryption } from './GuideEncryption'
+import { GuideItemContract } from './GuideItemContract'
+import { GuideSource } from './GuideSource'
+import { doUrlCall } from './vcrserver'
+
+// Repräsentiert die Klasse GuideFilter
 export interface GuideFilterContract {
     // Der Name des aktuell ausgewählten Geräteprofils
     device: string

@@ -1,4 +1,9 @@
-﻿// Repräsentiert die Klasse JobScheduleData
+﻿import { EditJobContract } from './EditJobContract'
+import { EditScheduleContract } from './EditScheduleContract'
+import { JobScheduleInfoContract } from './JobScheduleInfoContract'
+import { doUrlCall } from './vcrserver'
+
+// Repräsentiert die Klasse JobScheduleData
 export interface JobScheduleDataContract {
     // Der Auftrag
     job: EditJobContract

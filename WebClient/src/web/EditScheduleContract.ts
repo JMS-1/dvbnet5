@@ -1,4 +1,8 @@
-﻿// Repräsentiert die Klasse EditSchedule
+﻿import { EditJobScheduleCommonContract } from './EditJobScheduleCommonContract'
+import { PlanExceptionContract } from './PlanExceptionContract'
+import { doUrlCall } from './vcrserver'
+
+// Repräsentiert die Klasse EditSchedule
 export interface EditScheduleContract extends EditJobScheduleCommonContract {
     // Der erste Startzeitpunkt in ISO Notation
     firstStart: string

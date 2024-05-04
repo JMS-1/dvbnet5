@@ -1,4 +1,6 @@
-﻿// Repräsentiert die Klasse ProfileInfo
+﻿import { doUrlCall } from './vcrserver'
+
+// Repräsentiert die Klasse ProfileInfo
 export interface ProfileInfoContract {
     name: string
 }

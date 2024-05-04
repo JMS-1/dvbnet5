@@ -1,18 +1,24 @@
-﻿export class Hibernation extends HelpComponent {
+﻿import * as React from 'react'
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { HelpComponent } from './helpComponent'
+import { ScreenShot } from './screenShot'
+
+export class Hibernation extends HelpComponent {
     readonly title = 'Schlafzustand'
 
-    render(page: App.IPage): JSX.Element {
+    render(page: IPage): JSX.Element {
         return (
             <div>
                 Der VCR.NET Recording Service ist ein unsichtbar im Hintergrund laufender Windows Dienst, der
                 selbstständig programmierte Aufzeichnungen und{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};tasks`}>Sonderaufgaben</JMSLib.ReactUi.InternalLink>{' '}
-                ausführen soll. Dabei ist die Zusammenarbeit mit dem Schlafzustand des Rechners ein wichtiger Aspekt.
-                Zum Verständnis der Abläufen werden nun einige Szenarien vorgestellt, beginnend mit einem eher
-                untypischen Fall: dem Betrieb des VCR.NET auf einem gesonderten Rechner, dessen einzige Aufgabe die
-                Aufzeichnung von DVB Ausstrahlungen ist. Der untypische Fall für dieses Beispiel ist, dass es dem
-                VCR.NET auch gestattet sei, den Rechner in den Schlafzustand zu versetzen - ohne zusätzliche Maßnahmen
-                steht der Rechner dann nicht ständig zur Programmierung neuer Aufzeichnungen zur Verfügung.
+                <InternalLink view={`${page.route};tasks`}>Sonderaufgaben</InternalLink> ausführen soll. Dabei ist die
+                Zusammenarbeit mit dem Schlafzustand des Rechners ein wichtiger Aspekt. Zum Verständnis der Abläufen
+                werden nun einige Szenarien vorgestellt, beginnend mit einem eher untypischen Fall: dem Betrieb des
+                VCR.NET auf einem gesonderten Rechner, dessen einzige Aufgabe die Aufzeichnung von DVB Ausstrahlungen
+                ist. Der untypische Fall für dieses Beispiel ist, dass es dem VCR.NET auch gestattet sei, den Rechner in
+                den Schlafzustand zu versetzen - ohne zusätzliche Maßnahmen steht der Rechner dann nicht ständig zur
+                Programmierung neuer Aufzeichnungen zur Verfügung.
                 <ScreenShot description='Einstellungen zum Schlafzustand' name='FAQ/hibernate' />
                 Grundsätzlich stellt der VCR.NET Recording Service sicher, dass der Rechner für programmierte
                 Aufzeichnungen aus dem Schlafzustand aufgeweckt wird, egal wie der Übergang in den Schlafzustand erfolgt
@@ -56,12 +62,10 @@
                 <br />
                 <br />
                 Für einen möglichst einfachen Betrieb in diesem Szenario besitzt das{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};controlcenter`}>
-                    VCR.NET Kontrollzentrum
-                </JMSLib.ReactUi.InternalLink>{' '}
-                eine besondere Einstellung - es handelt sich bei dem Kontrollzentrum um die Anwendung, die normalerweise
-                im so genannten System Tray von Windows durch das Kamerasymbol visualisiert wird. Auf Wunsch ist es
-                damit möglich, einen Schlafzustand verzögert auslösen zu lassen.
+                <InternalLink view={`${page.route};controlcenter`}>VCR.NET Kontrollzentrum</InternalLink> eine besondere
+                Einstellung - es handelt sich bei dem Kontrollzentrum um die Anwendung, die normalerweise im so
+                genannten System Tray von Windows durch das Kamerasymbol visualisiert wird. Auf Wunsch ist es damit
+                möglich, einen Schlafzustand verzögert auslösen zu lassen.
                 <ScreenShot description='Kontrollzentrum' name='FAQ/hibernatevcc' />
                 Das Kontrollzentrum erkennt wenn der VCR.NET Recording Service eigentlich in den Schlafzustand übergehen
                 möchte und führt dann nach der angegebenen Verzögerung genau diesen Übergang aus. In der Zwischenzeit
@@ -71,16 +75,13 @@
                 Schlafzustand geht, weil Windows keine Aktivitäten des Anwenders mehr wahrnimmt.
                 <ScreenShot description='Warten auf den Schlafzustand' name='FAQ/manualsleep' />
                 Das VCR.NET Kontrollzentrum hat aber noch eine{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};controlcenter`}>
-                    weitere nützliche Funktion
-                </JMSLib.ReactUi.InternalLink>
-                , die nicht deaktiviert werden kann. Aus der Hintergrundfarbe des Kamerasymbols kann direkt abgelesen
-                werden, was der VCR.NET Recording Service gerade tut. Ist die Farbe{' '}
-                <span className='vccBlue'>Blau</span>, so wird gerade mindestens eine Aufzeichnung oder Sonderaufgabe
-                ausgeführt. Bei <span className='vccYellow'>Gelb</span> steht eine Aufzeichnung in naher Zukunft an -
-                konkret wie oben konfiguriert näher als die minimale Verweilzeit im Schlafzustand. Der Anwender ist
-                angehalten, diese Farbe zu beachten, wenn der Rechner spontan manuell in den Schlafzustand versetzt
-                wird.
+                <InternalLink view={`${page.route};controlcenter`}>weitere nützliche Funktion</InternalLink>, die nicht
+                deaktiviert werden kann. Aus der Hintergrundfarbe des Kamerasymbols kann direkt abgelesen werden, was
+                der VCR.NET Recording Service gerade tut. Ist die Farbe <span className='vccBlue'>Blau</span>, so wird
+                gerade mindestens eine Aufzeichnung oder Sonderaufgabe ausgeführt. Bei{' '}
+                <span className='vccYellow'>Gelb</span> steht eine Aufzeichnung in naher Zukunft an - konkret wie oben
+                konfiguriert näher als die minimale Verweilzeit im Schlafzustand. Der Anwender ist angehalten, diese
+                Farbe zu beachten, wenn der Rechner spontan manuell in den Schlafzustand versetzt wird.
                 <br />
                 <br />
                 Es ist dem VCR.NET Recording Service nicht möglich, einen solchen manuellen Übergang in den

@@ -1,7 +1,9 @@
 ﻿import * as React from 'react'
+import { IString } from '../../../lib/edit/text/text'
+import { IComponent, ComponentExWithSite } from '../../reactUi'
 
 // Konfiguration zur Eingabe eines langen Textes.
-interface IEditTextArea extends IComponent<App.IString> {
+interface IEditTextArea extends IComponent<IString> {
     // Zeilen zur Eingabe.
     rows: number
 
@@ -10,7 +12,7 @@ interface IEditTextArea extends IComponent<App.IString> {
 }
 
 // React.Js Komponente zur Eingabe eines langen Textes.
-export class EditTextArea extends ComponentExWithSite<App.IString, IEditTextArea> {
+export class EditTextArea extends ComponentExWithSite<IString, IEditTextArea> {
     // Oberflächenelemente erstellen.
     render(): JSX.Element {
         return (

@@ -1,7 +1,10 @@
 ﻿import * as React from 'react'
+import { Component } from '../../lib.react/reactUi'
+import { IGuideInfo } from '../../app/pages/guide/entry'
+import { ButtonCommand } from '../../lib.react/command/button'
 
 // React.Js Komponente zur Anzeige der Details einer Sendung aus der Programmzeitschrift.
-export class GuideEntryInfo extends JMSLib.ReactUi.Component<App.Guide.IGuideInfo> {
+export class GuideEntryInfo extends Component<IGuideInfo> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {
         return (
@@ -51,7 +54,7 @@ export class GuideEntryInfo extends JMSLib.ReactUi.Component<App.Guide.IGuideInf
                     </tbody>
                 </table>
                 <div>
-                    <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.findSimiliar} />
+                    <ButtonCommand uvm={this.props.uvm.findSimiliar} />
                 </div>
             </div>
         )

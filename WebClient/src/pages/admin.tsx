@@ -1,18 +1,30 @@
 ﻿import * as React from 'react'
+import { AdminPage, IAdminPage } from '../app/pages/admin'
+import { ISection } from '../app/pages/admin/section'
+import { InternalLink } from '../lib.react/command/internalLink'
+import { IComponent, IEmpty, ComponentWithSite } from '../lib.react/reactUi'
+import { AdminDevices } from './admin/devices'
+import { AdminDirectories } from './admin/directories'
+import { AdminGuide } from './admin/guide'
+import { AdminOther } from './admin/other'
+import { AdminRules } from './admin/rules'
+import { AdminSection } from './admin/section'
+import { AdminSecurity } from './admin/security'
+import { AdminSources } from './admin/sources'
 
 // Hilfsschnittstelle zur Signature des Konstruktors eines Ui View Models.
-export interface IAdminSectionFactory<TSectionType extends App.Admin.ISection> {
+export interface IAdminSectionFactory<TSectionType extends ISection> {
     // Der eigentliche Konstruktor.
-    new (page: App.AdminPage): App.Admin.ISection
+    new (page: AdminPage): ISection
 
     // Die statische Eigenschaft mit dem eindeutigen Namen.
     route: string
 }
 
 // Schnittstelle zum anlegen der React.Js Komponente für einen einzelnen Konfigurationsbereich.
-interface IAdminUiSectionFactory<TSectionType extends App.Admin.ISection> {
+interface IAdminUiSectionFactory<TSectionType extends ISection> {
     // Der eigentliche Konstruktor.
-    new (props?: JMSLib.ReactUi.IComponent<TSectionType>, context?: JMSLib.ReactUi.IEmpty): AdminSection<TSectionType>
+    new (props?: IComponent<TSectionType>, context?: IEmpty): AdminSection<TSectionType>
 
     // Das zugehörige Ui View Model.
     readonly uvm: IAdminSectionFactory<TSectionType>
@@ -25,12 +37,12 @@ interface IAdminSectionFactoryMap {
 }
 
 // React.Js Komponente zur Anzeige der Konfiguration.
-export class Admin extends JMSLib.ReactUi.ComponentWithSite<App.IAdminPage> {
+export class Admin extends ComponentWithSite<IAdminPage> {
     // Alle bekannten Konfigurationsbereiche.
     static _sections: IAdminSectionFactoryMap
 
     // Einen einzelnen Konfigurationsbereich ergänzen.
-    static addSection<TSectionType extends App.Admin.ISection>(factory: IAdminUiSectionFactory<TSectionType>): void {
+    static addSection<TSectionType extends ISection>(factory: IAdminUiSectionFactory<TSectionType>): void {
         Admin._sections[factory.uvm.route] = factory
     }
 
@@ -45,9 +57,7 @@ export class Admin extends JMSLib.ReactUi.ComponentWithSite<App.IAdminPage> {
                 <div>
                     {this.props.uvm.sections.allowedValues.map((si) => (
                         <div key={si.display} className={`${si.value === section ? `jmslib-command-checked` : ``}`}>
-                            <JMSLib.ReactUi.InternalLink view={`${this.props.uvm.route};${si.value.route}`}>
-                                {si.display}
-                            </JMSLib.ReactUi.InternalLink>
+                            <InternalLink view={`${this.props.uvm.route};${si.value.route}`}>{si.display}</InternalLink>
                         </div>
                     ))}
                 </div>

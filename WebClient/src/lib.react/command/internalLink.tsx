@@ -1,4 +1,8 @@
-﻿// Konfigurationzur Anzeige eines internen Verweises.
+﻿import * as React from 'react'
+import { IEmpty } from '../reactUi'
+import { Pictogram } from './pictogram'
+
+// Konfigurationzur Anzeige eines internen Verweises.
 interface IInternalLink {
     // Ein Navigationsziel oder eine Funktion zur Durchführung eines Übergangs.
     view: string | (() => void)

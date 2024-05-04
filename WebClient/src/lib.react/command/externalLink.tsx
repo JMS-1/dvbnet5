@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+import { IEmpty } from '../reactUi'
 
 // Konfiguration eines externen Verweises.
 interface IExternalLink {

@@ -1,7 +1,11 @@
 ﻿import * as React from 'react'
+import { IDaySelector, ISelectableDay } from '../../../lib/edit/datetime/day'
+import { ButtonCommand } from '../../command/button'
+import { Pictogram } from '../../command/pictogram'
+import { ComponentWithSite } from '../../reactUi'
 
 // React.JS Komponente zur Auswahl eines Datums.
-export class EditDay extends ComponentWithSite<App.IDaySelector> {
+export class EditDay extends ComponentWithSite<IDaySelector> {
     // Anzeige erstellen.
     render(): JSX.Element {
         return (
@@ -51,7 +55,7 @@ export class EditDay extends ComponentWithSite<App.IDaySelector> {
     }
 
     // Ermittelt eine Woche mit auswählbaren Tagen.
-    private getRow(days: App.ISelectableDay[], rowKey: number): JSX.Element | null {
+    private getRow(days: ISelectableDay[], rowKey: number): JSX.Element | null {
         // Prüfen ob genug Tage zur Verfügung stehen.
         if (days.length !== 7) return null
 
@@ -78,7 +82,7 @@ export class EditDay extends ComponentWithSite<App.IDaySelector> {
     }
 
     // Teilt die zur Auswahl anzubietende Tage in Häppchen zu je einer Woche.
-    private getRows(days: App.ISelectableDay[]): (JSX.Element | null)[] {
+    private getRows(days: ISelectableDay[]): (JSX.Element | null)[] {
         var rows: (JSX.Element | null)[] = []
 
         // Tage in Schritten einer Woche zerlegen.

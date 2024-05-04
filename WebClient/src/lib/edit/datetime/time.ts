@@ -1,4 +1,8 @@
-﻿// Schnittstelle zur Eingabe einer Uhrzeit.
+﻿import { DateTimeUtils } from '../../dateTimeUtils'
+import { IConnectable } from '../../site'
+import { Property } from '../edit'
+
+// Schnittstelle zur Eingabe einer Uhrzeit.
 export interface ITime extends IConnectable {
     // Die aktuelle Zeit als Zeichenkette.
     rawValue: string

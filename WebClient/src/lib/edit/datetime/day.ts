@@ -1,4 +1,10 @@
-﻿// Schnittstelle zur Anzeige eines einzelnen Tags.
+﻿import { ICommand, Command } from '../../command/command'
+import { DateTimeUtils } from '../../dateTimeUtils'
+import { IDisplay } from '../../localizable'
+import { IConnectable } from '../../site'
+import { Property } from '../edit'
+
+// Schnittstelle zur Anzeige eines einzelnen Tags.
 export interface ISelectableDay {
     // Das volle Datum.
     readonly date: Date
@@ -22,16 +28,16 @@ export interface ISelectableDay {
 // Schnittstelle zur Auswahl eines Tags.
 export interface IDaySelector extends IDisplay, IConnectable {
     // Blättert einen Monat zurück.
-    readonly monthBackward: JMSLib.App.ICommand
+    readonly monthBackward: ICommand
 
     // Blättert einen Monat vor.
-    readonly monthForward: JMSLib.App.ICommand
+    readonly monthForward: ICommand
 
     // Verschiebt die Anzeige auf den aktuellen Monat.
-    readonly today: JMSLib.App.ICommand
+    readonly today: ICommand
 
     // Setzt die Anzeige auf den Monat mit dem ausgewählten Tag zurück.
-    readonly reset: JMSLib.App.ICommand
+    readonly reset: ICommand
 
     // Meldet oder setzt den aktuellen Monat.
     month: string
@@ -61,7 +67,7 @@ export class DayEditor extends Property<string> implements IDaySelector {
     readonly dayNames = DateTimeUtils.germanDays.map((d, i) => DateTimeUtils.germanDays[(i + 1) % 7])
 
     // Auf den Vormonat wechseln.
-    readonly monthBackward = new JMSLib.App.Command(() => this.goBackward())
+    readonly monthBackward = new Command(() => this.goBackward())
 
     private goBackward(): void {
         // Aktuelle Auswahl prüfen.
@@ -84,7 +90,7 @@ export class DayEditor extends Property<string> implements IDaySelector {
     }
 
     // Auf den Folgemonat wechseln.
-    readonly monthForward = new JMSLib.App.Command(() => this.goForward())
+    readonly monthForward = new Command(() => this.goForward())
 
     private goForward(): void {
         // Laufende Nummer ermitteln.
@@ -107,7 +113,7 @@ export class DayEditor extends Property<string> implements IDaySelector {
     }
 
     // Anzeige auf den aktuellen Monat setzen.
-    readonly today = new JMSLib.App.Command(
+    readonly today = new Command(
         () => this.goToday(),
         `Heute`,
         () => this.days.every((d) => !d.isToday)
@@ -118,7 +124,7 @@ export class DayEditor extends Property<string> implements IDaySelector {
     }
 
     // Anzeige auf den Monat mit der aktuellen Auswahl setzen.
-    readonly reset = new JMSLib.App.Command(
+    readonly reset = new Command(
         () => this.goSelected(),
         `Zurück`,
         () => this.days.every((d) => !d.isCurrentDay)

@@ -1,7 +1,13 @@
 ﻿import * as React from 'react'
+import { IJobPage } from '../app/pages/jobs'
+import { HelpLink } from '../common/helpLink'
+import { InlineHelp } from '../common/inlineHelp'
+import { InternalLink } from '../lib.react/command/internalLink'
+import { SingleSelectButton } from '../lib.react/edit/buttonList'
+import { ComponentWithSite } from '../lib.react/reactUi'
 
 // React.Js Komponente zur Anzeige aller Aufträge.
-export class Jobs extends JMSLib.ReactUi.ComponentWithSite<App.IJobPage> {
+export class Jobs extends ComponentWithSite<IJobPage> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {
         return (
@@ -12,16 +18,16 @@ export class Jobs extends JMSLib.ReactUi.ComponentWithSite<App.IJobPage> {
                 wurden.
                 {this.getHelp()}
                 <div>
-                    <JMSLib.ReactUi.SingleSelectButton uvm={this.props.uvm.showArchived} merge={true} />
+                    <SingleSelectButton uvm={this.props.uvm.showArchived} merge={true} />
                 </div>
                 <fieldset>
                     {this.props.uvm.jobs.map((job, index) => (
                         <div key={index}>
                             <div>{job.name}</div>
                             {job.schedules.map((schedule) => (
-                                <JMSLib.ReactUi.InternalLink key={schedule.url} view={schedule.url}>
+                                <InternalLink key={schedule.url} view={schedule.url}>
                                     {schedule.name}
-                                </JMSLib.ReactUi.InternalLink>
+                                </InternalLink>
                             ))}
                         </div>
                     ))}

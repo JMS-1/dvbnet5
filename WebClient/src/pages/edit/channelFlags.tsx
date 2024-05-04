@@ -1,15 +1,18 @@
 ﻿import * as React from 'react'
+import { ISourceFlagsEditor } from '../../app/pages/edit/jobSchedule'
+import { EditBoolean } from '../../lib.react/edit/boolean/flag'
+import { Component } from '../../lib.react/reactUi'
 
 // React.Js Komponente zur visuellen Darstellung der Aufzeichnungsoptionen.
-export class EditChannelFlags extends JMSLib.ReactUi.Component<App.Edit.ISourceFlagsEditor> {
+export class EditChannelFlags extends Component<ISourceFlagsEditor> {
     // Erzeugt die visuelle Darstellung.
     render(): JSX.Element {
         return (
             <div className='vcrnet-editchannelflags'>
-                <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.includeDolby} />
-                <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.allLanguages} />
-                <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.withVideotext} />
-                <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.withSubtitles} />
+                <EditBoolean uvm={this.props.uvm.includeDolby} />
+                <EditBoolean uvm={this.props.uvm.allLanguages} />
+                <EditBoolean uvm={this.props.uvm.withVideotext} />
+                <EditBoolean uvm={this.props.uvm.withSubtitles} />
             </div>
         )
     }

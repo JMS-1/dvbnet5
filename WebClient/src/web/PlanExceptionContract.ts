@@ -1,4 +1,6 @@
-﻿// Repräsentiert die Klasse PlanException
+﻿import { doUrlCall } from './vcrserver'
+
+// Repräsentiert die Klasse PlanException
 export interface PlanExceptionContract {
     // Der zugehörige Tag als interner Schlüssel, der unverändert zwischen Client und Service ausgetauscht wird
     referenceDay: string

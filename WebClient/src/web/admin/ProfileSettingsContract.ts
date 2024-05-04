@@ -1,4 +1,8 @@
-﻿// Repräsentiert die Klasse ProfileSettings
+﻿import { ProfileContract } from '../ProfileContract'
+import { SettingsContract } from '../SettingsContract'
+import { doUrlCall } from '../vcrserver'
+
+// Repräsentiert die Klasse ProfileSettings
 export interface ProfileSettingsContract extends SettingsContract {
     // Alle DVB.NET Geräte auf dem Rechner, auf dem der VCR.NET Recording Service läuft
     profiles: ProfileContract[]

@@ -1,13 +1,18 @@
-﻿// Schnittstelle zur Anzeige der aktuellen Aktivitäten.
+﻿import { getPlanCurrent } from '../../web/PlanCurrentContract'
+import { Application } from '../app'
+import { IDeviceInfo, Info } from './devices/entry'
+import { IPage, Page } from './page'
+
+// Schnittstelle zur Anzeige der aktuellen Aktivitäten.
 export interface IDevicesPage extends IPage {
     // Alle aktuellen Aktivitäten.
-    readonly infos: Devices.IDeviceInfo[]
+    readonly infos: IDeviceInfo[]
 }
 
 // Präsentationsmodell zur Anzeige und Manipulation der aktuellen Aktivitäten.
 export class DevicesPage extends Page implements IDevicesPage {
     // Alle Aktivitäten.
-    infos: Devices.Info[] = []
+    infos: Info[] = []
 
     // Erstellt ein neues Präsentationsmodell.
     constructor(application: Application) {
@@ -31,7 +36,7 @@ export class DevicesPage extends Page implements IDevicesPage {
 
     // Fordert die Aktivitäten vom VCR.NET Recording Service neu an.
     reload(): void {
-        VCRServer.getPlanCurrent().then((plan) => {
+        getPlanCurrent().then((plan) => {
             // Aktionen des Anwenders einmal binden.
             var similiar = this.application.guidePage.findInGuide.bind(this.application.guidePage)
             var refresh = this.toggleDetails.bind(this)
@@ -39,7 +44,7 @@ export class DevicesPage extends Page implements IDevicesPage {
 
             // Die aktuellen Aktivitäten umwandeln.
             this.infos = (plan || []).map(
-                (info) => new Devices.Info(info, this.application.profile.suppressHibernate, refresh, reload, similiar)
+                (info) => new Info(info, this.application.profile.suppressHibernate, refresh, reload, similiar)
             )
 
             // Anwendung kann nun bedient werden.
@@ -51,7 +56,7 @@ export class DevicesPage extends Page implements IDevicesPage {
     }
 
     // Schaltet die Detailanzeige einer Aktivität um.
-    private toggleDetails(info: Devices.Info, guide: boolean): void {
+    private toggleDetails(info: Info, guide: boolean): void {
         // Das machen wir gerade schon.
         if (this._refreshing) return
 

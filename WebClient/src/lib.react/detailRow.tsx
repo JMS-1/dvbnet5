@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+import { IEmpty } from './reactUi'
 
 // Blendet in einer Tabelle eine Sonderzeile mit Detailinformationen ein.
 interface IDetailRow {

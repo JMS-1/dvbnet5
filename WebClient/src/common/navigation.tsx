@@ -1,7 +1,10 @@
 ﻿import * as React from 'react'
+import { InternalLink } from '../lib.react/command/internalLink'
+import { IPage } from '../app/pages/page'
+import { Component } from '../lib.react/reactUi'
 
 // React.Js Komponente zur Anzeige der Navigationsleiste.
-export class Navigation extends JMSLib.ReactUi.Component<App.IPage> {
+export class Navigation extends Component<IPage> {
     // Erstellt die Anzeige.
     render(): React.ReactNode {
         var page = this.props.uvm
@@ -13,37 +16,37 @@ export class Navigation extends JMSLib.ReactUi.Component<App.IPage> {
         return (
             <div className='vcrnet-navigation vcrnet-bar'>
                 {page.navigation.refresh && (
-                    <JMSLib.ReactUi.InternalLink view={() => page.reload()} pict='refresh'>
+                    <InternalLink view={() => page.reload()} pict='refresh'>
                         Aktualisieren
-                    </JMSLib.ReactUi.InternalLink>
+                    </InternalLink>
                 )}
-                <JMSLib.ReactUi.InternalLink view={application.homePage.route} pict='home'>
+                <InternalLink view={application.homePage.route} pict='home'>
                     Startseite
-                </JMSLib.ReactUi.InternalLink>
+                </InternalLink>
                 {page.navigation.favorites && (
-                    <JMSLib.ReactUi.InternalLink view={application.favoritesPage.route} pict='fav'>
+                    <InternalLink view={application.favoritesPage.route} pict='fav'>
                         Favoriten
-                    </JMSLib.ReactUi.InternalLink>
+                    </InternalLink>
                 )}
                 {page.navigation.guide && (
-                    <JMSLib.ReactUi.InternalLink view={application.guidePage.route} pict='guide'>
+                    <InternalLink view={application.guidePage.route} pict='guide'>
                         Programmzeitschrift
-                    </JMSLib.ReactUi.InternalLink>
+                    </InternalLink>
                 )}
                 {page.navigation.plan && (
-                    <JMSLib.ReactUi.InternalLink view={application.planPage.route} pict='plan'>
+                    <InternalLink view={application.planPage.route} pict='plan'>
                         Aufzeichnungsplan
-                    </JMSLib.ReactUi.InternalLink>
+                    </InternalLink>
                 )}
                 {page.navigation.new && (
-                    <JMSLib.ReactUi.InternalLink view={application.editPage.route} pict='new'>
+                    <InternalLink view={application.editPage.route} pict='new'>
                         Neue Aufzeichnung
-                    </JMSLib.ReactUi.InternalLink>
+                    </InternalLink>
                 )}
                 {page.navigation.current && (
-                    <JMSLib.ReactUi.InternalLink view={application.devicesPage.route} pict='devices'>
+                    <InternalLink view={application.devicesPage.route} pict='devices'>
                         Geräte
-                    </JMSLib.ReactUi.InternalLink>
+                    </InternalLink>
                 )}
             </div>
         )

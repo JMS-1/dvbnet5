@@ -1,4 +1,7 @@
-﻿// Repräsentiert die Klasse EditJob
+﻿import { EditJobScheduleCommonContract } from './EditJobScheduleCommonContract'
+import { doUrlCall } from './vcrserver'
+
+// Repräsentiert die Klasse EditJob
 export interface EditJobContract extends EditJobScheduleCommonContract {
     // Das zu verwendende Aufzeichnungsverzeichnis
     directory: string

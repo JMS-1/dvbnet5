@@ -1,37 +1,50 @@
-﻿// Schnittstelle zur Pflege der Konfiguration der Programmzeitschrift.
+﻿import { ICommand, Command } from '../../../lib/command/command'
+import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
+import { IMultiValueFromList, SelectMultipleFromList } from '../../../lib/edit/multiList'
+import { INumber } from '../../../lib/edit/number/number'
+import { AdminPage } from '../admin'
+import { IChannelSelector, ChannelEditor } from '../channel'
+import { ISection, Section } from './section'
+import { Number } from '../../../lib/edit/number/number'
+import { getGuideSettings, GuideSettingsContract, setGuideSettings } from '../../../web/admin/GuideSettingsContract'
+import { ProfileCache } from '../../../web/ProfileCache'
+import { ProfileSourcesCache } from '../../../web/ProfileSourcesCache'
+
+// Schnittstelle zur Pflege der Konfiguration der Programmzeitschrift.
 export interface IAdminGuidePage extends ISection {
     // Gesetzt, wenn die automatische Aktualisierung der Programmzeitschrift aktiviert wurde.
-    readonly isActive: JMSLib.App.IFlag
+    readonly isActive: IFlag
 
     // Die Liste der Stunden, an denen eine automatische Aktivierung stattfinden soll.
-    readonly hours: JMSLib.App.IMultiValueFromList<number>
+    readonly hours: IMultiValueFromList<number>
 
     // Alle Quellen, deren Programmzeitschrift ausgelesen werden soll.
-    readonly sources: JMSLib.App.IMultiValueFromList<string>
+    readonly sources: IMultiValueFromList<string>
 
     // Gesetzt, wenn auch die englische programmzeitschrift eingeschlossen werden soll.
-    readonly ukTv: JMSLib.App.IFlag
+    readonly ukTv: IFlag
 
     // Die Auswahl eines Geräte für die folgende Auswahl einer Quelle.
-    readonly device: JMSLib.App.IValueFromList<string>
+    readonly device: IValueFromList<string>
 
     // Die Auswahl einer Quelle des aktuell ausgewählten Gerätes.
     readonly source: IChannelSelector
 
     // Entfernt die ausgewählten Quellen aus der Liste der zu untersuchenden Quellen.
-    readonly remove: JMSLib.App.ICommand
+    readonly remove: ICommand
 
     // Fügt eine Quelle zur Liste der zu untersuchenden Quellen hinzu.
-    readonly add: JMSLib.App.ICommand
+    readonly add: ICommand
 
     // Maximale Dauer für die Sammlung der Programmzeitschrift (in Minuten).
-    readonly duration: JMSLib.App.INumber
+    readonly duration: INumber
 
     // Minimale Dauer zwischen zwei Sammlungen (in Minuten).
-    readonly delay: JMSLib.App.INumber
+    readonly delay: INumber
 
     // Interval für die vorgezogene Sammlung (in Minuten).
-    readonly latency: JMSLib.App.INumber
+    readonly latency: INumber
 }
 
 // Präsentationsmodell zur Pflege der Konfiguration der Aktualisierung der Programmzeitschrift.
@@ -40,19 +53,13 @@ export class GuideSection extends Section implements IAdminGuidePage {
     static readonly route = `guide`
 
     // Gesetzt, wenn die automatische Aktualisierung der Programmzeitschrift aktiviert wurde.
-    readonly isActive = new JMSLib.App.Flag({}, 'value', 'Aktualisierung aktivieren', () => this.refreshUi())
+    readonly isActive = new Flag({}, 'value', 'Aktualisierung aktivieren', () => this.refreshUi())
 
     // Die Liste der Stunden, an denen eine automatische Aktivierung stattfinden soll.
-    readonly hours = new JMSLib.App.SelectMultipleFromList<number>(
-        {},
-        'hours',
-        'Uhrzeiten',
-        undefined,
-        AdminPage.hoursOfDay
-    )
+    readonly hours = new SelectMultipleFromList<number>({}, 'hours', 'Uhrzeiten', undefined, AdminPage.hoursOfDay)
 
     // Alle Quellen, deren Programmzeitschrift ausgelesen werden soll.
-    readonly sources = new JMSLib.App.SelectMultipleFromList<string>(
+    readonly sources = new SelectMultipleFromList<string>(
         {},
         'value',
         undefined,
@@ -60,17 +67,17 @@ export class GuideSection extends Section implements IAdminGuidePage {
     )
 
     // Gesetzt, wenn auch die englische programmzeitschrift eingeschlossen werden soll.
-    readonly ukTv = new JMSLib.App.Flag({}, 'includeUK', 'Sendungsvorschau englischer Sender (FreeSat UK) abrufen')
+    readonly ukTv = new Flag({}, 'includeUK', 'Sendungsvorschau englischer Sender (FreeSat UK) abrufen')
 
     // Entfernt die ausgewählten Quellen aus der Liste der zu untersuchenden Quellen.
-    readonly remove: JMSLib.App.Command<unknown> = new JMSLib.App.Command(
+    readonly remove: Command<unknown> = new Command(
         () => this.removeSources(),
         'Entfernen',
         () => (this.sources.value?.length ?? 0) > 0
     )
 
     // Die Auswahl eines Geräte für die folgende Auswahl einer Quelle.
-    readonly device = new JMSLib.App.SelectSingleFromList<string>(
+    readonly device = new SelectSingleFromList<string>(
         {},
         'value',
         'Gerät',
@@ -81,14 +88,14 @@ export class GuideSection extends Section implements IAdminGuidePage {
     readonly source: ChannelEditor
 
     // Fügt eine Quelle zur Liste der zu untersuchenden Quellen hinzu.
-    readonly add = new JMSLib.App.Command(
+    readonly add = new Command(
         () => this.addSource(),
         'Quelle hinzufügen',
         () => !!this.source.value && this.sources.allowedValues.every((v) => v.value !== this.source.value)
     )
 
     // Maximale Dauer für die Sammlung der Programmzeitschrift (in Minuten).
-    readonly duration = new JMSLib.App.Number({}, 'duration', 'Maximale Laufzeit einer Aktualisierung in Minuten', () =>
+    readonly duration = new Number({}, 'duration', 'Maximale Laufzeit einer Aktualisierung in Minuten', () =>
         this.update.refreshUi()
     )
         .addRequiredValidator()
@@ -96,17 +103,14 @@ export class GuideSection extends Section implements IAdminGuidePage {
         .addMaxValidator(55)
 
     // Minimale Dauer zwischen zwei Sammlungen (in Minuten).
-    readonly delay = new JMSLib.App.Number(
-        {},
-        'minDelay',
-        'Wartezeit zwischen zwei Aktualisierungen in Stunden (optional)',
-        () => this.update.refreshUi()
+    readonly delay = new Number({}, 'minDelay', 'Wartezeit zwischen zwei Aktualisierungen in Stunden (optional)', () =>
+        this.update.refreshUi()
     )
         .addMinValidator(1)
         .addMaxValidator(23)
 
     // Interval für die vorgezogene Sammlung (in Minuten).
-    readonly latency = new JMSLib.App.Number(
+    readonly latency = new Number(
         {},
         'joinHours',
         'Latenzzeit für vorgezogene Aktualisierungen in Stunden (optional)',
@@ -140,7 +144,7 @@ export class GuideSection extends Section implements IAdminGuidePage {
         this.source.value = ``
 
         // Daten vom VCR.NET Recording Service abrufen.
-        VCRServer.getGuideSettings()
+        getGuideSettings()
             .then((settings) => {
                 // Daten mit den Präsentationsmodellen verbinden.
                 this.isActive.value = (settings?.duration ?? 0) > 0
@@ -151,14 +155,14 @@ export class GuideSection extends Section implements IAdminGuidePage {
                 this.ukTv.data = settings
 
                 // Die aktuelle Liste der Quellen laden.
-                this.sources.allowedValues = settings?.sources.map((s) => JMSLib.App.uiValue(s)) ?? []
+                this.sources.allowedValues = settings?.sources.map((s) => uiValue(s)) ?? []
 
                 // Liste der Geräteprofile anfordern.
-                return VCRServer.ProfileCache.getAllProfiles()
+                return ProfileCache.getAllProfiles()
             })
             .then((profiles) => {
                 // Alle bekannten Geräteprofile.
-                this.device.allowedValues = profiles.map((p) => JMSLib.App.uiValue(p.name))
+                this.device.allowedValues = profiles.map((p) => uiValue(p.name))
 
                 // Das erste Profil auswählen.
                 if (this.device.allowedValues.length > 0) this.device.value = this.device.allowedValues[0].value
@@ -184,7 +188,7 @@ export class GuideSection extends Section implements IAdminGuidePage {
 
     // Fordert die Liste der Quellen vom aktuellen ausgewählten Gerät an.
     private loadSources(): void {
-        VCRServer.ProfileSourcesCache.getSources(this.device.value ?? '').then((sources) => {
+        ProfileSourcesCache.getSources(this.device.value ?? '').then((sources) => {
             // Auswahlliste setzen.
             this.source.allSources = sources
 
@@ -203,7 +207,7 @@ export class GuideSection extends Section implements IAdminGuidePage {
 
     // Neue Quelle zur Liste der zu berücksichtigenden Quellen hinzufügen.
     private addSource(): void {
-        this.sources.allowedValues = this.sources.allowedValues.concat([JMSLib.App.uiValue(this.source.value ?? '')])
+        this.sources.allowedValues = this.sources.allowedValues.concat([uiValue(this.source.value ?? '')])
 
         // Die Auswahl setzen wir aber direkt wieder zurück.
         this.source.value = ``
@@ -212,7 +216,7 @@ export class GuideSection extends Section implements IAdminGuidePage {
     // Die Konfiguration zur Aktualisierung an den VCR.NET Recording Service übertragen.
     protected saveAsync(): Promise<boolean | undefined> {
         // Die Auswahlliste der Quellen ist die Liste der zu berücksichtigenden Quellen.
-        var settings = <VCRServer.GuideSettingsContract>this.hours.data
+        var settings = <GuideSettingsContract>this.hours.data
 
         settings.sources = this.sources.allowedValues.map((v) => v.value)
 
@@ -220,6 +224,6 @@ export class GuideSection extends Section implements IAdminGuidePage {
         if (!this.isActive.value) settings.duration = 0
 
         // Speicherung anfordern.
-        return VCRServer.setGuideSettings(settings)
+        return setGuideSettings(settings)
     }
 }

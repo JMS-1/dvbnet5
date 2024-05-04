@@ -1,4 +1,7 @@
-﻿// Steuert die Pflege einer Zahl über einen Schieberegler.
+﻿import { IConnectable } from '../../site'
+import { Property } from '../edit'
+
+// Steuert die Pflege einer Zahl über einen Schieberegler.
 export interface INumberWithSlider extends IConnectable {
     // Meldet oder ändert die relative (0..1) Position des Reglers.
     position: number

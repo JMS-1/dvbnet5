@@ -1,4 +1,9 @@
-﻿// Schnittstelle zur Pflege einer Eigenschaft mit einem Wahrheitswert.
+﻿import { ICommand, Command } from '../../command/command'
+import { IView } from '../../site'
+import { IProperty, Property } from '../edit'
+import { Number } from '../number/number'
+
+// Schnittstelle zur Pflege einer Eigenschaft mit einem Wahrheitswert.
 export interface IFlag extends IProperty<boolean> {}
 
 // Schnittstelle zur Pflege einer Eigenschaft mit einem Wahrheitswert.

@@ -1,7 +1,9 @@
 ﻿import * as React from 'react'
+import { ITime } from '../../../lib/edit/datetime/time'
+import { ComponentWithSite } from '../../reactUi'
 
 // React.Js Komponente zur Eingabe einer Uhrzeit.
-export class EditTime extends ComponentWithSite<App.ITime> {
+export class EditTime extends ComponentWithSite<ITime> {
     // Erstellt die Oberflächenelemente.
     render(): JSX.Element {
         return (

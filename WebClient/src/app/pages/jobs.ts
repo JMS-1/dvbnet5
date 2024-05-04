@@ -1,4 +1,12 @@
-﻿// Schnittstelle zur Anzeige einer Aufzeichnung.
+﻿import { DateTimeUtils } from '../../lib/dateTimeUtils'
+import { IValueFromList, uiValue, SelectSingleFromList } from '../../lib/edit/list'
+import { getInfoJobs } from '../../web/InfoJobContract'
+import { InfoScheduleContract } from '../../web/InfoScheduleContract'
+import { Application } from '../app'
+import { ScheduleEditor } from './edit/schedule'
+import { IPage, Page } from './page'
+
+// Schnittstelle zur Anzeige einer Aufzeichnung.
 export interface IJobPageSchedule {
     // Der Name der Aufzeichnung.
     readonly name: string
@@ -22,7 +30,7 @@ export interface IJobPageJob {
 // Schnittstelle zur Anzeige der Auftragsübersicht.
 export interface IJobPage extends IPage {
     // Schaltet zwischen der Ansicht der aktiven und archivierten Aufzeichnungen um.
-    readonly showArchived: JMSLib.App.IValueFromList<boolean>
+    readonly showArchived: IValueFromList<boolean>
 
     // Alle Aufträge.
     readonly jobs: IJobPageJob[]
@@ -31,16 +39,10 @@ export interface IJobPage extends IPage {
 // Präsentationsmodell zur Ansicht aller Aufträge.
 export class JobPage extends Page implements IJobPage {
     // Optionen zur Auswahl der Art des Auftrags.
-    private static readonly _types = [JMSLib.App.uiValue(false, 'Aktiv'), JMSLib.App.uiValue(true, 'Archiviert')]
+    private static readonly _types = [uiValue(false, 'Aktiv'), uiValue(true, 'Archiviert')]
 
     // Schaltet zwischen der Ansicht der aktiven und archivierten Aufzeichnungen um.
-    readonly showArchived = new JMSLib.App.SelectSingleFromList(
-        {},
-        'value',
-        undefined,
-        () => this.refreshUi(),
-        JobPage._types
-    )
+    readonly showArchived = new SelectSingleFromList({}, 'value', undefined, () => this.refreshUi(), JobPage._types)
 
     // Alle Aufträge.
     private _jobs: IJobPageJob[] = []
@@ -62,7 +64,7 @@ export class JobPage extends Page implements IJobPage {
         this.showArchived.value = sections[0] === 'archive'
 
         // Aktuelle Liste von VCR.NET Recording Service abrufen.
-        VCRServer.getInfoJobs().then((info) => {
+        getInfoJobs().then((info) => {
             // Rohdaten in primitive Präsentationsmodell wandeln.
             this._jobs =
                 info?.map((j) => {
@@ -87,24 +89,24 @@ export class JobPage extends Page implements IJobPage {
     }
 
     // Erstellt ein neues Präsenationsmodell für eine einzelne Aufzeichnung.
-    private createSchedule(schedule: VCRServer.InfoScheduleContract): IJobPageSchedule {
+    private createSchedule(schedule: InfoScheduleContract): IJobPageSchedule {
         // Der Name ist je nach konkreter Konfiguration etwas aufwändiger zu ermitteln.
         var name = schedule.name || `Aufzeichnung`
         var startTime = new Date(schedule.start)
         var repeat = schedule.repeatPattern
         var start: string = ``
 
-        if (repeat === 0) start = JMSLib.App.DateTimeUtils.formatStartTime(startTime)
+        if (repeat === 0) start = DateTimeUtils.formatStartTime(startTime)
         else {
-            if (repeat & Edit.ScheduleEditor.flagMonday) start += JMSLib.App.DateTimeUtils.germanDays[1]
-            if (repeat & Edit.ScheduleEditor.flagTuesday) start += JMSLib.App.DateTimeUtils.germanDays[2]
-            if (repeat & Edit.ScheduleEditor.flagWednesday) start += JMSLib.App.DateTimeUtils.germanDays[3]
-            if (repeat & Edit.ScheduleEditor.flagThursday) start += JMSLib.App.DateTimeUtils.germanDays[4]
-            if (repeat & Edit.ScheduleEditor.flagFriday) start += JMSLib.App.DateTimeUtils.germanDays[5]
-            if (repeat & Edit.ScheduleEditor.flagSaturday) start += JMSLib.App.DateTimeUtils.germanDays[6]
-            if (repeat & Edit.ScheduleEditor.flagSunday) start += JMSLib.App.DateTimeUtils.germanDays[0]
+            if (repeat & ScheduleEditor.flagMonday) start += DateTimeUtils.germanDays[1]
+            if (repeat & ScheduleEditor.flagTuesday) start += DateTimeUtils.germanDays[2]
+            if (repeat & ScheduleEditor.flagWednesday) start += DateTimeUtils.germanDays[3]
+            if (repeat & ScheduleEditor.flagThursday) start += DateTimeUtils.germanDays[4]
+            if (repeat & ScheduleEditor.flagFriday) start += DateTimeUtils.germanDays[5]
+            if (repeat & ScheduleEditor.flagSaturday) start += DateTimeUtils.germanDays[6]
+            if (repeat & ScheduleEditor.flagSunday) start += DateTimeUtils.germanDays[0]
 
-            start += ` ${JMSLib.App.DateTimeUtils.formatEndTime(startTime)}`
+            start += ` ${DateTimeUtils.formatEndTime(startTime)}`
         }
 
         // Präsenationsmodell erstellen.

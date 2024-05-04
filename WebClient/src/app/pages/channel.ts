@@ -1,4 +1,10 @@
-﻿// Die Einschränkung auf die Verschlüsselung.
+﻿import { IProperty, Property } from '../../lib/edit/edit'
+import { IValueFromList, uiValue, SelectSingleFromList } from '../../lib/edit/list'
+import { IConnectable } from '../../lib/site'
+import { SourceEntry } from '../../web/ProfileSourcesCache'
+import { UserProfileContract } from '../../web/UserProfileContract'
+
+// Die Einschränkung auf die Verschlüsselung.
 export enum EncryptionFilter {
     // Keine Einschränkung.
     all,
@@ -23,34 +29,34 @@ export enum TypeFilter {
 }
 
 // Schnitstelle zur Pflege der Senderauswahl.
-export interface IChannelSelector extends JMSLib.App.IProperty<string>, JMSLib.App.IConnectable {
+export interface IChannelSelector extends IProperty<string>, IConnectable {
     // Die Vorauswahl der Quellen vor allem nach dem ersten Zeichen des Namens.
-    readonly section: JMSLib.App.IValueFromList<string>
+    readonly section: IValueFromList<string>
 
     // Die Vorauswahl der Quellen über die Art (Fernsehen oder Radio).
-    readonly type: JMSLib.App.IValueFromList<TypeFilter>
+    readonly type: IValueFromList<TypeFilter>
 
     // Die Vorauswahl der Quellen über die Verschlüsselung.
-    readonly encryption: JMSLib.App.IValueFromList<EncryptionFilter>
+    readonly encryption: IValueFromList<EncryptionFilter>
 
     // Die komplette Liste aller verfügbaren Quellen.
-    readonly sourceName: JMSLib.App.IValueFromList<string>
+    readonly sourceName: IValueFromList<string>
 
     // Gesetzt, wenn die zusätzlichen Filter angezeigt werden sollen.
     readonly showFilter: boolean
 }
 
 // Stellt die Logik zur Auswahl eines Senders zur Verfügung.
-export class ChannelEditor extends JMSLib.App.Property<string> implements IChannelSelector {
+export class ChannelEditor extends Property<string> implements IChannelSelector {
     // Die Auswahl der Verschlüsselung.
     private static readonly _encryptions = [
-        JMSLib.App.uiValue(EncryptionFilter.all, 'Alle Quellen'),
-        JMSLib.App.uiValue(EncryptionFilter.payTv, 'Nur verschlüsselte Quellen'),
-        JMSLib.App.uiValue(EncryptionFilter.freeTv, 'Nur unverschlüsselte Quellen'),
+        uiValue(EncryptionFilter.all, 'Alle Quellen'),
+        uiValue(EncryptionFilter.payTv, 'Nur verschlüsselte Quellen'),
+        uiValue(EncryptionFilter.freeTv, 'Nur unverschlüsselte Quellen'),
     ]
 
     // Prüft ob eine Quelle der aktuellen Einschränkung der Verschlüsselung entspricht.
-    private applyEncryptionFilter(source: VCRServer.SourceEntry): boolean {
+    private applyEncryptionFilter(source: SourceEntry): boolean {
         // Wenn wir nur die bevorzugten Sender anzeigen gibt es keine Einschränkung.
         if (!this.showFilter) return true
 
@@ -67,17 +73,17 @@ export class ChannelEditor extends JMSLib.App.Property<string> implements IChann
     }
 
     // Alle Auswahlmöglichkeiten der Verschlüsselung.
-    readonly encryption: JMSLib.App.IValueFromList<EncryptionFilter>
+    readonly encryption: IValueFromList<EncryptionFilter>
 
     // Die Auswahlmöglichkeiten zur Art der Quelle.
     private static readonly _types = [
-        JMSLib.App.uiValue(TypeFilter.all, 'Alle Quellen'),
-        JMSLib.App.uiValue(TypeFilter.radio, 'Nur Radio'),
-        JMSLib.App.uiValue(TypeFilter.tv, 'Nur Fernsehen'),
+        uiValue(TypeFilter.all, 'Alle Quellen'),
+        uiValue(TypeFilter.radio, 'Nur Radio'),
+        uiValue(TypeFilter.tv, 'Nur Fernsehen'),
     ]
 
     // Prüft, ob eine Quelle der aktuell ausgewählten Art entspricht.
-    private applyTypeFilter(source: VCRServer.SourceEntry): boolean {
+    private applyTypeFilter(source: SourceEntry): boolean {
         // Wenn wir nur die bevorzugten Sender anzeigen gibt es keine Einschränkung.
         if (!this.showFilter) return true
 
@@ -94,27 +100,27 @@ export class ChannelEditor extends JMSLib.App.Property<string> implements IChann
     }
 
     // Alle Auswahlmöglichkeiten für die Art der Quelle.
-    readonly type: JMSLib.App.IValueFromList<TypeFilter>
+    readonly type: IValueFromList<TypeFilter>
 
     // Alle möglichen Einschränkungen auf die Namen der Quellen.
     private static readonly _sections = [
-        JMSLib.App.uiValue('(Zuletzt verwendet)'),
-        JMSLib.App.uiValue('A B C'),
-        JMSLib.App.uiValue('D E F'),
-        JMSLib.App.uiValue('G H I'),
-        JMSLib.App.uiValue('J K L'),
-        JMSLib.App.uiValue('M N O'),
-        JMSLib.App.uiValue('P Q R'),
-        JMSLib.App.uiValue('S T U'),
-        JMSLib.App.uiValue('V W X'),
-        JMSLib.App.uiValue('Y Z'),
-        JMSLib.App.uiValue('0 1 2 3 4 5 6 7 8 9'),
-        JMSLib.App.uiValue('(Andere)'),
-        JMSLib.App.uiValue('(Alle Quellen)'),
+        uiValue('(Zuletzt verwendet)'),
+        uiValue('A B C'),
+        uiValue('D E F'),
+        uiValue('G H I'),
+        uiValue('J K L'),
+        uiValue('M N O'),
+        uiValue('P Q R'),
+        uiValue('S T U'),
+        uiValue('V W X'),
+        uiValue('Y Z'),
+        uiValue('0 1 2 3 4 5 6 7 8 9'),
+        uiValue('(Andere)'),
+        uiValue('(Alle Quellen)'),
     ]
 
     // Prüft, ob der Name einer Quelle der aktuellen Auswahl entspricht.
-    private applySectionFilter(source: VCRServer.SourceEntry): boolean {
+    private applySectionFilter(source: SourceEntry): boolean {
         var first = source.firstNameCharacter
 
         switch (this.section.valueIndex) {
@@ -150,7 +156,7 @@ export class ChannelEditor extends JMSLib.App.Property<string> implements IChann
     }
 
     // Alle Auswahlmöglichkeiten zum Namen der Quellen.
-    readonly section = new JMSLib.App.SelectSingleFromList(
+    readonly section = new SelectSingleFromList(
         { value: 0 },
         `value`,
         undefined,
@@ -159,7 +165,7 @@ export class ChannelEditor extends JMSLib.App.Property<string> implements IChann
     )
 
     // Alle aktuell bezüglich aller Einschränkungen relevanten Quellen.
-    readonly sourceName = new JMSLib.App.SelectSingleFromList<string>(this, `value`).addValidator((n) => {
+    readonly sourceName = new SelectSingleFromList<string>(this, `value`).addValidator((n) => {
         var source = n.value
 
         // Wenn eine Quelle ausgewählt wurde, dann muss sie auch von dem aktuellen Gerät empfangen werden können.
@@ -178,7 +184,7 @@ export class ChannelEditor extends JMSLib.App.Property<string> implements IChann
 
     // Erstellt eine neue Logik zur Senderauswahl.
     constructor(
-        profile: VCRServer.UserProfileContract,
+        profile: UserProfileContract,
         data: any,
         prop: string,
         favoriteSources: string[],
@@ -187,14 +193,14 @@ export class ChannelEditor extends JMSLib.App.Property<string> implements IChann
         super(data, prop, 'Quelle', onChange)
 
         // Voreinstellungen vorbereiten.
-        this.encryption = new JMSLib.App.SelectSingleFromList(
+        this.encryption = new SelectSingleFromList(
             { value: ChannelEditor.lookupEncryption(profile) },
             `value`,
             undefined,
             () => this.refreshFilter(),
             ChannelEditor._encryptions
         )
-        this.type = new JMSLib.App.SelectSingleFromList(
+        this.type = new SelectSingleFromList(
             { value: ChannelEditor.lookupType(profile) },
             `value`,
             undefined,
@@ -212,7 +218,7 @@ export class ChannelEditor extends JMSLib.App.Property<string> implements IChann
         }
     }
 
-    private static lookupType(profile: VCRServer.UserProfileContract): TypeFilter {
+    private static lookupType(profile: UserProfileContract): TypeFilter {
         switch (profile && profile.typeFilter) {
             case 'R':
                 return TypeFilter.radio
@@ -223,7 +229,7 @@ export class ChannelEditor extends JMSLib.App.Property<string> implements IChann
         }
     }
 
-    private static lookupEncryption(profile: VCRServer.UserProfileContract): EncryptionFilter {
+    private static lookupEncryption(profile: UserProfileContract): EncryptionFilter {
         switch (profile && profile.encryptionFilter) {
             case 'F':
                 return EncryptionFilter.freeTv
@@ -268,22 +274,20 @@ export class ChannelEditor extends JMSLib.App.Property<string> implements IChann
             }
 
         // Der erste Eintrag erlaubt es immer auch einfach mal keinen Sender auszuwählen.
-        this.sourceName.allowedValues = [JMSLib.App.uiValue(``, '(Keine Quelle)')].concat(
-            sourceNames.map((s) => JMSLib.App.uiValue(s))
-        )
+        this.sourceName.allowedValues = [uiValue(``, '(Keine Quelle)')].concat(sourceNames.map((s) => uiValue(s)))
 
         // Anzeige aktualisieren.
         this.refresh()
     }
 
     // Sämtliche bekannten Quellen.
-    private _allSources: VCRServer.SourceEntry[] = []
+    private _allSources: SourceEntry[] = []
 
-    get allSources(): VCRServer.SourceEntry[] {
+    get allSources(): SourceEntry[] {
         return this._allSources
     }
 
-    set allSources(sources: VCRServer.SourceEntry[]) {
+    set allSources(sources: SourceEntry[]) {
         // Falls wir auf der gleichen Liste arbeiten müssen wir gar nichts machen.
         if (this._allSources === sources) return
 

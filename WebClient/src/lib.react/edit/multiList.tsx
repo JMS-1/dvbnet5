@@ -1,13 +1,15 @@
 ﻿import * as React from 'react'
+import { IMultiValueFromList } from '../../lib/edit/multiList'
+import { IComponent, ComponentExWithSite } from '../reactUi'
 
 // Konfiguration zur Auswahl mehrerer Elemente aus einer Liste erlaubter Elemente.
-export interface ISelectMultipleFromList extends IComponent<App.IMultiValueFromList<any>> {
+export interface ISelectMultipleFromList extends IComponent<IMultiValueFromList<any>> {
     // Die Größe der Liste.
     items: number
 }
 
 // React.Js Komponente zur Auswahl von mehreren Elementen aus eine Liste von Elementen.
-export class MultiSelect extends ComponentExWithSite<App.IMultiValueFromList<any>, ISelectMultipleFromList> {
+export class MultiSelect extends ComponentExWithSite<IMultiValueFromList<any>, ISelectMultipleFromList> {
     // Erstellt die Oberflächenelemente.
     render(): JSX.Element {
         return (

@@ -1,4 +1,9 @@
-﻿// Schnittstelle zur Anzeige eines einzelnen Protokolleintrags.
+﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
+import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+import { ProtocolEntryContract } from '../../../web/ProtocolEntryContract'
+import { getFilePlayUrl } from '../../../web/vcrserver'
+
+// Schnittstelle zur Anzeige eines einzelnen Protokolleintrags.
 export interface ILogEntry {
     // Start der Aufzeichnung.
     readonly start: string
@@ -25,23 +30,23 @@ export interface ILogEntry {
     readonly files: string[]
 
     // Umschaltung für die Detailansicht.
-    readonly showDetail: JMSLib.App.IFlag
+    readonly showDetail: IFlag
 }
 
 export class LogEntry implements ILogEntry {
     // Start der Aufzeichnung.
     get start(): string {
-        return JMSLib.App.DateTimeUtils.formatStartTime(new Date(this._model.start))
+        return DateTimeUtils.formatStartTime(new Date(this._model.start))
     }
 
     // Ende der Aufzeichnung.
     get end(): string {
-        return JMSLib.App.DateTimeUtils.formatStartTime(new Date(this._model.end))
+        return DateTimeUtils.formatStartTime(new Date(this._model.end))
     }
 
     // Ende der Aufzeichnung (nur Uhrzeit).
     get endTime(): string {
-        return JMSLib.App.DateTimeUtils.formatEndTime(new Date(this._model.end))
+        return DateTimeUtils.formatEndTime(new Date(this._model.end))
     }
 
     // Umfang der Aufzeichnung (etwa Größe der Aufzeichnungsdateien oder Anzahl der Einträge der Programmzeitschrift).
@@ -61,7 +66,7 @@ export class LogEntry implements ILogEntry {
 
     // Verweise zur Anzeige der Aufzeichnungsdateien.
     get files(): string[] {
-        return (this._model.files || []).map(VCRServer.getFilePlayUrl)
+        return (this._model.files || []).map(getFilePlayUrl)
     }
 
     // Verwendete Quelle.
@@ -77,14 +82,14 @@ export class LogEntry implements ILogEntry {
     readonly isLive: boolean = false
 
     // Umschaltung für die Detailansicht.
-    readonly showDetail: JMSLib.App.Flag
+    readonly showDetail: Flag
 
     // Erstellt ein neues Präsentationsmodell.
     constructor(
-        private readonly _model: VCRServer.ProtocolEntryContract,
+        private readonly _model: ProtocolEntryContract,
         toggleDetail: (entry: LogEntry) => void
     ) {
-        this.showDetail = new JMSLib.App.Flag({ value: false }, `value`, undefined, () => toggleDetail(this))
+        this.showDetail = new Flag({ value: false }, `value`, undefined, () => toggleDetail(this))
 
         // Art der Aufzeichnung zum Filtern umsetzen.
         switch (_model.firstSourceName) {

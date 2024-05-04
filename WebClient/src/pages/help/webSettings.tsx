@@ -1,7 +1,14 @@
-﻿export class WebSettings extends HelpComponent {
+﻿import * as React from 'react'
+import { IPage } from '../../app/pages/page'
+import { ExternalLink } from '../../lib.react/command/externalLink'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { HelpComponent } from './helpComponent'
+import { ScreenShot } from './screenShot'
+
+export class WebSettings extends HelpComponent {
     readonly title = 'Web Dienste konfigurieren'
 
-    render(page: App.IPage): JSX.Element {
+    render(page: IPage): JSX.Element {
         return (
             <div>
                 Der VCR.NET Recording Service enthält einen Web Server, der über das HTTP Protokoll sowohl einen Web
@@ -12,11 +19,11 @@
                 <br />
                 <br />
                 Damit der Web Server auf Anfragen reagieren kann, müssen einige Einstellungen
-                <JMSLib.ReactUi.InternalLink view={`${page.application.adminPage.route};other`} pict='admin' /> korrekt
-                vorgenommen werden. VCR.NET wurde ursprünglich für den Betrieb in einem lokalen (LAN) Windows Netzwerk
-                entwickelt. Für diese Nutzung muss lediglich der TCP/IP Port für das HTTP Protokoll festgelegt werden,
-                üblicherweise wird hier Port 80 verwendet, was auch der Voreinstellung nach der Erstinstallation
-                entspricht. Zusätzlich erwartet VCR.NET, dass zur Benutzererkennung die in Windows integrierten
+                <InternalLink view={`${page.application.adminPage.route};other`} pict='admin' /> korrekt vorgenommen
+                werden. VCR.NET wurde ursprünglich für den Betrieb in einem lokalen (LAN) Windows Netzwerk entwickelt.
+                Für diese Nutzung muss lediglich der TCP/IP Port für das HTTP Protokoll festgelegt werden, üblicherweise
+                wird hier Port 80 verwendet, was auch der Voreinstellung nach der Erstinstallation entspricht.
+                Zusätzlich erwartet VCR.NET, dass zur Benutzererkennung die in Windows integrierten
                 Sicherheitsprotokolle verwendet werden. Alle mit VCR.NET ausgelieferten Werkzeuge wie das
                 Kontrollzentrum nutzen entsprechende Mechanismen.
                 <br />
@@ -60,11 +67,8 @@
                 <br />
                 Wie auch bei der Benutzererkennung ignorieren alle VCR.NET Werkzeuge diese Einstellungen und können
                 daher nur im lokalen Windows Netzwerk eingesetzt werden. Das gilt vor allem auch für den{' '}
-                <JMSLib.ReactUi.ExternalLink url='http://www.psimarron.net/DVBNETViewer/'>
-                    VCR.NET / DVB.NET Viewer
-                </JMSLib.ReactUi.ExternalLink>
-                : das Betrachten von laufenden Aufzeichnungen etwa ist über einen Internet Zugang grundsätzlich nicht
-                möglich.
+                <ExternalLink url='http://www.psimarron.net/DVBNETViewer/'>VCR.NET / DVB.NET Viewer</ExternalLink>: das
+                Betrachten von laufenden Aufzeichnungen etwa ist über einen Internet Zugang grundsätzlich nicht möglich.
             </div>
         )
     }

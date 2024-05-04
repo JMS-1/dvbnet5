@@ -1,5 +1,5 @@
 ﻿import { browserWebCall } from '../lib/http/browser'
-import { webCallRoot } from '../lib/http/config'
+import { setWebCallRoot } from '../lib/http/config'
 
 // Normalerweise sind wir das selbst
 var serverRoot = document.URL.substring(0, document.URL.indexOf(`/`, document.URL.indexOf(`://`) + 3))
@@ -13,7 +13,7 @@ var protocolEnd = serverRoot.indexOf(`://`)
 var deviceUrl = `dvbnet` + serverRoot.substr(protocolEnd) + `/`
 
 // Der Präfix für alle REST Zugiffe
-webCallRoot = serverRoot + `/vcr.net/`
+setWebCallRoot(serverRoot + `/vcr.net/`)
 
 // Führt eine Web Anfrage aus.
 export function doUrlCall<TResponseType, TRequestType>(

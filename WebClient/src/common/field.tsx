@@ -1,9 +1,12 @@
 ﻿import * as React from 'react'
+import { IEmpty } from '../lib.react/reactUi'
+import { HelpLink } from './helpLink'
+import { IPage } from '../app/pages/page'
 
 // Die Konfiguration eines Eingabefeldes.
 interface IFieldStatic {
     // Die übergeordnete Seite.
-    page: App.IPage
+    page: IPage
 
     // Der Anzeigename des Feldes.
     label: string
@@ -16,7 +19,7 @@ interface IFieldStatic {
 }
 
 // Beschreibt ein Eingabefeld.
-export class Field extends React.Component<IFieldStatic, JMSLib.ReactUi.IEmpty> {
+export class Field extends React.Component<IFieldStatic, IEmpty> {
     // Erzeugt die Anzeige eines Eingabefeldes.
     render(): JSX.Element {
         return (

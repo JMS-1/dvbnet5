@@ -1,5 +1,15 @@
-﻿// Ansicht einer Aktivität.
-export interface IDeviceInfo extends JMSLib.App.IConnectable {
+﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
+import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+import { IConnectable, IView } from '../../../lib/site'
+import { ITimeBar, TimeBar } from '../../../lib/timebar'
+import { Guide } from '../../../pages/guide'
+import { GuideItemContract, getGuideItem } from '../../../web/GuideItemContract'
+import { PlanCurrentContract } from '../../../web/PlanCurrentContract'
+import { GuideInfo, IGuideInfo } from '../guide/entry'
+import { IDeviceController, Controller } from './controller'
+
+// Ansicht einer Aktivität.
+export interface IDeviceInfo extends IConnectable {
     // Name - im Allgemeinen der Aufzeichnung.
     readonly name: string
 
@@ -25,16 +35,16 @@ export interface IDeviceInfo extends JMSLib.App.IConnectable {
     readonly id?: string
 
     // Gesetzt um den zugehörigen Eintrag der Programmzeitschrift zu sehen.
-    readonly showGuide: JMSLib.App.IFlag
+    readonly showGuide: IFlag
 
     // Gesetzt um eine laufende Aufzeichnung anzusehen und zu manipulieren.
-    readonly showControl: JMSLib.App.IFlag
+    readonly showControl: IFlag
 
     // Zugehörige Information aus der Programmzeitschrift - sofern vorhanden.
-    readonly guideItem: Guide.IGuideInfo | null
+    readonly guideItem: IGuideInfo | null
 
     // Zugehörige Zeitinformationen zur Information aus der Programmzeitschrift.
-    readonly guideTime: JMSLib.App.ITimeBar
+    readonly guideTime: ITimeBar
 
     // Optional die Steuereinheit für laufende Aufzeichnung.
     readonly controller: IDeviceController
@@ -43,15 +53,15 @@ export interface IDeviceInfo extends JMSLib.App.IConnectable {
 // Präsentationsmodell zur Anzeige einer Aktivität.
 export class Info implements IDeviceInfo {
     // Das aktuell angebundene Oberflächenelement.
-    view: JMSLib.App.IView
+    view: IView
 
     // Erstellt ein neues Präsentationsmodell.
     constructor(
-        private readonly _model: VCRServer.PlanCurrentContract,
+        private readonly _model: PlanCurrentContract,
         suppressHibernate: boolean,
         toggleDetails: (info: Info, guide: boolean) => void,
         reload: () => void,
-        private readonly _findInGuide: (model: VCRServer.GuideItemContract) => void
+        private readonly _findInGuide: (model: GuideItemContract) => void
     ) {
         // Für Geräte ohne laufende oder geplante Aufzeichnung können wir nicht viel tun.
         if (!_model.isIdle) {
@@ -60,22 +70,22 @@ export class Info implements IDeviceInfo {
             this._end = new Date(this._start.getTime() + _model.duration * 1000)
 
             // Und zur Anzeige aufbereiten.
-            this.displayStart = JMSLib.App.DateTimeUtils.formatStartTime(this._start)
-            this.displayEnd = JMSLib.App.DateTimeUtils.formatEndTime(this._end)
+            this.displayStart = DateTimeUtils.formatStartTime(this._start)
+            this.displayEnd = DateTimeUtils.formatEndTime(this._end)
 
             // Das Präsentationsmodell für die Steuerung bei Bedarf erstellen.
             if (this.mode === `running`) this.controller = new Controller(_model, suppressHibernate, reload)
         }
 
         // Präsentationsmodell für die Detailansicht erstellen.
-        this.showGuide = new JMSLib.App.Flag(
+        this.showGuide = new Flag(
             {},
             'value',
             undefined,
             () => toggleDetails(this, true),
             () => !this._model.epg || !this._model.device || !this._model.source || this.mode === `null`
         )
-        this.showControl = new JMSLib.App.Flag(
+        this.showControl = new Flag(
             {},
             'value',
             undefined,
@@ -85,10 +95,10 @@ export class Info implements IDeviceInfo {
     }
 
     // Gesetzt um den zugehörigen Eintrag der Programmzeitschrift zu sehen.
-    readonly showGuide: JMSLib.App.IFlag
+    readonly showGuide: IFlag
 
     // Gesetzt um eine laufende Aufzeichnung anzusehen und zu manipulieren.
-    readonly showControl: JMSLib.App.IFlag
+    readonly showControl: IFlag
 
     // Status der Aktivität - unterscheidet etwa zwischen laufenden und geplanten Aufzeichnungen.
     get mode(): string | undefined {
@@ -150,16 +160,16 @@ export class Info implements IDeviceInfo {
     }
 
     // Zugehörige Zeitinformationen zur Information aus der Programmzeitschrift.
-    private _guideTime: JMSLib.App.TimeBar
+    private _guideTime: TimeBar
 
-    get guideTime(): JMSLib.App.ITimeBar {
+    get guideTime(): ITimeBar {
         return this._guideTime
     }
 
     // Zugehörige Information aus der Programmzeitschrift - sofern vorhanden.
-    private _guideItem: Guide.GuideInfo | null
+    private _guideItem: GuideInfo | null
 
-    get guideItem(): Guide.IGuideInfo | null {
+    get guideItem(): IGuideInfo | null {
         // Wird nicht unterstützt.
         if (this.showGuide.isReadonly) return null
 
@@ -167,18 +177,13 @@ export class Info implements IDeviceInfo {
         if (this._guideItem !== undefined) return this._guideItem
 
         // Programmzeitschrift nach einem passenden Eintrag absuchen.
-        VCRServer.getGuideItem(this._model.device, this._model.source, this._start, this._end).then((item) => {
+        getGuideItem(this._model.device, this._model.source, this._start, this._end).then((item) => {
             // Ergebnis übernehmen.
-            this._guideItem = item ? new Guide.GuideInfo(item, this._findInGuide) : null
+            this._guideItem = item ? new GuideInfo(item, this._findInGuide) : null
 
             // Im Erfolgsfall auch die Zeitschiene aufsetzen.
             if (this._guideItem)
-                this._guideTime = new JMSLib.App.TimeBar(
-                    this._start,
-                    this._end,
-                    this._guideItem.start,
-                    this._guideItem.end
-                )
+                this._guideTime = new TimeBar(this._start, this._end, this._guideItem.start, this._guideItem.end)
 
             // Anzeige zur Aktualisierung auffordern.
             this.refreshUi()

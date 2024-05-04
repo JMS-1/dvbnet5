@@ -1,4 +1,7 @@
-﻿// Beschreibt einen Wert zur Auswahl durch den Anwender.
+﻿import { ICommand, Command } from '../command/command'
+import { IProperty, Property } from './edit'
+
+// Beschreibt einen Wert zur Auswahl durch den Anwender.
 export interface IUiValue<TValueType> {
     // Der tatsächlich gespeicherte Wert.
     readonly value: TValueType

@@ -1,4 +1,7 @@
-﻿// Repräsentiert die Klasse InfoJob
+﻿import { InfoScheduleContract } from './InfoScheduleContract'
+import { doUrlCall } from './vcrserver'
+
+// Repräsentiert die Klasse InfoJob
 export interface InfoJobContract {
     // Der Name des Auftrags
     name: string

@@ -1,7 +1,9 @@
 ﻿import * as React from 'react'
+import { IString } from '../../../lib/edit/text/text'
+import { IComponent, ComponentExWithSite } from '../../reactUi'
 
 // Konfiguration einer einfachen Texteingabe.
-interface IEditText extends IComponent<App.IString> {
+interface IEditText extends IComponent<IString> {
     // Die Anzahl der darzustellenden Zeichen.
     chars: number
 
@@ -10,7 +12,7 @@ interface IEditText extends IComponent<App.IString> {
 }
 
 // Texteingabe für React.Js - die NoUi Schicht stellt den Wert und das Prüfergebnis zur Verfügung.
-export class EditText extends ComponentExWithSite<App.IString, IEditText> {
+export class EditText extends ComponentExWithSite<IString, IEditText> {
     // Erstellt die Anzeige der Komponente.
     render(): JSX.Element {
         return (

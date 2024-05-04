@@ -1,13 +1,20 @@
 ﻿import * as React from 'react'
+import { IDevicesPage } from '../../app/pages/devices'
+import { IDeviceController } from '../../app/pages/devices/controller'
+import { HelpLink } from '../../common/helpLink'
+import { ButtonCommand } from '../../lib.react/command/button'
+import { EditBoolean } from '../../lib.react/edit/boolean/flag'
+import { EditNumberSlider } from '../../lib.react/edit/number/slider'
+import { IComponent, ComponentExWithSite } from '../../lib.react/reactUi'
 
 // Konfiguration der Steuerung einer laufenden Aufzeichnung.
-interface IDeviceControl extends JMSLib.ReactUi.IComponent<App.Devices.IDeviceController> {
+interface IDeviceControl extends IComponent<IDeviceController> {
     // Der zugehörige Navigationsbereich.
-    page: App.IDevicesPage
+    page: IDevicesPage
 }
 
 // React.Js Komponente zur Steuerung einer laufenden Aufzeichnung.
-export class DeviceControl extends JMSLib.ReactUi.ComponentExWithSite<App.Devices.IDeviceController, IDeviceControl> {
+export class DeviceControl extends ComponentExWithSite<IDeviceController, IDeviceControl> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {
         return (
@@ -40,11 +47,11 @@ export class DeviceControl extends JMSLib.ReactUi.ComponentExWithSite<App.Device
                         </tr>
                     </tbody>
                 </table>
-                <JMSLib.ReactUi.EditNumberSlider uvm={this.props.uvm.remaining} />
+                <EditNumberSlider uvm={this.props.uvm.remaining} />
                 <div>
-                    <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.stopNow} />
-                    <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.update} />
-                    <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.noHibernate} />
+                    <ButtonCommand uvm={this.props.uvm.stopNow} />
+                    <ButtonCommand uvm={this.props.uvm.update} />
+                    <EditBoolean uvm={this.props.uvm.noHibernate} />
                     <HelpLink topic='hibernation' page={this.props.page} />
                 </div>
             </fieldset>

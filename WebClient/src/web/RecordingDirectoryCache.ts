@@ -1,4 +1,6 @@
-﻿// Verwaltet die Aufzeichnungsverzeichnisse
+﻿import { getRecordingDirectories } from './EditJobContract'
+
+// Verwaltet die Aufzeichnungsverzeichnisse
 export class RecordingDirectoryCache {
     // Die zwischengespeicherten Verzeichnisse
     private static promise: Promise<string[]> | null

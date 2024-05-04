@@ -1,7 +1,12 @@
-﻿// Schnittstelle zur Konfiguration der Geräteprofile.
+﻿import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
+import { getProfileSettings, setProfileSettings } from '../../../web/admin/ProfileSettingsContract'
+import { IDevice, Device } from './device'
+import { ISection, Section } from './section'
+
+// Schnittstelle zur Konfiguration der Geräteprofile.
 export interface IAdminDevicesPage extends ISection {
     // Erlaubt die Auswahl des bevorzugten Gerätes.
-    readonly defaultDevice: JMSLib.App.IValueFromList<string>
+    readonly defaultDevice: IValueFromList<string>
 
     // Alle bekannten Geräte.
     readonly devices: IDevice[]
@@ -13,7 +18,7 @@ export class DevicesSection extends Section implements IAdminDevicesPage {
     static readonly route = `devices`
 
     // Präsentationsmodell zur Pflege des bevorzugten Gerätes.
-    readonly defaultDevice = new JMSLib.App.SelectSingleFromList<string>(
+    readonly defaultDevice = new SelectSingleFromList<string>(
         {},
         'defaultProfile',
         'Bevorzugtes Gerät (zum Beispiel für neue Aufzeichnungen)',
@@ -28,7 +33,7 @@ export class DevicesSection extends Section implements IAdminDevicesPage {
 
     // Fordert die Konfiguration der Geräteprofile an.
     protected loadAsync(): void {
-        VCRServer.getProfileSettings().then((settings) => {
+        getProfileSettings().then((settings) => {
             // Präsentationsmodelle aus den Rohdaten erstellen.
             this.devices =
                 settings?.profiles.map(
@@ -41,7 +46,7 @@ export class DevicesSection extends Section implements IAdminDevicesPage {
                 ) ?? []
 
             // Liste der Geräte ermitteln und in die Auswahl für das bevorzugte Gerät übernehmen.
-            this.defaultDevice.allowedValues = settings?.profiles.map((p) => JMSLib.App.uiValue(p.name)) ?? []
+            this.defaultDevice.allowedValues = settings?.profiles.map((p) => uiValue(p.name)) ?? []
             this.defaultDevice.data = settings
 
             // Initiale Prüfung durchführen.
@@ -78,6 +83,6 @@ export class DevicesSection extends Section implements IAdminDevicesPage {
 
     // Sendet die Konfiguration zur asynchronen Aktualisierung an den VCR.NET Recording Service.
     protected saveAsync(): Promise<boolean | undefined> {
-        return VCRServer.setProfileSettings(this.defaultDevice.data)
+        return setProfileSettings(this.defaultDevice.data)
     }
 }

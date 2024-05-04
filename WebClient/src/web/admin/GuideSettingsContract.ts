@@ -1,4 +1,7 @@
-﻿// Repräsentiert die Klasse GuideSettings
+﻿import { SettingsContract } from '../SettingsContract'
+import { doUrlCall } from '../vcrserver'
+
+// Repräsentiert die Klasse GuideSettings
 export interface GuideSettingsContract extends SettingsContract {
     // Das Zeitintervall (in Stunden) für vorgezogene Aktualisierungen
     joinHours: string

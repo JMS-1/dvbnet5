@@ -1,4 +1,7 @@
-﻿// Repräsentiert die Klasse JobScheduleInfo
+﻿import { EditJobContract } from './EditJobContract'
+import { EditScheduleContract } from './EditScheduleContract'
+
+// Repräsentiert die Klasse JobScheduleInfo
 export interface JobScheduleInfoContract {
     // Der Auftrag
     job: EditJobContract

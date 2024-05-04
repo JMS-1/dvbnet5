@@ -1,4 +1,7 @@
-﻿// Bietet den Wert einer Eigenschaft zur Pflege in der Oberfläche an.
+﻿import { IDisplay } from '../localizable'
+import { IConnectable, IView } from '../site'
+
+// Bietet den Wert einer Eigenschaft zur Pflege in der Oberfläche an.
 export interface IProperty<TValueType> extends IDisplay, IConnectable {
     // Meldet den aktuellen Wert oder verändert diesen - gemeldet wird immer der ursprüngliche Wert.
     value: TValueType | null

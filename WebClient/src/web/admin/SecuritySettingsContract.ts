@@ -1,4 +1,7 @@
-﻿// Repräsentiert die Klasse SecuritySettings
+﻿import { SettingsContract } from '../SettingsContract'
+import { doUrlCall } from '../vcrserver'
+
+// Repräsentiert die Klasse SecuritySettings
 export interface SecuritySettingsContract extends SettingsContract {
     // Die Windows Gruppe der normalen Benutzer
     users: string

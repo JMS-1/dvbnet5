@@ -1,16 +1,24 @@
-﻿// Schnittstelle zur Pflege der gemeinsamen Daten eines Auftrags oder einer Aufzeichnung.
-export interface ISourceFlagsEditor extends JMSLib.App.IDisplay {
+﻿import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+import { IString } from '../../../lib/edit/text/text'
+import { IDisplay } from '../../../lib/localizable'
+import { EditJobScheduleCommonContract } from '../../../web/EditJobScheduleCommonContract'
+import { IChannelSelector, ChannelEditor } from '../channel'
+import { IPage } from '../page'
+import { String } from '../../../lib/edit/text/text'
+
+// Schnittstelle zur Pflege der gemeinsamen Daten eines Auftrags oder einer Aufzeichnung.
+export interface ISourceFlagsEditor extends IDisplay {
     // Gesetzt um alle Sprachen aufzuzeichnen
-    readonly allLanguages: JMSLib.App.IFlag
+    readonly allLanguages: IFlag
 
     // Gesetzt, um die Dolby Digital Tonspur aufzuzeichnen
-    readonly includeDolby: JMSLib.App.IFlag
+    readonly includeDolby: IFlag
 
     // Gesetzt, um den Videotext aufzuzeichnen
-    readonly withVideotext: JMSLib.App.IFlag
+    readonly withVideotext: IFlag
 
     // Gesetzt, um die Untertitel aufzuzeichnen
-    readonly withSubtitles: JMSLib.App.IFlag
+    readonly withSubtitles: IFlag
 }
 
 // Schnittstelle zur Pflege der gemeinsamen Daten eines Auftrags oder einer Aufzeichnung.
@@ -19,7 +27,7 @@ export interface IJobScheduleEditor {
     readonly page: IPage
 
     // Der Name des Auftrags.
-    readonly name: JMSLib.App.IString
+    readonly name: IString
 
     // Der Name der Quelle, die aufgezeichnet werden soll.
     readonly source: IChannelSelector
@@ -29,7 +37,7 @@ export interface IJobScheduleEditor {
 }
 
 // Bietet die gemeinsamen Daten eines Auftrags oder einer Aufzeichnung zur Pflege an.
-export abstract class JobScheduleEditor<TModelType extends VCRServer.EditJobScheduleCommonContract>
+export abstract class JobScheduleEditor<TModelType extends EditJobScheduleCommonContract>
     implements IJobScheduleEditor
 {
     // Ein Muster zum Erkennen gültiger Namen von Aufzeichnungen.
@@ -46,13 +54,13 @@ export abstract class JobScheduleEditor<TModelType extends VCRServer.EditJobSche
         var noSource = () => (this.source.value || '').trim().length < 1
 
         // Pflegekomponenten erstellen
-        this.name = new JMSLib.App.String(this.model, 'name', 'Name', onChange)
+        this.name = new String(this.model, 'name', 'Name', onChange)
         this.source = new ChannelEditor(page.application.profile, this.model, 'sourceName', favoriteSources, onChange)
         this.sourceFlags = {
-            includeDolby: new JMSLib.App.Flag(this.model, 'includeDolby', 'Dolby Digital (AC3)', onChange, noSource),
-            withSubtitles: new JMSLib.App.Flag(this.model, 'withSubtitles', 'DVB Untertitel', onChange, noSource),
-            allLanguages: new JMSLib.App.Flag(this.model, 'allLanguages', 'Alle Sprachen', onChange, noSource),
-            withVideotext: new JMSLib.App.Flag(this.model, 'withVideotext', 'Videotext', onChange, noSource),
+            includeDolby: new Flag(this.model, 'includeDolby', 'Dolby Digital (AC3)', onChange, noSource),
+            withSubtitles: new Flag(this.model, 'withSubtitles', 'DVB Untertitel', onChange, noSource),
+            allLanguages: new Flag(this.model, 'allLanguages', 'Alle Sprachen', onChange, noSource),
+            withVideotext: new Flag(this.model, 'withVideotext', 'Videotext', onChange, noSource),
             text: 'Besonderheiten',
         }
 
@@ -68,7 +76,7 @@ export abstract class JobScheduleEditor<TModelType extends VCRServer.EditJobSche
     }
 
     // Der Name des Auftrags.
-    readonly name: JMSLib.App.String
+    readonly name: String
 
     // Der Name der Quelle, die aufgezeichnet werden soll.
     readonly source: ChannelEditor
@@ -76,10 +84,10 @@ export abstract class JobScheduleEditor<TModelType extends VCRServer.EditJobSche
     // Aufzeichnungsoptionen.
     readonly sourceFlags: {
         readonly text: string
-        readonly allLanguages: JMSLib.App.Flag
-        readonly includeDolby: JMSLib.App.Flag
-        readonly withVideotext: JMSLib.App.Flag
-        readonly withSubtitles: JMSLib.App.Flag
+        readonly allLanguages: Flag
+        readonly includeDolby: Flag
+        readonly withVideotext: Flag
+        readonly withSubtitles: Flag
     }
 
     // Gesetzt, wenn die Einstellungen der Quelle gültig sind.

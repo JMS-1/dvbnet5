@@ -1,4 +1,11 @@
-﻿// Die Art des zu verwendenden Schlafzustands.
+﻿import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+import { IValueFromList, uiValue, SelectSingleFromList } from '../../../lib/edit/list'
+import { INumber } from '../../../lib/edit/number/number'
+import { ISection, Section } from './section'
+import { Number } from '../../../lib/edit/number/number'
+import { getOtherSettings, setOtherSettings } from '../../../web/admin/OtherSettingsContract'
+
+// Die Art des zu verwendenden Schlafzustands.
 export enum HibernationMode {
     // Kein automatischer Übergang in den Schlafzustand.
     disabled,
@@ -13,43 +20,43 @@ export enum HibernationMode {
 // Schnittstelle zur Pflege sonstiger Konfigurationswerte.
 export interface IAdminOtherPage extends ISection {
     // Der TCP/IP Port des Web Clients.
-    readonly port: JMSLib.App.INumber
+    readonly port: INumber
 
     // Gesetzt, wenn auch eine sichere Verbindung (SSL / HTTPS) unterstützt werden soll.
-    readonly ssl: JMSLib.App.IFlag
+    readonly ssl: IFlag
 
     // Der sichere (SSL) TCP/IP Port des Web Clients.
-    readonly securePort: JMSLib.App.INumber
+    readonly securePort: INumber
 
     // Gesetzt, wenn neben der integrierten Windows Sicherheit (NTLM Challenge/Response) auch die Standard Autorisierung (Basic) verwendet werden kann.
-    readonly basicAuth: JMSLib.App.IFlag
+    readonly basicAuth: IFlag
 
     // Die Zeit zum vorzeitigen Aufwachen für eine Aufzeichnung oder Sonderaufgabe (in Sekunden).
-    readonly preSleep: JMSLib.App.INumber
+    readonly preSleep: INumber
 
     // Die minimale Verweildauer im Schalfzustand (in Minuten).
-    readonly minSleep: JMSLib.App.INumber
+    readonly minSleep: INumber
 
     // Gesetzt um die minimale Verweildauer im Schlafzustand zu unterdrücken.
-    readonly ignoreMinSleep: JMSLib.App.IFlag
+    readonly ignoreMinSleep: IFlag
 
     // Die Verweildauer eines Protokolleintrags vor der automatischen Löscung (in Wochen).
-    readonly logKeep: JMSLib.App.INumber
+    readonly logKeep: INumber
 
     // Die Verweildauer eines Auftrags im Archiv vor der automatischen Löschung (in Wochen).
-    readonly jobKeep: JMSLib.App.INumber
+    readonly jobKeep: INumber
 
     // Gesetzt, wenn die Systemzeit einer HDTV Aufzeichnung nicht automatisch ermittelt werden soll.
-    readonly noH264PCR: JMSLib.App.IFlag
+    readonly noH264PCR: IFlag
 
     // Gesetzt, wenn die Systemzeit einer SDTV Aufzeichnung nicht automatisch ermittelt werden soll.
-    readonly noMPEG2PCR: JMSLib.App.IFlag
+    readonly noMPEG2PCR: IFlag
 
     // Die Art des automatischen Schlafzustands.
-    readonly hibernation: JMSLib.App.IValueFromList<HibernationMode>
+    readonly hibernation: IValueFromList<HibernationMode>
 
     // Die Art der Protokollierung.
-    readonly logging: JMSLib.App.IValueFromList<string>
+    readonly logging: IValueFromList<string>
 }
 
 // Präsentationsmodell zur Pflege sonstiger Konfigurationswerte.
@@ -59,32 +66,30 @@ export class OtherSection extends Section implements IAdminOtherPage {
 
     // Die einzelnen Arten der Protokollierung als Auswahlliste für den Anwender.
     private static readonly _logging = [
-        JMSLib.App.uiValue('Errors', 'Nur Fehler'),
-        JMSLib.App.uiValue('Security', 'Nur Sicherheitsprobleme'),
-        JMSLib.App.uiValue('Schedules', 'Aufzeichnungen'),
-        JMSLib.App.uiValue('Full', 'Vollständig'),
+        uiValue('Errors', 'Nur Fehler'),
+        uiValue('Security', 'Nur Sicherheitsprobleme'),
+        uiValue('Schedules', 'Aufzeichnungen'),
+        uiValue('Full', 'Vollständig'),
     ]
 
     // Die einzelnen Arten des Schlafzustands als Auswahlliste für den Anwender.
     private static readonly _hibernation = [
-        JMSLib.App.uiValue(HibernationMode.disabled, 'Nicht verwenden'),
-        JMSLib.App.uiValue(HibernationMode.standBy, 'StandBy / Suspend (S3)'),
-        JMSLib.App.uiValue(HibernationMode.hibernate, 'Hibernate (S4)'),
+        uiValue(HibernationMode.disabled, 'Nicht verwenden'),
+        uiValue(HibernationMode.standBy, 'StandBy / Suspend (S3)'),
+        uiValue(HibernationMode.hibernate, 'Hibernate (S4)'),
     ]
 
     // Der TCP/IP Port des Web Clients.
-    readonly port = new JMSLib.App.Number({}, 'webPort', 'TCP/IP Port für den Web Server', () =>
-        this.update.refreshUi()
-    )
+    readonly port = new Number({}, 'webPort', 'TCP/IP Port für den Web Server', () => this.update.refreshUi())
         .addRequiredValidator()
         .addMinValidator(1)
         .addMaxValidator(0xffff)
 
     // Gesetzt, wenn auch eine sichere Verbindung (SSL / HTTPS) unterstützt werden soll.
-    readonly ssl = new JMSLib.App.Flag({}, 'ssl', 'Sichere Verbindung zusätzlich anbieten')
+    readonly ssl = new Flag({}, 'ssl', 'Sichere Verbindung zusätzlich anbieten')
 
     // Der sichere (SSL) TCP/IP Port des Web Clients.
-    readonly securePort = new JMSLib.App.Number({}, 'sslPort', 'TCP/IP Port für den sicheren Zugang', () =>
+    readonly securePort = new Number({}, 'sslPort', 'TCP/IP Port für den sicheren Zugang', () =>
         this.update.refreshUi()
     )
         .addRequiredValidator()
@@ -92,14 +97,14 @@ export class OtherSection extends Section implements IAdminOtherPage {
         .addMaxValidator(0xffff)
 
     // Gesetzt, wenn neben der integrierten Windows Sicherheit (NTLM Challenge/Response) auch die Standard Autorisierung (Basic) verwendet werden kann.
-    readonly basicAuth = new JMSLib.App.Flag(
+    readonly basicAuth = new Flag(
         {},
         'basicAuth',
         'Benutzererkennung über Basic (RFC 2617) zusätzlich erlauben (nicht empfohlen)'
     )
 
     // Die Zeit zum vorzeitigen Aufwachen für eine Aufzeichnung oder Sonderaufgabe (in Sekunden).
-    readonly preSleep = new JMSLib.App.Number(
+    readonly preSleep = new Number(
         {},
         'hibernationDelay',
         'Vorlaufzeit für das Aufwachen aus dem Schlafzustand in Sekunden',
@@ -110,7 +115,7 @@ export class OtherSection extends Section implements IAdminOtherPage {
         .addMaxValidator(600)
 
     // Die minimale Verweildauer im Schalfzustand (in Minuten).
-    readonly minSleep = new JMSLib.App.Number(
+    readonly minSleep = new Number(
         {},
         'forcedHibernationDelay',
         'Minimale Pause nach einem erzwungenen Schlafzustand in Minuten',
@@ -121,14 +126,10 @@ export class OtherSection extends Section implements IAdminOtherPage {
         .addMaxValidator(60)
 
     // Gesetzt um die minimale Verweildauer im Schlafzustand zu unterdrücken.
-    readonly ignoreMinSleep = new JMSLib.App.Flag(
-        {},
-        'suppressHibernationDelay',
-        'Pause für erzwungenen Schlafzustand ignorieren'
-    )
+    readonly ignoreMinSleep = new Flag({}, 'suppressHibernationDelay', 'Pause für erzwungenen Schlafzustand ignorieren')
 
     // Die Verweildauer eines Protokolleintrags vor der automatischen Löscung (in Wochen).
-    readonly logKeep = new JMSLib.App.Number({}, 'protocol', 'Aufbewahrungsdauer für Protokolle in Wochen', () =>
+    readonly logKeep = new Number({}, 'protocol', 'Aufbewahrungsdauer für Protokolle in Wochen', () =>
         this.update.refreshUi()
     )
         .addRequiredValidator()
@@ -136,32 +137,29 @@ export class OtherSection extends Section implements IAdminOtherPage {
         .addMaxValidator(13)
 
     // Die Verweildauer eines Auftrags im Archiv vor der automatischen Löschung (in Wochen).
-    readonly jobKeep = new JMSLib.App.Number(
-        {},
-        'archive',
-        'Aufbewahrungsdauer von archivierten Aufzeichnungen in Wochen',
-        () => this.update.refreshUi()
+    readonly jobKeep = new Number({}, 'archive', 'Aufbewahrungsdauer von archivierten Aufzeichnungen in Wochen', () =>
+        this.update.refreshUi()
     )
         .addRequiredValidator()
         .addMinValidator(1)
         .addMaxValidator(13)
 
     // Gesetzt, wenn die Systemzeit einer HDTV Aufzeichnung nicht automatisch ermittelt werden soll.
-    readonly noH264PCR = new JMSLib.App.Flag(
+    readonly noH264PCR = new Flag(
         {},
         'noH264PCR',
         'Systemzeit (PCR) in Aufzeichnungsdateien nicht aus einem H.264 Bildsignal ableiten'
     )
 
     // Gesetzt, wenn die Systemzeit einer SDTV Aufzeichnung nicht automatisch ermittelt werden soll.
-    readonly noMPEG2PCR = new JMSLib.App.Flag(
+    readonly noMPEG2PCR = new Flag(
         {},
         'noMPEG2PCR',
         'Systemzeit (PCR) in Aufzeichnungsdateien nicht aus einem MPEG2 Bildsignal ableiten'
     )
 
     // Die Art des automatischen Schlafzustands.
-    readonly hibernation = new JMSLib.App.SelectSingleFromList(
+    readonly hibernation = new SelectSingleFromList(
         this,
         'hibernationMode',
         'Art des von VCR.NET ausgelösten Schlafzustands',
@@ -170,7 +168,7 @@ export class OtherSection extends Section implements IAdminOtherPage {
     )
 
     // Die Art der Protokollierung.
-    readonly logging = new JMSLib.App.SelectSingleFromList(
+    readonly logging = new SelectSingleFromList(
         {},
         'logging',
         'Umfang der Protokollierung in das Windows Ereignisprotokoll',
@@ -180,7 +178,7 @@ export class OtherSection extends Section implements IAdminOtherPage {
 
     // Fordert die Konfigurationswerte vom VCR.NET Recording Service an.
     protected loadAsync(): void {
-        VCRServer.getOtherSettings().then((settings) => {
+        getOtherSettings().then((settings) => {
             // Alle Präsentationsmodelle verbinden.
             this.ignoreMinSleep.data = settings
             this.noMPEG2PCR.data = settings
@@ -224,6 +222,6 @@ export class OtherSection extends Section implements IAdminOtherPage {
 
     // Beginnt die asynchrone Speicherung der Konfiguration.
     protected saveAsync(): Promise<boolean | undefined> {
-        return VCRServer.setOtherSettings(this.port.data)
+        return setOtherSettings(this.port.data)
     }
 }

@@ -1,4 +1,7 @@
-﻿// Schnittstelle zur Anzeige einer Aktion.
+﻿import { IDisplay } from '../localizable'
+import { IConnectable, IView } from '../site'
+
+// Schnittstelle zur Anzeige einer Aktion.
 export interface ICommand extends IDisplay, IConnectable {
     // Gesetzt, wenn die Aktion überhaupt angezeigt werden soll.
     readonly isVisible: boolean

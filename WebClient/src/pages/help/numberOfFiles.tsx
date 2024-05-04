@@ -1,16 +1,20 @@
-﻿export class NumberOfFiles extends HelpComponent {
+﻿import * as React from 'react'
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { HelpComponent } from './helpComponent'
+import { ScreenShot } from './screenShot'
+
+export class NumberOfFiles extends HelpComponent {
     readonly title = 'Anzahl der Aufzeichnungsdateien pro Aufzeichnung'
 
-    render(page: App.IPage): JSX.Element {
+    render(page: IPage): JSX.Element {
         return (
             <div>
                 Im Allgemeinen erzeugt der VCR.NET Recording Service pro Aufzeichnung eine einzige{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};filecontents`}>
-                    Aufzeichnungsdatei
-                </JMSLib.ReactUi.InternalLink>{' '}
-                mit allen gewünschten Informationen. Es gibt allerdings auch Situationen, in denen mehrere
-                Aufzeichnungsdateien angelegt werden. Einige Situationen werden bewusst und hoffentlich auch erwünscht
-                auftreten, andere dienen der Korrektur von Fehlverhalten.
+                <InternalLink view={`${page.route};filecontents`}>Aufzeichnungsdatei</InternalLink> mit allen
+                gewünschten Informationen. Es gibt allerdings auch Situationen, in denen mehrere Aufzeichnungsdateien
+                angelegt werden. Einige Situationen werden bewusst und hoffentlich auch erwünscht auftreten, andere
+                dienen der Korrektur von Fehlverhalten.
                 <br />
                 <br />
                 Der wichtigste beabsichtigte Fall mehrerer Aufzeichnungsdateien tritt bei der Aufzeichnung von
@@ -54,10 +58,9 @@
                 einige dieser Dateien leer sein.
                 <br />
                 <br />
-                Über die{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};dvbnet`}>DVB.NET</JMSLib.ReactUi.InternalLink>{' '}
-                Geräteprofile der verwendeten Hardware ist es in begrenztem Maße möglich, das Verhalten bei der
-                Dateitrennung zu beeinflussen.
+                Über die <InternalLink view={`${page.route};dvbnet`}>DVB.NET</InternalLink> Geräteprofile der
+                verwendeten Hardware ist es in begrenztem Maße möglich, das Verhalten bei der Dateitrennung zu
+                beeinflussen.
                 <ScreenShot description='Schutzeinstellungen' name='FAQ/streamprotection' />
                 Die Einträge haben in dieser Reihenfolge folgende Bedeutung:
                 <br />
@@ -69,10 +72,8 @@
                     </li>
                     <li>
                         Bisher nicht vorgestellt das Intervall, in dem geprüft wird, ob die{' '}
-                        <JMSLib.ReactUi.InternalLink view={`${page.route};decryption`}>
-                            Entschlüsselung
-                        </JMSLib.ReactUi.InternalLink>{' '}
-                        einer Quelle erfolgreich ist. Einige CI/CAM Kombinationen erfordern ein mehrfaches Ansteuern der
+                        <InternalLink view={`${page.route};decryption`}>Entschlüsselung</InternalLink> einer Quelle
+                        erfolgreich ist. Einige CI/CAM Kombinationen erfordern ein mehrfaches Ansteuern der
                         Entschlüsselungsschnittstelle bis ein stabiler Empfang gewährleistet ist. Werden in dem
                         angegebenen Intervall keine Daten empfangen, so startet der VCR.NET Recording Service die
                         betroffene Aufzeichnung neu. Ein zu klein gewählter Wert kann bei träger CI/CAM Hardware dazu

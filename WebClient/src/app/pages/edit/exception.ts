@@ -1,7 +1,11 @@
-﻿// Schnittstelle zur Anzeige und zum Entfernen einer Ausnahmeregel.
+﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
+import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+import { PlanExceptionContract } from '../../../web/PlanExceptionContract'
+
+// Schnittstelle zur Anzeige und zum Entfernen einer Ausnahmeregel.
 export interface IScheduleException {
     // Wird zurückgesetzt um die Ausnahmeregel beim Speichern zu entfernen.
-    readonly isActive: JMSLib.App.IFlag
+    readonly isActive: IFlag
 
     // Der Tag für den die Ausnahmeregel gilt.
     readonly dayDisplay: string
@@ -17,21 +21,21 @@ export interface IScheduleException {
 export class ScheduleException implements IScheduleException {
     // Erstellt ein neues Präsentationsmodell.
     constructor(
-        public readonly model: VCRServer.PlanExceptionContract,
+        public readonly model: PlanExceptionContract,
         onChange: () => void
     ) {
-        this.isActive = new JMSLib.App.Flag({ value: true }, `value`, undefined, onChange)
+        this.isActive = new Flag({ value: true }, `value`, undefined, onChange)
 
         // Initiale Prüfungen ausführen.
         this.isActive.validate()
     }
 
     // Wird zurückgesetzt um die Ausnahmeregel beim Speichern zu entfernen.
-    readonly isActive: JMSLib.App.Flag
+    readonly isActive: Flag
 
     // Der Tag für den die Ausnahmeregel gilt.
     get dayDisplay(): string {
-        return JMSLib.App.DateTimeUtils.formatStartDate(new Date(parseInt(this.model.referenceDayDisplay, 10)))
+        return DateTimeUtils.formatStartDate(new Date(parseInt(this.model.referenceDayDisplay, 10)))
     }
 
     // Die Startverschiebung (in Minuten).

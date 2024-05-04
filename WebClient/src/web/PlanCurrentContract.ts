@@ -1,4 +1,6 @@
-﻿export interface PlanCurrentContract {
+﻿import { doUrlCall } from './vcrserver'
+
+export interface PlanCurrentContract {
     // Das Gerät, auf dem die Aktivität stattfindet
     device: string
 

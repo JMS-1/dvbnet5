@@ -1,73 +1,82 @@
-﻿// Schnittstelle zur Pflege der Benutzereinstellung.
+﻿import { ICommand, Command } from '../../lib/command/command'
+import { IFlag, Flag } from '../../lib/edit/boolean/flag'
+import { IValueFromList, uiValue, SelectSingleFromList } from '../../lib/edit/list'
+import { INumber } from '../../lib/edit/number/number'
+import { setUserProfile } from '../../web/UserProfileContract'
+import { Application } from '../app'
+import { IPage, Page } from './page'
+import { Number } from '../../lib/edit/number/number'
+
+// Schnittstelle zur Pflege der Benutzereinstellung.
 export interface ISettingsPage extends IPage {
     // Die Anzahl von Tagen im Aufzeichnungsplan.
-    readonly planDays: JMSLib.App.INumber
+    readonly planDays: INumber
 
     // Die maximale Anzahl von Quellen in der Liste zuletzt verwendeter Quellen.
-    readonly maxFavorites: JMSLib.App.INumber
+    readonly maxFavorites: INumber
 
     // Die Anzahl der Einträge auf einer Seite der Programmzeitschrift.
-    readonly guideRows: JMSLib.App.INumber
+    readonly guideRows: INumber
 
     // Die Vorlaufzeit für neue Aufzeichnung, die aus der Programmzeitschrift angelegt werden (in Minuten).
-    readonly preGuide: JMSLib.App.INumber
+    readonly preGuide: INumber
 
     // Die Nachlaufzeit für neue Aufzeichnung, die aus der Programmzeitschrift angelegt werden (in Minuten).
-    readonly postGuide: JMSLib.App.INumber
+    readonly postGuide: INumber
 
     // Gesetzt, wenn bevorzugt das Dolby-Digital Tonsignal mit aufgezeichnet werden soll.
-    readonly dolby: JMSLib.App.IFlag
+    readonly dolby: IFlag
 
     // Gesetzt, wenn bevorzugt alle Sprachen aufgezeichnet werden sollen.
-    readonly allAudio: JMSLib.App.IFlag
+    readonly allAudio: IFlag
 
     // Gesetzt, wenn bevorzugt der Videotext mit aufgezeichnet werden soll.
-    readonly ttx: JMSLib.App.IFlag
+    readonly ttx: IFlag
 
     // Gesetzt, wenn bevorzugt die DVB Untertitel mit aufgezeichnet werden soll.
-    readonly subs: JMSLib.App.IFlag
+    readonly subs: IFlag
 
     // Gesetzt, wenn beim Abbruch einer laufenden Aufzeichnung bevorzugt der Schlafzustand unterdrückt werden soll.
-    readonly noSleep: JMSLib.App.IFlag
+    readonly noSleep: IFlag
 
     // Gesetzt, wenn nach dem Anlegen einer neuen Aufzeichnung aus der Programmzeitschrift in diese zurück gekehrt werden soll.
-    readonly backToGuide: JMSLib.App.IFlag
+    readonly backToGuide: IFlag
 
     // Die bevorzugte Einschränkung auf die Art der Quellen bei der Auswahl einer Quelle für eine Aufzeichnung.
-    readonly sourceType: JMSLib.App.IValueFromList<string>
+    readonly sourceType: IValueFromList<string>
 
     // Die bevorzugte Einschränkung auf die Verschlüsselung der Quellen bei der Auswahl einer Quelle für eine Aufzeichnung.
-    readonly encryption: JMSLib.App.IValueFromList<string>
+    readonly encryption: IValueFromList<string>
 
     // Befehl zur Aktualisierung der Einstellungen.
-    readonly update: JMSLib.App.ICommand
+    readonly update: ICommand
 }
 
 // Präsentationsmodell zur Pflege der Einstellungen des Anwenders.
 export class SettingsPage extends Page implements ISettingsPage {
     // Alle Einschränkungen auf die Art der Quellen.
     private static readonly _types = [
-        JMSLib.App.uiValue('RT', 'Alle Quellen'),
-        JMSLib.App.uiValue('R', 'Nur Radio'),
-        JMSLib.App.uiValue('T', 'Nur Fernsehen'),
+        uiValue('RT', 'Alle Quellen'),
+        uiValue('R', 'Nur Radio'),
+        uiValue('T', 'Nur Fernsehen'),
     ]
 
     // Alle Einschränkungen auf die Verschlüsselung der Quellen.
     private static readonly _encryptions = [
-        JMSLib.App.uiValue('FP', 'Alle Quellen'),
-        JMSLib.App.uiValue('P', 'Nur verschlüsselte Quellen'),
-        JMSLib.App.uiValue('F', 'Nur unverschlüsselte Quellen'),
+        uiValue('FP', 'Alle Quellen'),
+        uiValue('P', 'Nur verschlüsselte Quellen'),
+        uiValue('F', 'Nur unverschlüsselte Quellen'),
     ]
 
     // Befehl zur Aktualisierung der Einstellungen.
-    readonly update = new JMSLib.App.Command(
+    readonly update = new Command(
         () => this.save(),
         'Aktualisieren',
         () => this.isValid
     )
 
     // Die Anzahl von Tagen im Aufzeichnungsplan.
-    readonly planDays = new JMSLib.App.Number({}, 'planDays', 'Anzahl der Vorschautage im Aufzeichnungsplan', () =>
+    readonly planDays = new Number({}, 'planDays', 'Anzahl der Vorschautage im Aufzeichnungsplan', () =>
         this.update.refreshUi()
     )
         .addRequiredValidator()
@@ -75,7 +84,7 @@ export class SettingsPage extends Page implements ISettingsPage {
         .addMaxValidator(50)
 
     // Die maximale Anzahl von Quellen in der Liste zuletzt verwendeter Quellen.
-    readonly maxFavorites = new JMSLib.App.Number(
+    readonly maxFavorites = new Number(
         {},
         'recentSourceLimit',
         'Maximale Größe der Liste zuletzt verwendeter Sendern',
@@ -86,18 +95,15 @@ export class SettingsPage extends Page implements ISettingsPage {
         .addMaxValidator(50)
 
     // Die Anzahl der Einträge auf einer Seite der Programmzeitschrift.
-    readonly guideRows = new JMSLib.App.Number(
-        {},
-        'guideRows',
-        'Anzahl der Einträge pro Seite in der Programmzeitschrift',
-        () => this.update.refreshUi()
+    readonly guideRows = new Number({}, 'guideRows', 'Anzahl der Einträge pro Seite in der Programmzeitschrift', () =>
+        this.update.refreshUi()
     )
         .addRequiredValidator()
         .addMinValidator(10)
         .addMaxValidator(100)
 
     // Die Vorlaufzeit für neue Aufzeichnung, die aus der Programmzeitschrift angelegt werden (in Minuten).
-    readonly preGuide = new JMSLib.App.Number(
+    readonly preGuide = new Number(
         {},
         'guideAheadStart',
         'Vorlaufzeit bei Programmierung über die Programmzeitschrift (in Minuten)',
@@ -108,7 +114,7 @@ export class SettingsPage extends Page implements ISettingsPage {
         .addMaxValidator(240)
 
     // Die Nachlaufzeit für neue Aufzeichnung, die aus der Programmzeitschrift angelegt werden (in Minuten).
-    readonly postGuide = new JMSLib.App.Number(
+    readonly postGuide = new Number(
         {},
         'guideBeyondEnd',
         'Nachlaufzeit bei Programmierung über die Programmzeitschrift (in Minuten)',
@@ -119,33 +125,33 @@ export class SettingsPage extends Page implements ISettingsPage {
         .addMaxValidator(240)
 
     // Gesetzt, wenn bevorzugt das Dolby-Digital Tonsignal mit aufgezeichnet werden soll.
-    readonly dolby = new JMSLib.App.Flag({}, 'dolby', 'Dolby Digital (AC3)')
+    readonly dolby = new Flag({}, 'dolby', 'Dolby Digital (AC3)')
 
     // Gesetzt, wenn bevorzugt alle Sprachen aufgezeichnet werden sollen.
-    readonly allAudio = new JMSLib.App.Flag({}, 'languages', 'Alle Sprachen')
+    readonly allAudio = new Flag({}, 'languages', 'Alle Sprachen')
 
     // Gesetzt, wenn bevorzugt der Videotext mit aufgezeichnet werden soll.
-    readonly ttx = new JMSLib.App.Flag({}, 'videotext', 'Videotext')
+    readonly ttx = new Flag({}, 'videotext', 'Videotext')
 
     // Gesetzt, wenn bevorzugt die DVB Untertitel mit aufgezeichnet werden soll.
-    readonly subs = new JMSLib.App.Flag({}, 'subtitles', 'DVB Untertitel')
+    readonly subs = new Flag({}, 'subtitles', 'DVB Untertitel')
 
     // Gesetzt, wenn beim Abbruch einer laufenden Aufzeichnung bevorzugt der Schlafzustand unterdrückt werden soll.
-    readonly noSleep = new JMSLib.App.Flag(
+    readonly noSleep = new Flag(
         {},
         'suppressHibernate',
         'Beim Abbrechen von Aufzeichnungen bevorzugt den Schlafzustand unterdrücken'
     )
 
     // Gesetzt, wenn nach dem Anlegen einer neuen Aufzeichnung aus der Programmzeitschrift in diese zurück gekehrt werden soll.
-    readonly backToGuide = new JMSLib.App.Flag(
+    readonly backToGuide = new Flag(
         {},
         'backToGuide',
         'Nach Anlegen einer neuen Aufzeichnung zurück zur Programmzeitschrift'
     )
 
     // Die bevorzugte Einschränkung auf die Art der Quellen bei der Auswahl einer Quelle für eine Aufzeichnung.
-    readonly sourceType = new JMSLib.App.SelectSingleFromList(
+    readonly sourceType = new SelectSingleFromList(
         {},
         'typeFilter',
         undefined,
@@ -154,7 +160,7 @@ export class SettingsPage extends Page implements ISettingsPage {
     ).addRequiredValidator()
 
     // Die bevorzugte Einschränkung auf die Verschlüsselung der Quellen bei der Auswahl einer Quelle für eine Aufzeichnung.
-    readonly encryption = new JMSLib.App.SelectSingleFromList(
+    readonly encryption = new SelectSingleFromList(
         {},
         'encryptionFilter',
         undefined,
@@ -215,6 +221,6 @@ export class SettingsPage extends Page implements ISettingsPage {
     // Stößt die Aktualisierung der Einstellungen.
     private save(): Promise<void> {
         // Nach dem erfolgreichen Speichern geht es mit der Einstiegsseite los, dabei werden die Einstellungen immer ganz neu geladen.
-        return VCRServer.setUserProfile(this.planDays.data).then(() => this.application.gotoPage(null))
+        return setUserProfile(this.planDays.data).then(() => this.application.gotoPage(null))
     }
 }

@@ -1,7 +1,12 @@
-﻿// Schnittstelle zur Pflege der Planungsregeln.
+﻿import { IString } from '../../../lib/edit/text/text'
+import { getSchedulerRules, setSchedulerRules } from '../../../web/admin/SchedulerRulesContract'
+import { ISection, Section } from './section'
+import { String } from '../../../lib/edit/text/text'
+
+// Schnittstelle zur Pflege der Planungsregeln.
 export interface IAdminRulesPage extends ISection {
     // Die Regeln zur Verteilung von Aufzeichnungen auf mehrere Geräte.
-    readonly rules: JMSLib.App.IString
+    readonly rules: IString
 }
 
 // Präsentationsmodell zur Pflege der Planungsregeln.
@@ -10,11 +15,11 @@ export class RulesSection extends Section implements IAdminRulesPage {
     static readonly route = `rules`
 
     // Die aktuellen Planungsregeln.
-    readonly rules = new JMSLib.App.String({}, 'rules')
+    readonly rules = new String({}, 'rules')
 
     // Fordert die aktuellen Planungsregeln vom VCR.NET Recording Service an.
     protected loadAsync(): void {
-        VCRServer.getSchedulerRules().then((settings) => {
+        getSchedulerRules().then((settings) => {
             // Konfiguration an das Präsentationsmodell binden.
             this.rules.data = settings
 
@@ -31,6 +36,6 @@ export class RulesSection extends Section implements IAdminRulesPage {
 
     // Konfiguration asynchron aktualisieren.
     protected saveAsync(): Promise<boolean | undefined> {
-        return VCRServer.setSchedulerRules(this.rules.data)
+        return setSchedulerRules(this.rules.data)
     }
 }

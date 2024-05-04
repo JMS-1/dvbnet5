@@ -1,13 +1,16 @@
 ﻿import * as React from 'react'
+import { IScheduleException } from '../../app/pages/edit/exception'
+import { EditBoolean } from '../../lib.react/edit/boolean/flag'
+import { Component } from '../../lib.react/reactUi'
 
 // React.Js Komponente zur Deaktivierung einer einzelnen Ausnahmeregel.
-export class EditException extends JMSLib.ReactUi.Component<App.Edit.IScheduleException> {
+export class EditException extends Component<IScheduleException> {
     // Erstellt die Oberflächenelemente zur Pflege.
     render(): JSX.Element {
         return (
             <tr className='vcrnet-editexception'>
                 <td>
-                    <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.isActive} />
+                    <EditBoolean uvm={this.props.uvm.isActive} />
                 </td>
                 <td>{this.props.uvm.dayDisplay}</td>
                 <td>

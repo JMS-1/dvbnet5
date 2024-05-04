@@ -1,13 +1,19 @@
 ﻿import * as React from 'react'
+import { IPlanPage } from '../../app/pages/plan'
+import { IPlanEntry } from '../../app/pages/plan/entry'
+import { HelpLink } from '../../common/helpLink'
+import { IComponent, ComponentExWithSite } from '../../lib.react/reactUi'
+import { TimeBar } from '../../lib.react/timeBar'
+import { GuideEntryInfo } from '../guide/info'
 
 // Konfiguration zur Anzeige der Details einer Aufzeichnung.
-interface IPlanGuide extends JMSLib.ReactUi.IComponent<App.Plan.IPlanEntry> {
+interface IPlanGuide extends IComponent<IPlanEntry> {
     // Der zugehörige Navigationsbereich.
-    page: App.IPlanPage
+    page: IPlanPage
 }
 
 // React.Js Komponente zur Anzeige der Details einer Aufzeichnung.
-export class PlanGuide extends JMSLib.ReactUi.ComponentExWithSite<App.Plan.IPlanEntry, IPlanGuide> {
+export class PlanGuide extends ComponentExWithSite<IPlanEntry, IPlanGuide> {
     // Oberflächenelemente erstellen.
     render(): JSX.Element {
         var guide = this.props.uvm.guideItem
@@ -28,7 +34,7 @@ export class PlanGuide extends JMSLib.ReactUi.ComponentExWithSite<App.Plan.IPlan
                 {guide ? (
                     <fieldset>
                         <legend>Auszug aus der Programmzeitschrift</legend>
-                        <JMSLib.ReactUi.TimeBar uvm={this.props.uvm.guideTime} />
+                        <TimeBar uvm={this.props.uvm.guideTime} />
                         <GuideEntryInfo uvm={guide} />
                     </fieldset>
                 ) : (

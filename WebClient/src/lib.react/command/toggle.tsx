@@ -1,7 +1,10 @@
 ﻿import * as React from 'react'
+import { IToggableFlag } from '../../lib/edit/boolean/flag'
+import { ButtonCommand } from './button'
+import { Component } from '../reactUi'
 
 // React.Js Komponente zur Pflege eines Wahrheitswertes über eine Schaltfläche.
-export class ToggleCommand extends Component<App.IToggableFlag> {
+export class ToggleCommand extends Component<IToggableFlag> {
     // Erzeugt die Oberflächenelemente.
     render(): JSX.Element {
         return (

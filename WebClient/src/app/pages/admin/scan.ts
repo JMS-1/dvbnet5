@@ -1,4 +1,17 @@
-﻿// Die Art der Aktualisierung der Quellenlisten.
+﻿import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+import { IValueFromList, uiValue, SelectSingleFromList } from '../../../lib/edit/list'
+import { IMultiValueFromList, SelectMultipleFromList } from '../../../lib/edit/multiList'
+import { INumber } from '../../../lib/edit/number/number'
+import {
+    getSourceScanSettings,
+    SourceScanSettingsContract,
+    setSourceScanSettings,
+} from '../../../web/admin/SourceScanSettingsContract'
+import { AdminPage } from '../admin'
+import { ISection, Section } from './section'
+import { Number } from '../../../lib/edit/number/number'
+
+// Die Art der Aktualisierung der Quellenlisten.
 export enum ScanConfigMode {
     // Eine Aktualisierung ist nicht möglich.
     disabled,
@@ -13,7 +26,7 @@ export enum ScanConfigMode {
 // Schnittstelle zur Konfiguration des Sendersuchlaufs.
 export interface IAdminScanPage extends ISection {
     // Die Art der Aktualisierung.
-    readonly mode: JMSLib.App.IValueFromList<ScanConfigMode>
+    readonly mode: IValueFromList<ScanConfigMode>
 
     // Gesetzt, wenn die Konfiguration überhaupt angezeigt werden soll.
     readonly showConfiguration: boolean
@@ -22,19 +35,19 @@ export interface IAdminScanPage extends ISection {
     readonly configureAutomatic: boolean
 
     // Die maximale Dauer eines Suchlaufs (in Minuten).
-    readonly duration: JMSLib.App.INumber
+    readonly duration: INumber
 
     // Die Stunden, an denen eine Aktualisierung ausgeführt werden soll.
-    readonly hours: JMSLib.App.IMultiValueFromList<number>
+    readonly hours: IMultiValueFromList<number>
 
     // Gesetzt, wenn das Ergebnis der Aktualisierung mit der aktuellen Liste der Quellen zusammengeführt werden soll.
-    readonly merge: JMSLib.App.IFlag
+    readonly merge: IFlag
 
     // Die minimale zeit zwischen zwei automatischen Aktualisierungen (in Tagen).
-    readonly gapDays: JMSLib.App.INumber
+    readonly gapDays: INumber
 
     // Die Zeit für eine vorgezogene Aktualisierung (in Tagen).
-    readonly latency: JMSLib.App.INumber
+    readonly latency: INumber
 }
 
 // Präsentationsmodell zur Pflege der Konfiguration des Sendersuchlaufs.
@@ -44,43 +57,34 @@ export class ScanSection extends Section implements IAdminScanPage {
 
     // Die Anzeigewerte für die einzelnen Arten der Aktualisierung.
     private static readonly _scanModes = [
-        JMSLib.App.uiValue(ScanConfigMode.disabled, 'Aktualisierung deaktivieren'),
-        JMSLib.App.uiValue(ScanConfigMode.manual, 'Manuell aktualisieren'),
-        JMSLib.App.uiValue(ScanConfigMode.automatic, 'Aktualisieren nach Zeitplan'),
+        uiValue(ScanConfigMode.disabled, 'Aktualisierung deaktivieren'),
+        uiValue(ScanConfigMode.manual, 'Manuell aktualisieren'),
+        uiValue(ScanConfigMode.automatic, 'Aktualisieren nach Zeitplan'),
     ]
 
     // Die Art der Aktualisierung.
-    readonly mode = new JMSLib.App.SelectSingleFromList(
-        {},
-        'value',
-        undefined,
-        () => this.refreshUi(),
-        ScanSection._scanModes
-    )
+    readonly mode = new SelectSingleFromList({}, 'value', undefined, () => this.refreshUi(), ScanSection._scanModes)
 
     // Die Stunden, an denen eine Aktualisierung ausgeführt werden soll.
-    readonly hours = new JMSLib.App.SelectMultipleFromList({}, 'hours', 'Uhrzeiten', undefined, AdminPage.hoursOfDay)
+    readonly hours = new SelectMultipleFromList({}, 'hours', 'Uhrzeiten', undefined, AdminPage.hoursOfDay)
 
     // Die maximale Dauer eines Suchlaufs (in Minuten).
-    readonly duration = new JMSLib.App.Number(
-        {},
-        'duration',
-        'Maximale Laufzeit für einen Sendersuchlauf in Minuten',
-        () => this.update.refreshUi()
+    readonly duration = new Number({}, 'duration', 'Maximale Laufzeit für einen Sendersuchlauf in Minuten', () =>
+        this.update.refreshUi()
     )
         .addRequiredValidator()
         .addMinValidator(5)
         .addMaxValidator(55)
 
     // Gesetzt, wenn das Ergebnis der Aktualisierung mit der aktuellen Liste der Quellen zusammengeführt werden soll.
-    readonly merge = new JMSLib.App.Flag(
+    readonly merge = new Flag(
         {},
         'merge',
         'Senderliste nach dem Suchlauf mit der vorherigen zusammenführen (empfohlen)'
     )
 
     // Die minimale zeit zwischen zwei automatischen Aktualisierungen (in Tagen).
-    readonly gapDays = new JMSLib.App.Number({}, 'interval', 'Minimale Anzahl von Tagen zwischen zwei Suchläufen', () =>
+    readonly gapDays = new Number({}, 'interval', 'Minimale Anzahl von Tagen zwischen zwei Suchläufen', () =>
         this.update.refreshUi()
     )
         .addRequiredValidator()
@@ -88,7 +92,7 @@ export class ScanSection extends Section implements IAdminScanPage {
         .addMaxValidator(28)
 
     // Die Zeit für eine vorgezogene Aktualisierung (in Tagen).
-    readonly latency = new JMSLib.App.Number(
+    readonly latency = new Number(
         {},
         'joinDays',
         'Latenzzeit für vorgezogene Aktualisierungen in Tagen (optional)',
@@ -109,7 +113,7 @@ export class ScanSection extends Section implements IAdminScanPage {
 
     // Forder die aktuelle Konfiguration vom VCR.NET Recordings Service an.
     protected loadAsync(): void {
-        VCRServer.getSourceScanSettings().then((settings) => {
+        getSourceScanSettings().then((settings) => {
             // Präsentationsmodell mit den Daten verbinden.
             this.duration.data = settings
             this.gapDays.data = settings
@@ -153,12 +157,12 @@ export class ScanSection extends Section implements IAdminScanPage {
     // Fordert den VCR.NET Recording Service zur Aktualisierung der Konfiguration an.
     protected saveAsync(): Promise<boolean | undefined> {
         // Die Art wird in die Konfigurationsdaten zurückgespiegelt.
-        var settings = <VCRServer.SourceScanSettingsContract>this.hours.data
+        var settings = <SourceScanSettingsContract>this.hours.data
 
         if (!this.showConfiguration) settings.interval = 0
         else if (!this.configureAutomatic) settings.interval = -1
 
         // Änderung der Konfiguration asynchron starten.
-        return VCRServer.setSourceScanSettings(settings)
+        return setSourceScanSettings(settings)
     }
 }

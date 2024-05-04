@@ -1,13 +1,16 @@
 ﻿import * as React from 'react'
+import { IValueFromList } from '../../lib/edit/list'
+import { ButtonCommand } from '../command/button'
+import { IComponent, ComponentExWithSite } from '../reactUi'
 
 // Schnittstelle zur Anzeige einer Liste von Schaltflächen.
-interface ISingleSelectButton extends IComponent<App.IValueFromList<any>> {
+interface ISingleSelectButton extends IComponent<IValueFromList<any>> {
     // Gesetzt, wenn die Schaltflächen nicht separiert werden sollen.
     merge?: boolean
 }
 
 // React.Js Komponente zur Anzeige einer Liste von Schaltflächen.
-export class SingleSelectButton extends ComponentExWithSite<App.IValueFromList<any>, ISingleSelectButton> {
+export class SingleSelectButton extends ComponentExWithSite<IValueFromList<any>, ISingleSelectButton> {
     // Erstellt die Anzeige für die Komponente.
     render(): JSX.Element {
         var value = this.props.uvm.value

@@ -1,5 +1,9 @@
-﻿// Verwaltete eine Zeichenkette, die über eine einfache Auswahlliste festgelegt wird.
-export class SingleSelect extends ComponentWithSite<App.IValueFromList<any>> {
+﻿import React from 'react'
+import { IValueFromList } from '../../lib/edit/list'
+import { ComponentWithSite } from '../reactUi'
+
+// Verwaltete eine Zeichenkette, die über eine einfache Auswahlliste festgelegt wird.
+export class SingleSelect extends ComponentWithSite<IValueFromList<any>> {
     // Erstellt die Anzeige für die Komponente.
     render(): JSX.Element {
         return (

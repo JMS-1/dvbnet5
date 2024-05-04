@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+import { IConnectable, IView } from '../lib/site'
 
 // Beschreibt eine React.Js Komponente für ein Präsentationsmodell.
 export interface IComponent<TViewModelType> {
@@ -22,11 +23,11 @@ export abstract class Component<TViewModelType> extends ComponentEx<TViewModelTy
 
 // Implementierung einer React.Js Komponente für ein Präsentationsmodell mit Benachrichtigungen.
 export abstract class ComponentExWithSite<
-        TViewModelType extends App.IConnectable,
+        TViewModelType extends IConnectable,
         TConfigType extends IComponent<TViewModelType>,
     >
     extends ComponentEx<TViewModelType, TConfigType>
-    implements App.IView
+    implements IView
 {
     // Führt die Anmeldung auf Benachrichtigungen aus.
     componentWillMount(): void {
@@ -44,7 +45,7 @@ export abstract class ComponentExWithSite<
     }
 }
 
-export abstract class ComponentWithSite<TViewModelType extends App.IConnectable> extends ComponentExWithSite<
+export abstract class ComponentWithSite<TViewModelType extends IConnectable> extends ComponentExWithSite<
     TViewModelType,
     IComponent<TViewModelType>
 > {}

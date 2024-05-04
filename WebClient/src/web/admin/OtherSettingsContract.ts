@@ -1,4 +1,7 @@
-﻿// Repräsentiert die Klasse OtherSettings
+﻿import { SettingsContract } from '../SettingsContract'
+import { doUrlCall } from '../vcrserver'
+
+// Repräsentiert die Klasse OtherSettings
 export interface OtherSettingsContract extends SettingsContract {
     // Gesetzt, um den Übergang in den Schlafzustand erlauben
     mayHibernate: boolean

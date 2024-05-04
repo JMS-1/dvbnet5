@@ -1,10 +1,20 @@
 ﻿import * as React from 'react'
+import { IAdminDevicesPage, DevicesSection } from '../../app/pages/admin/devices'
+import { Field } from '../../common/field'
+import { HelpLink } from '../../common/helpLink'
+import { InlineHelp } from '../../common/inlineHelp'
+import { ExternalLink } from '../../lib.react/command/externalLink'
+import { EditBoolean } from '../../lib.react/edit/boolean/flag'
+import { SingleSelect } from '../../lib.react/edit/list'
+import { EditNumber } from '../../lib.react/edit/number/number'
+import { IAdminSectionFactory } from '../admin'
+import { AdminSection } from './section'
 
 // React.js Komponente zur Konfiguration der Geräte.
-export class AdminDevices extends AdminSection<App.Admin.IAdminDevicesPage> {
+export class AdminDevices extends AdminSection<IAdminDevicesPage> {
     // Das zugehörige Ui View Model.
-    static get uvm(): IAdminSectionFactory<App.Admin.IAdminDevicesPage> {
-        return App.Admin.DevicesSection
+    static get uvm(): IAdminSectionFactory<IAdminDevicesPage> {
+        return DevicesSection
     }
 
     // Die Überschrift für diesen Bereich.
@@ -21,7 +31,7 @@ export class AdminDevices extends AdminSection<App.Admin.IAdminDevicesPage> {
                 {this.getHelp()}
                 <form>
                     <Field page={this.props.uvm.page} label={`${this.props.uvm.defaultDevice.text}:`}>
-                        <JMSLib.ReactUi.SingleSelect uvm={this.props.uvm.defaultDevice} />
+                        <SingleSelect uvm={this.props.uvm.defaultDevice} />
                     </Field>
                     <table className='vcrnet-table'>
                         <thead>
@@ -37,17 +47,17 @@ export class AdminDevices extends AdminSection<App.Admin.IAdminDevicesPage> {
                             {this.props.uvm.devices.map((d) => (
                                 <tr key={d.name}>
                                     <td>
-                                        <JMSLib.ReactUi.EditBoolean uvm={d.active} />
+                                        <EditBoolean uvm={d.active} />
                                     </td>
                                     <td>{d.name}</td>
                                     <td>
-                                        <JMSLib.ReactUi.EditNumber uvm={d.priority} chars={5} />
+                                        <EditNumber uvm={d.priority} chars={5} />
                                     </td>
                                     <td>
-                                        <JMSLib.ReactUi.EditNumber uvm={d.decryption} chars={5} />
+                                        <EditNumber uvm={d.decryption} chars={5} />
                                     </td>
                                     <td>
-                                        <JMSLib.ReactUi.EditNumber uvm={d.sources} chars={5} />
+                                        <EditNumber uvm={d.sources} chars={5} />
                                     </td>
                                 </tr>
                             ))}
@@ -71,9 +81,9 @@ export class AdminDevices extends AdminSection<App.Admin.IAdminDevicesPage> {
                 <br />
                 Zusätzlich können für jedes Gerät auch einige Geräteparameter festgelegt werden - alternativ zur
                 direkten Pflege über die{' '}
-                <JMSLib.ReactUi.ExternalLink url='http://www.psimarron.net/DVBNET/html/dialogrecording.html'>
+                <ExternalLink url='http://www.psimarron.net/DVBNET/html/dialogrecording.html'>
                     DVB.NET Konfiguration und Administration
-                </JMSLib.ReactUi.ExternalLink>
+                </ExternalLink>
                 . Hier vorgenomme Änderungen werden für alle Geräte übernommen, selbst wenn VCR.NET diese nicht
                 verwendet. Grundsätzlich werden Änderungen in der Tabelle erst durch eine explizite Bestätigung über die
                 entsprechende Schaltfläche übernommen. Änderungen an den Geräten erfordern fast immer einen Neustart des

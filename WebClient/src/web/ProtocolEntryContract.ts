@@ -1,4 +1,6 @@
-﻿// Repräsentiert die Klasse ProtocolEntry
+﻿import { doUrlCall } from './vcrserver'
+
+// Repräsentiert die Klasse ProtocolEntry
 export interface ProtocolEntryContract {
     // Der Startzeitpunkt in ISO Notation
     start: string

@@ -1,7 +1,21 @@
 ﻿import * as React from 'react'
+import { IGuidePage } from '../app/pages/guide'
+import { Field } from '../common/field'
+import { HelpLink } from '../common/helpLink'
+import { InlineHelp } from '../common/inlineHelp'
+import { ButtonCommand } from '../lib.react/command/button'
+import { ToggleCommand } from '../lib.react/command/toggle'
+import { DetailRow } from '../lib.react/detailRow'
+import { SingleSelectButton } from '../lib.react/edit/buttonList'
+import { SingleSelect } from '../lib.react/edit/list'
+import { EditText } from '../lib.react/edit/text/text'
+import { ComponentWithSite } from '../lib.react/reactUi'
+import { GuideDetails } from './guide/details'
+import { GuideEntry } from './guide/entry'
+import { GuideNavigation } from './guide/navigator'
 
 // React.Js Komponente zur Anzeige der Programmzeitschrift.
-export class Guide extends JMSLib.ReactUi.ComponentWithSite<App.IGuidePage> {
+export class Guide extends ComponentWithSite<IGuidePage> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {
         return (
@@ -18,31 +32,31 @@ export class Guide extends JMSLib.ReactUi.ComponentWithSite<App.IGuidePage> {
                         <legend>Einschränkungen festlegen</legend>
                         <div>
                             <Field page={this.props.uvm} label={`${this.props.uvm.profiles.text}:`}>
-                                <JMSLib.ReactUi.SingleSelect uvm={this.props.uvm.profiles} />
+                                <SingleSelect uvm={this.props.uvm.profiles} />
                             </Field>
                             <Field page={this.props.uvm} label={`${this.props.uvm.sources.text}:`}>
-                                <JMSLib.ReactUi.SingleSelect uvm={this.props.uvm.sources} />
+                                <SingleSelect uvm={this.props.uvm.sources} />
                             </Field>
                             {this.props.uvm.showSourceType && (
-                                <JMSLib.ReactUi.SingleSelectButton uvm={this.props.uvm.sourceType} merge={true} />
+                                <SingleSelectButton uvm={this.props.uvm.sourceType} merge={true} />
                             )}
                             {this.props.uvm.showEncryption && (
-                                <JMSLib.ReactUi.SingleSelectButton uvm={this.props.uvm.encrpytion} merge={true} />
+                                <SingleSelectButton uvm={this.props.uvm.encrpytion} merge={true} />
                             )}
                         </div>
                         <div>
                             <Field page={this.props.uvm} label={`${this.props.uvm.queryString.text}:`}>
-                                <JMSLib.ReactUi.EditText uvm={this.props.uvm.queryString} chars={30} />
+                                <EditText uvm={this.props.uvm.queryString} chars={30} />
                             </Field>
-                            <JMSLib.ReactUi.ToggleCommand uvm={this.props.uvm.withContent} />
-                            <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.resetFilter} />
-                            <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.addFavorite} />
+                            <ToggleCommand uvm={this.props.uvm.withContent} />
+                            <ButtonCommand uvm={this.props.uvm.resetFilter} />
+                            <ButtonCommand uvm={this.props.uvm.addFavorite} />
                         </div>
                         <div>
-                            <JMSLib.ReactUi.SingleSelectButton uvm={this.props.uvm.days} />
+                            <SingleSelectButton uvm={this.props.uvm.days} />
                         </div>
                         <div>
-                            <JMSLib.ReactUi.SingleSelectButton uvm={this.props.uvm.hours} />
+                            <SingleSelectButton uvm={this.props.uvm.hours} />
                         </div>
                     </fieldset>
                 </form>
@@ -60,9 +74,9 @@ export class Guide extends JMSLib.ReactUi.ComponentWithSite<App.IGuidePage> {
                         {this.props.uvm.entries.map((e, index) => [
                             <GuideEntry key={index} uvm={e} />,
                             e.showDetails && (
-                                <JMSLib.ReactUi.DetailRow dataColumns={4} key={`${index}Details`}>
+                                <DetailRow dataColumns={4} key={`${index}Details`}>
                                     <GuideDetails uvm={e} page={this.props.uvm} />
-                                </JMSLib.ReactUi.DetailRow>
+                                </DetailRow>
                             ),
                         ])}
                     </tbody>

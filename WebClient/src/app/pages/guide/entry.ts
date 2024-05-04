@@ -1,4 +1,9 @@
-﻿// Schnittstelle zur Anzeige eines Eintrags in der Programmzeitschrift.
+﻿import { ICommand, Command } from '../../../lib/command/command'
+import { DateTimeUtils } from '../../../lib/dateTimeUtils'
+import { IValueFromList } from '../../../lib/edit/list'
+import { GuideItemContract } from '../../../web/GuideItemContract'
+
+// Schnittstelle zur Anzeige eines Eintrags in der Programmzeitschrift.
 export interface IGuideInfo {
     // Beginn der Sendung.
     readonly startDisplay: string
@@ -31,7 +36,7 @@ export interface IGuideInfo {
     readonly longDescription: string
 
     // Suche nach ähnlichen Einträgen in der Programmzeitschrift.
-    readonly findSimiliar: JMSLib.App.ICommand
+    readonly findSimiliar: ICommand
 }
 
 // Schnittstelle zur Anzeige eines Eintrags in der Programmzeitschrift.
@@ -46,18 +51,18 @@ export interface IGuideEntry extends IGuideInfo {
     toggleDetail(): void
 
     // Auswahlliste mit allen Aufträgen auf dem zugehörigen Gerät.
-    readonly jobSelector: JMSLib.App.IValueFromList<string>
+    readonly jobSelector: IValueFromList<string>
 
     // Methode zum Anlegen einer neuen Aufzeichnung.
-    readonly createNew: JMSLib.App.ICommand
+    readonly createNew: ICommand
 }
 
 // Repräsentiert einen Eintrag in der Programmzeitschrift.
 export class GuideInfo implements IGuideInfo {
     // Erstellt eine neue Beschreibung.
     constructor(
-        protected readonly model: VCRServer.GuideItemContract,
-        private readonly _findInGuide: (model: VCRServer.GuideItemContract) => void
+        protected readonly model: GuideItemContract,
+        private readonly _findInGuide: (model: GuideItemContract) => void
     ) {
         // Zeitraum der Sendung.
         this.start = new Date(model.start)
@@ -65,20 +70,20 @@ export class GuideInfo implements IGuideInfo {
     }
 
     // Suche nach ähnlichen Einträgen in der Programmzeitschrift.
-    readonly findSimiliar = new JMSLib.App.Command(() => this._findInGuide(this.model), 'Mögliche Wiederholungen')
+    readonly findSimiliar = new Command(() => this._findInGuide(this.model), 'Mögliche Wiederholungen')
 
     // Startzeit der Sendung.
     readonly start: Date
 
     get startDisplay(): string {
-        return JMSLib.App.DateTimeUtils.formatStartTime(this.start)
+        return DateTimeUtils.formatStartTime(this.start)
     }
 
     // Endzeit der Sendung.
     readonly end: Date
 
     get endDisplay(): string {
-        return JMSLib.App.DateTimeUtils.formatEndTime(this.end)
+        return DateTimeUtils.formatEndTime(this.end)
     }
 
     // Meldet die Quelle.
@@ -108,7 +113,7 @@ export class GuideInfo implements IGuideInfo {
 
     // Meldet die Dauer der Sendung.
     get duration(): string {
-        return JMSLib.App.DateTimeUtils.formatDuration(new Date(1000 * this.model.duration))
+        return DateTimeUtils.formatDuration(new Date(1000 * this.model.duration))
     }
 
     // Meldet die Freigabe der Sendung.
@@ -126,16 +131,16 @@ export class GuideInfo implements IGuideInfo {
 export class GuideEntry extends GuideInfo implements IGuideEntry {
     // Erstellt eine neue Beschreibung.
     constructor(
-        model: VCRServer.GuideItemContract,
-        findInGuide: (model: VCRServer.GuideItemContract) => void,
+        model: GuideItemContract,
+        findInGuide: (model: GuideItemContract) => void,
         private _toggleDetails: (entry: GuideEntry) => void,
         createNew: (entry: GuideEntry) => void,
-        public jobSelector: JMSLib.App.IValueFromList<string>
+        public jobSelector: IValueFromList<string>
     ) {
         super(model, findInGuide)
 
         // Befehl zum Neuanlegen einer Aufzeichnung einrichten.
-        this.createNew = new JMSLib.App.Command(
+        this.createNew = new Command(
             () => createNew(this),
             'Aufzeichnung anlegen',
             () => this.end > new Date()
@@ -143,7 +148,7 @@ export class GuideEntry extends GuideInfo implements IGuideEntry {
     }
 
     // Befehl zum Anlegen einer neuen Aufzeichnung.
-    readonly createNew: JMSLib.App.ICommand
+    readonly createNew: ICommand
 
     // Gesetzt, wenn die Detailansicht eingeblendet werden soll.
     showDetails = false

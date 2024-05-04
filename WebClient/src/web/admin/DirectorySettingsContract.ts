@@ -1,4 +1,7 @@
-﻿// Repräsentiert die Klasse DirectorySettings
+﻿import { SettingsContract } from '../SettingsContract'
+import { doUrlCall } from '../vcrserver'
+
+// Repräsentiert die Klasse DirectorySettings
 export interface DirectorySettingsContract extends SettingsContract {
     // Alle Aufzeichnungsverzeichnisse
     directories: string[]

@@ -1,4 +1,6 @@
-﻿// Repräsentiert die Klasse ProfileJobInfo
+﻿import { doUrlCall } from './vcrserver'
+
+// Repräsentiert die Klasse ProfileJobInfo
 export interface ProfileJobInfoContract {
     // Der Name des Auftrags
     name: string

@@ -1,4 +1,8 @@
-﻿// Beschreibt die Auswahl einer Liste von Werten aus einer Liste von erlaubten Werten.
+﻿import { Command } from '../command/command'
+import { IProperty, Property } from './edit'
+import { IToggableUiValue, IUiValue } from './list'
+
+// Beschreibt die Auswahl einer Liste von Werten aus einer Liste von erlaubten Werten.
 export interface IMultiValueFromList<TValueType> extends IProperty<TValueType[]> {
     readonly allowedValues: IToggableUiValue<TValueType>[]
 }

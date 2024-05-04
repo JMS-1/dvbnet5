@@ -1,7 +1,16 @@
 ﻿import * as React from 'react'
+import { Component } from '../../lib.react/reactUi'
+import { IScheduleEditor } from '../../app/pages/edit/schedule'
+import { Field } from '../../common/field'
+import { EditBoolean } from '../../lib.react/edit/boolean/flag'
+import { EditDay } from '../../lib.react/edit/datetime/day'
+import { EditText } from '../../lib.react/edit/text/text'
+import { EditChannel } from './channel'
+import { EditChannelFlags } from './channelFlags'
+import { EditDuration } from './duration'
 
 // React.Js Komponente zur Pflege der Daten einer Aufzeichnung.
-export class ScheduleData extends JMSLib.ReactUi.Component<App.Edit.IScheduleEditor> {
+export class ScheduleData extends Component<IScheduleEditor> {
     // Oberflächenelement anlegen.
     render(): JSX.Element {
         return (
@@ -9,11 +18,7 @@ export class ScheduleData extends JMSLib.ReactUi.Component<App.Edit.IScheduleEdi
                 <legend>Daten zur Aufzeichnung</legend>
 
                 <Field page={this.props.uvm.page} label={`${this.props.uvm.name.text}:`} help='jobsandschedules'>
-                    <JMSLib.ReactUi.EditText
-                        uvm={this.props.uvm.name}
-                        chars={100}
-                        hint='(Optionaler Name der Aufzeichnung)'
-                    />
+                    <EditText uvm={this.props.uvm.name} chars={100} hint='(Optionaler Name der Aufzeichnung)' />
                 </Field>
 
                 <Field page={this.props.uvm.page} label={`${this.props.uvm.source.text}:`} help='sourcechooser'>
@@ -25,11 +30,11 @@ export class ScheduleData extends JMSLib.ReactUi.Component<App.Edit.IScheduleEdi
                 </Field>
 
                 <Field page={this.props.uvm.page} label={`${this.props.uvm.firstStart.text}:`}>
-                    <JMSLib.ReactUi.EditDay uvm={this.props.uvm.firstStart} />
+                    <EditDay uvm={this.props.uvm.firstStart} />
                     {this.props.uvm.repeat.value !== 0 && (
                         <span>
                             <span>{this.props.uvm.lastDay.text}</span>
-                            <JMSLib.ReactUi.EditDay uvm={this.props.uvm.lastDay} />
+                            <EditDay uvm={this.props.uvm.lastDay} />
                         </span>
                     )}
                 </Field>
@@ -39,13 +44,13 @@ export class ScheduleData extends JMSLib.ReactUi.Component<App.Edit.IScheduleEdi
                 </Field>
 
                 <Field page={this.props.uvm.page} label={`${this.props.uvm.repeat.text}:`} help='repeatingschedules'>
-                    <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.onMonday} />
-                    <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.onTuesday} />
-                    <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.onWednesday} />
-                    <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.onThursday} />
-                    <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.onFriday} />
-                    <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.onSaturday} />
-                    <JMSLib.ReactUi.EditBoolean uvm={this.props.uvm.onSunday} />
+                    <EditBoolean uvm={this.props.uvm.onMonday} />
+                    <EditBoolean uvm={this.props.uvm.onTuesday} />
+                    <EditBoolean uvm={this.props.uvm.onWednesday} />
+                    <EditBoolean uvm={this.props.uvm.onThursday} />
+                    <EditBoolean uvm={this.props.uvm.onFriday} />
+                    <EditBoolean uvm={this.props.uvm.onSaturday} />
+                    <EditBoolean uvm={this.props.uvm.onSunday} />
                 </Field>
             </fieldset>
         )

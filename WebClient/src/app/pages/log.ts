@@ -1,22 +1,31 @@
-﻿// Schnittstelle zur Anzeige des Protokolls.
+﻿import { DateTimeUtils } from '../../lib/dateTimeUtils'
+import { IToggableFlag, Flag } from '../../lib/edit/boolean/flag'
+import { IValueFromList, SelectSingleFromList, IUiValue, uiValue } from '../../lib/edit/list'
+import { ProfileCache } from '../../web/ProfileCache'
+import { getProtocolEntries } from '../../web/ProtocolEntryContract'
+import { Application } from '../app'
+import { ILogEntry, LogEntry } from './log/entry'
+import { IPage, Page } from './page'
+
+// Schnittstelle zur Anzeige des Protokolls.
 export interface ILogPage extends IPage {
     // Alle benutzen Geräte.
-    readonly profiles: JMSLib.App.IValueFromList<string>
+    readonly profiles: IValueFromList<string>
 
     // Auswahl des Startzeitpunkts zur Anzeige.
-    readonly startDay: JMSLib.App.IValueFromList<string>
+    readonly startDay: IValueFromList<string>
 
     // Anzahl zur Anzeige von Aktualisierungen der Programmzeitschrift.
-    readonly showGuide: JMSLib.App.IToggableFlag
+    readonly showGuide: IToggableFlag
 
     // Auswahl zur Anzige der Aktualisierungen der Quellen.
-    readonly showScan: JMSLib.App.IToggableFlag
+    readonly showScan: IToggableFlag
 
     // Auswahl zur Anzeige von LIVE Verwendung.
-    readonly showLive: JMSLib.App.IToggableFlag
+    readonly showLive: IToggableFlag
 
     // Alle anzuzeigenden Protokolleinträge.
-    readonly entries: Log.ILogEntry[]
+    readonly entries: ILogEntry[]
 }
 
 // Präsentationmodell zur anzeige der Protokolleinträge.
@@ -25,30 +34,24 @@ export class LogPage extends Page implements ILogPage {
     private _disableLoad = true
 
     // Alle benutzen Geräte.
-    readonly profiles = new JMSLib.App.SelectSingleFromList<string>(
-        {},
-        'value',
-        'Protokollbereich',
-        () => this.load(),
-        []
-    )
+    readonly profiles = new SelectSingleFromList<string>({}, 'value', 'Protokollbereich', () => this.load(), [])
 
     // Anzahl zur Anzeige von Aktualisierungen der Programmzeitschrift.
-    readonly showGuide = new JMSLib.App.Flag({}, 'value', 'Programmzeitschrift', () => this.refreshUi())
+    readonly showGuide = new Flag({}, 'value', 'Programmzeitschrift', () => this.refreshUi())
 
     // Auswahl zur Anzige der Aktualisierungen der Quellen.
-    readonly showScan = new JMSLib.App.Flag({}, 'value', 'Sendersuchlauf', () => this.refreshUi())
+    readonly showScan = new Flag({}, 'value', 'Sendersuchlauf', () => this.refreshUi())
 
     // Auswahl zur Anzeige von LIVE Verwendung.
-    readonly showLive = new JMSLib.App.Flag({}, 'value', 'Zapping', () => this.refreshUi())
+    readonly showLive = new Flag({}, 'value', 'Zapping', () => this.refreshUi())
 
     // Auswahl des Startzeitpunkts zur Anzeige.
-    readonly startDay: JMSLib.App.SelectSingleFromList<string>
+    readonly startDay: SelectSingleFromList<string>
 
     // Alle Protokolleinträge.
-    private _entries: Log.LogEntry[] = []
+    private _entries: LogEntry[] = []
 
-    get entries(): Log.ILogEntry[] {
+    get entries(): ILogEntry[] {
         // Aktuellen Filter berücksichtigen.
         return this._entries.filter((e) => {
             if (e.isGuide) return this.showGuide.value
@@ -66,16 +69,16 @@ export class LogPage extends Page implements ILogPage {
         // Die Liste der Starttage erstellen wir nur ein einziges Mal.
         var now = new Date()
         var start = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()))
-        var days: JMSLib.App.IUiValue<string>[] = []
+        var days: IUiValue<string>[] = []
 
         for (var i = 0; i < 10; i++) {
             // Zur Auswahl durch den Anwender.
             days.push(
-                JMSLib.App.uiValue(
+                uiValue(
                     start.toISOString(),
-                    JMSLib.App.DateTimeUtils.formatNumber(start.getUTCDate()) +
+                    DateTimeUtils.formatNumber(start.getUTCDate()) +
                         '.' +
-                        JMSLib.App.DateTimeUtils.formatNumber(1 + start.getUTCMonth())
+                        DateTimeUtils.formatNumber(1 + start.getUTCMonth())
                 )
             )
 
@@ -84,7 +87,7 @@ export class LogPage extends Page implements ILogPage {
         }
 
         // Auswahlliste aufsetzen.
-        this.startDay = new JMSLib.App.SelectSingleFromList({}, '_value', undefined, () => this.load(), days)
+        this.startDay = new SelectSingleFromList({}, '_value', undefined, () => this.load(), days)
     }
 
     // Initialisiert das Präsentationsmodell.
@@ -96,9 +99,9 @@ export class LogPage extends Page implements ILogPage {
         this.startDay.value = this.startDay.allowedValues[0].value
 
         // Liste der Geräte anfordern.
-        VCRServer.ProfileCache.getAllProfiles().then((profiles) => {
+        ProfileCache.getAllProfiles().then((profiles) => {
             // Auswahlliste vorbereiten.
-            this.profiles.allowedValues = profiles.map((p) => JMSLib.App.uiValue(p.name))
+            this.profiles.allowedValues = profiles.map((p) => uiValue(p.name))
             this.profiles.value = profiles[0] && profiles[0].name
 
             // Zurück in den Normalbetrieb.
@@ -120,14 +123,14 @@ export class LogPage extends Page implements ILogPage {
         var startDay = new Date(endDay.getTime() - 7 * 86400000)
 
         // Protokolle vom VCR.NET Recording Service anfordern.
-        VCRServer.getProtocolEntries(profile!, startDay, endDay).then((entries) => {
+        getProtocolEntries(profile!, startDay, endDay).then((entries) => {
             // Die Anzeige erfolgt immer mit den neuesten als erstes.
             entries?.reverse()
 
             // Präsentationsmodell erstellen.
             var toggleDetail = this.toggleDetail.bind(this)
 
-            this._entries = entries?.map((e) => new Log.LogEntry(e, toggleDetail)) || []
+            this._entries = entries?.map((e) => new LogEntry(e, toggleDetail)) || []
 
             // Die Anwendung darf nun verwendet werden.
             this.application.isBusy = false
@@ -138,7 +141,7 @@ export class LogPage extends Page implements ILogPage {
     }
 
     // Detailansicht eines einzelnen Protkolleintrags umschalten.
-    private toggleDetail(entry: Log.LogEntry): void {
+    private toggleDetail(entry: LogEntry): void {
         // Beim Anschalten alle anderen Detailansichten abschalten.
         if (entry.showDetail.value) this._entries.forEach((e) => (e.showDetail.value = e === entry))
 

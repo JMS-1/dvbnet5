@@ -1,4 +1,6 @@
-﻿// Repräsentiert die Klasse GuideInfo
+﻿import { doUrlCall } from './vcrserver'
+
+// Repräsentiert die Klasse GuideInfo
 export interface GuideInfoContract {
     // Alle Quellen eines Gerätes, für das Einträge in der Programmzeitschrift zur Verfügung stehen
     stations: string[]

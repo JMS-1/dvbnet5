@@ -1,7 +1,13 @@
-﻿export class RepeatingSchedules extends HelpComponent {
+﻿import * as React from 'react'
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { HelpComponent } from './helpComponent'
+import { ScreenShot } from './screenShot'
+
+export class RepeatingSchedules extends HelpComponent {
     readonly title = 'Serienaufzeichnungen und Ausnahmeregelungen'
 
-    render(page: App.IPage): JSX.Element {
+    render(page: IPage): JSX.Element {
         return (
             <div>
                 Für eine Aufzeichnung kann angegeben werden, ob diese periodisch wiederholt werden soll. Der VCR.NET
@@ -21,10 +27,10 @@
                 Zeitpunkt stattfinden. Kleinere Abweichungen lassen sich durch vergrößerte Vor- und Nachlaufzeiten
                 kompensieren. Manchmal kann es aber durch Sondersendungen vor der gewünschten Ausstrahlung einmalig zu
                 deutlichen Verschiebungen kommen. Der VCR.NET Recording Service bietet hier im Aufzeichnungsplan
-                <JMSLib.ReactUi.InternalLink view={page.application.planPage.route} pict='plan' /> die Möglichkeit,
-                Ausnahmeregelungen für die einzelnen Aufzeichnungstage zu definieren. Dabei kann der Startzeitpunkt
-                verschoben oder die Laufzeit und damit das Ende der Aufzeichnung pro geplanter Aufzeichnung individuell
-                verändert werden - auf Wunsch kann auch eine Aufzeichnung ganz entfallen.
+                <InternalLink view={page.application.planPage.route} pict='plan' /> die Möglichkeit, Ausnahmeregelungen
+                für die einzelnen Aufzeichnungstage zu definieren. Dabei kann der Startzeitpunkt verschoben oder die
+                Laufzeit und damit das Ende der Aufzeichnung pro geplanter Aufzeichnung individuell verändert werden -
+                auf Wunsch kann auch eine Aufzeichnung ganz entfallen.
                 <ScreenShot name='faq/exceptions' />
                 Wurde eine Aufzeichnung auf diesem Weg aus dem Aufzeichnungsplan entfernt, so kann sie nur über die
                 direkte Pflege der Aufzeichnung wieder aktiviert werden. Dazu ist die entsprechende Markierung in der

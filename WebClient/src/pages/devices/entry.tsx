@@ -1,13 +1,18 @@
 ﻿import * as React from 'react'
+import { IDevicesPage } from '../../app/pages/devices'
+import { IDeviceInfo } from '../../app/pages/devices/entry'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { Pictogram } from '../../lib.react/command/pictogram'
+import { IComponent, ComponentEx } from '../../lib.react/reactUi'
 
 // Konfiguration zur Anzeige einer einzelnen Aktivität.
-interface IDevice extends JMSLib.ReactUi.IComponent<App.Devices.IDeviceInfo> {
+interface IDevice extends IComponent<IDeviceInfo> {
     // Der zugehörige Navigationsbereich.
-    page: App.IDevicesPage
+    page: IDevicesPage
 }
 
 // React.Js Komponente zur Anzeige einer Aktivität.
-export class Device extends JMSLib.ReactUi.ComponentEx<App.Devices.IDeviceInfo, IDevice> {
+export class Device extends ComponentEx<IDeviceInfo, IDevice> {
     // Erstellt die Oberflächenelemente.
     render(): JSX.Element {
         var showGuide = this.props.uvm.showGuide
@@ -18,11 +23,11 @@ export class Device extends JMSLib.ReactUi.ComponentEx<App.Devices.IDeviceInfo, 
                 <td>
                     {this.props.uvm.mode ? (
                         showControl.isReadonly ? (
-                            <JMSLib.ReactUi.Pictogram name={this.props.uvm.mode} />
+                            <Pictogram name={this.props.uvm.mode} />
                         ) : (
-                            <JMSLib.ReactUi.InternalLink view={() => (showControl.value = !showControl.value)}>
-                                <JMSLib.ReactUi.Pictogram name={this.props.uvm.mode} />
-                            </JMSLib.ReactUi.InternalLink>
+                            <InternalLink view={() => (showControl.value = !showControl.value)}>
+                                <Pictogram name={this.props.uvm.mode} />
+                            </InternalLink>
                         )
                     ) : (
                         <span>&nbsp;</span>
@@ -32,20 +37,18 @@ export class Device extends JMSLib.ReactUi.ComponentEx<App.Devices.IDeviceInfo, 
                     {showGuide.isReadonly ? (
                         <span>{this.props.uvm.displayStart}</span>
                     ) : (
-                        <JMSLib.ReactUi.InternalLink view={() => (showGuide.value = !showGuide.value)}>
+                        <InternalLink view={() => (showGuide.value = !showGuide.value)}>
                             {this.props.uvm.displayStart}
-                        </JMSLib.ReactUi.InternalLink>
+                        </InternalLink>
                     )}
                 </td>
                 <td>{this.props.uvm.displayEnd}</td>
                 <td>{this.props.uvm.source}</td>
                 <td>
                     {this.props.uvm.id ? (
-                        <JMSLib.ReactUi.InternalLink
-                            view={`${this.props.page.application.editPage.route};id=${this.props.uvm.id}`}
-                        >
+                        <InternalLink view={`${this.props.page.application.editPage.route};id=${this.props.uvm.id}`}>
                             {this.props.uvm.name}
-                        </JMSLib.ReactUi.InternalLink>
+                        </InternalLink>
                     ) : (
                         <span>{this.props.uvm.name}</span>
                     )}

@@ -1,4 +1,6 @@
-﻿// Repräsentiert die Klasse UserProfile
+﻿import { doUrlCall } from './vcrserver'
+
+// Repräsentiert die Klasse UserProfile
 export interface UserProfileContract {
     // Die Anzahl der Einträge im Aufzeichnungsplan
     planDays: number

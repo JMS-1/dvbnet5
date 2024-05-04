@@ -1,13 +1,15 @@
 ﻿import * as React from 'react'
+import { IDurationEditor } from '../../app/pages/edit/duration'
+import { EditTime } from '../../lib.react/edit/datetime/time'
+import { Component } from '../../lib.react/reactUi'
 
 // React.Js Komponente zur Auswahl der Dauer eine Aufzeichnung über die EIngabe von Start- und Endzeit.
-export class EditDuration extends JMSLib.ReactUi.Component<App.Edit.IDurationEditor> {
+export class EditDuration extends Component<IDurationEditor> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {
         return (
             <div className='vcrnet-editduration'>
-                <JMSLib.ReactUi.EditTime uvm={this.props.uvm.startTime} /> bis{' '}
-                <JMSLib.ReactUi.EditTime uvm={this.props.uvm.endTime} /> Uhr
+                <EditTime uvm={this.props.uvm.startTime} /> bis <EditTime uvm={this.props.uvm.endTime} /> Uhr
             </div>
         )
     }

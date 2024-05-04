@@ -1,4 +1,6 @@
-﻿// Beschreibt eine Eigenschaft mit einer Zahl.
+﻿import { IProperty, Property } from '../edit'
+
+// Beschreibt eine Eigenschaft mit einer Zahl.
 export interface INumber extends IProperty<number> {
     // Falls die Eingabe über einen Text erfolgt wird diese Eigenschaft zur Pflege verwendet.
     rawValue: string

@@ -1,4 +1,6 @@
-﻿// Beschreibt eine Eigenschaft der Art Zeichenkette mit Prüfergebnissen.
+﻿import { IProperty, Property } from '../edit'
+
+// Beschreibt eine Eigenschaft der Art Zeichenkette mit Prüfergebnissen.
 export interface IString extends IProperty<string> {}
 
 // Verwaltet eine Eigenschaft der Art Zeichenkette.

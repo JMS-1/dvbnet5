@@ -1,13 +1,15 @@
 ﻿import * as React from 'react'
+import { INumber } from '../../../lib/edit/number/number'
+import { IComponent, ComponentExWithSite } from '../../reactUi'
 
 // Konfiguration der Anzeige einer Zahl.
-interface IEditNumber extends IComponent<App.INumber> {
+interface IEditNumber extends IComponent<INumber> {
     // Die Anzahl der Zeichen im Texteingabefeld für die Zahl.
     chars: number
 }
 
 // React.Js Komponente zur Eingabe einer Zahl über ein Textfeld.
-export class EditNumber extends ComponentExWithSite<App.INumber, IEditNumber> {
+export class EditNumber extends ComponentExWithSite<INumber, IEditNumber> {
     // Oberflächenelemente erzeugen.
     render(): JSX.Element {
         return (

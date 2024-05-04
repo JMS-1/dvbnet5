@@ -1,6 +1,10 @@
-﻿// Hilfskomponente zum Erstellen von Ract.JS Konfigurationskomponenten.
-export abstract class AdminSection<TSectionType extends App.Admin.ISection> extends JMSLib.ReactUi
-    .ComponentWithSite<TSectionType> {
+﻿import * as React from 'react'
+import { ISection } from '../../app/pages/admin/section'
+import { ButtonCommand } from '../../lib.react/command/button'
+import { ComponentWithSite } from '../../lib.react/reactUi'
+
+// Hilfskomponente zum Erstellen von Ract.JS Konfigurationskomponenten.
+export abstract class AdminSection<TSectionType extends ISection> extends ComponentWithSite<TSectionType> {
     // Oberflächenelemente erstellen.
     render(): JSX.Element {
         return (
@@ -8,7 +12,7 @@ export abstract class AdminSection<TSectionType extends App.Admin.ISection> exte
                 <h2>{this.title}</h2>
                 {this.renderSection()}
                 <div>
-                    <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.update} />
+                    <ButtonCommand uvm={this.props.uvm.update} />
                 </div>
             </div>
         )

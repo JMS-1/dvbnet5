@@ -1,6 +1,10 @@
 ﻿// Muss vom Client mit dem relativen Pfad zu den HTTP REST Web Diensten belegt werden.
 export var webCallRoot: string
 
+export function setWebCallRoot(root: string) {
+    webCallRoot = root
+}
+
 // Ein Zähler für HTTP Aufrufe - veraltete Antworten werden in der aktuellen Implementierung grundsätzlich ignoriert.
 var webCallId = 0
 

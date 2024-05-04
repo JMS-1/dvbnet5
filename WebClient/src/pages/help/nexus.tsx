@@ -1,37 +1,37 @@
-﻿export class Nexus extends HelpComponent {
+﻿import * as React from 'react'
+import { IPage } from '../../app/pages/page'
+import { ExternalLink } from '../../lib.react/command/externalLink'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { HelpComponent } from './helpComponent'
+
+export class Nexus extends HelpComponent {
     readonly title = 'TechnoTrend 2300 Premium Line / Hauppauge Nexus'
 
-    render(page: App.IPage): JSX.Element {
+    render(page: IPage): JSX.Element {
         return (
             <div>
                 Der VCR.NET Recording Service würde im Jahre 2003 ursprünglich für die{' '}
-                <JMSLib.ReactUi.ExternalLink url='http://www.hauppauge.de/'>Hauppauge</JMSLib.ReactUi.ExternalLink>{' '}
-                Nexus-S entwickelt - diese Karte ist eigentlich eine{' '}
-                <JMSLib.ReactUi.ExternalLink url='http://www.technotrend.eu/'>TechnoTrend</JMSLib.ReactUi.ExternalLink>{' '}
-                S-2300 PremiumLine und wurde damals von Hauppauge unter einem eigenen Namen vertrieben. Die meisten DVB
-                Geräte verwenden damals wie heute mehr oder weniger einheitliche Treiber, die dem Microsoft BDA (
+                <ExternalLink url='http://www.hauppauge.de/'>Hauppauge</ExternalLink> Nexus-S entwickelt - diese Karte
+                ist eigentlich eine <ExternalLink url='http://www.technotrend.eu/'>TechnoTrend</ExternalLink> S-2300
+                PremiumLine und wurde damals von Hauppauge unter einem eigenen Namen vertrieben. Die meisten DVB Geräte
+                verwenden damals wie heute mehr oder weniger einheitliche Treiber, die dem Microsoft BDA (
                 <em>Broadcast Device Architecture</em>) Standard genügen. Dabei ist es im Allgemeinen (Ausnahmen
                 bestätigen die Regel) vorgesehen, dass die verarbeitende Software alle Daten so entgegen nehmen kann,
                 wie sie digital empfangen werden. Insbesondere werden nach Ansteuern einer Quellgruppe (Transponder,
                 Frequenz, ...) alle darauf angebotenen Quellen (Radio- und Fernsehsender){' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};parallelrecording`}>
-                    gleichzeitig
-                </JMSLib.ReactUi.InternalLink>{' '}
-                verfügbar. So ist es mit einem über BDA angesteuerten Gerät normalerweise problemlos möglich, zusätzlich
-                zum Empfang zum Beispiel von RTL auch noch RTL2, VOX und SuperRTL Sendungen zu verarbeiten.
+                <InternalLink view={`${page.route};parallelrecording`}>gleichzeitig</InternalLink> verfügbar. So ist es
+                mit einem über BDA angesteuerten Gerät normalerweise problemlos möglich, zusätzlich zum Empfang zum
+                Beispiel von RTL auch noch RTL2, VOX und SuperRTL Sendungen zu verarbeiten.
                 <br />
                 <br />
                 Es gibt mehrere Gründe, warum das bei der Nexus nicht so ist - auch gute Gründe, aber darauf kann hier
                 nicht eingegangen werden. Tatsache ist, dass über die proprietäre Softwareschnittelle der Nexus maximal
-                8{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};filecontents`}>
-                    Nutzdatenströme
-                </JMSLib.ReactUi.InternalLink>{' '}
-                gleichzeitig empfangen werden können. Ein Nutzdatenstrom bedeutet dabei den Empfang eines Bild- oder
-                Tonsignals, von Videotext oder DVB Untertiteln. Beschränkt man sich also nur auf das Bild und eine
-                Tonspur, so kann man maximal 4 Quellen gleichzeitig empfangen. Möchte man einen Sender wie ZDF
-                vollständig mit Bild, drei Stereotonspuren, einem Dolby Digital Signal, dem Videotext und DVB
-                Untertiteln aufzeichnen, so bleibt noch nicht einmal Kapazität für einen weiteren Fernsehsender.
+                8 <InternalLink view={`${page.route};filecontents`}>Nutzdatenströme</InternalLink> gleichzeitig
+                empfangen werden können. Ein Nutzdatenstrom bedeutet dabei den Empfang eines Bild- oder Tonsignals, von
+                Videotext oder DVB Untertiteln. Beschränkt man sich also nur auf das Bild und eine Tonspur, so kann man
+                maximal 4 Quellen gleichzeitig empfangen. Möchte man einen Sender wie ZDF vollständig mit Bild, drei
+                Stereotonspuren, einem Dolby Digital Signal, dem Videotext und DVB Untertiteln aufzeichnen, so bleibt
+                noch nicht einmal Kapazität für einen weiteren Fernsehsender.
                 <br />
                 <br />
                 Dazu kommt, dass die Firmware auf der Nexus nicht mehr mit den aktuellen Herausforderungen des digitalen
@@ -55,9 +55,9 @@
                 intelligente Korrekturen vorzunehmen, um die Wünsche des Anwenders so gut wie möglich zu erfüllen. Heute
                 ist die Nexus allerdings eher ein Exot und die Sonderbehandlungen wurden weitgehend aus dem VCR.NET
                 Recording Service entfernt. Es ist natürlich immer noch möglich,{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};parallelrecording`}>
+                <InternalLink view={`${page.route};parallelrecording`}>
                     mehrere Sendungen gleichzeitig
-                </JMSLib.ReactUi.InternalLink>{' '}
+                </InternalLink>{' '}
                 aufzuzeichnen. Allerdings liegt es nun weitgehend in der Hand des Anwenders durch intelligente
                 Programmierung dazu beizutragen, dass Aufzeichnungen durch die existierenden Beschränkungen nicht
                 gänzlich verloren gehen oder durch die Unzulänglichkeiten der Firmware nicht unbrauchbar werden.

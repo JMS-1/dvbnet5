@@ -1,14 +1,19 @@
-﻿export class ParallelRecording extends HelpComponent {
+﻿import * as React from 'react'
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { HelpComponent } from './helpComponent'
+
+export class ParallelRecording extends HelpComponent {
     readonly title = 'Planung von Aufzeichnungen'
 
-    render(page: App.IPage): JSX.Element {
+    render(page: IPage): JSX.Element {
         return (
             <div>
                 Selbstverständlich ist es keine Problem unabhängig Aufzeichnungen auf mehreren DVB Karten zu
                 programmieren, wenn diese dem VCR.NET Recording Service zur Nutzung zur Verfügung
-                <JMSLib.ReactUi.InternalLink view={`${page.application.adminPage.route};devices`} pict='admin' />{' '}
-                gestellt wurden. Hier soll allerdings beschrieben werden, unter welchen Bedingungen es möglich ist, mit
-                einer DVB Hardware zum gleichen Zeitpunkt mehrere Quellen aufzuzeichnen.
+                <InternalLink view={`${page.application.adminPage.route};devices`} pict='admin' /> gestellt wurden. Hier
+                soll allerdings beschrieben werden, unter welchen Bedingungen es möglich ist, mit einer DVB Hardware zum
+                gleichen Zeitpunkt mehrere Quellen aufzuzeichnen.
                 <br />
                 <br />
                 Zuerst einmal ist festzustellen, dass bei dem digitalen Radio- und Fernsehempfang die Quellen (Radio-
@@ -35,12 +40,10 @@
                 aufgezeichnet werden. Sollte nun eine weitere Aufzeichnung einer anderen Quellgruppe hinzugefügt werden,
                 so hat der VCR.NET Recording Service verschiedene Strategien, die programmierten Wünsche so gut wie
                 möglich zu erfüllen.{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};customschedule`}>
-                    Die genauen Regeln
-                </JMSLib.ReactUi.InternalLink>{' '}
-                sind etwas komplexer und berücksichtigen neben der programmierten Anfangszeit der Aufzeichnungen unter
-                anderem auch die mögliche Anzahl vollständig durchgeführter Aufzeichnungen und den Gesamtverlust
-                verspätet beginnender Aufzeichnungen.
+                <InternalLink view={`${page.route};customschedule`}>Die genauen Regeln</InternalLink> sind etwas
+                komplexer und berücksichtigen neben der programmierten Anfangszeit der Aufzeichnungen unter anderem auch
+                die mögliche Anzahl vollständig durchgeführter Aufzeichnungen und den Gesamtverlust verspätet
+                beginnender Aufzeichnungen.
                 <br />
                 <br />
                 Zusätzlich zu den drei Aufzeichnungen oben wird nun eine Aufzeichnung auf SAT.1 am gleichen Tag
@@ -59,8 +62,8 @@
                 <br />
                 <br />
                 Das Ergebnis einer Planung wird im Aufzeichnungsplan
-                <JMSLib.ReactUi.InternalLink view={page.application.planPage.route} pict='plan' /> durch entsprechende
-                farbige Symbole dargestellt.
+                <InternalLink view={page.application.planPage.route} pict='plan' /> durch entsprechende farbige Symbole
+                dargestellt.
             </div>
         )
     }

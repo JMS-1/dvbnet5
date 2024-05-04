@@ -1,7 +1,9 @@
 ﻿import * as React from 'react'
+import { ITimeBar } from '../lib/timebar'
+import { Component } from './reactUi'
 
 // Eine React.Js Komponente zur Anzeige einer Zeitschiene.
-export class TimeBar extends Component<App.ITimeBar> {
+export class TimeBar extends Component<ITimeBar> {
     // Erstellt die Oberflächenelemente zur Anzeige der Zeitschiene.
     render(): JSX.Element {
         return (

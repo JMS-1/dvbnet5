@@ -1,22 +1,29 @@
-﻿// Schnittstelle zur Anzeige der Startseite.
+﻿import { ICommand, Command } from '../../lib/command/command'
+import { IFlag, Flag } from '../../lib/edit/boolean/flag'
+import { triggerTask } from '../../web/PlanCurrentContract'
+import { doUrlCall } from '../../web/vcrserver'
+import { Application } from '../app'
+import { IPage, Page } from './page'
+
+// Schnittstelle zur Anzeige der Startseite.
 export interface IHomePage extends IPage {
     // Befehl zum Starten der Aktualisierung der Programmzeichschrift.
-    readonly startGuide: JMSLib.App.ICommand
+    readonly startGuide: ICommand
 
     // Umschalter zur Anzeige des Bereichs zum Starten der Programmzeitschrift.
-    readonly showStartGuide: JMSLib.App.IFlag
+    readonly showStartGuide: IFlag
 
     // Befehl zum Starten eines Sendersuchlaufs.
-    readonly startScan: JMSLib.App.ICommand
+    readonly startScan: ICommand
 
     // Umschalter zur Anzeige des Bereichs zum Starten eines Sendersuchlaufs.
-    readonly showStartScan: JMSLib.App.IFlag
+    readonly showStartScan: IFlag
 
     // Gesetzt solange irgendeine Aufzeichnung auf irgendeinem gerät aktiv ist.
     readonly isRecording: boolean
 
     // Umschalter zur prüfung der Online verfügbaren Version des VCR.NET Recording Service.
-    readonly checkVersion: JMSLib.App.IFlag
+    readonly checkVersion: IFlag
 
     // Die aktuell installierte Version.
     readonly currentVersion: string
@@ -37,14 +44,14 @@ export class HomePage extends Page implements IHomePage {
     private static _versionExtract = />VCRNET\.MSI<\/a>[^<]*\s([^\s]+)\s*</i
 
     // Befehl zum Starten der Aktualisierung der Programmzeichschrift.
-    readonly startGuide = new JMSLib.App.Command(
+    readonly startGuide = new Command(
         () => this.startTask(`guideUpdate`),
         'Aktualisierung anfordern',
         () => this.application.version.hasGuides
     )
 
     // Umschalter zur Anzeige des bereichs zum Starten der Programmzeitschrift.
-    readonly showStartGuide = new JMSLib.App.Flag(
+    readonly showStartGuide = new Flag(
         {},
         'value',
         'die Programmzeitschrift sobald wie möglich aktualisieren',
@@ -53,14 +60,14 @@ export class HomePage extends Page implements IHomePage {
     )
 
     // Befehl zum Starten eines Sendersuchlaufs.
-    readonly startScan = new JMSLib.App.Command(
+    readonly startScan = new Command(
         () => this.startTask(`sourceScan`),
         'Aktualisierung anfordern',
         () => this.application.version.canScan
     )
 
     // Umschalter zur Anzeige des Bereichs zum Starten eines Sendersuchlaufs.
-    readonly showStartScan = new JMSLib.App.Flag(
+    readonly showStartScan = new Flag(
         {},
         'value',
         'einen Sendersuchlauf sobald wie möglich durchführen',
@@ -69,7 +76,7 @@ export class HomePage extends Page implements IHomePage {
     )
 
     // Umschalter zur prüfung der Online verfügbaren Version des VCR.NET Recording Service.
-    readonly checkVersion = new JMSLib.App.Flag({}, 'value', 'neue Version', () => this.toggleVersionCheck())
+    readonly checkVersion = new Flag({}, 'value', 'neue Version', () => this.toggleVersionCheck())
 
     // Erstellt die Anwendungslogik.
     constructor(application: Application) {
@@ -108,7 +115,7 @@ export class HomePage extends Page implements IHomePage {
             this._onlineVersion = undefined
 
             // Downloadverzeichnis abrufen.
-            VCRServer.doUrlCall(`http://downloads.psimarron.net`).then((html: string) => {
+            doUrlCall(`http://downloads.psimarron.net`).then((html: string) => {
                 // Versionsnummer extrahieren.
                 var match = HomePage._versionExtract.exec(html)
                 if (match == null) return
@@ -158,6 +165,6 @@ export class HomePage extends Page implements IHomePage {
 
     // Aktiviert eine Sonderaufgabe und wechselt im Erfolgsfall nach Bestätigung durch den VCR.NET Recording Service auf die Geräteübersicht.
     private startTask(task: string): Promise<void> {
-        return VCRServer.triggerTask(task).then(() => this.application.gotoPage(this.application.devicesPage.route))
+        return triggerTask(task).then(() => this.application.gotoPage(this.application.devicesPage.route))
     }
 }

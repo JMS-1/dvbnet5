@@ -1,4 +1,6 @@
-﻿// Verwaltet die Geräteprofile
+﻿import { ProfileInfoContract, getProfileInfos } from './ProfileInfoContract'
+
+// Verwaltet die Geräteprofile
 export class ProfileCache {
     // Die zwischengespeicherten Geräte
     private static promise: Promise<ProfileInfoContract[]>

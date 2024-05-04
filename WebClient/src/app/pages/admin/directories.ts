@@ -1,28 +1,42 @@
-﻿// Schnittstelle zur Pflege der erlaubten Aufzeichnungsverzeichnisse.
+﻿import { ICommand, Command } from '../../../lib/command/command'
+import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
+import { String } from '../../../lib/edit/text/text'
+import { IMultiValueFromList, SelectMultipleFromList } from '../../../lib/edit/multiList'
+import { IString } from '../../../lib/edit/text/text'
+import { ISection, Section } from './section'
+import {
+    getDirectorySettings,
+    browseDirectories,
+    DirectorySettingsContract,
+    setDirectorySettings,
+    validateDirectory,
+} from '../../../web/admin/DirectorySettingsContract'
+
+// Schnittstelle zur Pflege der erlaubten Aufzeichnungsverzeichnisse.
 export interface IAdminDirectoriesPage extends ISection {
     // Die aktuelle Liste der Aufzeichnungsverzeichnisse.
-    readonly directories: JMSLib.App.IMultiValueFromList<string>
+    readonly directories: IMultiValueFromList<string>
 
     // Eingabe eines Netzwerklaufwerks.
-    readonly share: JMSLib.App.IString
+    readonly share: IString
 
     // Meldet, ob die verzeichnisauswahl angezeigt werden soll.
     readonly showBrowse: boolean
 
     // Die aktuelle Verzeichnisauswahl.
-    readonly browse: JMSLib.App.IValueFromList<string>
+    readonly browse: IValueFromList<string>
 
     // Befehl um in der Verzeichnisauswahl zum übergeordneten Verzeichnis zu wechseln.
-    readonly parent: JMSLib.App.ICommand
+    readonly parent: ICommand
 
     // Befehl zur Eintragung des netzwerklaufwerks (nach Prüfung) oder des ausgewählten Verzeichnisses in die Verzeichnisliste.
-    readonly add: JMSLib.App.ICommand
+    readonly add: ICommand
 
     // Befehl zum Entfernen der ausgewählten Verzeichnisse aus der Verzeichnisliste.
-    readonly remove: JMSLib.App.ICommand
+    readonly remove: ICommand
 
     // Das aktuelle Muster für die Namen von Aufzeichnungsdateien.
-    readonly pattern: JMSLib.App.IString
+    readonly pattern: IString
 }
 
 // Präsentationsmodell zur Pflege der Konfiguration der Aufzeichnungsverzeichnisse.
@@ -31,7 +45,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     static readonly route = `directories`
 
     // Die aktuelle Liste der Aufzeichnungsverzeichnisse.
-    readonly directories = new JMSLib.App.SelectMultipleFromList<string>(
+    readonly directories = new SelectMultipleFromList<string>(
         {},
         'value',
         undefined,
@@ -39,12 +53,12 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     )
 
     // Das aktuelle Muster für die Namen von Aufzeichnungsdateien.
-    readonly pattern = new JMSLib.App.String({}, 'pattern', 'Muster für Dateinamen', () =>
+    readonly pattern = new String({}, 'pattern', 'Muster für Dateinamen', () =>
         this.update.refreshUi()
     ).addRequiredValidator()
 
     // Befehl zum Entfernen der ausgewählten Verzeichnisse aus der Verzeichnisliste.
-    readonly remove: JMSLib.App.Command<unknown> = new JMSLib.App.Command(
+    readonly remove: Command<unknown> = new Command(
         () => this.removeDirectories(),
         'Verzeichnisse entfernen',
         () => (this.directories.value?.length ?? 0) > 0
@@ -54,7 +68,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     private _shareValidation?: string
 
     // Eingabe eines Netzwerklaufwerks.
-    readonly share = new JMSLib.App.String({}, 'value', 'Netzwerk-Share', () => this.refreshUi()).addValidator(
+    readonly share = new String({}, 'value', 'Netzwerk-Share', () => this.refreshUi()).addValidator(
         (v) => this._shareValidation || ``
     )
 
@@ -64,19 +78,17 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     }
 
     // Die aktuelle Verzeichnisauswahl.
-    readonly browse = new JMSLib.App.SelectSingleFromList<string>({}, 'value', 'Server-Verzeichnis', () =>
-        this.doBrowse()
-    )
+    readonly browse = new SelectSingleFromList<string>({}, 'value', 'Server-Verzeichnis', () => this.doBrowse())
 
     // Befehl um in der Verzeichnisauswahl zum übergeordneten Verzeichnis zu wechseln.
-    readonly parent = new JMSLib.App.Command(
+    readonly parent = new Command(
         () => this.doBrowseUp(),
         'Übergeordnetes Verzeichnis',
         () => !!this.browse.value && this.showBrowse
     )
 
     // Befehl zum Entfernen der ausgewählten Verzeichnisse aus der Verzeichnisliste.
-    readonly add = new JMSLib.App.Command(
+    readonly add = new Command(
         () => this.onAdd(),
         'Verzeichnis hinzufügen',
         () => !!this.browse.value || !this.showBrowse
@@ -95,15 +107,15 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
         this.share.value = null
 
         // Konfiguration anfordern.
-        VCRServer.getDirectorySettings().then((settings) => {
+        getDirectorySettings().then((settings) => {
             // Liste der erlaubten Verzeichnisse laden.
-            this.directories.allowedValues = settings?.directories.map((d) => JMSLib.App.uiValue(d)) ?? []
+            this.directories.allowedValues = settings?.directories.map((d) => uiValue(d)) ?? []
 
             // Pflege des Dateinamenmusters vorbereiten.
             this.pattern.data = settings
 
             // Wurzelverzeichnisse laden.
-            VCRServer.browseDirectories(``, true).then((dirs) => this.setDirectories(dirs!))
+            browseDirectories(``, true).then((dirs) => this.setDirectories(dirs!))
         })
     }
 
@@ -113,7 +125,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
         this._disableBrowse = true
 
         // Auswahlliste vorbereiten und mit dem ersten Verzeichnis initialisieren.
-        this.browse.allowedValues = (directories || []).map((d) => JMSLib.App.uiValue(d, d || `<Bitte auswählen>`))
+        this.browse.allowedValues = (directories || []).map((d) => uiValue(d, d || `<Bitte auswählen>`))
         this.browse.value = this.browse.allowedValues[0].value
 
         // Alles wie wie üblich.
@@ -133,14 +145,14 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
 
         // Alle Unterverzeichnisse ermitteln.
         var folder = this.browse.value
-        if (folder) VCRServer.browseDirectories(folder, true).then((dirs) => this.setDirectories(dirs!))
+        if (folder) browseDirectories(folder, true).then((dirs) => this.setDirectories(dirs!))
     }
 
     // Das übergeordnete Verzeichnis soll angezeigt werden.
     private doBrowseUp(): void {
         // In eine höhere Ansicht wechseln.
         var folder = this.browse.allowedValues[0].value
-        if (folder) VCRServer.browseDirectories(folder, false).then((dirs) => this.setDirectories(dirs!))
+        if (folder) browseDirectories(folder, false).then((dirs) => this.setDirectories(dirs!))
     }
 
     // Ausgewählte Verzeichnisse aus der Liste entfernen.
@@ -156,12 +168,12 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     // Sendet die veränderte Konfiguration an den VCR.NET Recording Service.
     protected saveAsync(): Promise<boolean | undefined> {
         // Die aktuell erlaubten Verzeichnisse werden als Verzeichnisliste übernommen.
-        var settings: VCRServer.DirectorySettingsContract = this.pattern.data
+        var settings: DirectorySettingsContract = this.pattern.data
 
         settings.directories = this.directories.allowedValues.map((v) => v.value)
 
         // Neue Konfiguration senden.
-        return VCRServer.setDirectorySettings(settings)
+        return setDirectorySettings(settings)
     }
 
     // Ergänzt ein Verzeichnis.
@@ -187,7 +199,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
         this.share.refreshUi()
 
         // Verzeichnis durch den VCR.NET Recording Service prüfen lassen.
-        return VCRServer.validateDirectory(share).then((ok) => {
+        return validateDirectory(share).then((ok) => {
             // Gültige Verzeichnisse werden direkt in die Liste übernommen.
             if (ok) {
                 // Das brauchen wir jetzt nicht mehr.
@@ -215,6 +227,6 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
 
         // Nur bisher unbekannte Verzeichnisse eintragen.
         if (!this.directories.allowedValues.some((v) => v.value === folder))
-            this.directories.allowedValues = this.directories.allowedValues.concat([JMSLib.App.uiValue(folder)])
+            this.directories.allowedValues = this.directories.allowedValues.concat([uiValue(folder)])
     }
 }

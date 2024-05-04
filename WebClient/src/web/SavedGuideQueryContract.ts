@@ -1,4 +1,8 @@
-﻿export interface SavedGuideQueryContract {
+﻿import { GuideEncryption } from './GuideEncryption'
+import { GuideSource } from './GuideSource'
+import { doUrlCall } from './vcrserver'
+
+export interface SavedGuideQueryContract {
     // Das zu berücksichtigende Gerät
     device: string
 
@@ -12,10 +16,10 @@
     titleOnly: boolean
 
     // Die Art der zu berücksichtigenden Quelle
-    sourceType: VCRServer.GuideSource
+    sourceType: GuideSource
 
     // Die Art der Verschlüsselung
-    encryption: VCRServer.GuideEncryption
+    encryption: GuideEncryption
 }
 
 export function updateSearchQueries(queries: SavedGuideQueryContract[]): Promise<void> {

@@ -1,10 +1,16 @@
 ﻿import * as React from 'react'
+import { IAdminRulesPage, RulesSection } from '../../app/pages/admin/rules'
+import { HelpLink } from '../../common/helpLink'
+import { InlineHelp } from '../../common/inlineHelp'
+import { EditTextArea } from '../../lib.react/edit/text/textarea'
+import { IAdminSectionFactory } from '../admin'
+import { AdminSection } from './section'
 
 // React.Js Komponente zur Konfiguration der Planungsregeln.
-export class AdminRules extends AdminSection<App.Admin.IAdminRulesPage> {
+export class AdminRules extends AdminSection<IAdminRulesPage> {
     // Das zugehörige Ui View Model.
-    static get uvm(): IAdminSectionFactory<App.Admin.IAdminRulesPage> {
-        return App.Admin.RulesSection
+    static get uvm(): IAdminSectionFactory<IAdminRulesPage> {
+        return RulesSection
     }
 
     // Die Überschrift für diesen Bereich.
@@ -19,7 +25,7 @@ export class AdminRules extends AdminSection<App.Admin.IAdminRulesPage> {
                 dieses Regelwerk
                 <HelpLink topic='customschedule' page={this.props.uvm.page} /> anzupassen - auf eigene Gefahr, versteht
                 sich.
-                <JMSLib.ReactUi.EditTextArea uvm={this.props.uvm.rules} columns={100} rows={25} />
+                <EditTextArea uvm={this.props.uvm.rules} columns={100} rows={25} />
                 {this.getHelp()}
             </div>
         )

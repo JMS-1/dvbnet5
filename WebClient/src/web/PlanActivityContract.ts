@@ -1,4 +1,7 @@
-﻿// Beschreibt einen Eintrag im Aufzeichnungsplan.
+﻿import { PlanExceptionContract } from './PlanExceptionContract'
+import { doUrlCall } from './vcrserver'
+
+// Beschreibt einen Eintrag im Aufzeichnungsplan.
 export interface PlanActivityContract {
     // Beginn der Aufzeichnung im ISO Format.
     start?: string

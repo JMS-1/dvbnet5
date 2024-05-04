@@ -1,19 +1,21 @@
-﻿export class SourceLimit extends HelpComponent {
+﻿import * as React from 'react'
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
+import { HelpComponent } from './helpComponent'
+import { ScreenShot } from './screenShot'
+
+export class SourceLimit extends HelpComponent {
     readonly title = 'Beschränkung der Anzahl der Quellen'
 
-    render(page: App.IPage): JSX.Element {
+    render(page: IPage): JSX.Element {
         return (
             <div>
                 Die Planung des VCR.NET Recording Service erwartet, dass im Normalfall auf jedem DVB Gerät beliebige
                 viele Aufzeichnungen einer Quellgruppe{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};parallelrecording`}>
-                    gleichzeitig
-                </JMSLib.ReactUi.InternalLink>{' '}
-                ausgeführt werden können. In gewissen Situation ist dies allerdings nicht empfehlenswert oder bei{' '}
-                <JMSLib.ReactUi.InternalLink view={`${page.route};nexus`}>
-                    bestimmter DVB Hardware
-                </JMSLib.ReactUi.InternalLink>{' '}
-                auch gar nicht möglich.
+                <InternalLink view={`${page.route};parallelrecording`}>gleichzeitig</InternalLink> ausgeführt werden
+                können. In gewissen Situation ist dies allerdings nicht empfehlenswert oder bei{' '}
+                <InternalLink view={`${page.route};nexus`}>bestimmter DVB Hardware</InternalLink> auch gar nicht
+                möglich.
                 <br />
                 <br />
                 Über die Aufzeichnungseinstellung im zugehörigen DVB.NET Geräteprofil ist es möglich, die Anzahl der

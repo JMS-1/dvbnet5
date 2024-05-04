@@ -1,8 +1,16 @@
-﻿// ReacJs Komponente zur Pflege der Sicherheitskonfiguration.
-export class AdminSecurity extends AdminSection<App.Admin.IAdminSecurityPage> {
+﻿import React from 'react'
+import { IAdminSecurityPage, SecuritySection } from '../../app/pages/admin/security'
+import { Field } from '../../common/field'
+import { InlineHelp } from '../../common/inlineHelp'
+import { SingleSelect } from '../../lib.react/edit/list'
+import { IAdminSectionFactory } from '../admin'
+import { AdminSection } from './section'
+
+// ReacJs Komponente zur Pflege der Sicherheitskonfiguration.
+export class AdminSecurity extends AdminSection<IAdminSecurityPage> {
     // Das zugehörige Ui View Model.
-    static get uvm(): IAdminSectionFactory<App.Admin.IAdminSecurityPage> {
-        return App.Admin.SecuritySection
+    static get uvm(): IAdminSectionFactory<IAdminSecurityPage> {
+        return SecuritySection
     }
 
     // Die Überschrift für diesen Bereich.
@@ -17,10 +25,10 @@ export class AdminSecurity extends AdminSection<App.Admin.IAdminSecurityPage> {
                 dürfen.
                 {this.getHelp()}
                 <Field label={`${this.props.uvm.userGroups.text}:`} page={this.props.uvm.page}>
-                    <JMSLib.ReactUi.SingleSelect uvm={this.props.uvm.userGroups} />
+                    <SingleSelect uvm={this.props.uvm.userGroups} />
                 </Field>
                 <Field label={`${this.props.uvm.adminGroups.text}:`} page={this.props.uvm.page}>
-                    <JMSLib.ReactUi.SingleSelect uvm={this.props.uvm.adminGroups} />
+                    <SingleSelect uvm={this.props.uvm.adminGroups} />
                 </Field>
             </div>
         )

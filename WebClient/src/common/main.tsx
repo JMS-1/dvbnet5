@@ -1,48 +1,76 @@
 ﻿import * as React from 'react'
+import { IApplicationSite, IApplication, Application } from '../app/app'
+import { IHelpComponent, IHelpComponentProvider } from '../app/pages/help'
+import { IEmpty } from '../lib.react/reactUi'
+import { Navigation } from './navigation'
+import { View } from './view'
+import { AdminProgramGuide } from '../pages/help/adminGuide'
+import { AdminSourceScan } from '../pages/help/adminScan'
+import { Archive } from '../pages/help/archive'
+import { Configuration } from '../pages/help/configuration'
+import { ControlCenter } from '../pages/help/controlCenter'
+import { CurrentStream } from '../pages/help/currentStream'
+import { CustomSchedule } from '../pages/help/customSchedule'
+import { Decryption } from '../pages/help/decryption'
+import { DvbNet } from '../pages/help/dvbNet'
+import { EditCurrent } from '../pages/help/editCurrent'
+import { ProgramGuide } from '../pages/help/epg'
+import { FileContents } from '../pages/help/fileContents'
+import { Hibernation } from '../pages/help/hibernation'
+import { Overview } from '../pages/help/home'
+import { JobsAndSchedules } from '../pages/help/jobsAndSchedules'
+import { Nexus } from '../pages/help/nexus'
+import { NumberOfFiles } from '../pages/help/numberOfFiles'
+import { ParallelRecording } from '../pages/help/parallelRecording'
+import { RepeatingSchedules } from '../pages/help/repeatingSchedules'
+import { SourceChooser } from '../pages/help/sourceChooser'
+import { SourceLimit } from '../pages/help/sourceLimit'
+import { Streaming } from '../pages/help/streaming'
+import { Tasks } from '../pages/help/tasks'
+import { TsPlayer } from '../pages/help/tsPlayer'
+import { WebSettings } from '../pages/help/webSettings'
+import { Log } from '../pages/help/log'
 
 // React.Js Komponente für die Hauptseite der Anwendung - im Prinzip der gesamte sichtbare Bereich im Browser.
-export class Main
-    extends React.Component<JMSLib.ReactUi.IEmpty, JMSLib.ReactUi.IEmpty>
-    implements App.IApplicationSite
-{
+export class Main extends React.Component<IEmpty, IEmpty> implements IApplicationSite {
     // Alle bekannten Hilfeseiten.
-    private readonly _topics: { [section: string]: App.IHelpComponent } = {
-        repeatingschedules: new HelpPages.RepeatingSchedules(),
-        parallelrecording: new HelpPages.ParallelRecording(),
-        jobsandschedules: new HelpPages.JobsAndSchedules(),
-        customschedule: new HelpPages.CustomSchedule(),
-        configuration: new HelpPages.Configuration(),
-        controlcenter: new HelpPages.ControlCenter(),
-        currentstream: new HelpPages.CurrentStream(),
-        epgconfig: new HelpPages.AdminProgramGuide(),
-        numberoffiles: new HelpPages.NumberOfFiles(),
-        sourcechooser: new HelpPages.SourceChooser(),
-        filecontents: new HelpPages.FileContents(),
-        psiconfig: new HelpPages.AdminSourceScan(),
-        editcurrent: new HelpPages.EditCurrent(),
-        hibernation: new HelpPages.Hibernation(),
-        sourcelimit: new HelpPages.SourceLimit(),
-        websettings: new HelpPages.WebSettings(),
-        decryption: new HelpPages.Decryption(),
-        streaming: new HelpPages.Streaming(),
-        overview: new HelpPages.Overview(),
-        tsplayer: new HelpPages.TsPlayer(),
-        epg: new HelpPages.ProgramGuide(),
-        archive: new HelpPages.Archive(),
-        dvbnet: new HelpPages.DvbNet(),
-        nexus: new HelpPages.Nexus(),
-        tasks: new HelpPages.Tasks(),
-        log: new HelpPages.Log(),
+    private readonly _topics: { [section: string]: IHelpComponent } = {
+        repeatingschedules: new RepeatingSchedules(),
+        parallelrecording: new ParallelRecording(),
+        jobsandschedules: new JobsAndSchedules(),
+        customschedule: new CustomSchedule(),
+        configuration: new Configuration(),
+        controlcenter: new ControlCenter(),
+        currentstream: new CurrentStream(),
+        epgconfig: new AdminProgramGuide(),
+        numberoffiles: new NumberOfFiles(),
+        sourcechooser: new SourceChooser(),
+        filecontents: new FileContents(),
+        psiconfig: new AdminSourceScan(),
+        editcurrent: new EditCurrent(),
+        hibernation: new Hibernation(),
+        sourcelimit: new SourceLimit(),
+        websettings: new WebSettings(),
+        decryption: new Decryption(),
+        streaming: new Streaming(),
+        overview: new Overview(),
+        tsplayer: new TsPlayer(),
+        epg: new ProgramGuide(),
+        archive: new Archive(),
+        dvbnet: new DvbNet(),
+        nexus: new Nexus(),
+        tasks: new Tasks(),
+        log: new Log(),
     }
 
     // Das Präsentationsmodell der Anwendung.
-    private readonly _application: App.IApplication = new App.Application(this)
+    private readonly _application: IApplication = new Application(this)
 
     // Wird ausgelöst, wenn sich der Navigationsberich ändert.
     private readonly _onhashchange: () => void = this.onhashchange.bind(this)
 
     // Erstellt eine neue Komponente.
-    constructor(props: JMSLib.ReactUi.IEmpty) {
+    constructor(props: IEmpty) {
         super(props)
 
         // Initialen Navigationsbereich in Abhängigkeit von der URL aufrufen.
@@ -122,7 +150,7 @@ export class Main
     }
 
     // Die Verwaltung der Hilfeseiten melden.
-    getHelpComponentProvider<TComponentType extends App.IHelpComponent>(): App.IHelpComponentProvider<TComponentType> {
-        return this._topics as App.IHelpComponentProvider<TComponentType>
+    getHelpComponentProvider<TComponentType extends IHelpComponent>(): IHelpComponentProvider<TComponentType> {
+        return this._topics as IHelpComponentProvider<TComponentType>
     }
 }
