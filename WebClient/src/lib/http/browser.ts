@@ -4,19 +4,19 @@ import { currentWebCallId, nextWebCallId, webCallRoot } from './config'
 // Verwendet den XHMLHttpRequest des Browser zur Durchführung eines HTTP Aufrufs.
 export function browserWebCall<TResponseType, TRequestType>(
     url: string,
-    method: string = 'GET',
+    method = 'GET',
     request?: TRequestType
 ): Promise<TResponseType | undefined> {
     // Eindeutige Nummer für den nächsten HTTP Aufruf ermitteln - tatsächlich arbeiten wir hier in 2er Schritten, aber das tut nicht zur Sache.
-    var nextId = nextWebCallId()
+    const nextId = nextWebCallId()
 
     // Aynchronen Aufruf aufsetzen.
     return new Promise<TResponseType | undefined>((success, failure) => {
         // Aufruf an eine absolute URL erkennen.
-        var raw = url.substring(0, 7) === 'http://'
+        const raw = url.substring(0, 7) === 'http://'
 
         // HTTP Aufruf anlegen.
-        var xhr = new XMLHttpRequest()
+        const xhr = new XMLHttpRequest()
 
         // HTTP Antwort abwarten.
         xhr.addEventListener('load', () => {
@@ -42,8 +42,8 @@ export function browserWebCall<TResponseType, TRequestType>(
 
                 // Fehler melden - falls es jemanden interessiert.
                 failure(<IHttpErrorInformation>{
-                    message: errorInfo.ExceptionMessage || errorInfo.Message,
                     details: errorInfo.MessageDetails,
+                    message: errorInfo.ExceptionMessage || errorInfo.Message,
                 })
             }
         })

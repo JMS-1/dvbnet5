@@ -2,7 +2,7 @@
 import { IValueFromList, uiValue, SelectSingleFromList } from '../../lib/edit/list'
 import { IConnectable } from '../../lib/site'
 import { SourceEntry } from '../../web/ProfileSourcesCache'
-import { UserProfileContract } from '../../web/UserProfileContract'
+import { IUserProfileContract } from '../../web/IUserProfileContract'
 
 // Die Einschränkung auf die Verschlüsselung.
 export enum EncryptionFilter {
@@ -184,7 +184,7 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
 
     // Erstellt eine neue Logik zur Senderauswahl.
     constructor(
-        profile: UserProfileContract,
+        profile: IUserProfileContract,
         data: any,
         prop: string,
         favoriteSources: string[],
@@ -218,7 +218,7 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
         }
     }
 
-    private static lookupType(profile: UserProfileContract): TypeFilter {
+    private static lookupType(profile: IUserProfileContract): TypeFilter {
         switch (profile && profile.typeFilter) {
             case 'R':
                 return TypeFilter.radio
@@ -229,7 +229,7 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
         }
     }
 
-    private static lookupEncryption(profile: UserProfileContract): EncryptionFilter {
+    private static lookupEncryption(profile: IUserProfileContract): EncryptionFilter {
         switch (profile && profile.encryptionFilter) {
             case 'F':
                 return EncryptionFilter.freeTv

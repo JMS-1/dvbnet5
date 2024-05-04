@@ -1,8 +1,8 @@
-﻿import { ProfileSourceContract, getProfileSources } from './ProfileSourceContract'
+﻿import { getProfileSources, IProfileSourceContract } from './IProfileSourceContract'
 
 // Beschreibt einen einzelne Quelle, so wie sie dem Anwender zur Auswahl angeboten wird
 export class SourceEntry {
-    constructor(rawData: ProfileSourceContract) {
+    constructor(rawData: IProfileSourceContract) {
         this.isTelevision = rawData.tvNotRadio
         this.name = rawData.nameWithProvider
         this.isEncrypted = rawData.encrypted
@@ -32,7 +32,7 @@ export class ProfileSourcesCache {
     // Fordert die Quellen eines Geräteprofils an.
     static getSources(profileName: string): Promise<SourceEntry[]> {
         // Eventuell haben wir das schon einmal gemacht
-        var promise = ProfileSourcesCache.promises[profileName]
+        let promise = ProfileSourcesCache.promises[profileName]
         if (!promise) {
             // Verwaltung erzeugen.
             ProfileSourcesCache.promises[profileName] = promise = new Promise<SourceEntry[]>((success, failure) => {

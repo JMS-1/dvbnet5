@@ -3,8 +3,8 @@ import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
 import { IConnectable, IView } from '../../../lib/site'
 import { ITimeBar, TimeBar } from '../../../lib/timebar'
 import { Guide } from '../../../pages/guide'
-import { GuideItemContract, getGuideItem } from '../../../web/GuideItemContract'
-import { PlanCurrentContract } from '../../../web/PlanCurrentContract'
+import { IGuideItemContract, getGuideItem } from '../../../web/IGuideItemContract'
+import { IPlanCurrentContract } from '../../../web/IPlanCurrentContract'
 import { GuideInfo, IGuideInfo } from '../guide/entry'
 import { IDeviceController, Controller } from './controller'
 
@@ -57,11 +57,11 @@ export class Info implements IDeviceInfo {
 
     // Erstellt ein neues Präsentationsmodell.
     constructor(
-        private readonly _model: PlanCurrentContract,
+        private readonly _model: IPlanCurrentContract,
         suppressHibernate: boolean,
         toggleDetails: (info: Info, guide: boolean) => void,
         reload: () => void,
-        private readonly _findInGuide: (model: GuideItemContract) => void
+        private readonly _findInGuide: (model: IGuideItemContract) => void
     ) {
         // Für Geräte ohne laufende oder geplante Aufzeichnung können wir nicht viel tun.
         if (!_model.isIdle) {

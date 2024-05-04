@@ -1,15 +1,15 @@
-﻿import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
-import { IValueFromList, uiValue, SelectSingleFromList } from '../../../lib/edit/list'
+﻿import { ISection, Section } from './section'
+
+import { Flag, IFlag } from '../../../lib/edit/boolean/flag'
+import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
 import { IMultiValueFromList, SelectMultipleFromList } from '../../../lib/edit/multiList'
-import { INumber } from '../../../lib/edit/number/number'
+import { INumber, Number } from '../../../lib/edit/number/number'
 import {
     getSourceScanSettings,
-    SourceScanSettingsContract,
+    ISourceScanSettingsContract,
     setSourceScanSettings,
-} from '../../../web/admin/SourceScanSettingsContract'
+} from '../../../web/admin/ISourceScanSettingsContract'
 import { AdminPage } from '../admin'
-import { ISection, Section } from './section'
-import { Number } from '../../../lib/edit/number/number'
 
 // Die Art der Aktualisierung der Quellenlisten.
 export enum ScanConfigMode {
@@ -53,7 +53,7 @@ export interface IAdminScanPage extends ISection {
 // Präsentationsmodell zur Pflege der Konfiguration des Sendersuchlaufs.
 export class ScanSection extends Section implements IAdminScanPage {
     // Der eindeutige Name des Bereichs.
-    static readonly route = `scan`
+    static readonly route = 'scan'
 
     // Die Anzeigewerte für die einzelnen Arten der Aktualisierung.
     private static readonly _scanModes = [
@@ -157,7 +157,7 @@ export class ScanSection extends Section implements IAdminScanPage {
     // Fordert den VCR.NET Recording Service zur Aktualisierung der Konfiguration an.
     protected saveAsync(): Promise<boolean | undefined> {
         // Die Art wird in die Konfigurationsdaten zurückgespiegelt.
-        var settings = <SourceScanSettingsContract>this.hours.data
+        const settings = <ISourceScanSettingsContract>this.hours.data
 
         if (!this.showConfiguration) settings.interval = 0
         else if (!this.configureAutomatic) settings.interval = -1

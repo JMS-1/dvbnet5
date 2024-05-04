@@ -1,6 +1,11 @@
-﻿import { IValueFromList, IUiValue, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
-import { getSecuritySettings, getWindowsGroups, setSecuritySettings } from '../../../web/admin/SecuritySettingsContract'
-import { ISection, Section } from './section'
+﻿import { ISection, Section } from './section'
+
+import { IUiValue, IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
+import {
+    getSecuritySettings,
+    getWindowsGroups,
+    setSecuritySettings,
+} from '../../../web/admin/ISecuritySettingsContract'
 
 // Schnittstelle zur Konfiguration der Benutzergruppen.
 export interface IAdminSecurityPage extends ISection {
@@ -14,16 +19,16 @@ export interface IAdminSecurityPage extends ISection {
 // Instanz zur Pflege der Konfiguration der Benutzergruppen.
 export class SecuritySection extends Section implements IAdminSecurityPage {
     // Der eindeutige Name des Bereichs.
-    static readonly route = `security`
+    static readonly route = 'security'
 
     // Alle bekannten Windows Kontogruppen - die werden nur ein einziges Mal angefordert.
     private static _windowsGroups: Promise<IUiValue<string>[]>
 
     // Die Gruppe der normalen Benutzer mit Auswahl.
-    readonly userGroups = new SelectSingleFromList<string>({}, `users`, `Benutzer`)
+    readonly userGroups = new SelectSingleFromList<string>({}, 'users', 'Benutzer')
 
     // Die Gruppe der Administratoren mit Auswahl.
-    readonly adminGroups = new SelectSingleFromList<string>({}, `admins`, `Administratoren`)
+    readonly adminGroups = new SelectSingleFromList<string>({}, 'admins', 'Administratoren')
 
     // Beginnt mit der Abfrage der aktuellen Einstellungen.
     protected loadAsync(): void {
@@ -37,7 +42,7 @@ export class SecuritySection extends Section implements IAdminSecurityPage {
                 if (!SecuritySection._windowsGroups)
                     // Immer die Leerauswahl ergänzen - damit werden automatisch alle Benutzer erfasst.
                     SecuritySection._windowsGroups = getWindowsGroups().then((names) =>
-                        [uiValue(``, `(Alle Benutzer)`)].concat(names?.map((name) => uiValue(name)) ?? [])
+                        [uiValue('', '(Alle Benutzer)')].concat(names?.map((name) => uiValue(name)) ?? [])
                     )
 
                 // Windows Kontogruppen direkt oder verzögert laden.

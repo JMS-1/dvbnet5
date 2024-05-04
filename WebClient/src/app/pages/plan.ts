@@ -1,7 +1,7 @@
 ﻿import { DateTimeUtils } from '../../lib/dateTimeUtils'
 import { IToggableFlag, Flag } from '../../lib/edit/boolean/flag'
 import { IValueFromList, SelectSingleFromList, IUiValue, uiValue } from '../../lib/edit/list'
-import { getPlan } from '../../web/PlanActivityContract'
+import { getPlan } from '../../web/IPlanActivityContract'
 import { Application } from '../app'
 import { IPage, Page } from './page'
 import { IPlanEntry, PlanEntry } from './plan/entry'

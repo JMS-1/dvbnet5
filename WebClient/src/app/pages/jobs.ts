@@ -1,10 +1,11 @@
-﻿import { DateTimeUtils } from '../../lib/dateTimeUtils'
-import { IValueFromList, uiValue, SelectSingleFromList } from '../../lib/edit/list'
-import { getInfoJobs } from '../../web/InfoJobContract'
-import { InfoScheduleContract } from '../../web/InfoScheduleContract'
-import { Application } from '../app'
-import { ScheduleEditor } from './edit/schedule'
+﻿import { ScheduleEditor } from './edit/schedule'
 import { IPage, Page } from './page'
+
+import { DateTimeUtils } from '../../lib/dateTimeUtils'
+import { IValueFromList, SelectSingleFromList, uiValue } from '../../lib/edit/list'
+import { getInfoJobs } from '../../web/IInfoJobContract'
+import { IInfoScheduleContract } from '../../web/IInfoScheduleContract'
+import { Application } from '../app'
 
 // Schnittstelle zur Anzeige einer Aufzeichnung.
 export interface IJobPageSchedule {
@@ -68,7 +69,7 @@ export class JobPage extends Page implements IJobPage {
             // Rohdaten in primitive Präsentationsmodell wandeln.
             this._jobs =
                 info?.map((j) => {
-                    var job: IJobPageJob = { name: j.name, isActive: j.active, schedules: [] }
+                    const job: IJobPageJob = { isActive: j.active, name: j.name, schedules: [] }
 
                     // Es wird immer ein erster Eintrag zum Anlegen neuer Aufzeichnungen zum Auftrag hinzugefügt.
                     job.schedules.push({
@@ -89,12 +90,12 @@ export class JobPage extends Page implements IJobPage {
     }
 
     // Erstellt ein neues Präsenationsmodell für eine einzelne Aufzeichnung.
-    private createSchedule(schedule: InfoScheduleContract): IJobPageSchedule {
+    private createSchedule(schedule: IInfoScheduleContract): IJobPageSchedule {
         // Der Name ist je nach konkreter Konfiguration etwas aufwändiger zu ermitteln.
-        var name = schedule.name || `Aufzeichnung`
-        var startTime = new Date(schedule.start)
-        var repeat = schedule.repeatPattern
-        var start: string = ``
+        const name = schedule.name || 'Aufzeichnung'
+        const startTime = new Date(schedule.start)
+        const repeat = schedule.repeatPattern
+        let start = ''
 
         if (repeat === 0) start = DateTimeUtils.formatStartTime(startTime)
         else {
@@ -118,6 +119,6 @@ export class JobPage extends Page implements IJobPage {
 
     // Der Name des Präsentationsmodell zur Darstellung einer Überschrift in der Oberfläche.
     get title(): string {
-        return `Alle Aufträge`
+        return 'Alle Aufträge'
     }
 }

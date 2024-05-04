@@ -2,7 +2,7 @@
 import { IToggableFlag, Flag } from '../../lib/edit/boolean/flag'
 import { IValueFromList, SelectSingleFromList, IUiValue, uiValue } from '../../lib/edit/list'
 import { ProfileCache } from '../../web/ProfileCache'
-import { getProtocolEntries } from '../../web/ProtocolEntryContract'
+import { getProtocolEntries } from '../../web/IProtocolEntryContract'
 import { Application } from '../app'
 import { ILogEntry, LogEntry } from './log/entry'
 import { IPage, Page } from './page'

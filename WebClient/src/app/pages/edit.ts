@@ -1,17 +1,18 @@
-﻿import { ICommand, Command } from '../../lib/command/command'
+﻿import { IJobEditor, JobEditor } from './edit/job'
+import { IScheduleEditor, ScheduleEditor } from './edit/schedule'
+import { IPage, Page } from './page'
+
+import { Command, ICommand } from '../../lib/command/command'
 import { DateTimeUtils } from '../../lib/dateTimeUtils'
-import { uiValue, IUiValue } from '../../lib/edit/list'
-import { EditJobContract } from '../../web/EditJobContract'
-import { EditScheduleContract, deleteSchedule } from '../../web/EditScheduleContract'
-import { createScheduleFromGuide, updateSchedule } from '../../web/JobScheduleDataContract'
-import { JobScheduleInfoContract } from '../../web/JobScheduleInfoContract'
+import { IUiValue, uiValue } from '../../lib/edit/list'
+import { IEditJobContract } from '../../web/IEditJobContract'
+import { deleteSchedule, IEditScheduleContract } from '../../web/IEditScheduleContract'
+import { createScheduleFromGuide, updateSchedule } from '../../web/IJobScheduleDataContract'
+import { IJobScheduleInfoContract } from '../../web/IJobScheduleInfoContract'
 import { ProfileCache } from '../../web/ProfileCache'
 import { ProfileSourcesCache } from '../../web/ProfileSourcesCache'
 import { RecordingDirectoryCache } from '../../web/RecordingDirectoryCache'
 import { Application } from '../app'
-import { IJobEditor, JobEditor } from './edit/job'
-import { IScheduleEditor, ScheduleEditor } from './edit/schedule'
-import { IPage, Page } from './page'
 
 // Schnittstelle zur Pflege einer einzelnen Aufzeichnung.
 export interface IEditPage extends IPage {
@@ -31,7 +32,7 @@ export interface IEditPage extends IPage {
 // Das Präsentationsmodell zur Pflege einer Aufzeichnung.
 export class EditPage extends Page implements IEditPage {
     // Die Originaldaten der Aufzeichnung.
-    private _jobScheduleInfo?: JobScheduleInfoContract
+    private _jobScheduleInfo?: IJobScheduleInfoContract
 
     // Die Daten des zugehörigen Auftrags.
     job?: JobEditor
@@ -79,10 +80,10 @@ export class EditPage extends Page implements IEditPage {
         this._fromGuide = false
 
         // Die Auswahlliste der Aufzeichnungsverzeichnisse.
-        var folderSelection = [uiValue('', '(Voreinstellung verwenden)')]
+        const folderSelection = [uiValue('', '(Voreinstellung verwenden)')]
 
         // Die Auswahlliste der Geräte.
-        var profileSelection: IUiValue<string>[]
+        let profileSelection: IUiValue<string>[]
 
         // Zuerst die Liste der Aufzeichnungsverzeichnisse abfragen.
         RecordingDirectoryCache.getPromise()
@@ -100,8 +101,8 @@ export class EditPage extends Page implements IEditPage {
                 // Auf das Neuanlegen prüfen.
                 if (sections.length > 0) {
                     // Auf existierende Aufzeichnung prüfen - wir gehen hier einfach mal von der Notation id= in der URL aus.
-                    var id = sections[0].substr(3)
-                    var epgId = (sections[1] || 'epgid=').substr(6)
+                    const id = sections[0].substr(3)
+                    const epgId = (sections[1] || 'epgid=').substr(6)
 
                     // Bei neuen Aufzeichnungen brauchen wir auch kein Löschen.
                     this.del.isVisible = id !== '*'
@@ -117,24 +118,24 @@ export class EditPage extends Page implements IEditPage {
                 this.del.isVisible = false
 
                 // Leere Aufzeichnung angelegen.
-                var newJob = <EditJobContract>{
+                const newJob = <IEditJobContract>{
+                    allLanguages: this.application.profile.languages,
+                    device: profiles[0] && profiles[0].name,
+                    directory: '',
+                    includeDolby: this.application.profile.dolby,
+                    lockedToDevice: false,
+                    name: '',
+                    sourceName: '',
                     withSubtitles: this.application.profile.subtitles,
                     withVideotext: this.application.profile.videotext,
-                    allLanguages: this.application.profile.languages,
-                    includeDolby: this.application.profile.dolby,
-                    device: profiles[0] && profiles[0].name,
-                    lockedToDevice: false,
-                    sourceName: '',
-                    directory: '',
-                    name: '',
                 }
 
                 // Beschreibung der Aufzeichnung vorbereiten.
-                var info = <JobScheduleInfoContract>{
+                const info = <IJobScheduleInfoContract>{
                     job: newJob,
                     jobId: '',
-                    scheduleId: '',
                     schedule: this.createEmptySchedule()!,
+                    scheduleId: '',
                 }
 
                 // Die neue Aufzeichnung können wir auch direkt synchron bearbeiten.
@@ -144,10 +145,13 @@ export class EditPage extends Page implements IEditPage {
     }
 
     // Erstellt eine neue leere Aufzeichnung.
-    private createEmptySchedule(): EditScheduleContract {
-        var now = new Date(Date.now())
+    private createEmptySchedule(): IEditScheduleContract {
+        const now = new Date(Date.now())
 
-        return <EditScheduleContract>{
+        return <IEditScheduleContract>{
+            allLanguages: !!this.application.profile.languages,
+            duration: 120,
+            exceptions: [],
             firstStart: new Date(
                 now.getFullYear(),
                 now.getMonth(),
@@ -155,27 +159,24 @@ export class EditPage extends Page implements IEditPage {
                 now.getHours(),
                 now.getMinutes()
             ).toISOString(),
+            includeDolby: !!this.application.profile.dolby,
+            lastDay: '',
+            name: '',
+            repeatPattern: 0,
+            sourceName: '',
             withSubtitles: !!this.application.profile.subtitles,
             withVideotext: !!this.application.profile.videotext,
-            allLanguages: !!this.application.profile.languages,
-            includeDolby: !!this.application.profile.dolby,
-            repeatPattern: 0,
-            lastDay: '',
-            exceptions: [],
-            sourceName: '',
-            duration: 120,
-            name: '',
         }
     }
 
     // Die Daten einer existierenden Aufzeichnung stehen bereit.
     private setJobSchedule(
-        info: JobScheduleInfoContract,
+        info: IJobScheduleInfoContract,
         profiles: IUiValue<string>[],
         folders: IUiValue<string>[]
     ): void {
         // Liste der zuletzt verwendeten Quellen abrufen.
-        var favorites = this.application.profile.recentSources || []
+        const favorites = this.application.profile.recentSources || []
 
         // Leere Aufzeichnung anlegen.
         if (!info.schedule) info.schedule = this.createEmptySchedule()
@@ -200,7 +201,7 @@ export class EditPage extends Page implements IEditPage {
 
     // Die aktuelle Liste der Quellen zum ausgewählten Gerät anfordern.
     private loadSources(): Promise<void> {
-        var profile = this.job?.device.value
+        const profile = this.job?.device.value
 
         // Das kann man ruhig öfter mal machen, da das Ergebnis nach dem ersten asynchronen Abruf gespeichert wird.
         return ProfileSourcesCache.getSources(profile!).then((sources) => {
@@ -215,7 +216,7 @@ export class EditPage extends Page implements IEditPage {
 
     // Meldet die Überschrift zur Anzeige des Präsentationsmodells.
     get title(): string {
-        return this.del.isVisible ? `Aufzeichnung bearbeiten` : `Neue Aufzeichnung anlegen`
+        return this.del.isVisible ? 'Aufzeichnung bearbeiten' : 'Neue Aufzeichnung anlegen'
     }
 
     // Wird bei Änderungen ausgelöst.
@@ -224,7 +225,7 @@ export class EditPage extends Page implements IEditPage {
         if (!this.job) return
 
         // Quellen neu anfordern - da passiert im Allgemeinen nicht wirklich viel, trotzdem optimieren wir das ein bißchen.
-        var requireRefresh: any = true
+        let requireRefresh: any = true
 
         this.loadSources().then(() => (requireRefresh = this.refreshUi()))
 
@@ -235,7 +236,7 @@ export class EditPage extends Page implements IEditPage {
     // Beginnt mit der asynchronen Aktualisierung der Daten der Aufzeichnung.
     private onSave(): Promise<void> {
         // Kopie der Aufzeichnungsdaten anlegen.
-        var schedule = { ...this._jobScheduleInfo?.schedule } as EditScheduleContract
+        const schedule = { ...this._jobScheduleInfo?.schedule } as IEditScheduleContract
 
         // Dauer unter Berücksichtigung der Zeitumstellung anpassen.
         schedule.duration = DateTimeUtils.getRealDurationInMinutes(schedule.firstStart, schedule.duration)

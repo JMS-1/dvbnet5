@@ -1,6 +1,6 @@
 ﻿import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
 import { IValueFromList, IUiValue, SelectSingleFromList } from '../../../lib/edit/list'
-import { EditJobContract } from '../../../web/EditJobContract'
+import { IEditJobContract } from '../../../web/IEditJobContract'
 import { IPage } from '../page'
 import { IJobScheduleEditor, JobScheduleEditor } from './jobSchedule'
 
@@ -17,11 +17,11 @@ export interface IJobEditor extends IJobScheduleEditor {
 }
 
 // Bietet die Daten eines Auftrags zur Pflege an.
-export class JobEditor extends JobScheduleEditor<EditJobContract> implements IJobEditor {
+export class JobEditor extends JobScheduleEditor<IEditJobContract> implements IJobEditor {
     // Erstellt ein neues Präsentationsmodell.
     constructor(
         page: IPage,
-        model: EditJobContract,
+        model: IEditJobContract,
         devices: IUiValue<string>[],
         favoriteSources: string[],
         folders: IUiValue<string>[],

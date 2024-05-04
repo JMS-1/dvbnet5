@@ -41,6 +41,7 @@
     "prettier": "@insynergie/prettier-config",
     "scripts": {
         "build": "webpack build --env production",
+        "lint": "eslint --config .eslintrc.js src",
         "watch": "webpack serve --hot"
     },
     "stylelint": {

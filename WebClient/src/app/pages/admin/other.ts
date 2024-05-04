@@ -1,9 +1,9 @@
-﻿import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
-import { IValueFromList, uiValue, SelectSingleFromList } from '../../../lib/edit/list'
-import { INumber } from '../../../lib/edit/number/number'
-import { ISection, Section } from './section'
-import { Number } from '../../../lib/edit/number/number'
-import { getOtherSettings, setOtherSettings } from '../../../web/admin/OtherSettingsContract'
+﻿import { ISection, Section } from './section'
+
+import { Flag, IFlag } from '../../../lib/edit/boolean/flag'
+import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
+import { INumber, Number } from '../../../lib/edit/number/number'
+import { getOtherSettings, setOtherSettings } from '../../../web/admin/IOtherSettingsContract'
 
 // Die Art des zu verwendenden Schlafzustands.
 export enum HibernationMode {
@@ -62,7 +62,7 @@ export interface IAdminOtherPage extends ISection {
 // Präsentationsmodell zur Pflege sonstiger Konfigurationswerte.
 export class OtherSection extends Section implements IAdminOtherPage {
     // Der eindeutige Name des Bereichs.
-    static readonly route = `other`
+    static readonly route = 'other'
 
     // Die einzelnen Arten der Protokollierung als Auswahlliste für den Anwender.
     private static readonly _logging = [

@@ -1,6 +1,6 @@
 ﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
 import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
-import { PlanExceptionContract } from '../../../web/PlanExceptionContract'
+import { IPlanExceptionContract } from '../../../web/IPlanExceptionContract'
 
 // Schnittstelle zur Anzeige und zum Entfernen einer Ausnahmeregel.
 export interface IScheduleException {
@@ -21,7 +21,7 @@ export interface IScheduleException {
 export class ScheduleException implements IScheduleException {
     // Erstellt ein neues Präsentationsmodell.
     constructor(
-        public readonly model: PlanExceptionContract,
+        public readonly model: IPlanExceptionContract,
         onChange: () => void
     ) {
         this.isActive = new Flag({ value: true }, `value`, undefined, onChange)

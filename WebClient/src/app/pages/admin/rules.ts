@@ -1,7 +1,7 @@
-﻿import { IString } from '../../../lib/edit/text/text'
-import { getSchedulerRules, setSchedulerRules } from '../../../web/admin/SchedulerRulesContract'
-import { ISection, Section } from './section'
-import { String } from '../../../lib/edit/text/text'
+﻿import { ISection, Section } from './section'
+
+import { IString, String } from '../../../lib/edit/text/text'
+import { getSchedulerRules, setSchedulerRules } from '../../../web/admin/ISchedulerRulesContract'
 
 // Schnittstelle zur Pflege der Planungsregeln.
 export interface IAdminRulesPage extends ISection {
@@ -12,7 +12,7 @@ export interface IAdminRulesPage extends ISection {
 // Präsentationsmodell zur Pflege der Planungsregeln.
 export class RulesSection extends Section implements IAdminRulesPage {
     // Der eindeutige Name des Bereichs.
-    static readonly route = `rules`
+    static readonly route = 'rules'
 
     // Die aktuellen Planungsregeln.
     readonly rules = new String({}, 'rules')

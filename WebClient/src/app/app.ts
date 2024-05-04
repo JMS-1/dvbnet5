@@ -1,19 +1,20 @@
-﻿import { switchView } from '../lib/http/config'
-import { IView } from '../lib/site'
-import { InfoServiceContract, getServerVersion } from '../web/InfoServiceContract'
-import { UserProfileContract, getUserProfile } from '../web/UserProfileContract'
-import { IAdminPage, AdminPage } from './pages/admin'
-import { IDevicesPage, DevicesPage } from './pages/devices'
-import { IEditPage, EditPage } from './pages/edit'
-import { IFavoritesPage, FavoritesPage } from './pages/favorites'
-import { IGuidePage, GuidePage } from './pages/guide'
-import { IHelpPage, IHelpComponent, IHelpComponentProvider, HelpPage } from './pages/help'
-import { IHomePage, HomePage } from './pages/home'
+﻿import { AdminPage, IAdminPage } from './pages/admin'
+import { DevicesPage, IDevicesPage } from './pages/devices'
+import { EditPage, IEditPage } from './pages/edit'
+import { FavoritesPage, IFavoritesPage } from './pages/favorites'
+import { GuidePage, IGuidePage } from './pages/guide'
+import { HelpPage, IHelpComponent, IHelpComponentProvider, IHelpPage } from './pages/help'
+import { HomePage, IHomePage } from './pages/home'
 import { IJobPage, JobPage } from './pages/jobs'
 import { ILogPage, LogPage } from './pages/log'
 import { IPage, Page } from './pages/page'
 import { IPlanPage, PlanPage } from './pages/plan'
 import { ISettingsPage, SettingsPage } from './pages/settings'
+
+import { switchView } from '../lib/http/config'
+import { IView } from '../lib/site'
+import { getServerVersion, IInfoServiceContract } from '../web/IInfoServiceContract'
+import { getUserProfile, IUserProfileContract } from '../web/IUserProfileContract'
 
 // Schnittstelle der Anwendung.
 export interface IApplication {
@@ -63,7 +64,7 @@ export interface IApplication {
     readonly devicesPage: IDevicesPage
 
     // Einstellungen des Benutzers.
-    readonly profile: UserProfileContract
+    readonly profile: IUserProfileContract
 
     // Meldet die Verwaltung der Hilfeseiten - dies erfolgt primär im Kontext der Oberfläche.
     getHelpComponentProvider<TComponentType extends IHelpComponent>(): IHelpComponentProvider<TComponentType>
@@ -123,10 +124,10 @@ export class Application implements IApplication {
     isRestarting = false
 
     // Version des VCR.NET Recording Service.
-    version: InfoServiceContract
+    version: IInfoServiceContract
 
     // Einstellungen des Benutzers.
-    profile: UserProfileContract
+    profile: IUserProfileContract
 
     // Der aktuelle Navigationsbereich.
     page?: IPage | null
@@ -140,7 +141,7 @@ export class Application implements IApplication {
 
     set isBusy(isBusy: boolean) {
         // Das geht nur intern!
-        if (isBusy) throw `isBusy darf nur intern gesetzt werden`
+        if (isBusy) throw 'isBusy darf nur intern gesetzt werden'
 
         // Keine echte Änderung.
         if (isBusy === this.isBusy) return
@@ -173,7 +174,7 @@ export class Application implements IApplication {
     // Erstellt einen Navigationsbereich und vermerkt ihn dann einmalig.
     private addPage<TPageType extends Page>(factory: { new (application: Application): TPageType }): TPageType {
         // Konkretes Präsentationmodell für den Bereich anlegen.
-        var page = new factory(this)
+        const page = new factory(this)
 
         // Neue Instanz vermerken und melden.
         this._pageMapper[page.route] = page
@@ -192,7 +193,7 @@ export class Application implements IApplication {
         switchView()
 
         // Den Singleton der gewünschten Seite ermitteln.
-        var page = this._pageMapper[name] || this.homePage
+        const page = this._pageMapper[name] || this.homePage
 
         // Aktivieren.
         this._pendingPage = page
@@ -225,10 +226,10 @@ export class Application implements IApplication {
 
     // Name der Anwendung für den Browser ermitteln.
     get title(): string {
-        var title = 'VCR.NET Recording Service'
+        const title = 'VCR.NET Recording Service'
 
         // Nach Möglichkeit die Versionsinformationen einmischen.
-        var version = this.version
+        const version = this.version
 
         if (version) return `${title} ${version.version}`
         else return title

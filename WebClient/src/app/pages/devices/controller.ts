@@ -1,10 +1,10 @@
-﻿import { ICommand, Command } from '../../../lib/command/command'
+﻿import { Command, ICommand } from '../../../lib/command/command'
 import { DateTimeUtils } from '../../../lib/dateTimeUtils'
-import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+import { Flag, IFlag } from '../../../lib/edit/boolean/flag'
 import { INumberWithSlider, NumberWithSlider } from '../../../lib/edit/number/slider'
 import { IConnectable, IView } from '../../../lib/site'
-import { PlanCurrentContract, updateEndTime } from '../../../web/PlanCurrentContract'
-import { getDeviceRoot } from '../../../web/vcrserver'
+import { IPlanCurrentContract, updateEndTime } from '../../../web/IPlanCurrentContract'
+import { getDeviceRoot } from '../../../web/VCRServer'
 
 // Schnittstelle zur Anzeige und Manipulation einer Aktivität.
 export interface IDeviceController extends IConnectable {
@@ -61,7 +61,7 @@ export class Controller implements IDeviceController {
     readonly timeshift: string
 
     constructor(
-        private readonly _model: PlanCurrentContract,
+        private readonly _model: IPlanCurrentContract,
         suppressHibernate: boolean,
         private readonly _reload: () => void
     ) {
@@ -73,7 +73,7 @@ export class Controller implements IDeviceController {
         if (_model.streamIndex < 0) return
 
         // Verweise zur Ansicht mit dem DVB.NET / VCR.NET Viewer aufsetzen.
-        var url = `${getDeviceRoot()}${encodeURIComponent(_model.device)}/${_model.streamIndex}/`
+        const url = `${getDeviceRoot()}${encodeURIComponent(_model.device)}/${_model.streamIndex}/`
 
         this.live = `${url}Live`
         this.timeshift = `${url}TimeShift`
@@ -111,7 +111,7 @@ export class Controller implements IDeviceController {
     // Aktualisiert den Endzeitpunkt.
     private save(): Promise<void> {
         // Beim vorzeitigen Beenden sind wir etwas übervorsichtig.
-        var end = (this.remaining.value ?? 0) > 0 ? this.currentEnd : this.start
+        const end = (this.remaining.value ?? 0) > 0 ? this.currentEnd : this.start
 
         // Asynchronen Aufruf absetzen und im Erfolgsfall die Aktivitäten neu laden.
         return updateEndTime(this._model.device, !!this.noHibernate.value, this._model.referenceId, end).then(() =>

@@ -1,7 +1,7 @@
 ﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
 import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
-import { ProtocolEntryContract } from '../../../web/ProtocolEntryContract'
-import { getFilePlayUrl } from '../../../web/vcrserver'
+import { IProtocolEntryContract } from '../../../web/IProtocolEntryContract'
+import { getFilePlayUrl } from '../../../web/VCRServer'
 
 // Schnittstelle zur Anzeige eines einzelnen Protokolleintrags.
 export interface ILogEntry {
@@ -86,7 +86,7 @@ export class LogEntry implements ILogEntry {
 
     // Erstellt ein neues Präsentationsmodell.
     constructor(
-        private readonly _model: ProtocolEntryContract,
+        private readonly _model: IProtocolEntryContract,
         toggleDetail: (entry: LogEntry) => void
     ) {
         this.showDetail = new Flag({ value: false }, `value`, undefined, () => toggleDetail(this))

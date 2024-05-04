@@ -2,7 +2,7 @@
 import { IFlag, FlagSet } from '../../../lib/edit/boolean/flag'
 import { IDaySelector, DayEditor } from '../../../lib/edit/datetime/day'
 import { INumber } from '../../../lib/edit/number/number'
-import { EditScheduleContract } from '../../../web/EditScheduleContract'
+import { IEditScheduleContract } from '../../../web/IEditScheduleContract'
 import { IPage } from '../page'
 import { IDurationEditor, DurationEditor } from './duration'
 import { IScheduleException, ScheduleException } from './exception'
@@ -38,11 +38,11 @@ export interface IScheduleEditor extends IJobScheduleEditor {
 }
 
 // Beschreibt die Daten einer Aufzeichnung.
-export class ScheduleEditor extends JobScheduleEditor<EditScheduleContract> implements IScheduleEditor {
+export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> implements IScheduleEditor {
     // Erstellt ein neues Präsentationsmodell.
     constructor(
         page: IPage,
-        model: EditScheduleContract,
+        model: IEditScheduleContract,
         favoriteSources: string[],
         onChange: () => void,
         hasJobSource: () => boolean

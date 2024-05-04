@@ -1,9 +1,9 @@
 ﻿import { ICommand, Command } from '../../../lib/command/command'
 import { IConnectable, IView } from '../../../lib/site'
-import { GuideEncryption } from '../../../web/GuideEncryption'
-import { GuideFilterContract, countProgramGuide } from '../../../web/GuideFilterContract'
-import { GuideSource } from '../../../web/GuideSource'
-import { SavedGuideQueryContract } from '../../../web/SavedGuideQueryContract'
+import { guideEncryption } from '../../../web/guideEncryption'
+import { IGuideFilterContract, countProgramGuide } from '../../../web/IGuideFilterContract'
+import { guideSource } from '../../../web/guideSource'
+import { ISavedGuideQueryContract } from '../../../web/ISavedGuideQueryContract'
 
 // Schnittstelle zur Anzeige und Pflege einer gespeicherten Suche.
 export interface IFavorite extends IConnectable {
@@ -32,7 +32,7 @@ export class Favorite implements IFavorite {
 
     // Legt ein Präsentationsmodell an.
     constructor(
-        public readonly model: SavedGuideQueryContract,
+        public readonly model: ISavedGuideQueryContract,
         show: (favorite: Favorite) => void,
         remove: (favorite: Favorite) => Promise<void>,
         private _refresh: () => void
@@ -60,12 +60,12 @@ export class Favorite implements IFavorite {
         // Einige Einschränkungen machen nur Sinn, wenn keine Quelle ausgewählt ist.
         if ((this.model.source || '') === '') {
             // Verschlüsselung.
-            if (this.model.encryption === GuideEncryption.FREE) display += 'unverschlüsselten '
-            else if (this.model.encryption === GuideEncryption.PAY) display += 'verschlüsselten '
+            if (this.model.encryption === guideEncryption.FREE) display += 'unverschlüsselten '
+            else if (this.model.encryption === guideEncryption.PAY) display += 'verschlüsselten '
 
             // Art der Quelle.
-            if (this.model.sourceType === GuideSource.TV) display += 'Fernseh-'
-            else if (this.model.sourceType === GuideSource.RADIO) display += 'Radio-'
+            if (this.model.sourceType === guideSource.TV) display += 'Fernseh-'
+            else if (this.model.sourceType === guideSource.RADIO) display += 'Radio-'
         }
 
         // Gerät.
@@ -115,7 +115,7 @@ export class Favorite implements IFavorite {
         this._count = null
 
         // Suchbedingung in die Protokollnotation wandeln - naja, das ist nicht wirklich schwer.
-        var filter: GuideFilterContract = {
+        var filter: IGuideFilterContract = {
             content: this.model.titleOnly ? '' : this.model.text,
             cryptFilter: this.model.encryption,
             typeFilter: this.model.sourceType,

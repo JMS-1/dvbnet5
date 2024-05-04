@@ -1,7 +1,7 @@
 ﻿import { ICommand, Command } from '../../lib/command/command'
 import { IFlag, Flag } from '../../lib/edit/boolean/flag'
-import { triggerTask } from '../../web/PlanCurrentContract'
-import { doUrlCall } from '../../web/vcrserver'
+import { triggerTask } from '../../web/IPlanCurrentContract'
+import { doUrlCall } from '../../web/VCRServer'
 import { Application } from '../app'
 import { IPage, Page } from './page'
 

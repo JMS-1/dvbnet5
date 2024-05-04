@@ -1,7 +1,7 @@
 ﻿import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
 import { INumber } from '../../../lib/edit/number/number'
 import { Number } from '../../../lib/edit/number/number'
-import { ProfileContract } from '../../../web/ProfileContract'
+import { IProfileContract } from '../../../web/IProfileContract'
 
 // Schnittstelle zur Pflege eines einzelnen Geräteprofils.
 export interface IDevice {
@@ -40,7 +40,7 @@ export class Device implements IDevice {
 
     // Erstellt ein neues Präsentationsmodell.
     constructor(
-        profile: ProfileContract,
+        profile: IProfileContract,
         onChange: () => void,
         private readonly _defaultDevice: () => string
     ) {

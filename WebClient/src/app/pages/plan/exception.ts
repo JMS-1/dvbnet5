@@ -2,7 +2,7 @@
 import { DateTimeUtils } from '../../../lib/dateTimeUtils'
 import { INumberWithSlider, NumberWithSlider } from '../../../lib/edit/number/slider'
 import { IConnectable, IView } from '../../../lib/site'
-import { PlanExceptionContract, updateException } from '../../../web/PlanExceptionContract'
+import { IPlanExceptionContract, updateException } from '../../../web/IPlanExceptionContract'
 
 // Erweiterte Schnittstelle zur Pflege einer einzelnen Ausnahmeregel.
 export interface IPlanException extends IConnectable {
@@ -38,7 +38,7 @@ export interface IPlanException extends IConnectable {
 export class PlanException implements IPlanException {
     // Erstellt ein neies Präsentationsmodell.
     constructor(
-        private model: PlanExceptionContract,
+        private model: IPlanExceptionContract,
         private _entryId: string,
         private _reload: () => void
     ) {

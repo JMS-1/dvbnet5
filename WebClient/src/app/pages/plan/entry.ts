@@ -2,8 +2,8 @@
 import { IConnectable, IView } from '../../../lib/site'
 import { ITimeBar, TimeBar } from '../../../lib/timebar'
 import { Guide } from '../../../pages/guide'
-import { GuideItemContract, getGuideItem } from '../../../web/GuideItemContract'
-import { PlanActivityContract } from '../../../web/PlanActivityContract'
+import { IGuideItemContract, getGuideItem } from '../../../web/IGuideItemContract'
+import { IPlanActivityContract } from '../../../web/IPlanActivityContract'
 import { Application } from '../../app'
 import { GuideInfo, IGuideInfo } from '../guide/entry'
 import { IPlanException, PlanException } from './exception'
@@ -75,11 +75,11 @@ export interface IPlanEntry extends IConnectable {
 export class PlanEntry implements IPlanEntry {
     // Erstellt ein neues Präsentationsmodell.
     constructor(
-        private model: PlanActivityContract,
+        private model: IPlanActivityContract,
         private _toggleDetail: (entry: PlanEntry, epg: boolean) => void,
         application: Application,
         reload: () => void,
-        private readonly _findInGuide: (model: GuideItemContract) => void
+        private readonly _findInGuide: (model: IGuideItemContract) => void
     ) {
         // Zeiten umrechnen
         this.duration = parseInt(model.duration)

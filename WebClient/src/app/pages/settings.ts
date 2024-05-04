@@ -2,7 +2,7 @@
 import { IFlag, Flag } from '../../lib/edit/boolean/flag'
 import { IValueFromList, uiValue, SelectSingleFromList } from '../../lib/edit/list'
 import { INumber } from '../../lib/edit/number/number'
-import { setUserProfile } from '../../web/UserProfileContract'
+import { setUserProfile } from '../../web/IUserProfileContract'
 import { Application } from '../app'
 import { IPage, Page } from './page'
 import { Number } from '../../lib/edit/number/number'

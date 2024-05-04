@@ -1,5 +1,5 @@
 ﻿import { IValueFromList, IUiValue, uiValue, SelectSingleFromList } from '../../lib/edit/list'
-import { SavedGuideQueryContract, updateSearchQueries } from '../../web/SavedGuideQueryContract'
+import { ISavedGuideQueryContract, updateSearchQueries } from '../../web/ISavedGuideQueryContract'
 import { Application } from '../app'
 import { IFavorite, Favorite } from './favorites/entry'
 import { IPage, Page } from './page'
@@ -47,7 +47,7 @@ export class FavoritesPage extends Page implements IFavoritesPage {
     // Ermittelt die Liste der gespeicherten Suche neu - dabei wird auch eine neue Anfrage der Anzahl der Sender gestellt.
     private readFavorites(): Favorite[] {
         return JSON.parse(this.application.profile.guideSearches || '[]').map(
-            (e: SavedGuideQueryContract) =>
+            (e: ISavedGuideQueryContract) =>
                 new Favorite(
                     e,
                     (f) => this.show(f),
@@ -94,7 +94,7 @@ export class FavoritesPage extends Page implements IFavoritesPage {
     }
 
     // Ergänzt einen Favoritien.
-    add(favorite: SavedGuideQueryContract): Promise<void> {
+    add(favorite: ISavedGuideQueryContract): Promise<void> {
         // Ist der Aufruf erfolgreich so wechseln wir zur Ansicht der Favoriten - üblicherweise kommen wir aus der Programmzeitschrift.
         return updateSearchQueries([favorite].concat(this.readFavorites().map((f) => f.model))).then(() =>
             this.application.gotoPage(this.route)

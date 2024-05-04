@@ -1,14 +1,15 @@
-﻿import { GuideInfoContract, getGuideInfo } from './GuideInfoContract'
+﻿import { getGuideInfo, IGuideInfoContract } from './IGuideInfoContract'
 
 // Verwaltet die Zusammenfassung der Daten der Programmzeitschrift für einzelne Geräte
 export class GuideInfoCache {
-    private static promises: { [device: string]: Promise<GuideInfoContract> } = {}
+    private static promises: { [device: string]: Promise<IGuideInfoContract> } = {}
 
-    static getPromise(profileName: string): Promise<GuideInfoContract> {
+    static getPromise(profileName: string): Promise<IGuideInfoContract> {
         // Eventuell haben wir das schon einmal gemacht
-        var promise = GuideInfoCache.promises[profileName]
+        let promise = GuideInfoCache.promises[profileName]
         if (!promise)
-            GuideInfoCache.promises[profileName] = promise = new Promise<GuideInfoContract>((success) =>
+            GuideInfoCache.promises[profileName] = promise = new Promise<IGuideInfoContract>((success) =>
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 getGuideInfo(profileName).then((i) => success(i!))
             )
 

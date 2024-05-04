@@ -1,7 +1,7 @@
 ﻿import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
 import { IString } from '../../../lib/edit/text/text'
 import { IDisplay } from '../../../lib/localizable'
-import { EditJobScheduleCommonContract } from '../../../web/EditJobScheduleCommonContract'
+import { IEditJobScheduleCommonContract } from '../../../web/IEditJobScheduleCommonContract'
 import { IChannelSelector, ChannelEditor } from '../channel'
 import { IPage } from '../page'
 import { String } from '../../../lib/edit/text/text'
@@ -37,7 +37,7 @@ export interface IJobScheduleEditor {
 }
 
 // Bietet die gemeinsamen Daten eines Auftrags oder einer Aufzeichnung zur Pflege an.
-export abstract class JobScheduleEditor<TModelType extends EditJobScheduleCommonContract>
+export abstract class JobScheduleEditor<TModelType extends IEditJobScheduleCommonContract>
     implements IJobScheduleEditor
 {
     // Ein Muster zum Erkennen gültiger Namen von Aufzeichnungen.

@@ -1,4 +1,4 @@
-﻿import { getPlanCurrent } from '../../web/PlanCurrentContract'
+﻿import { getPlanCurrent } from '../../web/IPlanCurrentContract'
 import { Application } from '../app'
 import { IDeviceInfo, Info } from './devices/entry'
 import { IPage, Page } from './page'

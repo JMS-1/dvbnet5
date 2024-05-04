@@ -1,4 +1,4 @@
-﻿import { getRecordingDirectories } from './EditJobContract'
+﻿import { getRecordingDirectories } from './IEditJobContract'
 
 // Verwaltet die Aufzeichnungsverzeichnisse
 export class RecordingDirectoryCache {
@@ -16,6 +16,7 @@ export class RecordingDirectoryCache {
         if (!RecordingDirectoryCache.promise) {
             // Verwaltung erzeugen.
             RecordingDirectoryCache.promise = new Promise<string[]>((success) => {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 getRecordingDirectories().then((data) => success(data!))
             })
         }

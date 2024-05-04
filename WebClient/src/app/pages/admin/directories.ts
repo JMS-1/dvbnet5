@@ -1,16 +1,16 @@
-﻿import { ICommand, Command } from '../../../lib/command/command'
+﻿import { ISection, Section } from './section'
+
+import { Command, ICommand } from '../../../lib/command/command'
 import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
-import { String } from '../../../lib/edit/text/text'
 import { IMultiValueFromList, SelectMultipleFromList } from '../../../lib/edit/multiList'
-import { IString } from '../../../lib/edit/text/text'
-import { ISection, Section } from './section'
+import { IString, String } from '../../../lib/edit/text/text'
 import {
-    getDirectorySettings,
     browseDirectories,
-    DirectorySettingsContract,
+    getDirectorySettings,
+    IDirectorySettingsContract,
     setDirectorySettings,
     validateDirectory,
-} from '../../../web/admin/DirectorySettingsContract'
+} from '../../../web/admin/IDirectorySettingsContract'
 
 // Schnittstelle zur Pflege der erlaubten Aufzeichnungsverzeichnisse.
 export interface IAdminDirectoriesPage extends ISection {
@@ -42,7 +42,7 @@ export interface IAdminDirectoriesPage extends ISection {
 // Präsentationsmodell zur Pflege der Konfiguration der Aufzeichnungsverzeichnisse.
 export class DirectoriesSection extends Section implements IAdminDirectoriesPage {
     // Der eindeutige Name des Bereichs.
-    static readonly route = `directories`
+    static readonly route = 'directories'
 
     // Die aktuelle Liste der Aufzeichnungsverzeichnisse.
     readonly directories = new SelectMultipleFromList<string>(
@@ -69,7 +69,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
 
     // Eingabe eines Netzwerklaufwerks.
     readonly share = new String({}, 'value', 'Netzwerk-Share', () => this.refreshUi()).addValidator(
-        (v) => this._shareValidation || ``
+        (v) => this._shareValidation || ''
     )
 
     // Gesetzt wenn die Verzeichnisauswahl angezeigt werden soll.
@@ -115,7 +115,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
             this.pattern.data = settings
 
             // Wurzelverzeichnisse laden.
-            browseDirectories(``, true).then((dirs) => this.setDirectories(dirs!))
+            browseDirectories('', true).then((dirs) => this.setDirectories(dirs!))
         })
     }
 
@@ -125,7 +125,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
         this._disableBrowse = true
 
         // Auswahlliste vorbereiten und mit dem ersten Verzeichnis initialisieren.
-        this.browse.allowedValues = (directories || []).map((d) => uiValue(d, d || `<Bitte auswählen>`))
+        this.browse.allowedValues = (directories || []).map((d) => uiValue(d, d || '<Bitte auswählen>'))
         this.browse.value = this.browse.allowedValues[0].value
 
         // Alles wie wie üblich.
@@ -144,14 +144,14 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
         if (this._disableBrowse) return
 
         // Alle Unterverzeichnisse ermitteln.
-        var folder = this.browse.value
+        const folder = this.browse.value
         if (folder) browseDirectories(folder, true).then((dirs) => this.setDirectories(dirs!))
     }
 
     // Das übergeordnete Verzeichnis soll angezeigt werden.
     private doBrowseUp(): void {
         // In eine höhere Ansicht wechseln.
-        var folder = this.browse.allowedValues[0].value
+        const folder = this.browse.allowedValues[0].value
         if (folder) browseDirectories(folder, false).then((dirs) => this.setDirectories(dirs!))
     }
 
@@ -168,7 +168,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     // Sendet die veränderte Konfiguration an den VCR.NET Recording Service.
     protected saveAsync(): Promise<boolean | undefined> {
         // Die aktuell erlaubten Verzeichnisse werden als Verzeichnisliste übernommen.
-        var settings: DirectorySettingsContract = this.pattern.data
+        const settings: IDirectorySettingsContract = this.pattern.data
 
         settings.directories = this.directories.allowedValues.map((v) => v.value)
 
@@ -181,7 +181,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
         // Es erfolgt eine direkte Auswahl über eine Verzeichnisliste.
         if (this.showBrowse) {
             // Sicherheitshalber prüfen wir auf eine echte Auswahl.
-            var selected = this.browse.value
+            const selected = this.browse.value
             if (selected) this.addDirectory(selected)
 
             // Das geht synchron.
@@ -189,7 +189,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
         }
 
         // Der Anwender hat ein Netzwerkverzeichnis ausgewählt.
-        var share = (this.share.value ?? '').trim()
+        const share = (this.share.value ?? '').trim()
 
         // Prüfergebnis zurücksetzen.
         this._shareValidation = undefined
@@ -223,7 +223,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
         // Als Verzeichnis aufbereiten.
         folder = folder.trim()
 
-        if (folder.length > 0) if (folder[folder.length - 1] != `\\`) folder += `\\`
+        if (folder.length > 0) if (folder[folder.length - 1] != '\\') folder += '\\'
 
         // Nur bisher unbekannte Verzeichnisse eintragen.
         if (!this.directories.allowedValues.some((v) => v.value === folder))

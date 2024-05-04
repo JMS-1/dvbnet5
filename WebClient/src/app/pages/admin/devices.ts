@@ -1,7 +1,8 @@
-﻿import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
-import { getProfileSettings, setProfileSettings } from '../../../web/admin/ProfileSettingsContract'
-import { IDevice, Device } from './device'
+﻿import { Device, IDevice } from './device'
 import { ISection, Section } from './section'
+
+import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
+import { getProfileSettings, setProfileSettings } from '../../../web/admin/IProfileSettingsContract'
 
 // Schnittstelle zur Konfiguration der Geräteprofile.
 export interface IAdminDevicesPage extends ISection {
@@ -15,7 +16,7 @@ export interface IAdminDevicesPage extends ISection {
 // Präsentationsmodell zur Konfiguration der Geräteprofile.
 export class DevicesSection extends Section implements IAdminDevicesPage {
     // Der eindeutige Name des Bereichs.
-    static readonly route = `devices`
+    static readonly route = 'devices'
 
     // Präsentationsmodell zur Pflege des bevorzugten Gerätes.
     readonly defaultDevice = new SelectSingleFromList<string>(
@@ -60,7 +61,7 @@ export class DevicesSection extends Section implements IAdminDevicesPage {
     // Prüft, ob das bevorzugte Gerät auch verwendet werden darf.
     private validateDefaultDevice(defaultDevice: string | null): string | undefined {
         if (this.devices.filter((d) => d.name === defaultDevice).some((d) => !d.active.value))
-            return `Dieses Gerät ist nicht für Aufzeichnungen vorgesehen`
+            return 'Dieses Gerät ist nicht für Aufzeichnungen vorgesehen'
     }
 
     // Aktualisiert die Anzeige.

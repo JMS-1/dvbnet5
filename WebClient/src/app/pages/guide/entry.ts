@@ -1,7 +1,7 @@
 ﻿import { ICommand, Command } from '../../../lib/command/command'
 import { DateTimeUtils } from '../../../lib/dateTimeUtils'
 import { IValueFromList } from '../../../lib/edit/list'
-import { GuideItemContract } from '../../../web/GuideItemContract'
+import { IGuideItemContract } from '../../../web/IGuideItemContract'
 
 // Schnittstelle zur Anzeige eines Eintrags in der Programmzeitschrift.
 export interface IGuideInfo {
@@ -61,8 +61,8 @@ export interface IGuideEntry extends IGuideInfo {
 export class GuideInfo implements IGuideInfo {
     // Erstellt eine neue Beschreibung.
     constructor(
-        protected readonly model: GuideItemContract,
-        private readonly _findInGuide: (model: GuideItemContract) => void
+        protected readonly model: IGuideItemContract,
+        private readonly _findInGuide: (model: IGuideItemContract) => void
     ) {
         // Zeitraum der Sendung.
         this.start = new Date(model.start)
@@ -131,8 +131,8 @@ export class GuideInfo implements IGuideInfo {
 export class GuideEntry extends GuideInfo implements IGuideEntry {
     // Erstellt eine neue Beschreibung.
     constructor(
-        model: GuideItemContract,
-        findInGuide: (model: GuideItemContract) => void,
+        model: IGuideItemContract,
+        findInGuide: (model: IGuideItemContract) => void,
         private _toggleDetails: (entry: GuideEntry) => void,
         createNew: (entry: GuideEntry) => void,
         public jobSelector: IValueFromList<string>

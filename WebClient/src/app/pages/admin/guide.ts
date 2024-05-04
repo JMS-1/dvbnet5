@@ -1,15 +1,15 @@
-﻿import { ICommand, Command } from '../../../lib/command/command'
-import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+﻿import { ISection, Section } from './section'
+
+import { Command, ICommand } from '../../../lib/command/command'
+import { Flag, IFlag } from '../../../lib/edit/boolean/flag'
 import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
 import { IMultiValueFromList, SelectMultipleFromList } from '../../../lib/edit/multiList'
-import { INumber } from '../../../lib/edit/number/number'
-import { AdminPage } from '../admin'
-import { IChannelSelector, ChannelEditor } from '../channel'
-import { ISection, Section } from './section'
-import { Number } from '../../../lib/edit/number/number'
-import { getGuideSettings, GuideSettingsContract, setGuideSettings } from '../../../web/admin/GuideSettingsContract'
+import { INumber, Number } from '../../../lib/edit/number/number'
+import { getGuideSettings, IGuideSettingsContract, setGuideSettings } from '../../../web/admin/IGuideSettingsContract'
 import { ProfileCache } from '../../../web/ProfileCache'
 import { ProfileSourcesCache } from '../../../web/ProfileSourcesCache'
+import { AdminPage } from '../admin'
+import { ChannelEditor, IChannelSelector } from '../channel'
 
 // Schnittstelle zur Pflege der Konfiguration der Programmzeitschrift.
 export interface IAdminGuidePage extends ISection {
@@ -50,7 +50,7 @@ export interface IAdminGuidePage extends ISection {
 // Präsentationsmodell zur Pflege der Konfiguration der Aktualisierung der Programmzeitschrift.
 export class GuideSection extends Section implements IAdminGuidePage {
     // Der eindeutige Name des Bereichs.
-    static readonly route = `guide`
+    static readonly route = 'guide'
 
     // Gesetzt, wenn die automatische Aktualisierung der Programmzeitschrift aktiviert wurde.
     readonly isActive = new Flag({}, 'value', 'Aktualisierung aktivieren', () => this.refreshUi())
@@ -141,7 +141,7 @@ export class GuideSection extends Section implements IAdminGuidePage {
 
         this.device.value = null
         this.source.allSources = []
-        this.source.value = ``
+        this.source.value = ''
 
         // Daten vom VCR.NET Recording Service abrufen.
         getGuideSettings()
@@ -210,13 +210,13 @@ export class GuideSection extends Section implements IAdminGuidePage {
         this.sources.allowedValues = this.sources.allowedValues.concat([uiValue(this.source.value ?? '')])
 
         // Die Auswahl setzen wir aber direkt wieder zurück.
-        this.source.value = ``
+        this.source.value = ''
     }
 
     // Die Konfiguration zur Aktualisierung an den VCR.NET Recording Service übertragen.
     protected saveAsync(): Promise<boolean | undefined> {
         // Die Auswahlliste der Quellen ist die Liste der zu berücksichtigenden Quellen.
-        var settings = <GuideSettingsContract>this.hours.data
+        const settings = <IGuideSettingsContract>this.hours.data
 
         settings.sources = this.sources.allowedValues.map((v) => v.value)
 
