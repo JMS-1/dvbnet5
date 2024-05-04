@@ -1,10 +1,8 @@
-﻿module VCRServer {
-    // Repräsentiert die Klasse ProfileInfo
-    export interface ProfileInfoContract {
-        name: string
-    }
+﻿// Repräsentiert die Klasse ProfileInfo
+export interface ProfileInfoContract {
+    name: string
+}
 
-    export function getProfileInfos(): Promise<ProfileInfoContract[] | undefined> {
-        return doUrlCall(`profile`)
-    }
+export function getProfileInfos(): Promise<ProfileInfoContract[] | undefined> {
+    return doUrlCall(`profile`)
 }

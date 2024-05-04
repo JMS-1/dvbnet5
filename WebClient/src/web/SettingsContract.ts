@@ -1,8 +1,2 @@
-﻿module VCRServer {
-
-    // Hilfsschnittstelle für alle Einstellungen
-    export interface SettingsContract {
-    }
-
-}
-
+﻿// Hilfsschnittstelle für alle Einstellungen
+export interface SettingsContract {}
