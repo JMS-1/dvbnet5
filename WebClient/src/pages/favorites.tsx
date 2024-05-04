@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Anzeige der gespeicherten Suchen.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Anzeige der gespeicherten Suchen.
 export class Favorites extends JMSLib.ReactUi.ComponentWithSite<App.IFavoritesPage> {
     // Oberflächenelemente anzeigen.
     render(): JSX.Element {

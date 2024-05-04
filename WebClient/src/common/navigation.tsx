@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Anzeige der Navigationsleiste.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Anzeige der Navigationsleiste.
 export class Navigation extends JMSLib.ReactUi.Component<App.IPage> {
     // Erstellt die Anzeige.
     render(): React.ReactNode {

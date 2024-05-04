@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Konfiguration der Planungsregeln.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Konfiguration der Planungsregeln.
 export class AdminRules extends AdminSection<App.Admin.IAdminRulesPage> {
     // Das zugehörige Ui View Model.
     static get uvm(): IAdminSectionFactory<App.Admin.IAdminRulesPage> {

@@ -1,4 +1,6 @@
-﻿// React.js Komponente zur Konfiguration der Geräte.
+﻿import * as React from 'react'
+
+// React.js Komponente zur Konfiguration der Geräte.
 export class AdminDevices extends AdminSection<App.Admin.IAdminDevicesPage> {
     // Das zugehörige Ui View Model.
     static get uvm(): IAdminSectionFactory<App.Admin.IAdminDevicesPage> {

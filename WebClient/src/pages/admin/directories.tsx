@@ -1,4 +1,6 @@
-﻿// React.js Komponente zur Konfiguration der Aufzeichnungsverzeichnisse.
+﻿import * as React from 'react'
+
+// React.js Komponente zur Konfiguration der Aufzeichnungsverzeichnisse.
 export class AdminDirectories extends AdminSection<App.Admin.IAdminDirectoriesPage> {
     // Das zugehörige Ui View Model.
     static get uvm(): IAdminSectionFactory<App.Admin.IAdminDirectoriesPage> {

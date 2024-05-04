@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Pflege der Daten eines Auftrags.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Pflege der Daten eines Auftrags.
 export class JobData extends JMSLib.ReactUi.Component<App.Edit.IJobEditor> {
     // Oberflächenelement anlegen.
     render(): JSX.Element {

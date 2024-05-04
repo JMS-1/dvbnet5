@@ -1,4 +1,6 @@
-﻿// Die React.Js Anzeige zur Senderauswahl.
+﻿import * as React from 'react'
+
+// Die React.Js Anzeige zur Senderauswahl.
 export class EditChannel extends JMSLib.ReactUi.ComponentWithSite<App.IChannelSelector> implements JMSLib.App.IView {
     // Anzeigeelemente erstellen.
     render(): JSX.Element {

@@ -1,4 +1,6 @@
-﻿// Konfiguration der Anzeige einer Zahl.
+﻿import * as React from 'react'
+
+// Konfiguration der Anzeige einer Zahl.
 interface IEditNumber extends IComponent<App.INumber> {
     // Die Anzahl der Zeichen im Texteingabefeld für die Zahl.
     chars: number

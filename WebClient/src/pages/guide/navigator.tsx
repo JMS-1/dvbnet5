@@ -1,4 +1,6 @@
-﻿// React.Ks Komponente zur Navigation durch die Programmzeitschrift.
+﻿import * as React from 'react'
+
+// React.Ks Komponente zur Navigation durch die Programmzeitschrift.
 export class GuideNavigation extends JMSLib.ReactUi.Component<App.IGuidePageNavigation> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {

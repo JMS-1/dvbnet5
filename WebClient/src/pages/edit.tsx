@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Pflege einer Aufzeichnung.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Pflege einer Aufzeichnung.
 export class Edit extends JMSLib.ReactUi.ComponentWithSite<App.IEditPage> {
     // Oberflächenelemente erstellen.
     render(): JSX.Element {

@@ -1,4 +1,6 @@
-﻿// Schnittstelle eines Präsentationsmodell, das als Ziel einer Navigation dienen kann.
+﻿import * as React from 'react'
+
+// Schnittstelle eines Präsentationsmodell, das als Ziel einer Navigation dienen kann.
 export interface IRoutablePage {
     // Der eindeutige Name des Navigationsziels.
     route: string

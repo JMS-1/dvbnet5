@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Auswahl der Dauer eine Aufzeichnung über die EIngabe von Start- und Endzeit.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Auswahl der Dauer eine Aufzeichnung über die EIngabe von Start- und Endzeit.
 export class EditDuration extends JMSLib.ReactUi.Component<App.Edit.IDurationEditor> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {

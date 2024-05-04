@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Anzeige der Details eines Protokolleintrags.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Anzeige der Details eines Protokolleintrags.
 export class LogDetails extends JMSLib.ReactUi.Component<App.Log.ILogEntry> {
     // Oberflächenelemente erstellen.
     render(): JSX.Element {

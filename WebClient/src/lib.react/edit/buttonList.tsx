@@ -1,4 +1,6 @@
-﻿// Schnittstelle zur Anzeige einer Liste von Schaltflächen.
+﻿import * as React from 'react'
+
+// Schnittstelle zur Anzeige einer Liste von Schaltflächen.
 interface ISingleSelectButton extends IComponent<App.IValueFromList<any>> {
     // Gesetzt, wenn die Schaltflächen nicht separiert werden sollen.
     merge?: boolean

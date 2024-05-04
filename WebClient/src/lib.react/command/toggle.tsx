@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Pflege eines Wahrheitswertes über eine Schaltfläche.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Pflege eines Wahrheitswertes über eine Schaltfläche.
 export class ToggleCommand extends Component<App.IToggableFlag> {
     // Erzeugt die Oberflächenelemente.
     render(): JSX.Element {

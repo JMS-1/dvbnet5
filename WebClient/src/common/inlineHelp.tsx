@@ -1,4 +1,6 @@
-﻿// Konfiguration zur Anzeige einer eingebetteten Beschreibung.
+﻿import * as React from 'react'
+
+// Konfiguration zur Anzeige einer eingebetteten Beschreibung.
 interface IInlineHelpStatic {
     // Die Überschrift.
     title: string

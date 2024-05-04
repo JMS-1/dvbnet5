@@ -1,4 +1,6 @@
-﻿// React.Js Komponente für ein Bild in der Hilfe.
+﻿import * as React from 'react'
+
+// React.Js Komponente für ein Bild in der Hilfe.
 export class ScreenShot extends React.Component<JMSLib.ReactUi.IPictogram, JMSLib.ReactUi.IEmpty> {
     // Erzeugt die Oberflächenelemente.
     render(): JSX.Element {

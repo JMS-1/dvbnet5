@@ -1,4 +1,6 @@
-﻿// Konfiguration einer einfachen Texteingabe.
+﻿import * as React from 'react'
+
+// Konfiguration einer einfachen Texteingabe.
 interface IEditText extends IComponent<App.IString> {
     // Die Anzahl der darzustellenden Zeichen.
     chars: number

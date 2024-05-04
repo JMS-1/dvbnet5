@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Anzeige einer Sendung aus der Programmzeitschrift.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Anzeige einer Sendung aus der Programmzeitschrift.
 export class GuideEntry extends JMSLib.ReactUi.Component<App.Guide.IGuideEntry> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {

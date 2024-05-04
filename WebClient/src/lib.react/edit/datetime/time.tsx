@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Eingabe einer Uhrzeit.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Eingabe einer Uhrzeit.
 export class EditTime extends ComponentWithSite<App.ITime> {
     // Erstellt die Oberflächenelemente.
     render(): JSX.Element {

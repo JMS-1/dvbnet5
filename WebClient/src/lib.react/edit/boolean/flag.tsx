@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur visuellen Pflege eines Wahrheitswertes.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur visuellen Pflege eines Wahrheitswertes.
 export class EditBoolean extends ComponentWithSite<App.IFlag> {
     // Erstellt die Anzeige der Komponente.
     render(): JSX.Element {

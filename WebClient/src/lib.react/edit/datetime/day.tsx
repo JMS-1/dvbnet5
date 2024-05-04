@@ -1,4 +1,6 @@
-﻿// React.JS Komponente zur Auswahl eines Datums.
+﻿import * as React from 'react'
+
+// React.JS Komponente zur Auswahl eines Datums.
 export class EditDay extends ComponentWithSite<App.IDaySelector> {
     // Anzeige erstellen.
     render(): JSX.Element {

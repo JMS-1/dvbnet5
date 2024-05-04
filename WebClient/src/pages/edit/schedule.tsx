@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Pflege der Daten einer Aufzeichnung.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Pflege der Daten einer Aufzeichnung.
 export class ScheduleData extends JMSLib.ReactUi.Component<App.Edit.IScheduleEditor> {
     // Oberflächenelement anlegen.
     render(): JSX.Element {

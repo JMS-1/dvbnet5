@@ -1,4 +1,6 @@
-﻿// Konfiguration der Steuerung einer laufenden Aufzeichnung.
+﻿import * as React from 'react'
+
+// Konfiguration der Steuerung einer laufenden Aufzeichnung.
 interface IDeviceControl extends JMSLib.ReactUi.IComponent<App.Devices.IDeviceController> {
     // Der zugehörige Navigationsbereich.
     page: App.IDevicesPage

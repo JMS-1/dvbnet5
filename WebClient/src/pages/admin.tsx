@@ -1,4 +1,6 @@
-﻿// Hilfsschnittstelle zur Signature des Konstruktors eines Ui View Models.
+﻿import * as React from 'react'
+
+// Hilfsschnittstelle zur Signature des Konstruktors eines Ui View Models.
 export interface IAdminSectionFactory<TSectionType extends App.Admin.ISection> {
     // Der eigentliche Konstruktor.
     new (page: App.AdminPage): App.Admin.ISection

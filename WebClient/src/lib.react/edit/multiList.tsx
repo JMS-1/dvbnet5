@@ -1,4 +1,6 @@
-﻿// Konfiguration zur Auswahl mehrerer Elemente aus einer Liste erlaubter Elemente.
+﻿import * as React from 'react'
+
+// Konfiguration zur Auswahl mehrerer Elemente aus einer Liste erlaubter Elemente.
 export interface ISelectMultipleFromList extends IComponent<App.IMultiValueFromList<any>> {
     // Die Größe der Liste.
     items: number

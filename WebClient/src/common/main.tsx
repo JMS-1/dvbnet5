@@ -1,4 +1,6 @@
-﻿// React.Js Komponente für die Hauptseite der Anwendung - im Prinzip der gesamte sichtbare Bereich im Browser.
+﻿import * as React from 'react'
+
+// React.Js Komponente für die Hauptseite der Anwendung - im Prinzip der gesamte sichtbare Bereich im Browser.
 export class Main
     extends React.Component<JMSLib.ReactUi.IEmpty, JMSLib.ReactUi.IEmpty>
     implements App.IApplicationSite

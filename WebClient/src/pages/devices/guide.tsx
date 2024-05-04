@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Anzeige des Auszugs der Programmzeitschrift für eine Aktivität.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Anzeige des Auszugs der Programmzeitschrift für eine Aktivität.
 export class DeviceGuide extends JMSLib.ReactUi.ComponentWithSite<App.Devices.IDeviceInfo> {
     // Oberflächenelemente erstellen.
     render(): JSX.Element {

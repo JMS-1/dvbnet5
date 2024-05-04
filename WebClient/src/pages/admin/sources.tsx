@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Konfiguration des Sendersuchlaufs.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Konfiguration des Sendersuchlaufs.
 export class AdminSources extends AdminSection<App.Admin.IAdminScanPage> {
     // Das zugehörige Ui View Model.
     static get uvm(): IAdminSectionFactory<App.Admin.IAdminScanPage> {

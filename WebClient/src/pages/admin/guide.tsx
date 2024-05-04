@@ -1,4 +1,6 @@
-﻿// React.Js Komponentezur Pflege der Konfiguration der Aktualisierung der Programmzeitschrift.
+﻿import * as React from 'react'
+
+// React.Js Komponentezur Pflege der Konfiguration der Aktualisierung der Programmzeitschrift.
 export class AdminGuide extends AdminSection<App.Admin.IAdminGuidePage> {
     // Das zugehörige Ui View Model.
     static get uvm(): IAdminSectionFactory<App.Admin.IAdminGuidePage> {

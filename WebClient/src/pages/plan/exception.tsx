@@ -1,4 +1,6 @@
-﻿// Schnittstelle zur Pflege einer Ausnahmeregel.
+﻿import * as React from 'react'
+
+// Schnittstelle zur Pflege einer Ausnahmeregel.
 interface IPlanExceptionStatic extends JMSLib.ReactUi.IComponent<App.Plan.IPlanException> {
     // Die aktuell angezeigte Seite.
     page: App.IPlanPage

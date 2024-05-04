@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Anzeige der Version (lokal installiert und Online verfügbar) des VCR.NET Recording Service.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Anzeige der Version (lokal installiert und Online verfügbar) des VCR.NET Recording Service.
 export class VersionCheck extends JMSLib.ReactUi.Component<App.IHomePage> {
     // Oberflächenelemente anzeigen.
     render(): JSX.Element {

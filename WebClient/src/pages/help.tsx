@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Anzeige der Hilfeseite.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Anzeige der Hilfeseite.
 export class Help extends JMSLib.ReactUi.Component<App.IHelpPage> {
     // Erstellt die Anzeigeelemente der Oberfläche.
     render(): JSX.Element {

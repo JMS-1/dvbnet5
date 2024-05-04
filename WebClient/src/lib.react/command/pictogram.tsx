@@ -1,4 +1,6 @@
-﻿// Konfiguration zur Anzeige eines Symbols.
+﻿import * as React from 'react'
+
+// Konfiguration zur Anzeige eines Symbols.
 export interface IPictogram {
     // Der Name einer Symboldatei.
     name: string

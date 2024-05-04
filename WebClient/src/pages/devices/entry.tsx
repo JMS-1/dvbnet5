@@ -1,4 +1,6 @@
-﻿// Konfiguration zur Anzeige einer einzelnen Aktivität.
+﻿import * as React from 'react'
+
+// Konfiguration zur Anzeige einer einzelnen Aktivität.
 interface IDevice extends JMSLib.ReactUi.IComponent<App.Devices.IDeviceInfo> {
     // Der zugehörige Navigationsbereich.
     page: App.IDevicesPage

@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Konfiguration sonstiger Einstellungen.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Konfiguration sonstiger Einstellungen.
 export class AdminOther extends AdminSection<App.Admin.IAdminOtherPage> {
     // Das zugehörige Ui View Model.
     static get uvm(): IAdminSectionFactory<App.Admin.IAdminOtherPage> {

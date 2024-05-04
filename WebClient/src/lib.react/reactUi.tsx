@@ -1,4 +1,6 @@
-﻿// Beschreibt eine React.Js Komponente für ein Präsentationsmodell.
+﻿import * as React from 'react'
+
+// Beschreibt eine React.Js Komponente für ein Präsentationsmodell.
 export interface IComponent<TViewModelType> {
     // Das Präsentationsmodell (Ui View Model).
     uvm: TViewModelType

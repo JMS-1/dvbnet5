@@ -1,4 +1,6 @@
-﻿// Die React.Js Komponente zur Anzeige der Startseite.
+﻿import * as React from 'react'
+
+// Die React.Js Komponente zur Anzeige der Startseite.
 export class Home extends JMSLib.ReactUi.ComponentWithSite<App.IHomePage> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {

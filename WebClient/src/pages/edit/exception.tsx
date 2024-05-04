@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Deaktivierung einer einzelnen Ausnahmeregel.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Deaktivierung einer einzelnen Ausnahmeregel.
 export class EditException extends JMSLib.ReactUi.Component<App.Edit.IScheduleException> {
     // Erstellt die Oberflächenelemente zur Pflege.
     render(): JSX.Element {

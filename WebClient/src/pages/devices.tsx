@@ -1,4 +1,6 @@
-﻿// React.Ks Komponente zur Anzeige der Geräteübersicht.
+﻿import * as React from 'react'
+
+// React.Ks Komponente zur Anzeige der Geräteübersicht.
 export class Devices extends JMSLib.ReactUi.ComponentWithSite<App.IDevicesPage> {
     // Oberflächenelemente erstellen.
     render(): JSX.Element {

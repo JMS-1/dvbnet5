@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Anzeige des Protokolls.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Anzeige des Protokolls.
 export class Log extends JMSLib.ReactUi.ComponentWithSite<App.ILogPage> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {

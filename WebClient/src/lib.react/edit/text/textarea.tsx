@@ -1,4 +1,6 @@
-﻿// Konfiguration zur Eingabe eines langen Textes.
+﻿import * as React from 'react'
+
+// Konfiguration zur Eingabe eines langen Textes.
 interface IEditTextArea extends IComponent<App.IString> {
     // Zeilen zur Eingabe.
     rows: number

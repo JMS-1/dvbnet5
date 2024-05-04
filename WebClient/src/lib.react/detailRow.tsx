@@ -1,4 +1,6 @@
-﻿// Blendet in einer Tabelle eine Sonderzeile mit Detailinformationen ein.
+﻿import * as React from 'react'
+
+// Blendet in einer Tabelle eine Sonderzeile mit Detailinformationen ein.
 interface IDetailRow {
     // Optional die Anzahl der Spalten vor der Detailinformation.
     prefixColumns?: number

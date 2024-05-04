@@ -1,4 +1,6 @@
-﻿// Konfiguration eines externen Verweises.
+﻿import * as React from 'react'
+
+// Konfiguration eines externen Verweises.
 interface IExternalLink {
     // Der volle Verweis.
     url: string

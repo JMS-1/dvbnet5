@@ -1,4 +1,6 @@
-﻿// Konfiguration für den Verweis auf eine Hilfeseite.
+﻿import * as React from 'react'
+
+// Konfiguration für den Verweis auf eine Hilfeseite.
 interface IHelpLinkStatic {
     // Der Navigationsbereich, aus dem der der Aufruf erfolgt.
     page: App.IPage

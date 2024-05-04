@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Anzeige aller Aufträge.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Anzeige aller Aufträge.
 export class Jobs extends JMSLib.ReactUi.ComponentWithSite<App.IJobPage> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {

@@ -1,4 +1,6 @@
-﻿// Schnittstelle zur Anzeige einer Schaltfläche.
+﻿import * as React from 'react'
+
+// Schnittstelle zur Anzeige einer Schaltfläche.
 interface IButtonCommand extends IComponent<App.ICommand> {
     // Zusätzliche CSS Klassen.
     className?: string

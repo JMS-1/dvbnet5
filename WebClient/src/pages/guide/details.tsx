@@ -1,4 +1,6 @@
-﻿// Konfiguration zur Anzeige der Details zu einer Sendung der Programmzeitschrift.
+﻿import * as React from 'react'
+
+// Konfiguration zur Anzeige der Details zu einer Sendung der Programmzeitschrift.
 interface IGuideDetails extends JMSLib.ReactUi.IComponent<App.Guide.IGuideEntry> {
     // Der zugehörige Navigationsbereich.
     page: App.IGuidePage

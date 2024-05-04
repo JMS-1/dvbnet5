@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Pflege der Benutzereinstellungen.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Pflege der Benutzereinstellungen.
 export class Settings extends JMSLib.ReactUi.ComponentWithSite<App.ISettingsPage> {
     // Oberflächenelemente erzeugen.
     render(): JSX.Element {

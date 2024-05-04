@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Anzeige des Aufzeichnungsplans.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Anzeige des Aufzeichnungsplans.
 export class Plan extends JMSLib.ReactUi.ComponentWithSite<App.IPlanPage> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {

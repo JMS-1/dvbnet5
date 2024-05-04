@@ -1,4 +1,6 @@
-﻿// Konfiguration zur Anzeige der Details einer Aufzeichnung.
+﻿import * as React from 'react'
+
+// Konfiguration zur Anzeige der Details einer Aufzeichnung.
 interface IPlanGuide extends JMSLib.ReactUi.IComponent<App.Plan.IPlanEntry> {
     // Der zugehörige Navigationsbereich.
     page: App.IPlanPage
@@ -15,7 +17,9 @@ export class PlanGuide extends JMSLib.ReactUi.ComponentExWithSite<App.Plan.IPlan
                 <div>
                     <span>Aufzeichnungsoptionen:</span>
                     <HelpLink topic='filecontents' page={this.props.page} />
-                    <span className={this.props.uvm.allAudio ? undefined : `vcrnet-optionoff`}>Alle Sprachen</span>,{' '}
+                    <span className={this.props.uvm.allAudio ? undefined : `vcrnet-optionoff`}>
+                        Alle Sprachen
+                    </span>,{' '}
                     <span className={this.props.uvm.dolby ? undefined : `vcrnet-optionoff`}>Dolby Digital</span>,{' '}
                     <span className={this.props.uvm.ttx ? undefined : `vcrnet-optionoff`}>Videotext</span>,{' '}
                     <span className={this.props.uvm.subs ? undefined : `vcrnet-optionoff`}>DVB-Untertitel</span>,{' '}

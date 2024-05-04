@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zur Auswahl einer Zahl über einen Schieberegler.
+﻿import * as React from 'react'
+
+// React.Js Komponente zur Auswahl einer Zahl über einen Schieberegler.
 export class EditNumberSlider extends ComponentWithSite<App.INumberWithSlider> {
     // Erstellt die Oberflächenelement - hier gibt es eine ganze Menge Kleinigkeiten im CSS zu beachten, esp. die Positionierung.
     render(): JSX.Element {

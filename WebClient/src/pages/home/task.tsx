@@ -1,4 +1,6 @@
-﻿// React.Js Komponente zum manuellen Starten einer Sonderaufgabe.
+﻿import * as React from 'react'
+
+// React.Js Komponente zum manuellen Starten einer Sonderaufgabe.
 export class Task extends JMSLib.ReactUi.ComponentWithSite<JMSLib.App.ICommand> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {

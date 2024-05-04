@@ -1,4 +1,6 @@
-﻿// Die Konfiguration eines Eingabefeldes.
+﻿import * as React from 'react'
+
+// Die Konfiguration eines Eingabefeldes.
 interface IFieldStatic {
     // Die übergeordnete Seite.
     page: App.IPage

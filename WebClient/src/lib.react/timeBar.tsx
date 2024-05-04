@@ -1,4 +1,6 @@
-﻿// Eine React.Js Komponente zur Anzeige einer Zeitschiene.
+﻿import * as React from 'react'
+
+// Eine React.Js Komponente zur Anzeige einer Zeitschiene.
 export class TimeBar extends Component<App.ITimeBar> {
     // Erstellt die Oberflächenelemente zur Anzeige der Zeitschiene.
     render(): JSX.Element {
