@@ -1,4 +1,7 @@
-﻿// Verwendet den XHMLHttpRequest des Browser zur Durchführung eines HTTP Aufrufs.
+﻿import { IHttpErrorInformation } from './common'
+import { currentWebCallId, nextWebCallId, webCallRoot } from './config'
+
+// Verwendet den XHMLHttpRequest des Browser zur Durchführung eines HTTP Aufrufs.
 export function browserWebCall<TResponseType, TRequestType>(
     url: string,
     method: string = 'GET',

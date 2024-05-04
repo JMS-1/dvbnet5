@@ -1,5 +1,8 @@
-﻿// Normalerweise sind wir das selbst
-var serverRoot = document.URL.substr(0, document.URL.indexOf(`/`, document.URL.indexOf(`://`) + 3))
+﻿import { browserWebCall } from '../lib/http/browser'
+import { webCallRoot } from '../lib/http/config'
+
+// Normalerweise sind wir das selbst
+var serverRoot = document.URL.substring(0, document.URL.indexOf(`/`, document.URL.indexOf(`://`) + 3))
 
 // Schauen wir uns mal die Betriebsart an
 var query = window.location.search
@@ -10,7 +13,7 @@ var protocolEnd = serverRoot.indexOf(`://`)
 var deviceUrl = `dvbnet` + serverRoot.substr(protocolEnd) + `/`
 
 // Der Präfix für alle REST Zugiffe
-JMSLib.App.webCallRoot = serverRoot + `/vcr.net/`
+webCallRoot = serverRoot + `/vcr.net/`
 
 // Führt eine Web Anfrage aus.
 export function doUrlCall<TResponseType, TRequestType>(
@@ -18,7 +21,7 @@ export function doUrlCall<TResponseType, TRequestType>(
     method: string = `GET`,
     request?: TRequestType
 ): Promise<TResponseType | undefined> {
-    return JMSLib.App.browserWebCall(url, method, request)
+    return browserWebCall(url, method, request)
 }
 
 // Meldet den Verweis zum Aufruf des DVB.NET / VCR.NET Viewers.

@@ -1,4 +1,7 @@
-﻿// Repräsentiert die Klasse SourceScanSettings
+﻿import { SettingsContract } from '../SettingsContract'
+import { doUrlCall } from '../vcrserver'
+
+// Repräsentiert die Klasse SourceScanSettings
 export interface SourceScanSettingsContract extends SettingsContract {
     // Das Zeitinterval (in Stunden) für vorgezogene Aktualisierungen
     joinDays: string
