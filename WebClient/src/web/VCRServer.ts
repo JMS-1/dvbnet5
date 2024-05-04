@@ -6,14 +6,16 @@ let serverRoot = document.URL.substring(0, document.URL.indexOf('/', document.UR
 
 // Schauen wir uns mal die Betriebsart an
 const query = window.location.search
-if (query == '?debug') serverRoot = 'http://localhost:81'
+const debug = query === '?debug'
+
+if (debug) serverRoot = 'http://localhost:5093'
 
 // Der Präfix für den Zugriff auf Geräte und Dateien
 const protocolEnd = serverRoot.indexOf('://')
-const deviceUrl = 'dvbnet' + serverRoot.substr(protocolEnd) + '/'
+const deviceUrl = 'dvbnet' + serverRoot.substring(protocolEnd) + '/'
 
 // Der Präfix für alle REST Zugiffe
-setWebCallRoot(serverRoot + '/vcr.net/')
+setWebCallRoot(serverRoot + (debug ? '/api/' : '/vcr.net/'))
 
 // Führt eine Web Anfrage aus.
 export function doUrlCall<TResponseType, TRequestType>(

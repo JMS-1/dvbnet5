@@ -75,7 +75,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Meldet Informationen zur Version des VCR.NET Recording Service.
         /// </summary>
-        [HttpGet("info")]
+        [HttpGet]
         public InfoService VersionInformation()
         {
             // Report

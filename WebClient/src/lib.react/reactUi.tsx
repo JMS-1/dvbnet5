@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+
 import { IConnectable, IView } from '../lib/site'
 
 // Beschreibt eine React.Js Komponente für ein Präsentationsmodell.
@@ -30,7 +31,8 @@ export abstract class ComponentExWithSite<
     implements IView
 {
     // Führt die Anmeldung auf Benachrichtigungen aus.
-    componentWillMount(): void {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    UNSAFE_componentWillMount(): void {
         this.props.uvm.view = this
     }
 

@@ -49,9 +49,9 @@ export interface IUserProfileContract {
 }
 
 export function getUserProfile(): Promise<IUserProfileContract | undefined> {
-    return doUrlCall('userprofile')
+    return doUrlCall('user')
 }
 
 export function setUserProfile(profile: IUserProfileContract): Promise<IUserProfileContract | undefined> {
-    return doUrlCall('userprofile', 'PUT', profile)
+    return doUrlCall('user', 'PUT', profile)
 }

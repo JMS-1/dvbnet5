@@ -2,13 +2,13 @@ using System.Collections.Specialized;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
-    public abstract class ProfileBase
+    public class ProfileBase
     {
-        public object this[string key]
-        {
-            get => throw new NotImplementedException("ProfileBase");
-            set => throw new NotImplementedException("ProfileBase");
-        }
+        private readonly Dictionary<string, object> m_dict = [];
+
+        public T Read<T>(string key, T fallback = default!) => m_dict.TryGetValue(key, out var value) ? (T)value : fallback;
+
+        public void Write<T>(string key, T value) => m_dict[key] = value!;
 
         public void Save() => throw new NotImplementedException("ProfileBase");
     }
@@ -21,21 +21,21 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Meldet die Liste der zuletzt verwendenden Sendern.
         /// </summary>
-        public static StringCollection RecentChannels => (StringCollection)Profile["RecentChannels"];
+        public static StringCollection RecentChannels => Profile.Read<StringCollection>("RecentChannels", []);
 
         /// <summary>
         /// Meldet die maximal erlaubte Anzahl von Sendern in der Liste zuletzt verwendeter Sender.
         /// </summary>
         public static int MaxRecentChannels
         {
-            get { return (int)Profile["MaxRecentChannels"]; }
-            set { Profile["MaxRecentChannels"] = value; }
+            get { return Profile.Read<int>("MaxRecentChannels"); }
+            set { Profile.Write("MaxRecentChannels", value); }
         }
 
         /// <summary>
         /// Meldet das aktuelle Benutzerprofil.
         /// </summary>
-        private static ProfileBase Profile => null!;
+        private static readonly ProfileBase Profile = new();
 
         /// <summary>
         /// Begrenzt die Anzahl der zuletzt verwendeten Quellen auf die H�chstgrenze.
@@ -44,7 +44,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         private static bool LimitChannels()
         {
             // Check delta
-            int delta = (RecentChannels.Count - MaxRecentChannels);
+            int delta = RecentChannels.Count - MaxRecentChannels;
             if (delta < 1)
                 return false;
 
@@ -94,8 +94,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static bool PayTV
         {
-            get { return (bool)Profile["PayTV"]; }
-            set { Profile["PayTV"] = value; }
+            get { return Profile.Read<bool>("PayTV"); }
+            set { Profile.Write("PayTV", value); }
         }
 
         /// <summary>
@@ -103,8 +103,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static bool Radio
         {
-            get { return (bool)Profile["Radio"]; }
-            set { Profile["Radio"] = value; }
+            get { return Profile.Read<bool>("Radio"); }
+            set { Profile.Write("Radio", value); }
         }
 
         /// <summary>
@@ -112,8 +112,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static bool FreeTV
         {
-            get { return (bool)Profile["FreeTV"]; }
-            set { Profile["FreeTV"] = value; }
+            get { return Profile.Read<bool>("FreeTV"); }
+            set { Profile.Write("FreeTV", value); }
         }
 
         /// <summary>
@@ -121,8 +121,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static bool Television
         {
-            get { return (bool)Profile["Television"]; }
-            set { Profile["Television"] = value; }
+            get { return Profile.Read<bool>("Television"); }
+            set { Profile.Write("Television", value); }
         }
 
         /// <summary>
@@ -130,8 +130,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static bool BackToEPG
         {
-            get { return (bool)Profile["BackToEPG"]; }
-            set { Profile["BackToEPG"] = value; }
+            get { return Profile.Read<bool>("BackToEPG"); }
+            set { Profile.Write("BackToEPG", value); }
         }
 
         /// <summary>
@@ -139,8 +139,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static bool UseTTX
         {
-            get { return (bool)Profile["UseTTX"]; }
-            set { Profile["UseTTX"] = value; }
+            get { return Profile.Read<bool>("UseTTX"); }
+            set { Profile.Write("UseTTX", value); }
         }
 
         /// <summary>
@@ -148,8 +148,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static bool UseAC3
         {
-            get { return (bool)Profile["UseAC3"]; }
-            set { Profile["UseAC3"] = value; }
+            get { return Profile.Read<bool>("UseAC3"); }
+            set { Profile.Write("UseAC3", value); }
         }
 
         /// <summary>
@@ -157,8 +157,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static bool UseMP2
         {
-            get { return (bool)Profile["UseMP2"]; }
-            set { Profile["UseMP2"] = value; }
+            get { return Profile.Read<bool>("UseMP2"); }
+            set { Profile.Write("UseMP2", value); }
         }
 
         /// <summary>
@@ -166,8 +166,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static bool UseSubTitles
         {
-            get { return (bool)Profile["UseSubTitles"]; }
-            set { Profile["UseSubTitles"] = value; }
+            get { return Profile.Read<bool>("UseSubTitles"); }
+            set { Profile.Write("UseSubTitles", value); }
         }
 
         /// <summary>
@@ -176,8 +176,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <seealso cref="EPGPreTime"/>
         public static int EPGPostTime
         {
-            get { return (int)Profile["EPGPostTime"]; }
-            set { Profile["EPGPostTime"] = value; }
+            get { return Profile.Read<int>("EPGPostTime"); }
+            set { Profile.Write("EPGPostTime", value); }
         }
 
         /// <summary>
@@ -186,8 +186,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <seealso cref="EPGPostTime"/>
         public static int EPGPreTime
         {
-            get { return (int)Profile["EPGPreTime"]; }
-            set { Profile["EPGPreTime"] = value; }
+            get { return Profile.Read<int>("EPGPreTime"); }
+            set { Profile.Write("EPGPreTime", value); }
         }
 
         /// <summary>
@@ -195,8 +195,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static int EPGEntries
         {
-            get { return (int)Profile["EPGEntries"]; }
-            set { Profile["EPGEntries"] = value; }
+            get { return Profile.Read<int>("EPGEntries"); }
+            set { Profile.Write("EPGEntries", value); }
         }
 
         /// <summary>
@@ -204,8 +204,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static int DaysToShow
         {
-            get { return (int)Profile["DaysToShow"]; }
-            set { Profile["DaysToShow"] = value; }
+            get { return Profile.Read<int>("DaysToShow"); }
+            set { Profile.Write("DaysToShow", value); }
         }
 
         /// <summary>
@@ -213,8 +213,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static string GuideFavorites
         {
-            get { return (string)Profile["GuideFavorites"]; }
-            set { Profile["GuideFavorites"] = value; }
+            get { return Profile.Read<string>("GuideFavorites"); }
+            set { Profile.Write("GuideFavorites", value); }
         }
     }
 }

@@ -23,5 +23,5 @@ export interface ISavedGuideQueryContract {
 }
 
 export function updateSearchQueries(queries: ISavedGuideQueryContract[]): Promise<void> {
-    return doUrlCall<void, ISavedGuideQueryContract[]>('userprofile?favorites', 'PUT', queries)
+    return doUrlCall<void, ISavedGuideQueryContract[]>('user/favorites', 'PUT', queries)
 }
