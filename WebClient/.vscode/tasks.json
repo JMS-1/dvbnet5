@@ -9,7 +9,19 @@
         {
             "isBackground": true,
             "label": "watch",
-            "problemMatcher": ["$tsc"],
+            "problemMatcher": {
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": {
+                        "regexp": "(.*?)"
+                    },
+                    "endsPattern": {
+                        "regexp": "compiled successfully"
+                    }
+                },
+                "owner": "typescript",
+                "pattern": "$tsc"
+            },
             "script": "watch",
             "type": "npm"
         }

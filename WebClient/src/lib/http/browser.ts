@@ -32,7 +32,13 @@ export function browserWebCall<TResponseType, TRequestType>(
                 else success(JSON.parse(xhr.responseText))
             else {
                 // Fehler auswerten.
-                var errorInfo = JSON.parse(xhr.responseText)
+                let errorInfo
+
+                try {
+                    errorInfo = JSON.parse(xhr.responseText)
+                } catch (e) {
+                    errorInfo = e.message
+                }
 
                 // Fehler melden - falls es jemanden interessiert.
                 failure(<IHttpErrorInformation>{

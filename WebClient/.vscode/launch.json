@@ -2,6 +2,7 @@
     "configurations": [
         {
             "name": "Debug",
+            "preLaunchTask": "watch",
             "request": "launch",
             "sourceMapPathOverrides": {
                 "webpack://vcrnet-web-client/*": "${workspaceFolder}/*"
@@ -9,6 +10,7 @@
             "sourceMaps": true,
             "type": "chrome",
             "url": "http://localhost:3000",
+            "userDataDir": "${workspaceFolder}/.vscode/chrome",
             "webRoot": "${workspaceFolder}"
         }
     ],
