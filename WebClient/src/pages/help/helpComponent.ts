@@ -1,10 +1,8 @@
-﻿namespace VCRNETClient.Ui {
-    // React.Js Komponente zur Implementierung von Hilfeseiten.
-    export abstract class HelpComponent implements App.IHelpComponent {
-        // Die Überschrift der Hilfeseite.
-        abstract readonly title: string
+﻿// React.Js Komponente zur Implementierung von Hilfeseiten.
+export abstract class HelpComponent implements App.IHelpComponent {
+    // Die Überschrift der Hilfeseite.
+    abstract readonly title: string
 
-        // Erzeugt die Oberflächenelemente der Hilfeseite.
-        abstract render(page: App.IPage): JSX.Element
-    }
+    // Erzeugt die Oberflächenelemente der Hilfeseite.
+    abstract render(page: App.IPage): JSX.Element
 }

@@ -1,241 +1,239 @@
-﻿namespace VCRNETClient.App.Plan {
-    // Erweiterte Schnittstelle (View Model) zur Anzeige eines Eintrags des Aufzeichnunsplans.
-    export interface IPlanEntry extends JMSLib.App.IConnectable {
-        // Ein Kürzel für die Qualität der Aufzeichnung, etwa ob dieser verspätet beginnt.
-        readonly mode?: string
+﻿// Erweiterte Schnittstelle (View Model) zur Anzeige eines Eintrags des Aufzeichnunsplans.
+export interface IPlanEntry extends JMSLib.App.IConnectable {
+    // Ein Kürzel für die Qualität der Aufzeichnung, etwa ob dieser verspätet beginnt.
+    readonly mode?: string
 
-        // Anwendungsverweis zum Ändern dieses Eintrags.
-        readonly editLink?: string
+    // Anwendungsverweis zum Ändern dieses Eintrags.
+    readonly editLink?: string
 
-        // Die zugehörige Ausnahmeregel.
-        readonly exception: IPlanException
+    // Die zugehörige Ausnahmeregel.
+    readonly exception: IPlanException
 
-        // Das verwendete Gerät.
-        readonly device: string
+    // Das verwendete Gerät.
+    readonly device: string
 
-        // Der zugehörige Sender.
-        readonly station: string
+    // Der zugehörige Sender.
+    readonly station: string
 
-        // Der Startzeitpunkt formatiert für die Darstellung.
-        readonly displayStart: string
+    // Der Startzeitpunkt formatiert für die Darstellung.
+    readonly displayStart: string
 
-        // Der Endzeitpunkt, formatiert für die Darstellung - es werden nur Stunden und Minuten angezeigt.
-        readonly displayEnd: string
+    // Der Endzeitpunkt, formatiert für die Darstellung - es werden nur Stunden und Minuten angezeigt.
+    readonly displayEnd: string
 
-        // Die Dauer der Aufzeichnung.
-        readonly duration: number
+    // Die Dauer der Aufzeichnung.
+    readonly duration: number
 
-        // Der Name der Aufzeichnung.
-        readonly name: string
+    // Der Name der Aufzeichnung.
+    readonly name: string
 
-        // Gesetzt, wenn alle Tonspuren aufgezeichnet werden sollen.
-        readonly allAudio: boolean
+    // Gesetzt, wenn alle Tonspuren aufgezeichnet werden sollen.
+    readonly allAudio: boolean
 
-        // Gesetzt, wenn Dolby Tonspuren aufgezeichnet werden sollen.
-        readonly dolby: boolean
+    // Gesetzt, wenn Dolby Tonspuren aufgezeichnet werden sollen.
+    readonly dolby: boolean
 
-        // Gesetzt, wenn der Videotext mit aufgezeichnet werden soll.
-        readonly ttx: boolean
+    // Gesetzt, wenn der Videotext mit aufgezeichnet werden soll.
+    readonly ttx: boolean
 
-        // Gesetzt, wenn DVB Untertitel mit aufgezeichnet werden sollen.
-        readonly subs: boolean
+    // Gesetzt, wenn DVB Untertitel mit aufgezeichnet werden sollen.
+    readonly subs: boolean
 
-        // Gesetzt, wenn DVB Untertitel mit aufgezeichnet werden sollen.
-        readonly guide: boolean
+    // Gesetzt, wenn DVB Untertitel mit aufgezeichnet werden sollen.
+    readonly guide: boolean
 
-        // Gesetzt, wenn die Endzeit evtl. wegen der Zeitumstellung nicht wie erwartet ist.
-        readonly suspectTime: boolean
+    // Gesetzt, wenn die Endzeit evtl. wegen der Zeitumstellung nicht wie erwartet ist.
+    readonly suspectTime: boolean
 
-        // Zeigt die Programmzeitschrift an.
-        readonly showEpg: boolean
+    // Zeigt die Programmzeitschrift an.
+    readonly showEpg: boolean
 
-        // Zeigt die Pflege der Ausnahmeregel an.
-        readonly showException: boolean
+    // Zeigt die Pflege der Ausnahmeregel an.
+    readonly showException: boolean
 
-        // Die am besten passenden Informationen aus der Programmzeitschrift.
-        readonly guideItem: Guide.IGuideInfo | null
+    // Die am besten passenden Informationen aus der Programmzeitschrift.
+    readonly guideItem: Guide.IGuideInfo | null
 
-        // Beschreibt die Zeit von Aufzeichung und Eintrag der Programmzeitschrift.
-        readonly guideTime: JMSLib.App.ITimeBar
+    // Beschreibt die Zeit von Aufzeichung und Eintrag der Programmzeitschrift.
+    readonly guideTime: JMSLib.App.ITimeBar
 
-        // Schaltet die Detailanzeige um.
-        toggleDetail(epg: boolean): void
+    // Schaltet die Detailanzeige um.
+    toggleDetail(epg: boolean): void
+}
+
+// Präsentationsmodell zur Anzeige eines Eintrags im Aufzeichnungsplan.
+export class PlanEntry implements IPlanEntry {
+    // Erstellt ein neues Präsentationsmodell.
+    constructor(
+        private model: VCRServer.PlanActivityContract,
+        private _toggleDetail: (entry: PlanEntry, epg: boolean) => void,
+        application: App.Application,
+        reload: () => void,
+        private readonly _findInGuide: (model: VCRServer.GuideItemContract) => void
+    ) {
+        // Zeiten umrechnen
+        this.duration = parseInt(model.duration)
+        this.start = new Date(model.start ?? '')
+        this.end = new Date(this.start.getTime() + 1000 * this.duration)
+
+        // Ausnahmen auswerten
+        if (model.exception) this.exception = new PlanException(model.exception, model.id, reload)
     }
 
-    // Präsentationsmodell zur Anzeige eines Eintrags im Aufzeichnungsplan.
-    export class PlanEntry implements IPlanEntry {
-        // Erstellt ein neues Präsentationsmodell.
-        constructor(
-            private model: VCRServer.PlanActivityContract,
-            private _toggleDetail: (entry: PlanEntry, epg: boolean) => void,
-            application: App.Application,
-            reload: () => void,
-            private readonly _findInGuide: (model: VCRServer.GuideItemContract) => void
-        ) {
-            // Zeiten umrechnen
-            this.duration = parseInt(model.duration)
-            this.start = new Date(model.start ?? '')
-            this.end = new Date(this.start.getTime() + 1000 * this.duration)
+    // Zeigt die Programmzeitschrift an.
+    private _showEpg = false
 
-            // Ausnahmen auswerten
-            if (model.exception) this.exception = new PlanException(model.exception, model.id, reload)
-        }
+    get showEpg(): boolean {
+        return this._showEpg
+    }
 
-        // Zeigt die Programmzeitschrift an.
-        private _showEpg = false
+    set showEpg(newValue: boolean) {
+        this._showEpg = newValue
+    }
 
-        get showEpg(): boolean {
-            return this._showEpg
-        }
+    // Zeigt die Pflege der Ausnahmeregel an.
+    private _showException = false
 
-        set showEpg(newValue: boolean) {
-            this._showEpg = newValue
-        }
+    get showException(): boolean {
+        return this._showException
+    }
 
-        // Zeigt die Pflege der Ausnahmeregel an.
-        private _showException = false
+    set showException(newValue: boolean) {
+        if (this.exception) this.exception.reset()
 
-        get showException(): boolean {
-            return this._showException
-        }
+        this._showException = newValue
+    }
 
-        set showException(newValue: boolean) {
-            if (this.exception) this.exception.reset()
+    // Die Dauer der Aufzeichnung.
+    readonly duration: number
 
-            this._showException = newValue
-        }
+    // Der Zeitpunkt, an dem die Aufzeichnung beginnen wird.
+    readonly start: Date
 
-        // Die Dauer der Aufzeichnung.
-        readonly duration: number
+    // Der Zeitpunkt, an dem die Aufzeichnung enden wird.
+    readonly end: Date
 
-        // Der Zeitpunkt, an dem die Aufzeichnung beginnen wird.
-        readonly start: Date
+    get suspectTime(): boolean {
+        return this.model.suspectEndTime
+    }
 
-        // Der Zeitpunkt, an dem die Aufzeichnung enden wird.
-        readonly end: Date
+    // Der Name der Aufzeichnung.
+    get name(): string {
+        return this.model.name
+    }
 
-        get suspectTime(): boolean {
-            return this.model.suspectEndTime
-        }
+    // Gesetzt, wenn alle Tonspuren aufgezeichnet werden sollen.
+    get allAudio(): boolean {
+        return this.model.allAudio
+    }
 
-        // Der Name der Aufzeichnung.
-        get name(): string {
-            return this.model.name
-        }
+    // Gesetzt, wenn Dolby Tonspuren aufgezeichnet werden sollen.
+    get dolby(): boolean {
+        return this.model.ac3
+    }
 
-        // Gesetzt, wenn alle Tonspuren aufgezeichnet werden sollen.
-        get allAudio(): boolean {
-            return this.model.allAudio
-        }
+    // Gesetzt, wenn der Videotext mit aufgezeichnet werden soll.
+    get ttx(): boolean {
+        return this.model.ttx
+    }
 
-        // Gesetzt, wenn Dolby Tonspuren aufgezeichnet werden sollen.
-        get dolby(): boolean {
-            return this.model.ac3
-        }
+    // Gesetzt, wenn DVB Untertitel mit aufgezeichnet werden sollen.
+    get subs(): boolean {
+        return this.model.dvbsub
+    }
 
-        // Gesetzt, wenn der Videotext mit aufgezeichnet werden soll.
-        get ttx(): boolean {
-            return this.model.ttx
-        }
+    // Gesetzt, wenn DVB Untertitel mit aufgezeichnet werden sollen.
+    get guide(): boolean {
+        return this.model.epg
+    }
 
-        // Gesetzt, wenn DVB Untertitel mit aufgezeichnet werden sollen.
-        get subs(): boolean {
-            return this.model.dvbsub
-        }
+    // Der Startzeitpunkt formatiert für die Darstellung.
+    get displayStart(): string {
+        return JMSLib.App.DateTimeUtils.formatStartTime(this.start)
+    }
 
-        // Gesetzt, wenn DVB Untertitel mit aufgezeichnet werden sollen.
-        get guide(): boolean {
-            return this.model.epg
-        }
+    // Der Endzeitpunkt, formatiert für die Darstellung - es werden nur Stunden und Minuten angezeigt.
+    get displayEnd(): string {
+        return JMSLib.App.DateTimeUtils.formatEndTime(this.end)
+    }
 
-        // Der Startzeitpunkt formatiert für die Darstellung.
-        get displayStart(): string {
-            return JMSLib.App.DateTimeUtils.formatStartTime(this.start)
-        }
+    // Die zugehörige Ausnahmeregel.
+    readonly exception: PlanException
 
-        // Der Endzeitpunkt, formatiert für die Darstellung - es werden nur Stunden und Minuten angezeigt.
-        get displayEnd(): string {
-            return JMSLib.App.DateTimeUtils.formatEndTime(this.end)
-        }
+    // Das verwendete Gerät.
+    get device(): string {
+        return this.model.device || ''
+    }
 
-        // Die zugehörige Ausnahmeregel.
-        readonly exception: PlanException
+    // Der zugehörige Sender.
+    get station(): string {
+        return this.model.station || '(unbekannt)'
+    }
 
-        // Das verwendete Gerät.
-        get device(): string {
-            return this.model.device || ''
-        }
+    // Ein Kürzel für die Qualität der Aufzeichnung, etwa ob dieser verspätet beginnt.
+    get mode(): string | undefined {
+        if (this.model.station === 'PSI') return
+        if (this.model.station === 'EPG') return
 
-        // Der zugehörige Sender.
-        get station(): string {
-            return this.model.station || '(unbekannt)'
-        }
+        if (this.model.lost) return 'lost'
+        else if (this.model.late) return 'late'
+        else return 'intime'
+    }
 
-        // Ein Kürzel für die Qualität der Aufzeichnung, etwa ob dieser verspätet beginnt.
-        get mode(): string | undefined {
-            if (this.model.station === 'PSI') return
-            if (this.model.station === 'EPG') return
+    // Anwendungsverweis zum Ändern dieses Eintrags.
+    get editLink(): string | undefined {
+        return this.mode && `edit;id=${this.model.id}`
+    }
 
-            if (this.model.lost) return 'lost'
-            else if (this.model.late) return 'late'
-            else return 'intime'
-        }
+    // Schaltet die Detailanzeige um.
+    toggleDetail(epg: boolean): void {
+        return this._toggleDetail(this, epg)
+    }
 
-        // Anwendungsverweis zum Ändern dieses Eintrags.
-        get editLink(): string | undefined {
-            return this.mode && `edit;id=${this.model.id}`
-        }
+    // Das zugehörige Oberflächenelement.
+    view: JMSLib.App.IView
 
-        // Schaltet die Detailanzeige um.
-        toggleDetail(epg: boolean): void {
-            return this._toggleDetail(this, epg)
-        }
+    // Fordert die Oberfläche zur Aktualisierung auf.
+    private refreshUi(): void {
+        if (this.view) this.view.refreshUi()
+    }
 
-        // Das zugehörige Oberflächenelement.
-        view: JMSLib.App.IView
+    // Beschreibt die Zeit von Aufzeichung und Eintrag der Programmzeitschrift.
+    private _guideTime: JMSLib.App.TimeBar
 
-        // Fordert die Oberfläche zur Aktualisierung auf.
-        private refreshUi(): void {
-            if (this.view) this.view.refreshUi()
-        }
+    get guideTime(): JMSLib.App.ITimeBar {
+        return this._guideTime
+    }
 
-        // Beschreibt die Zeit von Aufzeichung und Eintrag der Programmzeitschrift.
-        private _guideTime: JMSLib.App.TimeBar
+    // Beschreibt die Zeit von Aufzeichung und Eintrag der Programmzeitschrift.
+    private _guideItem: Guide.GuideInfo | null
 
-        get guideTime(): JMSLib.App.ITimeBar {
-            return this._guideTime
-        }
+    get guideItem(): Guide.IGuideInfo | null {
+        // Das ist grundsätzlich nicht möglich.
+        if (!this.model.epg || !this.model.epgDevice || !this.model.source) return null
 
-        // Beschreibt die Zeit von Aufzeichung und Eintrag der Programmzeitschrift.
-        private _guideItem: Guide.GuideInfo | null
+        // Das haben wir schon einmal probiert.
+        if (this._guideItem !== undefined) return this._guideItem
 
-        get guideItem(): Guide.IGuideInfo | null {
-            // Das ist grundsätzlich nicht möglich.
-            if (!this.model.epg || !this.model.epgDevice || !this.model.source) return null
+        // In der Programmzeitschrift suchen und den am besten passenden Eintrag ermitteln.
+        VCRServer.getGuideItem(this.model.epgDevice, this.model.source, this.start, this.end).then((item) => {
+            // Eventuell Präsentationsmodell für den Eintrag erstellen.
+            this._guideItem = item ? new Guide.GuideInfo(item, this._findInGuide) : null
 
-            // Das haben wir schon einmal probiert.
-            if (this._guideItem !== undefined) return this._guideItem
+            // Zusätzlich ein Präsentationsmodell für die Zeitschiene erstellen.
+            if (this._guideItem)
+                this._guideTime = new JMSLib.App.TimeBar(
+                    this.start,
+                    this.end,
+                    this._guideItem.start,
+                    this._guideItem.end
+                )
 
-            // In der Programmzeitschrift suchen und den am besten passenden Eintrag ermitteln.
-            VCRServer.getGuideItem(this.model.epgDevice, this.model.source, this.start, this.end).then((item) => {
-                // Eventuell Präsentationsmodell für den Eintrag erstellen.
-                this._guideItem = item ? new Guide.GuideInfo(item, this._findInGuide) : null
+            // Overfläche zur Aktualisierung auffordern.
+            this.refreshUi()
+        })
 
-                // Zusätzlich ein Präsentationsmodell für die Zeitschiene erstellen.
-                if (this._guideItem)
-                    this._guideTime = new JMSLib.App.TimeBar(
-                        this.start,
-                        this.end,
-                        this._guideItem.start,
-                        this._guideItem.end
-                    )
-
-                // Overfläche zur Aktualisierung auffordern.
-                this.refreshUi()
-            })
-
-            // Erst einmal keine Informationen - wir warten auf die Antwort des VCR.NET Recording Service.
-            return null
-        }
+        // Erst einmal keine Informationen - wir warten auf die Antwort des VCR.NET Recording Service.
+        return null
     }
 }

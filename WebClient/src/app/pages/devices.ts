@@ -1,88 +1,82 @@
-﻿/// <reference path="page.ts" />
+﻿// Schnittstelle zur Anzeige der aktuellen Aktivitäten.
+export interface IDevicesPage extends IPage {
+    // Alle aktuellen Aktivitäten.
+    readonly infos: Devices.IDeviceInfo[]
+}
 
-namespace VCRNETClient.App {
+// Präsentationsmodell zur Anzeige und Manipulation der aktuellen Aktivitäten.
+export class DevicesPage extends Page implements IDevicesPage {
+    // Alle Aktivitäten.
+    infos: Devices.Info[] = []
 
-    // Schnittstelle zur Anzeige der aktuellen Aktivitäten.
-    export interface IDevicesPage extends IPage {
-        // Alle aktuellen Aktivitäten.
-        readonly infos: Devices.IDeviceInfo[];
+    // Erstellt ein neues Präsentationsmodell.
+    constructor(application: Application) {
+        super(`current`, application)
+
+        // Der Anwender kann die Ansicht aktualisieren.
+        this.navigation.refresh = true
     }
 
-    // Präsentationsmodell zur Anzeige und Manipulation der aktuellen Aktivitäten.
-    export class DevicesPage extends Page implements IDevicesPage {
+    // Beginnt mit der Anzeige der Ansicht.
+    reset(sections: string[]): void {
+        // Zurücksetzen
+        this._refreshing = false
 
-        // Alle Aktivitäten.
-        infos: Devices.Info[] = [];
+        // Liste anfordern.
+        this.reload()
+    }
 
-        // Erstellt ein neues Präsentationsmodell.
-        constructor(application: Application) {
-            super(`current`, application);
+    // Gesetzt während sich das Präsentationsmodell aktualisiert.
+    private _refreshing = false
 
-            // Der Anwender kann die Ansicht aktualisieren.
-            this.navigation.refresh = true;
-        }
+    // Fordert die Aktivitäten vom VCR.NET Recording Service neu an.
+    reload(): void {
+        VCRServer.getPlanCurrent().then((plan) => {
+            // Aktionen des Anwenders einmal binden.
+            var similiar = this.application.guidePage.findInGuide.bind(this.application.guidePage)
+            var refresh = this.toggleDetails.bind(this)
+            var reload = this.reload.bind(this)
 
-        // Beginnt mit der Anzeige der Ansicht.
-        reset(sections: string[]): void {
-            // Zurücksetzen
-            this._refreshing = false;
-            
-            // Liste anfordern.
-            this.reload();
-        }
+            // Die aktuellen Aktivitäten umwandeln.
+            this.infos = (plan || []).map(
+                (info) => new Devices.Info(info, this.application.profile.suppressHibernate, refresh, reload, similiar)
+            )
 
-        // Gesetzt während sich das Präsentationsmodell aktualisiert.
-        private _refreshing = false;
+            // Anwendung kann nun bedient werden.
+            this.application.isBusy = false
 
-        // Fordert die Aktivitäten vom VCR.NET Recording Service neu an.
-        reload(): void {
-            VCRServer.getPlanCurrent().then(plan => {
-                // Aktionen des Anwenders einmal binden.
-                var similiar = this.application.guidePage.findInGuide.bind(this.application.guidePage);
-                var refresh = this.toggleDetails.bind(this);
-                var reload = this.reload.bind(this);
+            // Anzeige zur Aktualisierung auffordern.
+            this.refreshUi()
+        })
+    }
 
-                // Die aktuellen Aktivitäten umwandeln.
-                this.infos = (plan || []).map(info => new Devices.Info(info, this.application.profile.suppressHibernate, refresh, reload, similiar));
+    // Schaltet die Detailanzeige einer Aktivität um.
+    private toggleDetails(info: Devices.Info, guide: boolean): void {
+        // Das machen wir gerade schon.
+        if (this._refreshing) return
 
-                // Anwendung kann nun bedient werden.
-                this.application.isBusy = false;
+        // Wir müssen hier Rekursionen vermeiden.
+        this._refreshing = true
 
-                // Anzeige zur Aktualisierung auffordern.
-                this.refreshUi();
-            });
-        }
+        // Aktuellen Stand auslesen.
+        var flag = guide ? info.showGuide : info.showControl
+        var state = flag.value
 
-        // Schaltet die Detailanzeige einer Aktivität um.
-        private toggleDetails(info: Devices.Info, guide: boolean): void {
-            // Das machen wir gerade schon.
-            if (this._refreshing)
-                return;
+        // Alle anderen Detailansichten schliessen.
+        this.infos.forEach((i) => (i.showControl.value = i.showGuide.value = false))
 
-            // Wir müssen hier Rekursionen vermeiden.
-            this._refreshing = true;
+        // Neuen Stand übernehmen.
+        flag.value = state
 
-            // Aktuellen Stand auslesen.
-            var flag = guide ? info.showGuide : info.showControl;
-            var state = flag.value;
+        // Wir können nun wieder normal arbeiten.
+        this._refreshing = false
 
-            // Alle anderen Detailansichten schliessen.
-            this.infos.forEach(i => i.showControl.value = i.showGuide.value = false);
+        // Oberfläche zur Aktualisierung auffordern.
+        this.refreshUi()
+    }
 
-            // Neuen Stand übernehmen.
-            flag.value = state;
-
-            // Wir können nun wieder normal arbeiten.
-            this._refreshing = false;
-
-            // Oberfläche zur Aktualisierung auffordern.
-            this.refreshUi();
-        }
-
-        // Die Überschreibt für die Ansicht des Präsentationsmodells.
-        get title(): string {
-            return `Geräteübersicht`;
-        }
-
+    // Die Überschreibt für die Ansicht des Präsentationsmodells.
+    get title(): string {
+        return `Geräteübersicht`
     }
 }

@@ -1,33 +1,29 @@
-﻿/// <reference path="../reactUi.tsx" />
+﻿// Konfiguration zur Anzeige eines Symbols.
+export interface IPictogram {
+    // Der Name einer Symboldatei.
+    name: string
 
-namespace JMSLib.ReactUi {
+    // Eine alternative Beschreibung für das Symbol.
+    description?: string
 
-    // Konfiguration zur Anzeige eines Symbols.
-    export interface IPictogram {
-        // Der Name einer Symboldatei.
-        name: string;
+    // Aktion bei Auswahl des Symbols.
+    onClick?(ev: React.MouseEvent<HTMLImageElement>): void
+}
 
-        // Eine alternative Beschreibung für das Symbol.
-        description?: string;
+// React.Js Komponente zur Anzeige eines Symbols.
+export class Pictogram extends React.Component<IPictogram, IEmpty> {
+    // Globale Festlegung für das Verzeichnis aller Symboldateien.
+    static imageRoot: string
 
-        // Aktion bei Auswahl des Symbols.
-        onClick?(ev: React.MouseEvent<HTMLImageElement>): void;
-    }
-
-    // React.Js Komponente zur Anzeige eines Symbols.
-    export class Pictogram extends React.Component<IPictogram, IEmpty>{
-
-        // Globale Festlegung für das Verzeichnis aller Symboldateien.
-        static imageRoot: string;
-
-        // Erstellt die Oberflächenelemente.
-        render(): JSX.Element {
-            return <img
-                className="jmslib-pict"
+    // Erstellt die Oberflächenelemente.
+    render(): JSX.Element {
+        return (
+            <img
+                className='jmslib-pict'
                 alt={this.props.description}
                 onClick={this.props.onClick}
-                src={`${Pictogram.imageRoot}${this.props.name}.png`} />;
-        }
-
+                src={`${Pictogram.imageRoot}${this.props.name}.png`}
+            />
+        )
     }
 }

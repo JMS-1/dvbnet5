@@ -1,156 +1,154 @@
-﻿namespace JMSLib.App {
-    // Schnittstelle zur Anzeige einer Aktion.
-    export interface ICommand extends IDisplay, IConnectable {
-        // Gesetzt, wenn die Aktion überhaupt angezeigt werden soll.
-        readonly isVisible: boolean
+﻿// Schnittstelle zur Anzeige einer Aktion.
+export interface ICommand extends IDisplay, IConnectable {
+    // Gesetzt, wenn die Aktion überhaupt angezeigt werden soll.
+    readonly isVisible: boolean
 
-        // Gesetzt, wenn die Aktion zurzeit ausgeführt werden kann.
-        readonly isEnabled: boolean
+    // Gesetzt, wenn die Aktion zurzeit ausgeführt werden kann.
+    readonly isEnabled: boolean
 
-        // Gesetzt, wenn die Aktion eine kritische Änderung bedeutet.
-        readonly isDangerous: boolean
+    // Gesetzt, wenn die Aktion eine kritische Änderung bedeutet.
+    readonly isDangerous: boolean
 
-        // Fehlermeldung zur letzten Ausführung der Aktion.
-        readonly message: string
+    // Fehlermeldung zur letzten Ausführung der Aktion.
+    readonly message: string
 
-        // Führt die Aktion aus.
-        execute(): void
+    // Führt die Aktion aus.
+    execute(): void
+}
+
+// Ui View Model zur Anzeige einer Aktion.
+export class Command<TResponseType> implements ICommand {
+    // Gesetzt während die Aktion ausgeführt wird.
+    private _busy = false
+
+    // Die zugehörige Anzeige.
+    view: IView
+
+    // Setzt den Befehl auf den Initialzustand zurück.
+    reset(): void {
+        this._message = ``
+        this._busy = false
+
+        // Anzeige aktualisieren.
+        this.refreshUi()
     }
 
-    // Ui View Model zur Anzeige einer Aktion.
-    export class Command<TResponseType> implements ICommand {
-        // Gesetzt während die Aktion ausgeführt wird.
-        private _busy = false
+    // Fehlermeldung zur letzen Ausführung.
+    private _message = ``
 
-        // Die zugehörige Anzeige.
-        view: IView
+    // Meldet die Fehlermeldung zur letzten Ausführung.
+    get message(): string {
+        return this._message
+    }
 
-        // Setzt den Befehl auf den Initialzustand zurück.
-        reset(): void {
-            this._message = ``
-            this._busy = false
+    // Setzt die Fehlermeldung zu einer Ausführung.
+    set message(newMessage: string) {
+        // Die Meldung hat sich nicht verändert.
+        if (newMessage === this._message) return
 
-            // Anzeige aktualisieren.
-            this.refreshUi()
-        }
+        // Neue Meldung merken.
+        this._message = newMessage
 
-        // Fehlermeldung zur letzen Ausführung.
-        private _message = ``
+        // Anzeige benachrichtigen.
+        this.refreshUi()
+    }
 
-        // Meldet die Fehlermeldung zur letzten Ausführung.
-        get message(): string {
-            return this._message
-        }
+    // Erstellt eine neue Repräsentation.
+    constructor(
+        private readonly _begin: () => Promise<TResponseType> | void | null,
+        public readonly text: string | null = null,
+        private readonly _test?: () => boolean
+    ) {}
 
-        // Setzt die Fehlermeldung zu einer Ausführung.
-        set message(newMessage: string) {
-            // Die Meldung hat sich nicht verändert.
-            if (newMessage === this._message) return
+    // Gesetzt, wenn es sich um eine kritische Änderung handelt.
+    private _dangerous = false
 
-            // Neue Meldung merken.
-            this._message = newMessage
+    // Meldet, ob es sich um eine kritische Änderung handelt.
+    get isDangerous(): boolean {
+        return this._dangerous
+    }
 
-            // Anzeige benachrichtigen.
-            this.refreshUi()
-        }
+    // Legt fest, ob es sich um eine kritische Änderung handelt.
+    set isDangerous(newValue: boolean) {
+        // Nur Aktualisieren, wenn auch tatsächlich eine Umschaltung erfolgt ist.
+        if (newValue === this._dangerous) return
 
-        // Erstellt eine neue Repräsentation.
-        constructor(
-            private readonly _begin: () => Promise<TResponseType> | void | null,
-            public readonly text: string | null = null,
-            private readonly _test?: () => boolean
-        ) {}
+        // Neuen Wert übernehmen.
+        this._dangerous = newValue
 
-        // Gesetzt, wenn es sich um eine kritische Änderung handelt.
-        private _dangerous = false
+        // Oberfläche geeignet aktualisieren.
+        this.refreshUi()
+    }
 
-        // Meldet, ob es sich um eine kritische Änderung handelt.
-        get isDangerous(): boolean {
-            return this._dangerous
-        }
+    // Gesetzt, wenn die Aktion sichtbar sein soll.
+    private _visible = true
 
-        // Legt fest, ob es sich um eine kritische Änderung handelt.
-        set isDangerous(newValue: boolean) {
-            // Nur Aktualisieren, wenn auch tatsächlich eine Umschaltung erfolgt ist.
-            if (newValue === this._dangerous) return
+    // Meldet, ob die Aktion sichtbar sein soll.
+    get isVisible(): boolean {
+        return this._visible
+    }
 
-            // Neuen Wert übernehmen.
-            this._dangerous = newValue
+    // Legt fest, ob die Aktion sichtbar sei soll.
+    set isVisible(newValue: boolean) {
+        // Nur Aktualisieren, wenn auch tatsächlich eine Umschaltung erfolgt ist.
+        if (newValue === this._visible) return
 
-            // Oberfläche geeignet aktualisieren.
-            this.refreshUi()
-        }
+        // Änderung vermerken.
+        this._visible = newValue
 
-        // Gesetzt, wenn die Aktion sichtbar sein soll.
-        private _visible = true
+        // Oberfläche aktualisieren.
+        this.refreshUi()
+    }
 
-        // Meldet, ob die Aktion sichtbar sein soll.
-        get isVisible(): boolean {
-            return this._visible
-        }
+    // Prüft, ob die Aktion ausgeführt werden darf.
+    get isEnabled(): boolean {
+        // Insbesondere ist dies nich möglich, wenn noch eine Ausführung aktiv ist oder die Aktion gar nicht angezeigt wird.
+        if (this._busy) return false
+        else if (!this.isVisible) return false
+        else if (this._test) return this._test()
+        else return true
+    }
 
-        // Legt fest, ob die Aktion sichtbar sei soll.
-        set isVisible(newValue: boolean) {
-            // Nur Aktualisieren, wenn auch tatsächlich eine Umschaltung erfolgt ist.
-            if (newValue === this._visible) return
+    // Ändert den Ausführungszustand der Aktion.
+    private setBusy(newVal: boolean): void {
+        // Oberfläche nur bei Änderungen aktualisieren.
+        if (this._busy === newVal) return
 
-            // Änderung vermerken.
-            this._visible = newValue
+        // Änderung vermerken.
+        this._busy = newVal
 
-            // Oberfläche aktualisieren.
-            this.refreshUi()
-        }
+        // Anzeige aktualisieren.
+        this.refreshUi()
+    }
 
-        // Prüft, ob die Aktion ausgeführt werden darf.
-        get isEnabled(): boolean {
-            // Insbesondere ist dies nich möglich, wenn noch eine Ausführung aktiv ist oder die Aktion gar nicht angezeigt wird.
-            if (this._busy) return false
-            else if (!this.isVisible) return false
-            else if (this._test) return this._test()
-            else return true
-        }
+    // Oberfläche zur Aktualisierung auffordern.
+    refreshUi(): void {
+        if (this.view) this.view.refreshUi()
+    }
 
-        // Ändert den Ausführungszustand der Aktion.
-        private setBusy(newVal: boolean): void {
-            // Oberfläche nur bei Änderungen aktualisieren.
-            if (this._busy === newVal) return
+    // Befehl ausführen.
+    execute(): void {
+        // Das ist im Mopment nicht möglich, zum Beispiel weil die letzte Ausführung noch nicht abgeschlossen ist.
+        if (!this.isEnabled) return
 
-            // Änderung vermerken.
-            this._busy = newVal
+        // Fehlermeldung zurücksetzen.
+        this.message = ``
 
-            // Anzeige aktualisieren.
-            this.refreshUi()
-        }
+        // Gegen erneutes Aufrufen sperren.
+        this.setBusy(true)
 
-        // Oberfläche zur Aktualisierung auffordern.
-        refreshUi(): void {
-            if (this.view) this.view.refreshUi()
-        }
+        // Aktion starten.
+        var begin = this._begin()
 
-        // Befehl ausführen.
-        execute(): void {
-            // Das ist im Mopment nicht möglich, zum Beispiel weil die letzte Ausführung noch nicht abgeschlossen ist.
-            if (!this.isEnabled) return
-
-            // Fehlermeldung zurücksetzen.
-            this.message = ``
-
-            // Gegen erneutes Aufrufen sperren.
-            this.setBusy(true)
-
-            // Aktion starten.
-            var begin = this._begin()
-
-            // Auf das Ende der Aktion warten und Aktion wieder freigeben.
-            if (begin)
-                begin.then(
-                    () => this.setBusy(false),
-                    (e) => {
-                        this.message = e.message
-                        this.setBusy(false)
-                    }
-                )
-            else this.setBusy(false)
-        }
+        // Auf das Ende der Aktion warten und Aktion wieder freigeben.
+        if (begin)
+            begin.then(
+                () => this.setBusy(false),
+                (e) => {
+                    this.message = e.message
+                    this.setBusy(false)
+                }
+            )
+        else this.setBusy(false)
     }
 }

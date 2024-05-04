@@ -1,77 +1,73 @@
-﻿/// <reference path="../edit.ts" />
+﻿// Schnittstelle zur Pflege einer Eigenschaft mit einem Wahrheitswert.
+export interface IFlag extends IProperty<boolean> {}
 
-namespace JMSLib.App {
-    // Schnittstelle zur Pflege einer Eigenschaft mit einem Wahrheitswert.
-    export interface IFlag extends IProperty<boolean> {}
+// Schnittstelle zur Pflege einer Eigenschaft mit einem Wahrheitswert.
+export interface IToggableFlag extends IFlag {
+    // Befehl zum Umschalten des Wahrheitswertes.
+    readonly toggle: ICommand
+}
 
-    // Schnittstelle zur Pflege einer Eigenschaft mit einem Wahrheitswert.
-    export interface IToggableFlag extends IFlag {
-        // Befehl zum Umschalten des Wahrheitswertes.
-        readonly toggle: ICommand
+// Verwaltet den Wahrheitswert in einer Eigenschaft - hier können wir uns vollständig auf die Implementierung der Basisklasse verlassen.
+export class Flag extends Property<boolean> implements IToggableFlag {
+    // Befehl zum Umschalten des Wahrheitswertes.
+    private _toggle: Command<void>
+
+    get toggle(): Command<void> {
+        // Einmalig anlegen.
+        if (!this._toggle)
+            this._toggle = new Command<void>(
+                () => {
+                    this.value = !this.value
+                },
+                this.text,
+                () => !this.isReadonly
+            )
+
+        return this._toggle
     }
 
-    // Verwaltet den Wahrheitswert in einer Eigenschaft - hier können wir uns vollständig auf die Implementierung der Basisklasse verlassen.
-    export class Flag extends Property<boolean> implements IToggableFlag {
-        // Befehl zum Umschalten des Wahrheitswertes.
-        private _toggle: Command<void>
+    // Legt eine neue Verwaltung an.
+    constructor(data?: any, prop?: string, name?: string, onChange?: () => void, testReadOnly?: () => boolean) {
+        super(data, prop, name, onChange, testReadOnly)
+    }
+}
 
-        get toggle(): Command<void> {
-            // Einmalig anlegen.
-            if (!this._toggle)
-                this._toggle = new Command<void>(
-                    () => {
-                        this.value = !this.value
-                    },
-                    this.text,
-                    () => !this.isReadonly
-                )
+// Verwaltet ein Bitfeld von Wahrheitswerten in einer Eigenschaft mit einer Zahl als Wert.
+export class FlagSet implements IFlag {
+    // Prüfungen werden hierbei nicht individuell unterstützt.
+    readonly message = ``
 
-            return this._toggle
-        }
+    // Erstelle eine Verwaltungsinstanz auf Basis der Verwaltung der elementaren Zahl.
+    constructor(
+        private _mask: number,
+        private readonly _flags: Number,
+        public text: string
+    ) {}
 
-        // Legt eine neue Verwaltung an.
-        constructor(data?: any, prop?: string, name?: string, onChange?: () => void, testReadOnly?: () => boolean) {
-            super(data, prop, name, onChange, testReadOnly)
-        }
+    // Das zugehörige Oberflächenelement.
+    view: IView
+
+    // Meldet den aktuellen Wert oder verändert diesen.
+    get value(): boolean {
+        return ((this._flags.value ?? 0) & this._mask) !== 0
     }
 
-    // Verwaltet ein Bitfeld von Wahrheitswerten in einer Eigenschaft mit einer Zahl als Wert.
-    export class FlagSet implements IFlag {
-        // Prüfungen werden hierbei nicht individuell unterstützt.
-        readonly message = ``
+    set value(newValue: boolean) {
+        // Änderung bitweise an die eigentliche Eigenschaft übertragen.
+        var flags = newValue ? (this._flags.value ?? 0) | this._mask : (this._flags.value ?? 0) & ~this._mask
 
-        // Erstelle eine Verwaltungsinstanz auf Basis der Verwaltung der elementaren Zahl.
-        constructor(
-            private _mask: number,
-            private readonly _flags: Number,
-            public text: string
-        ) {}
+        // Keine Änderung.
+        if (flags === this._flags.value) return
 
-        // Das zugehörige Oberflächenelement.
-        view: IView
+        // Änderung durchführen.
+        this._flags.value = flags
 
-        // Meldet den aktuellen Wert oder verändert diesen.
-        get value(): boolean {
-            return ((this._flags.value ?? 0) & this._mask) !== 0
-        }
+        // Oberfläche aktualisieren.
+        if (this.view) this.view.refreshUi()
+    }
 
-        set value(newValue: boolean) {
-            // Änderung bitweise an die eigentliche Eigenschaft übertragen.
-            var flags = newValue ? (this._flags.value ?? 0) | this._mask : (this._flags.value ?? 0) & ~this._mask
-
-            // Keine Änderung.
-            if (flags === this._flags.value) return
-
-            // Änderung durchführen.
-            this._flags.value = flags
-
-            // Oberfläche aktualisieren.
-            if (this.view) this.view.refreshUi()
-        }
-
-        // Gesetzt, wenn der Wert der Eigenschaft nicht verändert werden darf.
-        get isReadonly(): boolean | undefined {
-            return this._flags.isReadonly
-        }
+    // Gesetzt, wenn der Wert der Eigenschaft nicht verändert werden darf.
+    get isReadonly(): boolean | undefined {
+        return this._flags.isReadonly
     }
 }

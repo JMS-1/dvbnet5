@@ -1,115 +1,111 @@
-﻿/// <reference path="../edit.ts" />
+﻿// Steuert die Pflege einer Zahl über einen Schieberegler.
+export interface INumberWithSlider extends IConnectable {
+    // Meldet oder ändert die relative (0..1) Position des Reglers.
+    position: number
 
-namespace JMSLib.App {
-    // Steuert die Pflege einer Zahl über einen Schieberegler.
-    export interface INumberWithSlider extends IConnectable {
-        // Meldet oder ändert die relative (0..1) Position des Reglers.
-        position: number
+    // Aktiviert die Positionsveränderung.
+    isDragging: boolean
 
-        // Aktiviert die Positionsveränderung.
-        isDragging: boolean
+    // Erlaubt eine Feineinstellung des zugrundeliegenden Wertes.
+    delta(delta: number): void
 
-        // Erlaubt eine Feineinstellung des zugrundeliegenden Wertes.
-        delta(delta: number): void
+    // Meldet den aktuellen Wert.
+    readonly value: number | null
+}
 
-        // Meldet den aktuellen Wert.
-        readonly value: number | null
+// Steuerung für einen Schieberegeler für die Auswahl eines Wertes.
+export class NumberWithSlider extends Property<number> implements INumberWithSlider {
+    // Die aktuelle relative (0..1) Position des Reglers.
+    private _position = 0
+
+    // Gesetzt, wenn Bewegungsbefehle umgesetzt werden sollen.
+    private _moving = false
+
+    // Der Anfangswert.
+    private readonly _initial: number | null
+
+    // Erstellt eine neue Steuerung.
+    constructor(
+        data: any,
+        prop: string,
+        onChange: () => void,
+        private _min: number,
+        private _max: number
+    ) {
+        super(data, prop, null, onChange)
+
+        // Anfangswert merken.
+        this._initial = this.value
+
+        // Synchronisiert den Regler mit dem aktuellen Wert.
+        this.sync()
     }
 
-    // Steuerung für einen Schieberegeler für die Auswahl eines Wertes.
-    export class NumberWithSlider extends Property<number> implements INumberWithSlider {
-        // Die aktuelle relative (0..1) Position des Reglers.
-        private _position = 0
+    // Bei der Anzeige werden immer alle Einstellungen auf den Grundwert zurückgesetzt.
+    protected onSiteChanged(): void {
+        super.onSiteChanged()
 
-        // Gesetzt, wenn Bewegungsbefehle umgesetzt werden sollen.
-        private _moving = false
+        // Zurück auf den Anfang.
+        this.reset()
 
-        // Der Anfangswert.
-        private readonly _initial: number | null
+        this._moving = false
+    }
 
-        // Erstellt eine neue Steuerung.
-        constructor(
-            data: any,
-            prop: string,
-            onChange: () => void,
-            private _min: number,
-            private _max: number
-        ) {
-            super(data, prop, null, onChange)
+    // Grundeinstellungen vornehmen.
+    reset(): void {
+        this.sync(this._initial)
+    }
 
-            // Anfangswert merken.
-            this._initial = this.value
+    // Synchronisiert den Regeler mit dem aktuellen Wert.
+    sync(newValue?: number | null): void {
+        // Auf Wunsch kann direkt ein neuer Wert eingestellt werden.
+        if (newValue !== undefined) this.value = newValue
 
-            // Synchronisiert den Regler mit dem aktuellen Wert.
-            this.sync()
-        }
+        // In eine relative Position umsetzen.
+        this.position = ((this.value ?? 0) - this._min) / (this._max - this._min)
+    }
 
-        // Bei der Anzeige werden immer alle Einstellungen auf den Grundwert zurückgesetzt.
-        protected onSiteChanged(): void {
-            super.onSiteChanged()
+    // Nimmt eine Feineinstellung vor.
+    delta(delta: number): void {
+        // Relative Position setzen, der Wert gleicht sich dann automatisch mit an.
+        this.position = ((this.value ?? 0) + delta - this._min) / (this._max - this._min)
+    }
 
-            // Zurück auf den Anfang.
-            this.reset()
+    // Meldet oder ändert die aktuelle Position des Schiebereglers.
+    get position(): number {
+        return this._position
+    }
 
-            this._moving = false
-        }
+    set position(newPosition: number) {
+        // Relative Grenzen beachten.
+        if (newPosition < 0) newPosition = 0
+        else if (newPosition > 1) newPosition = 1
 
-        // Grundeinstellungen vornehmen.
-        reset(): void {
-            this.sync(this._initial)
-        }
+        if (newPosition !== this._position) {
+            // Schiebregler anpassen.
+            this._position = newPosition
 
-        // Synchronisiert den Regeler mit dem aktuellen Wert.
-        sync(newValue?: number | null): void {
-            // Auf Wunsch kann direkt ein neuer Wert eingestellt werden.
-            if (newValue !== undefined) this.value = newValue
+            // Tatsächlichen Wert direkt mit ändern.
+            this.value = Math.round(this._min + newPosition * (this._max - this._min))
 
-            // In eine relative Position umsetzen.
-            this.position = ((this.value ?? 0) - this._min) / (this._max - this._min)
-        }
-
-        // Nimmt eine Feineinstellung vor.
-        delta(delta: number): void {
-            // Relative Position setzen, der Wert gleicht sich dann automatisch mit an.
-            this.position = ((this.value ?? 0) + delta - this._min) / (this._max - this._min)
-        }
-
-        // Meldet oder ändert die aktuelle Position des Schiebereglers.
-        get position(): number {
-            return this._position
-        }
-
-        set position(newPosition: number) {
-            // Relative Grenzen beachten.
-            if (newPosition < 0) newPosition = 0
-            else if (newPosition > 1) newPosition = 1
-
-            if (newPosition !== this._position) {
-                // Schiebregler anpassen.
-                this._position = newPosition
-
-                // Tatsächlichen Wert direkt mit ändern.
-                this.value = Math.round(this._min + newPosition * (this._max - this._min))
-
-                // Anzeige des Schiebereglers verändern.
-                this.refresh()
-            }
-        }
-
-        // Meldet oder legt fest, ob sich die Position aktuell verändert.
-        get isDragging(): boolean {
-            return this._moving
-        }
-
-        set isDragging(nowDragging: boolean) {
-            // Das machen wir bereits schon so.
-            if (nowDragging === this._moving) return
-
-            // Änderung vermerken.
-            this._moving = nowDragging
-
-            // Eventuell die Oberfläche anpassen (Feedback).
+            // Anzeige des Schiebereglers verändern.
             this.refresh()
         }
+    }
+
+    // Meldet oder legt fest, ob sich die Position aktuell verändert.
+    get isDragging(): boolean {
+        return this._moving
+    }
+
+    set isDragging(nowDragging: boolean) {
+        // Das machen wir bereits schon so.
+        if (nowDragging === this._moving) return
+
+        // Änderung vermerken.
+        this._moving = nowDragging
+
+        // Eventuell die Oberfläche anpassen (Feedback).
+        this.refresh()
     }
 }

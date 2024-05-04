@@ -1,14 +1,10 @@
-﻿/// <reference path="../../lib.react/reactUi.tsx" />
-
-namespace VCRNETClient.Ui {
-
-    // React.Js Komponente zur Anzeige der Details einer Sendung aus der Programmzeitschrift.
-    export class GuideEntryInfo extends JMSLib.ReactUi.Component<App.Guide.IGuideInfo> {
-
-        // Oberflächenelemente anlegen.
-        render(): JSX.Element {
-            return <div className="vcrnet-guideentryinfo">
-                <table className="vcrnet-tableIsForm">
+﻿// React.Js Komponente zur Anzeige der Details einer Sendung aus der Programmzeitschrift.
+export class GuideEntryInfo extends JMSLib.ReactUi.Component<App.Guide.IGuideInfo> {
+    // Oberflächenelemente anlegen.
+    render(): JSX.Element {
+        return (
+            <div className='vcrnet-guideentryinfo'>
+                <table className='vcrnet-tableIsForm'>
                     <tbody>
                         <tr>
                             <td>Name:</td>
@@ -52,9 +48,10 @@ namespace VCRNETClient.Ui {
                         </tr>
                     </tbody>
                 </table>
-                <div><JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.findSimiliar} /></div>
-            </div>;
-        }
+                <div>
+                    <JMSLib.ReactUi.ButtonCommand uvm={this.props.uvm.findSimiliar} />
+                </div>
+            </div>
+        )
     }
-
 }
