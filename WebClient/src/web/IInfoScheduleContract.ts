@@ -4,14 +4,14 @@ export interface IInfoScheduleContract {
     name: string
 
     // Der erste Start der Aufzeichnung in ISO Notation
-    start: string
+    startTimeISO: string
 
     // Die Wochentage, an denen die Aufzeichnugn wiederholt werden soll
-    repeatPattern: number
+    repeatPatternJSON: number
 
     // Der Name der Quelle
-    sourceName: string
+    source: string
 
     // Die eindeutige Kennung der Aufzeichnung
-    id: string
+    webId: string
 }

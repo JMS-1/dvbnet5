@@ -24,7 +24,7 @@ export class Decryption extends HelpComponent {
                 gleichzeitig entschlüsselbarer Quellen. Irrelevant ist diese Einstellung in der vorliegenden Version, da
                 DVB.NET zu jeder Zeit immer nur eine Quelle entschlüsseln kann. Im DVB.NET Geräteprofil wird bei den
                 Aufzeichnungseinstellungen ein entsprechender Grenzwert verwaltet, der als Voreinstellung 1 verwendet.
-                <ScreenShot description='Gleichzeitige Entschlüsselung' name='FAQ/decryptlimit' />
+                <ScreenShot description='Gleichzeitige Entschlüsselung' name='faq/decryptlimit' />
                 Die Aufzeichnungsplanung berücksichtigt diesen Wert und garantiert bei der Voreinstellung, dass auch in{' '}
                 <InternalLink view={`${page.route};parallelrecording`}>parallelen Aufzeichnungen</InternalLink> zu jedem
                 Zeitpunkt pro DVB Gerät maximal die festgelegte Anzahl von Quellen entschlüsselt wird. Wird dieser Wert

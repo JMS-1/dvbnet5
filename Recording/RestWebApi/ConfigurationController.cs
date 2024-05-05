@@ -25,211 +25,177 @@ public class ConfigurationController(
     /// <summary>
     /// Die Einstellungen der Sicherheit.
     /// </summary>
-    [DataContract]
     public class SecuritySettings
     {
         /// <summary>
         /// Die Gruppe der normalen Benutzer.
         /// </summary>
-        [DataMember(Name = "users")]
         public string UserRole { get; set; } = null!;
 
         /// <summary>
         /// Die Gruppe der Administratoren.
         /// </summary>
-        [DataMember(Name = "admins")]
         public string AdminRole { get; set; } = null!;
     }
 
     /// <summary>
     /// Die Einstellung der Aufzeichnungsverzeichnisse.
     /// </summary>
-    [DataContract]
     public class DirectorySettings
     {
         /// <summary>
         /// Die aktuelle Liste der erlaubten Verzeichnisse.
         /// </summary>
-        [DataMember(Name = "directories")]
         public string[] TargetDirectories { get; set; } = null!;
 
         /// <summary>
         /// Das Muster für die Erstellung der Dateinamen.
         /// </summary>
-        [DataMember(Name = "pattern")]
         public string RecordingPattern { get; set; } = null!;
     }
 
     /// <summary>
     /// Die Einstellungen zur Programmzeitschrift.
     /// </summary>
-    [DataContract]
     public class GuideSettings
     {
         /// <summary>
         /// Der Schwellwert für vorgezogene Aktualisierungen (in Stunden).
         /// </summary>
-        [DataMember(Name = "joinHours")]
         public int? Threshold { get; set; }
 
         /// <summary>
         /// Der minimale Abstand zwischen Aktualisierungen (in Stunden).
         /// </summary>
-        [DataMember(Name = "minDelay")]
         public int? Interval { get; set; }
 
         /// <summary>
         /// Die maximale Dauer einer Aktualisierung (in Minuten).
         /// </summary>
-        [DataMember(Name = "duration")]
         public uint Duration { get; set; }
 
         /// <summary>
         /// Die Stunden, zu denen eine Aktualisierung stattfinden soll.
         /// </summary>
-        [DataMember(Name = "hours")]
         public uint[] Hours { get; set; } = null!;
 
         /// <summary>
         /// Die Quellen, die bei der Aktualisierung zu berücksichtigen sind.
         /// </summary>
-        [DataMember(Name = "sources")]
         public string[] Sources { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn auch die britischen Sendungen zu berücksichtigen sind.
         /// </summary>
-        [DataMember(Name = "includeUK")]
         public bool WithUKGuide { get; set; }
     }
 
     /// <summary>
     /// Die Einstellungen zur Aktualisierung der Quellen.
     /// </summary>
-    [DataContract]
     public class SourceScanSettings
     {
         /// <summary>
         /// Der Schwellwert für vorgezogene Aktualisierungen (in Tagen).
         /// </summary>
-        [DataMember(Name = "joinDays")]
         public int? Threshold { get; set; }
 
         /// <summary>
         /// Der minimale Abstand zwischen Aktualisierungen (in Tagen).
         /// </summary>
-        [DataMember(Name = "interval")]
         public int? Interval { get; set; }
 
         /// <summary>
         /// Die maximale Dauer einer Aktualisierung (in Minuten).
         /// </summary>
-        [DataMember(Name = "duration")]
         public uint Duration { get; set; }
 
         /// <summary>
         /// Die Stunden, zu denen eine Aktualisierung stattfinden soll.
         /// </summary>
-        [DataMember(Name = "hours")]
         public uint[] Hours { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn die neue Liste mit der alten zusammengeführt werden soll.
         /// </summary>
-        [DataMember(Name = "merge")]
         public bool MergeLists { get; set; }
     }
 
     /// <summary>
     /// Die Konfiguration der Geräteprofile.
     /// </summary>
-    [DataContract]
     public class ProfileSettings
     {
         /// <summary>
         /// Die Liste aller bekannten Geräteprofile.
         /// </summary>
-        [DataMember(Name = "profiles")]
         public ConfigurationProfile[] SystemProfiles { get; set; } = null!;
 
         /// <summary>
         /// Der Name des bevorzugten Geräteprofils.
         /// </summary>
-        [DataMember(Name = "defaultProfile")]
         public string DefaultProfile { get; set; } = null!;
     }
 
     /// <summary>
     /// Alle sonstigen Einstellungen.
     /// </summary>
-    [DataContract]
     public class OtherSettings
     {
         /// <summary>
         /// Verweildauer (in Wochen) von Aufträgen im Archiv.
         /// </summary>
-        [DataMember(Name = "archive")]
         public uint ArchiveTime { get; set; }
 
         /// <summary>
         /// Verweildauer (in Wochen) von Protokolleinträgen.
         /// </summary>
-        [DataMember(Name = "protocol")]
         public uint ProtocolTime { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn für H.264 Aufzeichnungen kein PCR generiert werden soll.
         /// </summary>
-        [DataMember(Name = "noH264PCR")]
         public bool DisablePCRFromH264 { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn für MPEG-2 Aufzeichnungen kein PCR generiert werden soll.
         /// </summary>
-        [DataMember(Name = "noMPEG2PCR")]
         public bool DisablePCRFromMPEG2 { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn auch das <i>Basic</i> Protokoll zur Autorisierung verwendet werden darf.
         /// </summary>
-        [DataMember(Name = "basicAuth")]
         public bool AllowBasic { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn auch eine verschlüsselter SSL Verbindung unterstützt werden soll.
         /// </summary>
-        [DataMember(Name = "ssl")]
         public bool UseSSL { get; set; }
 
         /// <summary>
         /// Der TCP/IP Port für verschlüsselte Verbindungen.
         /// </summary>
-        [DataMember(Name = "sslPort")]
         public ushort SSLPort { get; set; }
 
         /// <summary>
         /// Der TCP/IP Port des Web Servers.
         /// </summary>
-        [DataMember(Name = "webPort")]
         public ushort WebPort { get; set; }
 
         /// <summary>
         /// Die Art der Protokollierung.
         /// </summary>
-        [DataMember(Name = "logging"), JsonConverter(typeof(StringEnumConverter))]
         public LoggingLevel Logging { get; set; }
     }
 
     /// <summary>
     /// Informationen zum aktuell verwendeten Regelwerk der Aufzeichnungsplanung.
     /// </summary>
-    [DataContract]
     public class SchedulerRules
     {
         /// <summary>
         /// Der Inhalt der Regeldatei.
         /// </summary>
-        [DataMember(Name = "rules")]
         public string RuleFileContents { get; set; } = null!;
     }
 

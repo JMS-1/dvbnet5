@@ -1,19 +1,13 @@
-﻿using System.Runtime.Serialization;
-
-
-namespace JMS.DVB.NET.Recording.RestWebApi
+﻿namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Beschreibt eine mögliche Datenquelle.
     /// </summary>
-    [Serializable]
-    [DataContract]
     public class ProfileSource : SourceInformation<ProfileSource>
     {
         /// <summary>
         /// Gesetzt, wenn es sich um einen Fernsehsender handelt.
         /// </summary>
-        [DataMember(Name = "tvNotRadio")]
         public bool IsTVStation { get; set; }
 
         /// <summary>

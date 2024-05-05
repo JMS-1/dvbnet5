@@ -4,10 +4,10 @@ import { doUrlCall } from '../VCRServer'
 // Repräsentiert die Klasse SecuritySettings
 export interface ISecuritySettingsContract extends ISettingsContract {
     // Die Windows Gruppe der normalen Benutzer
-    users: string
+    userRole: string
 
     // Die Windows Gruppe der Administratoren
-    admins: string
+    adminRole: string
 }
 
 export function getSecuritySettings(): Promise<ISecuritySettingsContract | undefined> {

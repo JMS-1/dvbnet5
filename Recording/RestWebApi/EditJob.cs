@@ -8,63 +8,52 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Beschreibt die Daten eines Auftrags.
     /// </summary>
-    [DataContract]
-    [Serializable]
     public class EditJob
     {
         /// <summary>
         /// Der Name des Auftrags.
         /// </summary>
-        [DataMember(Name = "name")]
         public string Name { get; set; } = null!;
 
         /// <summary>
         /// Das Aufzeichnungsverzeichnis zum Auftrag.
         /// </summary>
-        [DataMember(Name = "directory")]
         public string RecordingDirectory { get; set; } = null!;
 
         /// <summary>
         /// Das für die Auswahl der Quelle verwendete Gerät.
         /// </summary>
-        [DataMember(Name = "device")]
         public string Profile { get; set; } = null!;
 
         /// <summary>
         /// Die Quelle, von der aufgezeichnet werden soll.
         /// </summary>
-        [DataMember(Name = "sourceName")]
         public string Source { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn die Aufzeichnung auf jeden Fall auf dem für die Auswahl der Quelle
         /// verwendetem Geräte ausgeführt werden soll.
         /// </summary>
-        [DataMember(Name = "lockedToDevice")]
         public bool UseProfileForRecording { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn alle Tonspuren aufgezeichnet werden sollen.
         /// </summary>
-        [DataMember(Name = "allLanguages")]
         public bool AllLanguages { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn auch die <i>Dolby Digital</i> Tonspur aufgezeichnet werden soll.
         /// </summary>
-        [DataMember(Name = "includeDolby")]
         public bool DolbyDigital { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn auch der Videotext aufgezeichnet werden soll.
         /// </summary>
-        [DataMember(Name = "withVideotext")]
         public bool Videotext { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn auch alle DVB Untertitel aufgezeichnet werden sollen.
         /// </summary>
-        [DataMember(Name = "withSubtitles")]
         public bool DVBSubtitles { get; set; }
 
         /// <summary>

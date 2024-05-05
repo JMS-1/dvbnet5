@@ -1,11 +1,11 @@
 ﻿// Die Art der zu suchenden Quelle
 export enum guideSource {
     // Nur Fernsehsender
-    TV = 1,
+    Television,
 
     // Nur Radiosender
-    RADIO = 2,
+    Radio,
 
     // Einfach alles
-    ALL = TV + RADIO,
+    All,
 }

@@ -1,5 +1,4 @@
-﻿using System.Timers;
-using JMS.DVB.Algorithms.Scheduler;
+﻿using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Services.Logging;
 

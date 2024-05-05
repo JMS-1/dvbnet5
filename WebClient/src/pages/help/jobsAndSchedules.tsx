@@ -14,7 +14,7 @@ export class JobsAndSchedules extends HelpComponent {
             <div>
                 Schaut man sich die Programmierung von Aufzeichnungen etwas genauer an, dann sieht man, dass der VCR.NET
                 Recording Service hier auf zwei Konzepten aufsetzt.
-                <ScreenShot description='Auftrag und Aufzeichnung' name='FAQ/jobsandschedules' />
+                <ScreenShot description='Auftrag und Aufzeichnung' name='faq/jobsandschedules' />
                 Eine Aufzeichnung wird grundsätzlich als Teil eines Auftrags angelegt. Über die Liste aller
                 Aufzeichnungen
                 <InternalLink pict='jobs' view={page.application.jobPage.route} /> (nicht den Aufzeichnungsplan

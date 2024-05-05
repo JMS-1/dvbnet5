@@ -68,7 +68,7 @@ export class FileContents extends HelpComponent {
                 ignoriert - etwa wenn ein Videotext aufgezeichnet werden soll, die Quelle aber keinen anbietet weil es
                 sich um einen Radiosender handelt.
                 <br />
-                <ScreenShot description='Optionen festlegen' name='FAQ/streamoptions' />
+                <ScreenShot description='Optionen festlegen' name='faq/streamoptions' />
                 Die einzelnen Auswahlpunkte haben dabei folgende Bedeutung (von links nach rechts):
                 <br />
                 <ul>

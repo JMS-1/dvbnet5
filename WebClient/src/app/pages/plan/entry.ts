@@ -5,7 +5,6 @@ import { IConnectable, IView } from '../../../lib/site'
 import { ITimeBar, TimeBar } from '../../../lib/timebar'
 import { getGuideItem, IGuideItemContract } from '../../../web/IGuideItemContract'
 import { IPlanActivityContract } from '../../../web/IPlanActivityContract'
-import { Application } from '../../app'
 import { GuideInfo, IGuideInfo } from '../guide/entry'
 
 // Erweiterte Schnittstelle (View Model) zur Anzeige eines Eintrags des Aufzeichnunsplans.
@@ -77,17 +76,16 @@ export class PlanEntry implements IPlanEntry {
     constructor(
         private model: IPlanActivityContract,
         private _toggleDetail: (entry: PlanEntry, epg: boolean) => void,
-        application: Application,
         reload: () => void,
         private readonly _findInGuide: (model: IGuideItemContract) => void
     ) {
         // Zeiten umrechnen
-        this.duration = parseInt(model.duration)
-        this.start = new Date(model.start ?? '')
+        this.duration = parseInt(model.durationInSeconds)
+        this.start = new Date(model.startTimeISO ?? '')
         this.end = new Date(this.start.getTime() + 1000 * this.duration)
 
         // Ausnahmen auswerten
-        if (model.exception) this.exception = new PlanException(model.exception, model.id, reload)
+        if (model.exceptionRule) this.exception = new PlanException(model.exceptionRule, model.legacyReference, reload)
     }
 
     // Zeigt die Programmzeitschrift an.
@@ -124,37 +122,37 @@ export class PlanEntry implements IPlanEntry {
     readonly end: Date
 
     get suspectTime(): boolean {
-        return this.model.suspectEndTime
+        return this.model.endTimeCouldBeWrong
     }
 
     // Der Name der Aufzeichnung.
     get name(): string {
-        return this.model.name
+        return this.model.fullName
     }
 
     // Gesetzt, wenn alle Tonspuren aufgezeichnet werden sollen.
     get allAudio(): boolean {
-        return this.model.allAudio
+        return this.model.allLanguages
     }
 
     // Gesetzt, wenn Dolby Tonspuren aufgezeichnet werden sollen.
     get dolby(): boolean {
-        return this.model.ac3
+        return this.model.dolby
     }
 
     // Gesetzt, wenn der Videotext mit aufgezeichnet werden soll.
     get ttx(): boolean {
-        return this.model.ttx
+        return this.model.videoText
     }
 
     // Gesetzt, wenn DVB Untertitel mit aufgezeichnet werden sollen.
     get subs(): boolean {
-        return this.model.dvbsub
+        return this.model.subTitles
     }
 
     // Gesetzt, wenn DVB Untertitel mit aufgezeichnet werden sollen.
     get guide(): boolean {
-        return this.model.epg
+        return this.model.hasGuideEntry
     }
 
     // Der Startzeitpunkt formatiert für die Darstellung.
@@ -185,14 +183,14 @@ export class PlanEntry implements IPlanEntry {
         if (this.model.station === 'PSI') return
         if (this.model.station === 'EPG') return
 
-        if (this.model.lost) return 'lost'
-        else if (this.model.late) return 'late'
+        if (this.model.isHidden) return 'lost'
+        else if (this.model.isLate) return 'late'
         else return 'intime'
     }
 
     // Anwendungsverweis zum Ändern dieses Eintrags.
     get editLink(): string | undefined {
-        return this.mode && `edit;id=${this.model.id}`
+        return this.mode && `edit;id=${this.model.legacyReference}`
     }
 
     // Schaltet die Detailanzeige um.
@@ -220,13 +218,13 @@ export class PlanEntry implements IPlanEntry {
 
     get guideItem(): IGuideInfo | null {
         // Das ist grundsätzlich nicht möglich.
-        if (!this.model.epg || !this.model.epgDevice || !this.model.source) return null
+        if (!this.model.hasGuideEntry || !this.model.guideEntryDevice || !this.model.source) return null
 
         // Das haben wir schon einmal probiert.
         if (this._guideItem !== undefined) return this._guideItem
 
         // In der Programmzeitschrift suchen und den am besten passenden Eintrag ermitteln.
-        getGuideItem(this.model.epgDevice, this.model.source, this.start, this.end).then((item) => {
+        getGuideItem(this.model.guideEntryDevice, this.model.source, this.start, this.end).then((item) => {
             // Eventuell Präsentationsmodell für den Eintrag erstellen.
             this._guideItem = item ? new GuideInfo(item, this._findInGuide) : null
 

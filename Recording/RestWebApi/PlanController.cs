@@ -19,7 +19,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="end">Es werden nur Aufzeichnungen betrachtet, die vor diesem Zeitpunkt beginnen.</param>
         /// <returns>Alle Einträge des Aufzeichnungsplans.</returns>
         [HttpGet]
-        public PlanActivity[] GetPlan(string limit, string end)
+        public PlanActivity[] GetPlan(string? limit, string? end)
         {
             // Get the limit
             if (!int.TryParse(limit, out int maximum) || (maximum <= 0))
@@ -36,7 +36,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             Array.Sort(activities, PlanActivity.ByStartComparer);
 
             // Report
-            return activities!;
+            return activities;
         }
 
         /// <summary>

@@ -1,100 +1,83 @@
-﻿using System.Runtime.Serialization;
-
-namespace JMS.DVB.NET.Recording.RestWebApi
+﻿namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Beschreibt die benutezrdefinierten Einstellungen.
     /// </summary>
-    [DataContract]
     public class UserProfile
     {
         /// <summary>
         /// Die Anzahl von Tagen, die im Aufzeichnungsplan angezeigt werden sollen.
         /// </summary>
-        [DataMember(Name = "planDays")]
-        public int DaysToShowInPlan { get; set; }
+        public int PlanDays { get; set; }
 
         /// <summary>
         /// Die Liste der bisher verwendeten Quellen.
         /// </summary>
-        [DataMember(Name = "recentSources")]
         public string[] RecentSources { get; set; } = null!;
 
         /// <summary>
         /// Die bevorzugte Auswahl der Art einer Quelle.
         /// </summary>
-        [DataMember(Name = "typeFilter")]
-        public string DefaultSourceTypeSelector { get; set; } = null!;
+        public string TypeFilter { get; set; } = null!;
 
         /// <summary>
         /// Die bevorzugte Auswahl Verschlüsselung einer Quelle.
         /// </summary>
-        [DataMember(Name = "encryptionFilter")]
-        public string DefaultSourceEncryptionSelector { get; set; } = null!;
+        public string EncryptionFilter { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn alle Sprachen aufgezeichnet werden sollen.
         /// </summary>
-        [DataMember(Name = "languages")]
-        public bool PreferAllLanguages { get; set; }
+        public bool Languages { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn auch die <i>Dolby Digital</i> Tonspur aufgezeichnet werden soll.
         /// </summary>
-        [DataMember(Name = "dolby")]
-        public bool PreferDolby { get; set; }
+        public bool Dolby { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn auch der Videotext aufgezeichnet werden soll.
         /// </summary>
-        [DataMember(Name = "videotext")]
-        public bool PreferVideotext { get; set; }
+        public bool Videotext { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn auch Untertitel aufgezeichnet werden sollen.
         /// </summary>
-        [DataMember(Name = "subtitles")]
-        public bool PreferSubtitles { get; set; }
+        public bool Subtitles { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn nach dem Anlegen einer neuen Aufzeichnung aus der Programmzeitschrift
         /// heraus zur Programmzeitschrift zurück gekehrt werden soll - und nicht der aktualisierte
         /// Aufzeichnungsplan zur Anzeige kommt.
         /// </summary>
-        [DataMember(Name = "backToGuide")]
-        public bool BackToGuideAfterAdd { get; set; }
+        public bool BackToGuide { get; set; }
 
         /// <summary>
         /// Die Anzahl der Zeilen auf einer Seite der Programmzeitschrift.
         /// </summary>
-        [DataMember(Name = "guideRows")]
-        public int RowsInGuide { get; set; }
+        public int GuideRows { get; set; }
 
         /// <summary>
         /// Die Anzahl von Minuten, die eine Aufzeichnung vorzeitig beginnt, wenn sie über
         /// die Programmzeitschrift angelegt wird.
         /// </summary>
-        [DataMember(Name = "guideAheadStart")]
-        public int GuideStartEarly { get; set; }
+        public int GuideAheadStart { get; set; }
 
         /// <summary>
         /// Die Anzahl von Minuten, die eine Aufzeichnung verspätet endet, wenn sie über
         /// die Programmzeitschrift angelegt wird.
         /// </summary>
-        [DataMember(Name = "guideBeyondEnd")]
-        public int GuideEndLate { get; set; }
+        public int GuideBeyondEnd { get; set; }
 
         /// <summary>
         /// Die maximale Anzahl von Einträgen in der Liste der zuletzt verwendeten Quellen.
         /// </summary>
-        [DataMember(Name = "recentSourceLimit")]
-        public int RowsInRecentSources { get; set; }
+        public int RecentSourceLimit { get; set; }
 
         /// <summary>
         /// Meldet oder ändert die gespeicherten Suchen der Programmzeitschrift.
         /// </summary>
-        [DataMember(Name = "guideSearches")]
-        public string GuideFavorites { get; set; } = null!;
+        public string GuideSearches { get; set; } = null!;
 
         /// <summary>
         /// Erstellt die Informationen des aktuellen Anwenders.
@@ -106,20 +89,20 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new UserProfile
                 {
-                    DefaultSourceTypeSelector = UserProfileSettings.Radio ? (UserProfileSettings.Television ? "RT" : "R") : (UserProfileSettings.Television ? "T" : ""),
-                    DefaultSourceEncryptionSelector = UserProfileSettings.FreeTV ? (UserProfileSettings.PayTV ? "FP" : "F") : (UserProfileSettings.PayTV ? "P" : ""),
+                    TypeFilter = UserProfileSettings.Radio ? (UserProfileSettings.Television ? "RT" : "R") : (UserProfileSettings.Television ? "T" : ""),
+                    EncryptionFilter = UserProfileSettings.FreeTV ? (UserProfileSettings.PayTV ? "FP" : "F") : (UserProfileSettings.PayTV ? "P" : ""),
                     RecentSources = UserProfileSettings.RecentChannels.Cast<string>().OrderBy(name => name).ToArray(),
-                    RowsInRecentSources = UserProfileSettings.MaxRecentChannels,
-                    GuideFavorites = UserProfileSettings.GuideFavorites,
-                    BackToGuideAfterAdd = UserProfileSettings.BackToEPG,
-                    PreferSubtitles = UserProfileSettings.UseSubTitles,
-                    DaysToShowInPlan = UserProfileSettings.DaysToShow,
-                    GuideStartEarly = UserProfileSettings.EPGPreTime,
-                    PreferAllLanguages = UserProfileSettings.UseMP2,
-                    GuideEndLate = UserProfileSettings.EPGPostTime,
-                    PreferVideotext = UserProfileSettings.UseTTX,
-                    RowsInGuide = UserProfileSettings.EPGEntries,
-                    PreferDolby = UserProfileSettings.UseAC3,
+                    RecentSourceLimit = UserProfileSettings.MaxRecentChannels,
+                    GuideSearches = UserProfileSettings.GuideFavorites,
+                    BackToGuide = UserProfileSettings.BackToEPG,
+                    Subtitles = UserProfileSettings.UseSubTitles,
+                    PlanDays = UserProfileSettings.DaysToShow,
+                    GuideAheadStart = UserProfileSettings.EPGPreTime,
+                    Languages = UserProfileSettings.UseMP2,
+                    GuideBeyondEnd = UserProfileSettings.EPGPostTime,
+                    Videotext = UserProfileSettings.UseTTX,
+                    GuideRows = UserProfileSettings.EPGEntries,
+                    Dolby = UserProfileSettings.UseAC3,
                 };
         }
 
@@ -129,20 +112,20 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public void Update()
         {
             // Direct copy
-            UserProfileSettings.BackToEPG = BackToGuideAfterAdd;
-            UserProfileSettings.UseSubTitles = PreferSubtitles;
-            UserProfileSettings.UseMP2 = PreferAllLanguages;
-            UserProfileSettings.UseTTX = PreferVideotext;
-            UserProfileSettings.UseAC3 = PreferDolby;
+            UserProfileSettings.BackToEPG = BackToGuide;
+            UserProfileSettings.UseSubTitles = Subtitles;
+            UserProfileSettings.UseMP2 = Languages;
+            UserProfileSettings.UseTTX = Videotext;
+            UserProfileSettings.UseAC3 = Dolby;
 
             // A bit more work on flag groups
-            switch (DefaultSourceTypeSelector ?? string.Empty)
+            switch (TypeFilter ?? string.Empty)
             {
                 case "R": UserProfileSettings.Radio = true; UserProfileSettings.Television = false; break;
                 case "T": UserProfileSettings.Radio = false; UserProfileSettings.Television = true; break;
                 case "RT": UserProfileSettings.Radio = true; UserProfileSettings.Television = true; break;
             }
-            switch (DefaultSourceEncryptionSelector ?? string.Empty)
+            switch (EncryptionFilter ?? string.Empty)
             {
                 case "F": UserProfileSettings.FreeTV = true; UserProfileSettings.PayTV = false; break;
                 case "P": UserProfileSettings.FreeTV = false; UserProfileSettings.PayTV = true; break;
@@ -150,21 +133,21 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             }
 
             // Numbers are copied after check
-            if (DaysToShowInPlan >= 1)
-                if (DaysToShowInPlan <= 50)
-                    UserProfileSettings.DaysToShow = DaysToShowInPlan;
-            if (RowsInRecentSources >= 1)
-                if (RowsInRecentSources <= 50)
-                    UserProfileSettings.MaxRecentChannels = RowsInRecentSources;
-            if (GuideStartEarly >= 0)
-                if (GuideStartEarly <= 240)
-                    UserProfileSettings.EPGPreTime = GuideStartEarly;
-            if (GuideEndLate >= 0)
-                if (GuideEndLate <= 240)
-                    UserProfileSettings.EPGPostTime = GuideEndLate;
-            if (RowsInGuide >= 10)
-                if (RowsInGuide <= 100)
-                    UserProfileSettings.EPGEntries = RowsInGuide;
+            if (PlanDays >= 1)
+                if (PlanDays <= 50)
+                    UserProfileSettings.DaysToShow = PlanDays;
+            if (RecentSourceLimit >= 1)
+                if (RecentSourceLimit <= 50)
+                    UserProfileSettings.MaxRecentChannels = RecentSourceLimit;
+            if (GuideAheadStart >= 0)
+                if (GuideAheadStart <= 240)
+                    UserProfileSettings.EPGPreTime = GuideAheadStart;
+            if (GuideBeyondEnd >= 0)
+                if (GuideBeyondEnd <= 240)
+                    UserProfileSettings.EPGPostTime = GuideBeyondEnd;
+            if (GuideRows >= 10)
+                if (GuideRows <= 100)
+                    UserProfileSettings.EPGEntries = GuideRows;
 
             // Store
             UserProfileSettings.Update();

@@ -29,7 +29,7 @@ export class WebSettings extends HelpComponent {
                 Sicherheitsprotokolle verwendet werden. Alle mit VCR.NET ausgelieferten Werkzeuge wie das
                 Kontrollzentrum nutzen entsprechende Mechanismen.
                 <br />
-                <ScreenShot description='Web Server Konfiguration' name='FAQ/webserver' />
+                <ScreenShot description='Web Server Konfiguration' name='faq/webserver' />
                 Leider erfordern es die Windows eigenen Sicherheitsprotokolle, dass etwa zwischen einem Internet
                 Browser, der den Web Client aufruft, und dem VCR.NET Server nicht nur eine Kommunikation über den
                 konfigurierten TCP/IP Port möglich ist sondern dass vielmehr weitere elementare TCP/IP Ports zwischen

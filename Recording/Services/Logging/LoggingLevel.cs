@@ -1,9 +1,12 @@
+using System.Text.Json.Serialization;
+
 namespace JMS.DVB.NET.Recording.Services.Logging;
 
 /// <summary>
 /// Used to select which information should be reported to 
 /// the Windows event log.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum LoggingLevel
 {
     /// <summary>

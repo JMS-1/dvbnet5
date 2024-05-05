@@ -1,12 +1,12 @@
 ﻿using JMS.DVB.Algorithms.Scheduler;
 using System.Globalization;
-using System.Runtime.Serialization;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Status;
 using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Server;
+using System.Text.Json.Serialization;
 
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -15,26 +15,21 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// Beschreibt eine Aufzeichnung, die entweder aktiv ist oder als mächstes auf einem gerade unbenutzen
     /// Gerät ausgeführt wird.
     /// </summary>
-    [Serializable]
-    [DataContract]
     public class PlanCurrentMobile
     {
         /// <summary>
         /// Der Name des Gerätes.
         /// </summary>
-        [DataMember(Name = "device")]
         public string ProfileName { get; set; } = null!;
 
         /// <summary>
         /// Der Name der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "name")]
         public string Name { get; set; } = null!;
 
         /// <summary>
         /// Der Startzeitpunkt der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "start")]
         public string StartTimeISO
         {
             get { return StartTime.ToString("o"); }
@@ -44,12 +39,12 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Der Startzeitpunkt der Aufzeichnung.
         /// </summary>
+        [JsonIgnore]
         public DateTime StartTime { get; set; }
 
         /// <summary>
         /// Die Laufzeit der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "duration")]
         public int DurationInSeconds
         {
             get { return (int)Math.Round(Duration.TotalSeconds); }
@@ -59,24 +54,22 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Die Laufzeit der Aufzeichnung.
         /// </summary>
+        [JsonIgnore]
         public TimeSpan Duration { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn es Einträge in der Programmzeitschrift zu dieser Aufzeichnung gibt.
         /// </summary>
-        [DataMember(Name = "epg")]
         public bool HasGuideEntry { get; set; }
 
         /// <summary>
         /// Die zugehörige Quelle, sofern bekannt.
         /// </summary>
-        [DataMember(Name = "sourceName")]
         public string SourceName { get; set; } = null!;
 
         /// <summary>
         /// Die zugehörige Quelle, sofern bekannt.
         /// </summary>
-        [DataMember(Name = "source")]
         public string Source { get; set; } = null!;
 
         /// <summary>
@@ -105,8 +98,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// Beschreibt eine Aufzeichnung, die entweder aktiv ist oder als mächstes auf einem gerade unbenutzen
     /// Gerät ausgeführt wird.
     /// </summary>
-    [Serializable]
-    [DataContract]
     public class PlanCurrent : PlanCurrentMobile
     {
         /// <summary>
@@ -117,55 +108,47 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Die eindeutige Kennung der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "id")]
         public string Identifier { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn die Aufzeichung gerade ausgeführt wird.
         /// </summary>
-        [DataMember(Name = "referenceId")]
         public string PlanIdentifier { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn die Aufzeichnung verspätet beginnt.
         /// </summary>
-        [DataMember(Name = "late")]
         public bool IsLate { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn es sich hier um einen Platzhalter für ein Gerät handelt, dass nicht in Benutzung ist.
         /// </summary>
-        [DataMember(Name = "isIdle")]
         public bool IsIdle { get; set; }
 
         /// <summary>
         /// Eine Beschreibung der Größe, Anzahl etc.
         /// </summary>
-        [DataMember(Name = "size")]
         public string SizeHint { get; set; } = null!;
 
         /// <summary>
         /// Die zugehörige Quelle.
         /// </summary>
-        [NonSerialized]
+        [JsonIgnore]
         private SourceSelection m_source = null!;
 
         /// <summary>
         /// Die laufende Nummer des Datenstroms, die zur Anzeige benötigt wird.
         /// </summary>
-        [DataMember(Name = "streamIndex")]
         public int Index { get; set; }
 
         /// <summary>
         /// Die Netzwerkadresse, an die gerade die Aufzeichnungsdaten versendet werden.
         /// </summary>
-        [DataMember(Name = "streamTarget")]
         public string StreamTarget { get; set; } = null!;
 
         /// <summary>
         /// Die verbleibende Restzeit der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "remainingMinutes")]
         public uint RemainingTimeInMinutes
         {
             get { return (PlanIdentifier == null) ? 0 : checked((uint)Math.Max(0, Math.Round((StartTime + Duration - DateTime.UtcNow).TotalMinutes))); }
@@ -175,7 +158,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Alle zu dieser Aktivität erstellten Dateien.
         /// </summary>
-        [DataMember(Name = "files")]
         public string[] Files { get; set; } = null!;
 
         /// <summary>

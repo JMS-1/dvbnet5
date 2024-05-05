@@ -8,40 +8,32 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Die Daten zum Anlegen eines neuen Auftrags mit der ersten Aufzeichnung.
     /// </summary>
-    [DataContract]
-    [Serializable]
     public class JobScheduleData
     {
         /// <summary>
         /// Der zugehörige Auftrag.
         /// </summary>
-        [DataMember(Name = "job")]
         public EditJob Job { get; set; } = null!;
 
         /// <summary>
         /// Die zugehörige Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "schedule")]
         public EditSchedule Schedule { get; set; } = null!;
     }
 
     /// <summary>
     /// Informationen zu einer Aufzeichnung.
     /// </summary>
-    [DataContract]
-    [Serializable]
     public class JobScheduleInfo : JobScheduleData
     {
         /// <summary>
         /// Die eindeutige Kennung der Auftrags.
         /// </summary>
-        [DataMember(Name = "jobId")]
         public string JobIdentifier { get; set; } = null!;
 
         /// <summary>
         /// Die eindeutige Kennung der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "scheduleId")]
         public string ScheduleIdentifier { get; set; } = null!;
 
         /// <summary>

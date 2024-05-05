@@ -7,20 +7,16 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// Beschreibt eine mögliche Datenquelle.
     /// </summary>
     /// <typeparam name="TReal">Die konkrete Art der Klasse.</typeparam>
-    [Serializable]
-    [DataContract]
     public abstract class SourceInformation<TReal> where TReal : SourceInformation<TReal>, new()
     {
         /// <summary>
         /// Der Anzeigename der Quelle.
         /// </summary>
-        [DataMember(Name = "nameWithProvider")]
         public string Name { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn die Quelle verschlüsselt ist.
         /// </summary>
-        [DataMember(Name = "encrypted")]
         public bool IsEncrypted { get; set; }
 
         /// <summary>

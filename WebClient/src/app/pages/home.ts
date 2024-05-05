@@ -48,7 +48,7 @@ export class HomePage extends Page implements IHomePage {
     readonly startGuide = new Command(
         () => this.startTask('guide'),
         'Aktualisierung anfordern',
-        () => this.application.version.hasGuides
+        () => this.application.version.guideUpdateEnabled
     )
 
     // Umschalter zur Anzeige des bereichs zum Starten der Programmzeitschrift.
@@ -57,14 +57,14 @@ export class HomePage extends Page implements IHomePage {
         'value',
         'die Programmzeitschrift sobald wie möglich aktualisieren',
         () => this.refreshUi(),
-        () => !this.application.version.hasGuides
+        () => !this.application.version.guideUpdateEnabled
     )
 
     // Befehl zum Starten eines Sendersuchlaufs.
     readonly startScan = new Command(
         () => this.startTask('scan'),
         'Aktualisierung anfordern',
-        () => this.application.version.canScan
+        () => this.application.version.sourceScanEnabled
     )
 
     // Umschalter zur Anzeige des Bereichs zum Starten eines Sendersuchlaufs.
@@ -73,7 +73,7 @@ export class HomePage extends Page implements IHomePage {
         'value',
         'einen Sendersuchlauf sobald wie möglich durchführen',
         () => this.refreshUi(),
-        () => !this.application.version.canScan
+        () => !this.application.version.sourceScanEnabled
     )
 
     // Umschalter zur prüfung der Online verfügbaren Version des VCR.NET Recording Service.
@@ -90,7 +90,7 @@ export class HomePage extends Page implements IHomePage {
 
     // Die aktuell installierte Version.
     get currentVersion(): string {
-        return this.application.version.msiVersion
+        return this.application.version.installedVersion
     }
 
     // Die Online verfügbare Version.
@@ -107,7 +107,7 @@ export class HomePage extends Page implements IHomePage {
 
     // Gesetzt, wenn der Verweis zur Konfiguration angezeigt werden soll.
     get showAdmin(): boolean {
-        return this.application.version.userIsAdmin && !this.isRecording
+        return this.application.version.isAdmin && !this.isRecording
     }
 
     // Blendet die Anzeile der Online Version ein oder aus.
@@ -156,13 +156,13 @@ export class HomePage extends Page implements IHomePage {
         const version = this.application.version
         const title = this.application.title
 
-        if (version) return `${title} (${version.msiVersion})`
+        if (version) return `${title} (${version.installedVersion})`
         else return title
     }
 
     // Gesetzt solange irgendeine Aufzeichnung auf irgendeinem gerät aktiv ist.
     get isRecording(): boolean {
-        return this.application.version.active
+        return this.application.version.isRunning
     }
 
     // Aktiviert eine Sonderaufgabe und wechselt im Erfolgsfall nach Bestätigung durch den VCR.NET Recording Service auf die Geräteübersicht.

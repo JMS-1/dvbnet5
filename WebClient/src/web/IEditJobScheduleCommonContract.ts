@@ -4,17 +4,17 @@ export interface IEditJobScheduleCommonContract {
     name: string
 
     // Die verwendete Quelle
-    sourceName: string
+    source: string
 
     // Gesetzt, wenn alle Sprachen aufgezeichnet werden sollen
     allLanguages: boolean
 
     // Gesetzt, wenn die Dolby Digital Tonspur aufgezeichnet werden soll
-    includeDolby: boolean
+    dolbyDigital: boolean
 
     // Gesetzt, wenn der Videotext aufgezeichnet werden soll
-    withVideotext: boolean
+    videotext: boolean
 
     // Gesetzt, wenn Untertitel aufgezeichnet werden sollen
-    withSubtitles: boolean
+    dvbSubtitles: boolean
 }

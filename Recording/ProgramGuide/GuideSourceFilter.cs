@@ -1,9 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace JMS.DVB.NET.Recording.ProgramGuide;
 
 /// <summary>
 /// Die Art der zu suchenden Quelle.
 /// </summary>
-[Flags]
+[Flags, JsonConverter(typeof(JsonStringEnumConverter))]
 public enum GuideSourceFilter
 {
     /// <summary>

@@ -7,13 +7,13 @@ export interface IInfoJobContract {
     name: string
 
     // Die eindeutige Kennung des Auftrags
-    id: string
+    webId: string
 
     // Alle Aufzeichnung zum Auftrag
     schedules: IInfoScheduleContract[]
 
     // Gesetzt, wenn der Auftrag noch nicht in das Archiv übertragen wurde
-    active: boolean
+    isActive: boolean
 }
 
 export function getInfoJobs(): Promise<IInfoJobContract[] | undefined> {

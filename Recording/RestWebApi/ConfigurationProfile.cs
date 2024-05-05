@@ -6,38 +6,31 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Beschreibt ein Geräteprofil, so wie es für die Konfiguration verwendet werden soll.
     /// </summary>
-    [Serializable]
-    [DataContract]
     public class ConfigurationProfile
     {
         /// <summary>
         /// Der Name des Geräteprofils.
         /// </summary>
-        [DataMember(Name = "name")]
         public string Name { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn das Geräteprofil für Aufzeichnungen verwendet wird.
         /// </summary>
-        [DataMember(Name = "active")]
         public bool UsedForRecording { get; set; }
 
         /// <summary>
         /// Die maximale Anzahl von Quellen, die gleichzeitig aufgezeichnet werden dürfen.
         /// </summary>
-        [DataMember(Name = "sourceLimit")]
         public uint SourceLimit { get; set; }
 
         /// <summary>
         /// Die maximale Anzahl von gleichzeitig entschlüsselbaren Quellen.
         /// </summary>
-        [DataMember(Name = "ciLimit")]
         public uint DecryptionLimit { get; set; }
 
         /// <summary>
         /// Die Planungspriorität.
         /// </summary>
-        [DataMember(Name = "priority")]
         public uint Priority { get; set; }
 
         /// <summary>

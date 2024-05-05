@@ -4,13 +4,13 @@ import { doUrlCall } from './VCRServer'
 // Beschreibt einen Eintrag im Aufzeichnungsplan.
 export interface IPlanActivityContract {
     // Beginn der Aufzeichnung im ISO Format.
-    start?: string
+    startTimeISO?: string
 
     // Dauer der Aufzeichung in Sekunden.
-    duration: string
+    durationInSeconds: string
 
     // Name der Aufzeichnung.
-    name: string
+    fullName: string
 
     // Gerät, auf dem aufgezeichnet wird.
     device?: string
@@ -19,43 +19,43 @@ export interface IPlanActivityContract {
     station?: string
 
     // Gesetzt, wenn die Aufzeichnung verspätet beginnt.
-    late: boolean
+    isLate: boolean
 
     // Gesetzt, wenn die Aufzeichnung gar nicht ausgeführt wird.
-    lost: boolean
+    isHidden: boolean
 
     // Gesetzt, wenn Informationen aus der Programmzeitschrift vorliegen.
-    epg: boolean
+    hasGuideEntry: boolean
 
     // Das Gerät, in dessen Programmzeitschrift die Aufzeichnung gefunden wurde.
-    epgDevice?: string
+    guideEntryDevice?: string
 
     // Die Quelle zur Aufzeichnung in der Programzeitschrift.
     source?: string
 
     // Die eindeutige Kennung der Aufzeichnung.
-    id: string
+    legacyReference: string
 
     // Gesetzt, wenn die Endzeit durch eine Sommer-/Winterzeitumstellung nicht korrekt ist.
-    suspectEndTime: boolean
+    endTimeCouldBeWrong: boolean
 
     // Gesetzt, wenn alle Tonspuren aufgezeichnet werden sollen.
-    allAudio: boolean
+    allLanguages: boolean
 
     // Gesetzt, wenn Dolby Tonspuren aufgezeichnet werden sollen.
-    ac3: boolean
+    dolby: boolean
 
     // Gesetzt, wenn der Videotext mit aufgezeichnet werden soll.
-    ttx: boolean
+    videoText: boolean
 
     // Gesetzt, wenn DVB Untertitel mit aufgezeichnet werden sollen.
-    dvbsub: boolean
+    subTitles: boolean
 
     // Gesetzt, wenn die Aufzeichnung laut Programmzeitschrift gerade läuft.
-    epgCurrent: boolean
+    currentProgramGuide: boolean
 
     // Aktive Ausnahmeregel für die Aufzeichnung.
-    exception?: IPlanExceptionContract
+    exceptionRule?: IPlanExceptionContract
 }
 
 export function getPlan(limit: number, end: Date): Promise<IPlanActivityContract[] | undefined> {

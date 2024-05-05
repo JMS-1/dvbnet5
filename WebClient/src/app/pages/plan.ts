@@ -35,9 +35,6 @@ export class PlanPage extends Page implements IPlanPage {
     // Alle bekannten Datumsfilter.
     readonly startFilter = new SingleListProperty<Date>({}, 'value', undefined, () => this.fireRefresh(true), [])
 
-    // Gesetzt, wenn keine Abfragen abgesendet werden sollen.
-    private _disableQuery: boolean
-
     // Erzeugt eine neue Steuerung.
     constructor(application: Application) {
         super('plan', application)
@@ -113,7 +110,7 @@ export class PlanPage extends Page implements IPlanPage {
             const toggleDetail = this.toggleDetail.bind(this)
             const reload = this.reload.bind(this)
 
-            this._jobs = plan?.map((job) => new PlanEntry(job, toggleDetail, this.application, reload, similiar)) ?? []
+            this._jobs = plan?.map((job) => new PlanEntry(job, toggleDetail, reload, similiar)) ?? []
 
             // Die Seite kann nun normal verwendet werden.
             this.application.isBusy = false

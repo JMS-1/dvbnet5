@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using JMS.DVB.NET.Recording.Persistence;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -7,14 +8,11 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Beschreibt einen einzelnen Protokolleintrag.
     /// </summary>
-    [DataContract]
-    [Serializable]
     public class ProtocolEntry
     {
         /// <summary>
         /// Der Startzeitpunkt der Gerätenutzung.
         /// </summary>
-        [DataMember(Name = "start")]
         public string StartTimeISO
         {
             get { return StartTime.HasValue ? StartTime.Value.ToString("o") : null!; }
@@ -24,12 +22,12 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Der Startzeitpunkt der Gerätenutzung.
         /// </summary>
+        [JsonIgnore]
         public DateTime? StartTime { get; set; }
 
         /// <summary>
         /// Der Endzeitpunkt der Gerätenutzung.
         /// </summary>
-        [DataMember(Name = "end")]
         public string EndTimeISO
         {
             get { return EndTime.ToString("o"); }
@@ -39,30 +37,27 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Der Endzeitpunkt der Gerätenutzung.
         /// </summary>
+        [JsonIgnore]
         public DateTime EndTime { get; set; }
 
         /// <summary>
         /// Der Name der ersten Quelle.
         /// </summary>
-        [DataMember(Name = "firstSourceName")]
         public string Source { get; set; } = null!;
 
         /// <summary>
         /// Die Liste aller Aufzeichnungsdateien.
         /// </summary>
-        [DataMember(Name = "files")]
         public string[] Files { get; set; } = null!;
 
         /// <summary>
         /// Ein Hinweis auf die Größe der Aufzeichnungen.
         /// </summary>
-        [DataMember(Name = "size")]
         public string SizeHint { get; set; } = null!;
 
         /// <summary>
         /// Der Name der primären Aufzeichnungsdatei.
         /// </summary>
-        [DataMember(Name = "primaryFile")]
         public string PrimaryFile { get; set; } = null!;
 
         /// <summary>

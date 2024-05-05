@@ -4,10 +4,10 @@ import { doUrlCall } from '../VCRServer'
 // Repräsentiert die Klasse DirectorySettings
 export interface IDirectorySettingsContract extends ISettingsContract {
     // Alle Aufzeichnungsverzeichnisse
-    directories: string[]
+    targetDirectories: string[]
 
     // Das Muster für die Erzeugung von Dateinamen
-    pattern: string
+    recordingPattern: string
 }
 
 export function getDirectorySettings(): Promise<IDirectorySettingsContract | undefined> {

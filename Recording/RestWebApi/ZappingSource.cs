@@ -1,18 +1,13 @@
-﻿using System.Runtime.Serialization;
-
-namespace JMS.DVB.NET.Recording.RestWebApi
+﻿namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Beschreibt eine mögliche Datenquelle.
     /// </summary>
-    [Serializable]
-    [DataContract]
     public class ZappingSource : SourceInformation<ZappingSource>
     {
         /// <summary>
         /// Die eindeutige Kennung der Quelle.
         /// </summary>
-        [DataMember(Name = "source")]
         public string Source { get; set; } = null!;
 
         /// <summary>

@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using JMS.DVB.NET.Recording.Persistence;
+﻿using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Services.Configuration;
 
 
@@ -8,20 +7,16 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Beschreibt einen Auftrag eines Geräteprofils.
     /// </summary>
-    [DataContract]
-    [Serializable]
     public class ProfileJobInfo
     {
         /// <summary>
         /// Der Name des Auftrags.
         /// </summary>
-        [DataMember(Name = "name")]
         public string Name { get; set; } = null!;
 
         /// <summary>
         /// Die Kennung des Auftrags.
         /// </summary>
-        [DataMember(Name = "id")]
         public string JobIdentifier { get; set; } = null!;
 
         /// <summary>

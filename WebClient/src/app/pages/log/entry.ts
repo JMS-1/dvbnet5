@@ -36,22 +36,22 @@ export interface ILogEntry {
 export class LogEntry implements ILogEntry {
     // Start der Aufzeichnung.
     get start(): string {
-        return DateTimeUtils.formatStartTime(new Date(this._model.start))
+        return DateTimeUtils.formatStartTime(new Date(this._model.startTimeISO))
     }
 
     // Ende der Aufzeichnung.
     get end(): string {
-        return DateTimeUtils.formatStartTime(new Date(this._model.end))
+        return DateTimeUtils.formatStartTime(new Date(this._model.endTimeISO))
     }
 
     // Ende der Aufzeichnung (nur Uhrzeit).
     get endTime(): string {
-        return DateTimeUtils.formatEndTime(new Date(this._model.end))
+        return DateTimeUtils.formatEndTime(new Date(this._model.endTimeISO))
     }
 
     // Umfang der Aufzeichnung (etwa Größe der Aufzeichnungsdateien oder Anzahl der Einträge der Programmzeitschrift).
     get size(): string {
-        return this._model.size
+        return this._model.sizeHint
     }
 
     // Name der (eventuell transienten) primäre Aufzeichnungsdatei.
@@ -92,7 +92,7 @@ export class LogEntry implements ILogEntry {
         this.showDetail = new BooleanProperty({ value: false }, 'value', undefined, () => toggleDetail(this))
 
         // Art der Aufzeichnung zum Filtern umsetzen.
-        switch (_model.firstSourceName) {
+        switch (_model.source) {
             case 'EPG':
                 this.source = 'Programmzeitschrift'
                 this.isGuide = true
@@ -106,7 +106,7 @@ export class LogEntry implements ILogEntry {
                 this.isLive = true
                 break
             default:
-                this.source = _model.firstSourceName
+                this.source = _model.source
                 break
         }
     }

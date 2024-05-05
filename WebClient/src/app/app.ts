@@ -158,17 +158,17 @@ export class Application implements IApplication {
     // Erstellt ein neues Präsentationsmodell für die Anwendung.
     constructor(private _site: IApplicationSite) {
         // Navigationsbereiche einmalig anlegen - das ist hier am einfachsten in der Handhabe.
-        this.favoritesPage = this.addPage(FavoritesPage)
-        this.settingsPage = this.addPage(SettingsPage)
-        this.devicesPage = this.addPage(DevicesPage)
         this.adminPage = this.addPage(AdminPage)
-        this.guidePage = this.addPage(GuidePage)
+        this.devicesPage = this.addPage(DevicesPage)
         this.editPage = this.addPage(EditPage)
+        this.favoritesPage = this.addPage(FavoritesPage)
+        this.guidePage = this.addPage(GuidePage)
         this.helpPage = this.addPage(HelpPage)
         this.homePage = this.addPage(HomePage)
-        this.planPage = this.addPage(PlanPage)
         this.jobPage = this.addPage(JobPage)
         this.logPage = this.addPage(LogPage)
+        this.planPage = this.addPage(PlanPage)
+        this.settingsPage = this.addPage(SettingsPage)
     }
 
     // Erstellt einen Navigationsbereich und vermerkt ihn dann einmalig.

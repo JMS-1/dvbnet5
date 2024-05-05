@@ -19,14 +19,14 @@ export class AdminProgramGuide extends HelpComponent {
                 <InternalLink pict='admin' view={`${page.application.adminPage.route};guide`} />. Damit die
                 Programmzeitschrift überhaupt erstellt wird, muss erst einmal die Sammlung der Informationen an sich
                 aktiviert werden.
-                <ScreenShot description='Sammlung aktivieren' name='FAQ/epgonoff' />
+                <ScreenShot description='Sammlung aktivieren' name='faq/epgonoff' />
                 Die wesentliche Information ist dann, für welche Quellen der VCR.NET Recording Service versuchen soll
                 Sendungsdaten zu ermitteln. Bedenkt man, dass alleine auf Astra 1 mehr als 1,000 Radio- und
                 Fernsehsender angeboten werden, so macht eine Einschränkungen auf die eigenen Lieblingssender durchaus
                 Sinn. Nach Vorauswahl eines der vom VCR.NET Recording Service verwendeten DVB Geräte können mit den{' '}
                 <InternalLink view={`${page.route};sourcechooser`}>üblichen Methoden</InternalLink> Quellen ausgewählt
                 und zur Liste hinzugefügt werden - natürlich können Quellen auch wieder aus der Liste entfernt werden.
-                <ScreenShot description='Quellen konfigurieren' name='FAQ/epgsources' />
+                <ScreenShot description='Quellen konfigurieren' name='faq/epgsources' />
                 Sind unter den Quellen auch englische Sender von Astra 2, so muss die <em>FreeSat UK</em> Option
                 aktiviert werden. Die Programmzeitschrift der BBC, ITV et al Sender wird auf einem anderen Wege
                 übertragen als bei uns üblich. Ohne die Aktivierung der Option würden immer nur die
@@ -47,7 +47,7 @@ export class AdminProgramGuide extends HelpComponent {
                 <InternalLink pict='devices' view={page.application.devicesPage.route} /> auf dem DVB Gerät beendet. Mit
                 Hilfe der <InternalLink view={`${page.route};log`}>Protokollliste</InternalLink> lässt sich dann leicht
                 feststellen, was ein typischer Wert für die Laufzeit ist.
-                <ScreenShot description='Aktualisierungszeitpunkte' name='FAQ/epgtimes' />
+                <ScreenShot description='Aktualisierungszeitpunkte' name='faq/epgtimes' />
                 In manchen Fällen ist die Einstellung von vier festen Uhrzeiten unzureichend, daher bietet der VCR.NET
                 Recording Service zwei weitere Konfigurationswerte an. Die{' '}
                 <em>Wartezeit zwischen zwei Aktualisierungen</em> stellt sicher, dass zwischen zwei Aktualisierungen

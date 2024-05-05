@@ -3,13 +3,13 @@
 // Repräsentiert die Klasse ProtocolEntry
 export interface IProtocolEntryContract {
     // Der Startzeitpunkt in ISO Notation
-    start: string
+    startTimeISO: string
 
     // Der Endzeitpunkt in ISO Notation
-    end: string
+    endTimeISO: string
 
     // Der Name der zuerst verwendeten Quelle
-    firstSourceName: string
+    source: string
 
     // Der Name der primären Aufzeichnungsdatei
     primaryFile: string
@@ -18,7 +18,7 @@ export interface IProtocolEntryContract {
     files: string[]
 
     // Ein Hinweis zur Anzeige der Größe
-    size: string
+    sizeHint: string
 }
 
 export function getProtocolEntries(

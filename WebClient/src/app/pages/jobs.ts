@@ -69,12 +69,12 @@ export class JobPage extends Page implements IJobPage {
             // Rohdaten in primitive Präsentationsmodell wandeln.
             this._jobs =
                 info?.map((j) => {
-                    const job: IJobPageJob = { isActive: j.active, name: j.name, schedules: [] }
+                    const job: IJobPageJob = { isActive: j.isActive, name: j.name, schedules: [] }
 
                     // Es wird immer ein erster Eintrag zum Anlegen neuer Aufzeichnungen zum Auftrag hinzugefügt.
                     job.schedules.push({
                         name: '(Neue Aufzeichnung)',
-                        url: `${this.application.editPage.route};id=${j.id}`,
+                        url: `${this.application.editPage.route};id=${j.webId}`,
                     })
                     job.schedules.push(...j.schedules.map((s) => this.createSchedule(s)))
 
@@ -93,8 +93,8 @@ export class JobPage extends Page implements IJobPage {
     private createSchedule(schedule: IInfoScheduleContract): IJobPageSchedule {
         // Der Name ist je nach konkreter Konfiguration etwas aufwändiger zu ermitteln.
         const name = schedule.name || 'Aufzeichnung'
-        const startTime = new Date(schedule.start)
-        const repeat = schedule.repeatPattern
+        const startTime = new Date(schedule.startTimeISO)
+        const repeat = schedule.repeatPatternJSON
         let start = ''
 
         if (repeat === 0) start = DateTimeUtils.formatStartTime(startTime)
@@ -112,8 +112,8 @@ export class JobPage extends Page implements IJobPage {
 
         // Präsenationsmodell erstellen.
         return {
-            name: `${name}: ${start} auf ${schedule.sourceName}`,
-            url: `${this.application.editPage.route};id=${schedule.id}`,
+            name: `${name}: ${start} auf ${schedule.source}`,
+            url: `${this.application.editPage.route};id=${schedule.webId}`,
         }
     }
 

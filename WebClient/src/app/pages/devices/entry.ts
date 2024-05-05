@@ -66,8 +66,8 @@ export class Info implements IDeviceInfo {
         // Für Geräte ohne laufende oder geplante Aufzeichnung können wir nicht viel tun.
         if (!_model.isIdle) {
             // Ansonsten müssen wir die Zeiten aus der ISO Notation umrechnen.
-            this._start = new Date(_model.start)
-            this._end = new Date(this._start.getTime() + _model.duration * 1000)
+            this._start = new Date(_model.startTimeISO)
+            this._end = new Date(this._start.getTime() + _model.durationInSeconds * 1000)
 
             // Und zur Anzeige aufbereiten.
             this.displayStart = DateTimeUtils.formatStartTime(this._start)
@@ -83,7 +83,7 @@ export class Info implements IDeviceInfo {
             'value',
             undefined,
             () => toggleDetails(this, true),
-            () => !this._model.epg || !this._model.device || !this._model.source || this.mode === 'null'
+            () => !this._model.hasGuideEntry || !this._model.profileName || !this._model.source || this.mode === 'null'
         )
         this.showControl = new BooleanProperty(
             {},
@@ -109,14 +109,14 @@ export class Info implements IDeviceInfo {
         if (this._end <= new Date()) return 'null'
 
         // Aufzeichnung läuft.
-        if (this._model.referenceId) return 'running'
+        if (this._model.planIdentifier) return 'running'
 
         // Sonderaufgaben sollten eigentlich nur als laufend in der Liste erscheinen.
         if (this._model.sourceName === 'PSI') return undefined
         if (this._model.sourceName === 'EPG') return undefined
 
         // Geplanten Zustand melden.
-        return this._model.late ? 'late' : 'intime'
+        return this._model.isLate ? 'late' : 'intime'
     }
 
     // Optional die Steuereinheit für laufende Aufzeichnung.
@@ -146,17 +146,17 @@ export class Info implements IDeviceInfo {
 
     // Verwendetes Gerät.
     get device(): string {
-        return this._model.device
+        return this._model.profileName
     }
 
     // Informationen zum Umfang der Aktivität - die Dateigröße bei Aufzeichnung, die Anzahl der Quellen beim Sendersuchlauf usw.
     get size(): string {
-        return this._model.size
+        return this._model.sizeHint
     }
 
     // Optional die eindeutige Kennung der Aufzeichnung.
     get id(): string {
-        return this._model.id
+        return this._model.identifier
     }
 
     // Zugehörige Zeitinformationen zur Information aus der Programmzeitschrift.
@@ -177,7 +177,7 @@ export class Info implements IDeviceInfo {
         if (this._guideItem !== undefined) return this._guideItem
 
         // Programmzeitschrift nach einem passenden Eintrag absuchen.
-        getGuideItem(this._model.device, this._model.source, this._start, this._end).then((item) => {
+        getGuideItem(this._model.profileName, this._model.source, this._start, this._end).then((item) => {
             // Ergebnis übernehmen.
             this._guideItem = item ? new GuideInfo(item, this._findInGuide) : null
 

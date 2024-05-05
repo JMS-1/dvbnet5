@@ -10,4 +10,4 @@ import { Pictogram } from './lib.react/command/pictogram'
 Pictogram.imageRoot = 'images/'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-createRoot(document.querySelector('body > client-root')!).render(<Main />)
+createRoot(document.querySelector('body > vcrnet-spa')!).render(<Main />)

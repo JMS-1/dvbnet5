@@ -25,7 +25,7 @@ export class AdminSourceScan extends HelpComponent {
                 Geräte eine entsprechende Aktualisierung
                 <InternalLink pict='admin' view={`${page.application.adminPage.route};sources`} /> periodisch
                 auszuführen.
-                <ScreenShot description='Aktualisierung konfigurieren' name='FAQ/psi' />
+                <ScreenShot description='Aktualisierung konfigurieren' name='faq/psi' />
                 Im Endeffekt erfolgt die Konfiguration ganz analog zur{' '}
                 <InternalLink view={`${page.route};epgconfig`}>Programmzeitschrift</InternalLink>. Die Aktualisierung
                 kann gänzlich deaktiviert werden, nur manuell erfolgen oder wie im Bild gezeigt einem Zeitplan folgen.

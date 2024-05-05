@@ -3,10 +3,10 @@
 // Repräsentiert die Klasse GuideItem
 export interface IGuideItemContract {
     // Der Startzeitpunkt in ISO Notation
-    start: string
+    startTimeISO: string
 
     // Die Dauer in Sekunden
-    duration: number
+    durationInSeconds: number
 
     // Der Name der Sendung
     name: string
@@ -27,13 +27,13 @@ export interface IGuideItemContract {
     description: string
 
     // Die Kurzbeschreibung
-    shortDescription: string
+    summary: string
 
     // Gesetzt, wenn das Ende der Sendung in der Zukunft liegt
-    active: boolean
+    isActive: boolean
 
     // Die eindeutige Kennung der Sendung
-    id: string
+    identifier: string
 }
 
 export function getGuideItem(

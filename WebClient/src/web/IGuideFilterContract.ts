@@ -6,31 +6,31 @@ import { doUrlCall } from './VCRServer'
 // Repräsentiert die Klasse GuideFilter
 export interface IGuideFilterContract {
     // Der Name des aktuell ausgewählten Geräteprofils
-    device: string
+    profileName: string
 
     // Der Name der aktuell ausgewählten Quelle
-    station: string
+    source: string
 
     // Der minimale Startzeitpunkt in ISO Notation
-    start: string
+    startISO: string
 
     // Das Suchmuster für den Namen einer Sendung
-    title: string
+    titlePattern: string
 
     // Das Suchmuster für die Beschreibung einer Sendung
-    content: string
+    contentPattern: string
 
     // Die Anzahl von Sendungen pro Anzeigeseite
-    size: number
+    pageSize: number
 
     // Die aktuelle Seite
-    index: number
+    pageIndex: number
 
     // Einschränkung auf die Art der Quellen
-    typeFilter: guideSource
+    sourceType: guideSource
 
     // Einschränkung auf die Verschlüsselung der Quellen
-    cryptFilter: guideEncryption
+    sourceEncryption: guideEncryption
 }
 
 export function queryProgramGuide(filter: IGuideFilterContract): Promise<IGuideItemContract[] | undefined> {

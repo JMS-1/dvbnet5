@@ -20,7 +20,7 @@ export class CurrentStream extends HelpComponent {
                 , so ist das vorzeitige Beenden ebenso möglich wie eine Veränderung der Laufzeit. Grundsätzlich wird
                 allerdings empfohlen, Sonderaufgaben nicht in der konfigurierten Ausführung zu behindern - maximal kann
                 ein vorzeitiger Abbruch Sinn machen, wenn es äußere Umstände erforderlich machen.
-                <ScreenShot description='Laufzeit verändern' name='FAQ/endchange' />
+                <ScreenShot description='Laufzeit verändern' name='faq/endchange' />
                 Interessanter ist es, wenn der der VCR.NET Recording Service eine DVB Hardware nutzt um Aufzeichnungen
                 auszuführen. Je nach konkreter Situation können dies auch{' '}
                 <InternalLink view={`${page.route};parallelrecording`}>mehrere Aufzeichnungen</InternalLink> sein, die

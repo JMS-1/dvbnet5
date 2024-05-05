@@ -1,19 +1,15 @@
-﻿using System.Runtime.Serialization;
-using JMS.DVB.NET.Recording.Services.Planning;
+﻿using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Beschreibt ein einzelnen Geräteprofil.
     /// </summary>
-    [Serializable]
-    [DataContract]
     public class ProfileInfo
     {
         /// <summary>
         /// Der Name des Geräteprofils.
         /// </summary>
-        [DataMember(Name = "name")]
         public string Name { get; set; } = null!;
 
         /// <summary>

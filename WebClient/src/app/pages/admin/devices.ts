@@ -37,7 +37,7 @@ export class DevicesSection extends Section implements IAdminDevicesPage {
         getProfileSettings().then((settings) => {
             // Präsentationsmodelle aus den Rohdaten erstellen.
             this.devices =
-                settings?.profiles.map(
+                settings?.systemProfiles.map(
                     (p) =>
                         new Device(
                             p,
@@ -47,7 +47,7 @@ export class DevicesSection extends Section implements IAdminDevicesPage {
                 ) ?? []
 
             // Liste der Geräte ermitteln und in die Auswahl für das bevorzugte Gerät übernehmen.
-            this.defaultDevice.allowedValues = settings?.profiles.map((p) => uiValue(p.name)) ?? []
+            this.defaultDevice.allowedValues = settings?.systemProfiles.map((p) => uiValue(p.name)) ?? []
             this.defaultDevice.data = settings
 
             // Initiale Prüfung durchführen.

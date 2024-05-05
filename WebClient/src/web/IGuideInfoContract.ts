@@ -3,13 +3,13 @@
 // Repräsentiert die Klasse GuideInfo
 export interface IGuideInfoContract {
     // Alle Quellen eines Gerätes, für das Einträge in der Programmzeitschrift zur Verfügung stehen
-    stations: string[]
+    sourceNames: string[]
 
     // Der Zeitpunkt in ISO Notation, an dem die früheste Sendung beginnt
-    first: string
+    firstStartISO: string
 
     // Der Zeitpunkt in ISO Notation, an dem die späteste Sendung beginnt
-    last: string
+    lastStartISO: string
 }
 
 export function getGuideInfo(device: string): Promise<IGuideInfoContract | undefined> {

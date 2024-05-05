@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using JMS.DVB.NET.Recording.Services.Configuration;
 
 namespace JMS.DVB.NET.Recording.ProgramGuide;
@@ -86,6 +87,7 @@ public class GuideEntryFilter
     /// <summary>
     /// Optional der Startzeitpunkt.
     /// </summary>
+    [JsonIgnore]
     public DateTime? Start { get; set; }
 
     /// <summary>

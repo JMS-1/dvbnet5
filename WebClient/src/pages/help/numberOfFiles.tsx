@@ -63,7 +63,7 @@ export class NumberOfFiles extends HelpComponent {
                 Über die <InternalLink view={`${page.route};dvbnet`}>DVB.NET</InternalLink> Geräteprofile der
                 verwendeten Hardware ist es in begrenztem Maße möglich, das Verhalten bei der Dateitrennung zu
                 beeinflussen.
-                <ScreenShot description='Schutzeinstellungen' name='FAQ/streamprotection' />
+                <ScreenShot description='Schutzeinstellungen' name='faq/streamprotection' />
                 Die Einträge haben in dieser Reihenfolge folgende Bedeutung:
                 <br />
                 <ul>

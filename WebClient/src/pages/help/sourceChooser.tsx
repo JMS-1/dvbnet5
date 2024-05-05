@@ -17,7 +17,7 @@ export class SourceChooser extends HelpComponent {
                 ausgewählt werden kann. Der VCR.NET Recording Service kennt zwar kein Favoritensystem wie es bei
                 Fernsehern üblich ist, bietet aber einige andere Möglichkeiten an, die bei der Auswahl der benötigten
                 Quelle helfen sollten.
-                <ScreenShot description='Quelle auswählen' name='FAQ/sources' />
+                <ScreenShot description='Quelle auswählen' name='faq/sources' />
                 Abhängig von der zweiten Auswahlliste wird die Liste der Quellen links daneben wie folgt beschränkt - in
                 der Reihenfolge der Einträge der im Bild geöffnet gezeigten Liste:
                 <br />

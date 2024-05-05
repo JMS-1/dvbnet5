@@ -25,7 +25,7 @@ export class SourceLimit extends HelpComponent {
                 dass nur die angegeben Anzahl unterschiedlicher Quellen einer Quellgruppe gleichzeitig verwendet werden
                 dürfen - mehrere Aufzeichnung auf ein und derselben Quelle sind von dieser Einschränkung natürlich nicht
                 betroffen.
-                <ScreenShot description='Quellen beschränken' name='FAQ/sourcelimit' />
+                <ScreenShot description='Quellen beschränken' name='faq/sourcelimit' />
                 Im Allgemeinen macht es aber wenig Sinn, diesen Wert von der Voreinstellung (15) weg zu verändern. Vor
                 allem unterscheidet der VCR.NET Recording Service nicht zwischen Fernseh- und Radiosendern. Selbst wenn
                 eine Aufzeichnung von zwei bis drei Fernsehsendern an die Grenzen einer DVB Hardware stößt kann es

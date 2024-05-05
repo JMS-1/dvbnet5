@@ -50,7 +50,7 @@ export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> imp
         super(page, model, favoriteSources, onChange)
 
         // Anpassungen.
-        if (!model.lastDay) model.lastDay = ScheduleEditor.maximumDate.toISOString()
+        if (!model.lastDayISO) model.lastDayISO = ScheduleEditor.maximumDate.toISOString()
 
         // Pflegbare Eigenschaften anlegen.
         this.repeat = new NumberProperty(model, 'repeatPattern', 'Wiederholung', () => this.onChange(onChange))

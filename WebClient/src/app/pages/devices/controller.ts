@@ -66,14 +66,14 @@ export class Controller implements IDeviceController {
         private readonly _reload: () => void
     ) {
         // Präsentationsmodelle aufsetzen.
-        this.remaining.value = _model.remainingMinutes
+        this.remaining.value = _model.remainingTimeInMinutes
         this.noHibernate.value = suppressHibernate
 
         // Nur wenn es sich um eine Aufzeichnung handelt müssen wir mehr tun - Sonderaufgaben kann man nicht ansehen!
-        if (_model.streamIndex < 0) return
+        if (_model.index < 0) return
 
         // Verweise zur Ansicht mit dem DVB.NET / VCR.NET Viewer aufsetzen.
-        const url = `${getDeviceRoot()}${encodeURIComponent(_model.device)}/${_model.streamIndex}/`
+        const url = `${getDeviceRoot()}${encodeURIComponent(_model.profileName)}/${_model.index}/`
 
         this.live = `${url}Live`
         this.timeshift = `${url}TimeShift`
@@ -81,15 +81,15 @@ export class Controller implements IDeviceController {
 
     // Start der Aufzeichnung.
     private get start(): Date {
-        return new Date(this._model.start)
+        return new Date(this._model.startTimeISO)
     }
 
     // Das aktuelle Ende der Aufzeichnung.
     private get currentEnd(): Date {
         return new Date(
             this.start.getTime() +
-                1000 * this._model.duration +
-                60000 * ((this.remaining.value ?? 0) - this._model.remainingMinutes)
+                1000 * this._model.durationInSeconds +
+                60000 * ((this.remaining.value ?? 0) - this._model.remainingTimeInMinutes)
         )
     }
 
@@ -114,8 +114,8 @@ export class Controller implements IDeviceController {
         const end = (this.remaining.value ?? 0) > 0 ? this.currentEnd : this.start
 
         // Asynchronen Aufruf absetzen und im Erfolgsfall die Aktivitäten neu laden.
-        return updateEndTime(this._model.device, !!this.noHibernate.value, this._model.referenceId, end).then(() =>
-            this._reload()
+        return updateEndTime(this._model.profileName, !!this.noHibernate.value, this._model.planIdentifier, end).then(
+            () => this._reload()
         )
     }
 }

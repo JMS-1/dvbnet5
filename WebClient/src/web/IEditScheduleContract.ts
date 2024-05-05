@@ -5,13 +5,13 @@ import { doUrlCall } from './VCRServer'
 // Repräsentiert die Klasse EditSchedule
 export interface IEditScheduleContract extends IEditJobScheduleCommonContract {
     // Der erste Startzeitpunkt in ISO Notation
-    firstStart: string
+    firstStartISO: string
 
     // Die Wochentage, an denen eine Wiederholung stattfinden soll
-    repeatPattern: number
+    repeatPatternJSON: number
 
     // Der Tag, an dem die letzte Aufzeichnung stattfinden soll
-    lastDay: string
+    lastDayISO: string
 
     // Die Dauer in Minuten
     duration: number

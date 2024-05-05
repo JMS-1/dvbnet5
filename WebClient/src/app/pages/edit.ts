@@ -120,22 +120,22 @@ export class EditPage extends Page implements IEditPage {
                 // Leere Aufzeichnung angelegen.
                 const newJob = <IEditJobContract>{
                     allLanguages: this.application.profile.languages,
-                    device: profiles[0] && profiles[0].name,
-                    directory: '',
-                    includeDolby: this.application.profile.dolby,
-                    lockedToDevice: false,
+                    dolbyDigital: this.application.profile.dolby,
+                    dvbSubtitles: this.application.profile.subtitles,
                     name: '',
-                    sourceName: '',
-                    withSubtitles: this.application.profile.subtitles,
-                    withVideotext: this.application.profile.videotext,
+                    profile: profiles[0] && profiles[0].name,
+                    recordingDirectory: '',
+                    source: '',
+                    useProfileForRecording: false,
+                    videotext: this.application.profile.videotext,
                 }
 
                 // Beschreibung der Aufzeichnung vorbereiten.
                 const info = <IJobScheduleInfoContract>{
                     job: newJob,
-                    jobId: '',
+                    jobIdentifier: '',
                     schedule: this.createEmptySchedule(),
-                    scheduleId: '',
+                    scheduleIdentifier: '',
                 }
 
                 // Die neue Aufzeichnung können wir auch direkt synchron bearbeiten.
@@ -150,22 +150,22 @@ export class EditPage extends Page implements IEditPage {
 
         return <IEditScheduleContract>{
             allLanguages: !!this.application.profile.languages,
+            dolbyDigital: !!this.application.profile.dolby,
             duration: 120,
+            dvbSubtitles: !!this.application.profile.subtitles,
             exceptions: [],
-            firstStart: new Date(
+            firstStartISO: new Date(
                 now.getFullYear(),
                 now.getMonth(),
                 now.getDate(),
                 now.getHours(),
                 now.getMinutes()
             ).toISOString(),
-            includeDolby: !!this.application.profile.dolby,
-            lastDay: '',
+            lastDayISO: '',
             name: '',
-            repeatPattern: 0,
-            sourceName: '',
-            withSubtitles: !!this.application.profile.subtitles,
-            withVideotext: !!this.application.profile.videotext,
+            repeatPatternJSON: 0,
+            source: '',
+            videotext: !!this.application.profile.videotext,
         }
     }
 
@@ -241,14 +241,18 @@ export class EditPage extends Page implements IEditPage {
         const schedule = { ...this._jobScheduleInfo?.schedule } as IEditScheduleContract
 
         // Dauer unter Berücksichtigung der Zeitumstellung anpassen.
-        schedule.duration = DateTimeUtils.getRealDurationInMinutes(schedule.firstStart, schedule.duration)
+        schedule.duration = DateTimeUtils.getRealDurationInMinutes(schedule.firstStartISO, schedule.duration)
 
         // Asynchrone Operation anfordern.
-        return updateSchedule(this._jobScheduleInfo?.jobId ?? '', this._jobScheduleInfo?.scheduleId ?? '', {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-            job: this._jobScheduleInfo?.job!,
-            schedule,
-        }).then(() => {
+        return updateSchedule(
+            this._jobScheduleInfo?.jobIdentifier ?? '',
+            this._jobScheduleInfo?.scheduleIdentifier ?? '',
+            {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+                job: this._jobScheduleInfo?.job!,
+                schedule,
+            }
+        ).then(() => {
             // Je nach Wunsch des Anwenders entweder zruück zur Programmzeitschrift oder dem Aufzeichnungsplan aufrufen.
             if (this._fromGuide && this.application.profile.backToGuide)
                 this.application.gotoPage(this.application.guidePage.route)
@@ -260,9 +264,10 @@ export class EditPage extends Page implements IEditPage {
     private onDelete(): Promise<void> | void {
         // Beim zweiten Aufruf wird der asynchrone Befehl an den VCR.NET Recording Service geschickt.
         if (this.del.isDangerous)
-            return deleteSchedule(this._jobScheduleInfo?.jobId ?? '', this._jobScheduleInfo?.scheduleId ?? '').then(
-                () => this.application.gotoPage(this.application.planPage.route)
-            )
+            return deleteSchedule(
+                this._jobScheduleInfo?.jobIdentifier ?? '',
+                this._jobScheduleInfo?.scheduleIdentifier ?? ''
+            ).then(() => this.application.gotoPage(this.application.planPage.route))
 
         // Beim ersten Versuch wird einfach nur ein Feedback angezeigt.
         this.del.isDangerous = true

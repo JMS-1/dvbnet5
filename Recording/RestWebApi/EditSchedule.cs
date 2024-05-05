@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Services.Configuration;
@@ -9,54 +9,45 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Beschreibt eine einzelne Aufzeichnung eines Auftrags.
     /// </summary>
-    [DataContract]
-    [Serializable]
     public class EditSchedule
     {
         /// <summary>
         /// Der optionale Name der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "name")]
         public string Name { get; set; } = null!;
 
         /// <summary>
         /// Der optionale Name der Quelle, von der aufgezeichnet werden soll.
         /// </summary>
-        [DataMember(Name = "sourceName")]
         public string Source { get; set; } = null!;
 
         /// <summary>
         /// Falls <see cref="Source"/> definiert ist wird diese Eigenschaft gesetzt
         /// um alle Tonspuren aufzuzeichnen.
         /// </summary>
-        [DataMember(Name = "allLanguages")]
         public bool AllLanguages { get; set; }
 
         /// <summary>
         /// Falls <see cref="Source"/> definiert ist wird diese Eigenschaft gesetzt
         /// um auch die <i>Dolby Digital</i> Tonspur aufzuzeichnen.
         /// </summary>
-        [DataMember(Name = "includeDolby")]
         public bool DolbyDigital { get; set; }
 
         /// <summary>
         /// Falls <see cref="Source"/> definiert ist wird diese Eigenschaft gesetzt
         /// um auch die <i>Dolby Digital</i> Tonspur aufzuzeichnen.
         /// </summary>
-        [DataMember(Name = "withVideotext")]
         public bool Videotext { get; set; }
 
         /// <summary>
         /// Falls <see cref="Source"/> definiert ist wird diese Eigenschaft gesetzt
         /// um auch alle DVB Untertitelspuren aufzuzeichnen.
         /// </summary>
-        [DataMember(Name = "withSubtitles")]
         public bool DVBSubtitles { get; set; }
 
         /// <summary>
         /// Der Zeitpunkt, an dem die erste Aufzeichnung stattfinden soll.
         /// </summary>
-        [DataMember(Name = "firstStart")]
         public string FirstStartISO
         {
             get { return FirstStart.ToString("o"); }
@@ -66,12 +57,12 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Der Zeitpunkt, an dem die erste Aufzeichnung stattfinden soll.
         /// </summary>
+        [JsonIgnore]
         public DateTime FirstStart { get; set; }
 
         /// <summary>
         /// Die Tage, an denen die Aufzeichnung wiederholt werden soll.
         /// </summary>
-        [DataMember(Name = "repeatPattern")]
         public int RepeatPatternJSON
         {
             get { return RepeatPattern.HasValue ? (int)RepeatPattern.Value : 0; }
@@ -81,12 +72,12 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Die Tage, an denen die Aufzeichnung wiederholt werden soll.
         /// </summary>
+        [JsonIgnore]
         public VCRDay? RepeatPattern { get; set; }
 
         /// <summary>
         /// Falls <see cref="RepeatPattern"/> gesetzt ist der Tag der letzten Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "lastDay")]
         public string LastDayISO
         {
             get { return RepeatPattern.HasValue ? LastDay.Date.ToString("o") : null!; }
@@ -96,18 +87,17 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Falls <see cref="RepeatPattern"/> gesetzt ist der Tag der letzten Aufzeichnung.
         /// </summary>
+        [JsonIgnore]
         public DateTime LastDay { get; set; }
 
         /// <summary>
         /// Die Dauer der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "duration")]
         public int Duration { get; set; }
 
         /// <summary>
         /// Alle Ausnahmeregelungen, die aktiv sind.
         /// </summary>
-        [DataMember(Name = "exceptions")]
         public PlanException[] Exceptions { get; set; }
 
         /// <summary>

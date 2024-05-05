@@ -103,7 +103,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
         // Konfiguration anfordern.
         contract.getDirectorySettings().then((settings) => {
             // Liste der erlaubten Verzeichnisse laden.
-            this.directories.allowedValues = settings?.directories.map((d) => uiValue(d)) ?? []
+            this.directories.allowedValues = settings?.targetDirectories.map((d) => uiValue(d)) ?? []
 
             // Pflege des Dateinamenmusters vorbereiten.
             this.pattern.data = settings
@@ -164,7 +164,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
         // Die aktuell erlaubten Verzeichnisse werden als Verzeichnisliste übernommen.
         const settings: contract.IDirectorySettingsContract = this.pattern.data
 
-        settings.directories = this.directories.allowedValues.map((v) => v.value)
+        settings.targetDirectories = this.directories.allowedValues.map((v) => v.value)
 
         // Neue Konfiguration senden.
         return contract.setDirectorySettings(settings)

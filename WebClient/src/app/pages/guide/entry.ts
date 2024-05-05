@@ -65,8 +65,8 @@ export class GuideInfo implements IGuideInfo {
         private readonly _findInGuide: (model: IGuideItemContract) => void
     ) {
         // Zeitraum der Sendung.
-        this.start = new Date(model.start)
-        this.end = new Date(this.start.getTime() + 1000 * model.duration)
+        this.start = new Date(model.startTimeISO)
+        this.end = new Date(this.start.getTime() + 1000 * model.durationInSeconds)
     }
 
     // Suche nach ähnlichen Einträgen in der Programmzeitschrift.
@@ -103,7 +103,7 @@ export class GuideInfo implements IGuideInfo {
 
     // Meldet die Kurzbeschreibung der Sendung.
     get shortDescription(): string {
-        return this.model.shortDescription
+        return this.model.summary
     }
 
     // Meldet die ausführliche Beschreibung der Sendung.
@@ -113,7 +113,7 @@ export class GuideInfo implements IGuideInfo {
 
     // Meldet die Dauer der Sendung.
     get duration(): string {
-        return DateTimeUtils.formatDuration(new Date(1000 * this.model.duration))
+        return DateTimeUtils.formatDuration(new Date(1000 * this.model.durationInSeconds))
     }
 
     // Meldet die Freigabe der Sendung.
@@ -155,7 +155,7 @@ export class GuideEntry extends GuideInfo implements IGuideEntry {
 
     // Die eindeutige Kennung des Eintrags.
     get id(): string {
-        return this.model.id
+        return this.model.identifier
     }
 
     // Schaltet die Anzeige der Detailansicht um.

@@ -10,8 +10,8 @@ export interface IJobScheduleInfoContract {
     schedule: IEditScheduleContract
 
     // Optional die eindeutige Kennung des Auftrags
-    jobId: string
+    jobIdentifier: string
 
     // Optional die eindeutige Kennung der Aufzeichnung
-    scheduleId: string
+    scheduleIdentifier: string
 }

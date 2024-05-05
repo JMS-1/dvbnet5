@@ -6,19 +6,19 @@ export interface IInfoServiceContract {
     version: string
 
     // Die aktuelle Version der Installation in der Notation MAJOR.MINOR.BUILD
-    msiVersion: string
+    installedVersion: string
 
     // Gesetzt, wenn mindestens ein Gerät eine Aufzeichnung oder Aufgabe ausführt
-    active: boolean
+    isRunning: boolean
 
     // Gesetzt, wenn der Anwender ein Administrator ist
-    userIsAdmin: boolean
+    isAdmin: boolean
 
     // Gesetzt, wenn die Aktualisierung der Quellen verfügbar ist
-    canScan: boolean
+    sourceScanEnabled: boolean
 
     // Gesetzt, wenn die Aktualisierung der Programmzeitschrift verfügbar ist
-    hasGuides: boolean
+    guideUpdateEnabled: boolean
 }
 
 export function getServerVersion(): Promise<IInfoServiceContract | undefined> {

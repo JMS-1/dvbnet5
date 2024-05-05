@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Services.Configuration;
 
@@ -8,20 +9,16 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Meldet Kerninformationen zu einer Aufzeichnung.
     /// </summary>
-    [Serializable]
-    [DataContract]
     public class InfoSchedule
     {
         /// <summary>
         /// Der optionale Name der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "name")]
         public string Name { get; set; } = null!;
 
         /// <summary>
         /// Der Startzeitpunkt der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "start")]
         public string StartTimeISO
         {
             get { return StartTime.ToString("o"); }
@@ -31,12 +28,12 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Der Startzeitpunkt der Aufzeichnung.
         /// </summary>
+        [JsonIgnore]
         public DateTime StartTime { get; set; }
 
         /// <summary>
         /// Die Tage, an denen die Aufzeichnung wiederholt werden soll.
         /// </summary>
-        [DataMember(Name = "repeatPattern")]
         public int RepeatPatternJSON
         {
             get { return RepeatPattern.HasValue ? (int)RepeatPattern.Value : 0; }
@@ -46,24 +43,22 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Die Tage, an denen die Aufzeichnung wiederholt werden soll.
         /// </summary>
+        [JsonIgnore]
         public VCRDay? RepeatPattern { get; set; }
 
         /// <summary>
         /// Der optionale Name der Quelle, von der aufgezeichnet werden soll.
         /// </summary>
-        [DataMember(Name = "sourceName")]
         public string Source { get; set; } = null!;
 
         /// <summary>
         /// Der eindeutige Name der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "id")]
         public string WebId { get; set; } = null!;
 
         /// <summary>
         /// Die Dauer der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "duration")]
         public int Duration { get; set; }
 
         /// <summary>

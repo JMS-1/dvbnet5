@@ -6,7 +6,7 @@ export interface IProfileJobInfoContract {
     name: string
 
     // Die eindeutige Kennung des Auftrags
-    id: string
+    jobIdentifier: string
 }
 
 export function getProfileJobInfos(device: string): Promise<IProfileJobInfoContract[] | undefined> {

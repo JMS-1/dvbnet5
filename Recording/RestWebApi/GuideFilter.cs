@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Services.Configuration;
 
@@ -8,27 +8,22 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Beschreibt einen Filter auf Einträge der Programmzeitschrift.
     /// </summary>
-    [Serializable]
-    [DataContract]
     public class GuideFilter
     {
         /// <summary>
         /// Der Name des zu verwendenden Geräteprofils.
         /// </summary>
-        [DataMember(Name = "device")]
         public string ProfileName { get; set; } = null!;
 
         /// <summary>
         /// Optional die Quelle.
         /// </summary>
-        [DataMember(Name = "station")]
         public string Source { get; set; } = null!;
 
         /// <summary>
         /// Optional der Startzeitpunkt.
         /// </summary>
-        [DataMember(Name = "start")]
-        public string StartISO
+        public string? StartISO
         {
             get { return Start.HasValue ? Start.Value.ToString("o") : null!; }
             set { Start = string.IsNullOrEmpty(value) ? default(DateTime?) : DateTime.Parse(value, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind); }
@@ -37,42 +32,37 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Optional der Startzeitpunkt.
         /// </summary>
+        [JsonIgnore]
         public DateTime? Start { get; set; }
 
         /// <summary>
         /// Das Suchmuster für den Titel, das erste Zeichen bestimmt den Suchmodus.
         /// </summary>
-        [DataMember(Name = "title")]
         public string TitlePattern { get; set; } = null!;
 
         /// <summary>
         /// Das Suchmuster für den Inhalt, das erste Zeichen bestimmt den Suchmodus.
         /// </summary>
-        [DataMember(Name = "content")]
         public string ContentPattern { get; set; } = null!;
 
         /// <summary>
         /// Die gewünschte Seitengröße.
         /// </summary>
-        [DataMember(Name = "size")]
         public int PageSize { get; set; }
 
         /// <summary>
         /// Die aktuell gewünschte Seite.
         /// </summary>
-        [DataMember(Name = "index")]
         public int PageIndex;
 
         /// <summary>
         /// Die Art der Quelle.
         /// </summary>
-        [DataMember(Name = "typeFilter")]
         public GuideSourceFilter SourceType { get; set; }
 
         /// <summary>
         /// Die Art der Verschlüsselung.
         /// </summary>
-        [DataMember(Name = "cryptFilter")]
         public GuideEncryptionFilter SourceEncryption { get; set; }
 
         /// <summary>

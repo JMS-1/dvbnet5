@@ -1,9 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace JMS.DVB.NET.Recording.ProgramGuide;
 
 /// <summary>
 /// Die Verschlüsselung der Quelle.
 /// </summary>
-[Flags]
+[Flags, JsonConverter(typeof(JsonStringEnumConverter))]
 public enum GuideEncryptionFilter
 {
     /// <summary>

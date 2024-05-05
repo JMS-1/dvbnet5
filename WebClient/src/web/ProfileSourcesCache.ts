@@ -3,9 +3,9 @@
 // Beschreibt einen einzelne Quelle, so wie sie dem Anwender zur Auswahl angeboten wird
 export class SourceEntry {
     constructor(rawData: IProfileSourceContract) {
-        this.isTelevision = rawData.tvNotRadio
-        this.name = rawData.nameWithProvider
-        this.isEncrypted = rawData.encrypted
+        this.isTelevision = rawData.isTVStation
+        this.name = rawData.name
+        this.isEncrypted = rawData.isEncrypted
 
         // Zum schnellen Auswählen nach dem Namen
         this.firstNameCharacter = this.name.toUpperCase().charAt(0)

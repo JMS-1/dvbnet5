@@ -4,7 +4,7 @@ import { doUrlCall } from '../VCRServer'
 // Repräsentiert die Klasse SchedulerRules
 export interface ISchedulerRulesContract extends ISettingsContract {
     // Die Liste der Regeln
-    rules: string
+    ruleFileContents: string
 }
 
 export function getSchedulerRules(): Promise<ISchedulerRulesContract | undefined> {

@@ -42,13 +42,13 @@ export class PlanException implements IPlanException {
         private _entryId: string,
         private _reload: () => void
     ) {
-        this._originalStart = new Date(model.originalStart as string)
+        this._originalStart = new Date(model.plannedStartISO)
         this.startSlider = new NumberWithSlider(model, 'startShift', () => this.refreshUi(), -480, +480)
         this.durationSlider = new NumberWithSlider(
             model,
             'timeDelta',
             () => this.refreshUi(),
-            -model.originalDuration,
+            -model.plannedDuration,
             +480
         )
     }
@@ -73,12 +73,14 @@ export class PlanException implements IPlanException {
 
     // Die Darstellung für den Zustand der Ausnahme.
     get exceptionMode(): string {
-        return this.model.startShift !== 0 || this.model.timeDelta !== 0 ? 'exceptOn' : 'exceptOff'
+        return this.model.exceptionStartShift !== 0 || this.model.exceptionDurationDelta !== 0
+            ? 'exceptOn'
+            : 'exceptOff'
     }
 
     // Meldet den Startzeitpunkt als Text.
     private start(): Date {
-        return new Date(this._originalStart.getTime() + 60 * this.model.startShift * 1000)
+        return new Date(this._originalStart.getTime() + 60 * this.model.exceptionStartShift * 1000)
     }
 
     get currentStart(): string {
@@ -87,7 +89,9 @@ export class PlanException implements IPlanException {
 
     // Meldet den Endzeitpunkt als Text.
     private end(): Date {
-        return new Date(this.start().getTime() + 60 * (this.model.originalDuration + this.model.timeDelta) * 1000)
+        return new Date(
+            this.start().getTime() + 60 * (this.model.plannedDuration + this.model.exceptionDurationDelta) * 1000
+        )
     }
 
     get currentEnd(): string {
@@ -96,7 +100,7 @@ export class PlanException implements IPlanException {
 
     // Meldet die aktuelle Dauer.
     get currentDuration(): number {
-        return this.model.originalDuration + this.model.timeDelta
+        return this.model.plannedDuration + this.model.exceptionDurationDelta
     }
 
     // Setzt alles auf den Eingangszustand zurück.
@@ -118,15 +122,18 @@ export class PlanException implements IPlanException {
     // Deaktiviert die Aufzeichnung vollständig.
     private setToDisable(): void {
         this.startSlider.sync(0)
-        this.durationSlider.sync(-this.model.originalDuration)
+        this.durationSlider.sync(-this.model.plannedDuration)
     }
 
     // Aktualisiert die Ausnahmeregel.
     private save(): void {
         // Änderung anfordern und Ergebnis asynchron bearbeiten.
-        updateException(this._entryId, this.model.referenceDay, this.model.startShift, this.model.timeDelta).then(
-            this._reload
-        )
+        updateException(
+            this._entryId,
+            this.model.exceptionDateTicks,
+            this.model.exceptionStartShift,
+            this.model.exceptionDurationDelta
+        ).then(this._reload)
     }
 
     // Beachrichtigungen einrichten.

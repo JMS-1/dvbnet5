@@ -4,7 +4,7 @@ import { doUrlCall } from '../VCRServer'
 // Repräsentiert die Klasse SourceScanSettings
 export interface ISourceScanSettingsContract extends ISettingsContract {
     // Das Zeitinterval (in Stunden) für vorgezogene Aktualisierungen
-    joinDays: string
+    threshold: string
 
     // Das minimale Intervall (in Tagen) zwischen den Aktualisierungen - negative Werte für eine ausschließlich manuelle Aktualisierung
     interval: number
@@ -16,7 +16,7 @@ export interface ISourceScanSettingsContract extends ISettingsContract {
     hours: number[]
 
     // Gesetzt, wenn die neu ermittelten Listen mit den alten zusammengeführt werden sollen
-    merge: boolean
+    mergeLists: boolean
 }
 
 export function getSourceScanSettings(): Promise<ISourceScanSettingsContract | undefined> {

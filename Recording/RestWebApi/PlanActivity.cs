@@ -3,21 +3,18 @@ using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Server;
 using System.Globalization;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Beschreibt eine geplante Aktivität.
     /// </summary>
-    [DataContract]
-    [Serializable]
     public class PlanActivityMobile
     {
         /// <summary>
         /// Der Startzeitpunkt der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "start")]
         public string StartTimeISO
         {
             get { return StartTime.ToString("o"); }
@@ -27,12 +24,12 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Der Startzeitpunkt der Aufzeichnung.
         /// </summary>
+        [JsonIgnore]
         public DateTime StartTime { get; set; }
 
         /// <summary>
         /// Die Laufzeit der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "duration")]
         public string DurationInSeconds
         {
             get { return ((int)Math.Round(Duration.TotalSeconds)).ToString(CultureInfo.InvariantCulture); }
@@ -42,67 +39,58 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Die Laufzeit der Aufzeichnung.
         /// </summary>
+        [JsonIgnore]
         public TimeSpan Duration { get; set; }
 
         /// <summary>
         /// Der Name der Aufzeichnung.
         /// </summary>
-        [DataMember(Name = "name")]
         public string FullName { get; set; } = null!;
 
         /// <summary>
         /// Das Gerät, auf dem die Aktion ausgeführt wird.
         /// </summary>
-        [DataMember(Name = "device")]
         public string Device { get; set; } = null!;
 
         /// <summary>
         /// Der Name des zugehörigen Senders.
         /// </summary>
-        [DataMember(Name = "station")]
         public string Station { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn die Aufzeichnung verspätet beginnt.
         /// </summary>
-        [DataMember(Name = "late")]
         public bool IsLate { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn die Ausführung gar nicht durchgeführt wird.
         /// </summary>
-        [DataMember(Name = "lost")]
         public bool IsHidden { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn es Einträge in der Programmzeitschrift zu dieser Aufzeichnung gibt.
         /// </summary>
-        [DataMember(Name = "epg")]
         public bool HasGuideEntry { get; set; }
 
         /// <summary>
         /// Der Name des Gerätes, zu dem ein Eintrag in der Programmzeitschrift existiert.
         /// </summary>
-        [DataMember(Name = "epgDevice")]
         public string GuideEntryDevice { get; set; } = null!;
 
         /// <summary>
         /// Die zugehörige Quelle, sofern bekannt.
         /// </summary>
-        [DataMember(Name = "source")]
         public string Source { get; set; } = null!;
 
         /// <summary>
         /// Die Referenz einer Aufzeichnung, so wie sie.
         /// </summary>
-        [DataMember(Name = "id")]
         public string LegacyReference { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn die Endzeit möglicherweise durch die Sommerzeit nicht wie
         /// programmiert ist.
         /// </summary>
-        [DataMember(Name = "suspectEndTime")]
         public bool EndTimeCouldBeWrong { get; set; }
 
         /// <summary>
@@ -135,8 +123,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Beschreibt eine geplante Aktivität.
     /// </summary>
-    [DataContract]
-    [Serializable]
     public class PlanActivity : PlanActivityMobile
     {
         /// <summary>
@@ -174,37 +160,31 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Gesetzt, wenn alle Sprachen aufgezeichnet werden sollen.
         /// </summary>
-        [DataMember(Name = "allAudio")]
         public bool AllLanguages { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn auch die <i>AC3</i> Tonspur aufgezeichnet werden soll.
         /// </summary>
-        [DataMember(Name = "ac3")]
         public bool Dolby { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn auch der Videotext aufgezeichnet werden soll.
         /// </summary>
-        [DataMember(Name = "ttx")]
         public bool VideoText { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn auch DVB Untertitel aufgezeichnet werden sollen.
         /// </summary>
-        [DataMember(Name = "dvbsub")]
         public bool SubTitles { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn auch die Programmzeitschrift extrahiert wird.
         /// </summary>
-        [DataMember(Name = "epgCurrent")]
         public bool CurrentProgramGuide { get; set; }
 
         /// <summary>
         /// Die zugehörige Ausnahmeregel.
         /// </summary>
-        [DataMember(Name = "exception")]
         public PlanException ExceptionRule { get; set; } = null!;
 
         /// <summary>

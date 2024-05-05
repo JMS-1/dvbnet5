@@ -4,7 +4,7 @@ import { doUrlCall } from './VCRServer'
 // Repräsentiert die Klasse ProfileSource
 export interface IProfileSourceContract extends ISourceInformationContract {
     // Gesetzt, wenn es sich um einen Fernseh- und nicht einen Radiosender handelt.
-    tvNotRadio: boolean
+    isTVStation: boolean
 }
 
 export function getProfileSources(device: string): Promise<IProfileSourceContract[] | undefined> {

@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Services.Configuration;
 
@@ -8,14 +9,11 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Beschreibt einen einzelnen Eintrag aus der Programmzeitschrift.
     /// </summary>
-    [DataContract]
-    [Serializable]
     public class GuideItem
     {
         /// <summary>
         /// Der Startzeitpunkt der Sendung.
         /// </summary>
-        [DataMember(Name = "start")]
         public string StartTimeISO
         {
             get { return StartTime.ToString("o"); }
@@ -25,7 +23,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Die Dauer der Sendung in Sekunden.
         /// </summary>
-        [DataMember(Name = "duration")]
         public int DurationInSeconds
         {
             get { return (int)Math.Round(Duration.TotalSeconds); }
@@ -35,65 +32,58 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Der Name der Sendung.
         /// </summary>
-        [DataMember(Name = "name")]
         public string Name { get; set; } = null!;
 
         /// <summary>
         /// Die Sprache der Sendung.
         /// </summary>
-        [DataMember(Name = "language")]
         public string Language { get; set; } = null!;
 
         /// <summary>
         /// Der Sender, auf dem die Sendung empfangen wird.
         /// </summary>
-        [DataMember(Name = "station")]
         public string Station { get; set; } = null!;
 
         /// <summary>
         /// Der Startzeitpunkt der Sendung.
         /// </summary>
+        [JsonIgnore]
         public DateTime StartTime { get; set; }
 
         /// <summary>
         /// Die Dauer der Sendung.
         /// </summary>
+        [JsonIgnore]
         public TimeSpan Duration { get; set; }
 
         /// <summary>
         /// Die Liste der Freigaben.
         /// </summary>
-        [DataMember(Name = "ratings")]
         public string[] Ratings { get; set; } = null!;
 
         /// <summary>
         /// Die Liste der Kategorien.
         /// </summary>
-        [DataMember(Name = "categories")]
         public string[] Categories { get; set; } = null!;
 
         /// <summary>
         /// Die Langbeschreibung der Sendung.
         /// </summary>
-        [DataMember(Name = "description")]
         public string Description { get; set; } = null!;
 
         /// <summary>
         /// Die Kurzbeschreibung der Sendung.
         /// </summary>
-        [DataMember(Name = "shortDescription")]
         public string Summary { get; set; } = null!;
 
         /// <summary>
         /// Gesetzt, wenn das Ende in der Zukunft liegt.
         /// </summary>
-        [DataMember(Name = "active")]
-        public bool IsActive { get { return (StartTime + Duration) > DateTime.UtcNow; } set { } }
+        public bool IsActive => (StartTime + Duration) > DateTime.UtcNow;
 
         /// <summary>
         /// Die eindeutige Kennung.
         /// </summary>
-        [DataMember(Name = "id")]
         public string Identifier { get; set; } = null!;
 
         /// <summary>

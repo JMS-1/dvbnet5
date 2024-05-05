@@ -1,6 +1,6 @@
 ﻿using JMS.DVB.NET.Recording.Persistence;
 using System.Globalization;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -8,14 +8,11 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Beschreibt eine Ausnahmeregel.
     /// </summary>
-    [DataContract]
-    [Serializable]
     public class PlanException
     {
         /// <summary>
         /// Der Referenzzeitpunkt für die Ausnahmeregel.
         /// </summary>
-        [DataMember(Name = "referenceDay")]
         public string ExceptionDateTicks
         {
             get { return ExceptionDate.Ticks.ToString(CultureInfo.InvariantCulture); }
@@ -26,7 +23,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Meldet den Referenzzeitpunkt in einer für den Client geeigneten Notation. Dieser
         /// Eigenschaft kann nur ausgelesen werden.
         /// </summary>
-        [DataMember(Name = "referenceDayDisplay")]
         public string ExceptionDateUnix
         {
             get { return ((ExceptionDate.Ticks - Tools.UnixTimeBias) / Tools.UnixTimeFactor).ToString(CultureInfo.InvariantCulture); }
@@ -36,24 +32,22 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Der Referenzzeitpunkt für die Ausnahmeregel.
         /// </summary>
+        [JsonIgnore]
         public DateTime ExceptionDate { get; set; }
 
         /// <summary>
         /// Die Verschiebung der Aufzeichnung an dem Referenztag.
         /// </summary>
-        [DataMember(Name = "startShift")]
         public int ExceptionStartShift { get; set; }
 
         /// <summary>
         /// Die Änderung der Aufzeichnungsdauer an dem Referenztag.
         /// </summary>
-        [DataMember(Name = "timeDelta")]
         public int ExceptionDurationDelta { get; set; }
 
         /// <summary>
         /// Der geplante Startzeitpunkt.
         /// </summary>
-        [DataMember(Name = "originalStart")]
         public string PlannedStartISO
         {
             get { return PlannedStart.ToString("o"); }
@@ -63,12 +57,12 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Der geplante Startzeitpunkt.
         /// </summary>
+        [JsonIgnore]
         public DateTime PlannedStart { get; set; }
 
         /// <summary>
         /// Die Laufzeit der Aufzeichnung in Minuten.
         /// </summary>
-        [DataMember(Name = "originalDuration")]
         public int PlannedDuration { get; set; }
 
         /// <summary>

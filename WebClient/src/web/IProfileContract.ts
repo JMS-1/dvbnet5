@@ -4,13 +4,13 @@ export interface IProfileContract {
     name: string
 
     // Gesetzt, wenn es für Aufzeichnungen verwendet werden darf
-    active: boolean
+    usedForRecording: boolean
 
     // Die maximale Anzahl gleichzeitig empfangener Quellen
     sourceLimit: number
 
     // Die maximale Anzahl gleichzeitig entschlüsselbarer Quellen
-    ciLimit: number
+    decryptionLimit: number
 
     // Die Aufzeichnungspriorität
     priority: number

@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.ProgramGuide;
 
@@ -8,20 +8,16 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// <summary>
     /// Beschreibt die Programmzeitschrift eines Geräteprofils.
     /// </summary>
-    [DataContract]
-    [Serializable]
     public class GuideInfo
     {
         /// <summary>
         /// Alle Quellen, für die Eintragungen existieren.
         /// </summary>
-        [DataMember(Name = "stations")]
         public string[] SourceNames { get; set; } = null!;
 
         /// <summary>
         /// Der Zeitpunkt, an dem der früheste Eintrag startet.
         /// </summary>
-        [DataMember(Name = "first")]
         public string FirstStartISO
         {
             get { return FirstStart.HasValue ? FirstStart.Value.ToString("o") : null!; }
@@ -31,12 +27,12 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Der Zeitpunkt, an dem der früheste Eintrag startet.
         /// </summary>
+        [JsonIgnore]
         public DateTime? FirstStart { get; set; }
 
         /// <summary>
         /// Der Zeitpunkt, an dem der späteste Eintrag startet.
         /// </summary>
-        [DataMember(Name = "last")]
         public string LastStartISO
         {
             get { return LastStart.HasValue ? LastStart.Value.ToString("o") : null!; }
@@ -46,6 +42,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Der Zeitpunkt, an dem der späteste Eintrag startet.
         /// </summary>
+        [JsonIgnore]
         public DateTime? LastStart { get; set; }
 
         /// <summary>

@@ -21,7 +21,7 @@ export class Hibernation extends HelpComponent {
                 ist. Der untypische Fall für dieses Beispiel ist, dass es dem VCR.NET auch gestattet sei, den Rechner in
                 den Schlafzustand zu versetzen - ohne zusätzliche Maßnahmen steht der Rechner dann nicht ständig zur
                 Programmierung neuer Aufzeichnungen zur Verfügung.
-                <ScreenShot description='Einstellungen zum Schlafzustand' name='FAQ/hibernate' />
+                <ScreenShot description='Einstellungen zum Schlafzustand' name='faq/hibernate' />
                 Grundsätzlich stellt der VCR.NET Recording Service sicher, dass der Rechner für programmierte
                 Aufzeichnungen aus dem Schlafzustand aufgeweckt wird, egal wie der Übergang in den Schlafzustand erfolgt
                 ist. Dieses Verhalten kann nicht deaktiviert werden. Im ersten Szenario arbeitet der VCR.NET Recording
@@ -68,14 +68,14 @@ export class Hibernation extends HelpComponent {
                 Einstellung - es handelt sich bei dem Kontrollzentrum um die Anwendung, die normalerweise im so
                 genannten System Tray von Windows durch das Kamerasymbol visualisiert wird. Auf Wunsch ist es damit
                 möglich, einen Schlafzustand verzögert auslösen zu lassen.
-                <ScreenShot description='Kontrollzentrum' name='FAQ/hibernatevcc' />
+                <ScreenShot description='Kontrollzentrum' name='faq/hibernatevcc' />
                 Das Kontrollzentrum erkennt wenn der VCR.NET Recording Service eigentlich in den Schlafzustand übergehen
                 möchte und führt dann nach der angegebenen Verzögerung genau diesen Übergang aus. In der Zwischenzeit
                 kann der Anwender über einen entsprechenden Dialog den Vorgang jederzeit abbrechen und normal weiter
                 arbeiten. Ist der Anwender gerade nicht aktiv, so greifen zusätzlich die Einstellung der Energieoptionen
                 von Windows. Dadurch kann es dann sogar sein, dass der Rechner vor der angegebenen Zeit in den
                 Schlafzustand geht, weil Windows keine Aktivitäten des Anwenders mehr wahrnimmt.
-                <ScreenShot description='Warten auf den Schlafzustand' name='FAQ/manualsleep' />
+                <ScreenShot description='Warten auf den Schlafzustand' name='faq/manualsleep' />
                 Das VCR.NET Kontrollzentrum hat aber noch eine{' '}
                 <InternalLink view={`${page.route};controlcenter`}>weitere nützliche Funktion</InternalLink>, die nicht
                 deaktiviert werden kann. Aus der Hintergrundfarbe des Kamerasymbols kann direkt abgelesen werden, was

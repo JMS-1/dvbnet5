@@ -60,12 +60,12 @@ export class Favorite implements IFavorite {
         // Einige Einschränkungen machen nur Sinn, wenn keine Quelle ausgewählt ist.
         if ((this.model.source || '') === '') {
             // Verschlüsselung.
-            if (this.model.encryption === guideEncryption.FREE) display += 'unverschlüsselten '
-            else if (this.model.encryption === guideEncryption.PAY) display += 'verschlüsselten '
+            if (this.model.encryption === guideEncryption.Free) display += 'unverschlüsselten '
+            else if (this.model.encryption === guideEncryption.Encrypted) display += 'verschlüsselten '
 
             // Art der Quelle.
-            if (this.model.sourceType === guideSource.TV) display += 'Fernseh-'
-            else if (this.model.sourceType === guideSource.RADIO) display += 'Radio-'
+            if (this.model.sourceType === guideSource.Television) display += 'Fernseh-'
+            else if (this.model.sourceType === guideSource.Radio) display += 'Radio-'
         }
 
         // Gerät.
@@ -116,15 +116,15 @@ export class Favorite implements IFavorite {
 
         // Suchbedingung in die Protokollnotation wandeln - naja, das ist nicht wirklich schwer.
         const filter: IGuideFilterContract = {
-            content: this.model.titleOnly ? '' : this.model.text,
-            cryptFilter: this.model.encryption,
-            device: this.model.device,
-            index: 0,
-            size: 0,
-            start: '',
-            station: this.model.source,
-            title: this.model.text,
-            typeFilter: this.model.sourceType,
+            contentPattern: this.model.titleOnly ? '' : this.model.text,
+            sourceEncryption: this.model.encryption,
+            profileName: this.model.device,
+            pageIndex: 0,
+            pageSize: 0,
+            startISO: '',
+            source: this.model.source,
+            titlePattern: this.model.text,
+            sourceType: this.model.sourceType,
         }
 
         // Laden anstossen.

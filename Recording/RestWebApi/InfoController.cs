@@ -22,55 +22,12 @@ public class InfoController(
     /// <summary>
     /// Wird beim Bauen automatisch eingemischt.
     /// </summary>
-    private const string CURRENTDATE = "2024/04/26";
+    private const string CURRENTDATE = "2024/05/05";
 
     /// <summary>
     /// Aktuelle Version des VCR.NET Recording Service.
     /// </summary>
     public const string CurrentVersion = "5.0 [" + CURRENTDATE + "]";
-
-    /// <summary>
-    /// Die exakte Version der Installation.
-    /// </summary>
-    private static volatile string _InstalledVersion = null!;
-
-    /// <summary>
-    /// Sorgt dafür, dass die Version nur einmalig ermittelt wird.
-    /// </summary>
-    private static object _VersionLock = new();
-
-    /// <summary>
-    /// Meldet die exakte Version der Installation.
-    /// </summary>
-    private static string InstalledVersion
-    {
-        get
-        {
-            // Load once
-            if (_InstalledVersion == null)
-                lock (_VersionLock)
-                    if (_InstalledVersion == null)
-                    {
-                        // Process
-                        try
-                        {
-                            _InstalledVersion = "?";
-                        }
-                        catch (Exception e)
-                        {
-                            // Report
-                            Tools.ExtendedLogging("Unable to retrieve MSI Product Version: {0}", e.Message);
-                        }
-
-                        // Default
-                        if (_InstalledVersion == null)
-                            _InstalledVersion = "-";
-                    }
-
-            // Report
-            return _InstalledVersion;
-        }
-    }
 
     /// <summary>
     /// Meldet Informationen zur Version des VCR.NET Recording Service.
@@ -84,7 +41,7 @@ public class InfoController(
             {
                 GuideUpdateEnabled = configuration.ProgramGuideUpdateEnabled,
                 HasPendingExtensions = extensions.HasActiveProcesses,
-                InstalledVersion = InstalledVersion,
+                InstalledVersion = "5.0.0",
                 IsRunning = server.IsActive,
                 ProfilesNames = server.ProfileNames.ToArray(),
                 SourceScanEnabled = configuration.SourceListUpdateInterval != 0,

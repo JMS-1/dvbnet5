@@ -1,25 +1,20 @@
 ﻿using JMS.DVB.CardServer;
-using System.Runtime.Serialization;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Beschreibt einen Dienst.
     /// </summary>
-    [Serializable]
-    [DataContract]
     public class ZappingService
     {
         /// <summary>
         /// Der Name des Dienstes.
         /// </summary>
-        [DataMember(Name = "nameWithIndex")]
-        public string Name { get; set; } = null!;
+        public string NameWithIndex { get; set; } = null!;
 
         /// <summary>
         /// Die eindeutige Kennung.
         /// </summary>
-        [DataMember(Name = "source")]
         public string Source { get; set; } = null!;
 
         /// <summary>
@@ -70,7 +65,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 {
                     Source = SourceIdentifier.ToString(service.Service)!.Replace(" ", ""),
                     Index = GetServiceIndex(service.UniqueName),
-                    Name = service.UniqueName
+                    NameWithIndex = service.UniqueName
                 };
         }
     }

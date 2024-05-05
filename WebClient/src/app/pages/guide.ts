@@ -75,16 +75,16 @@ export interface IGuidePage extends IPage, IGuidePageNavigation {
 export class GuidePage extends Page implements IGuidePage {
     // Optionen zur Auswahl der Einschränkung auf die Verschlüsselung.
     private static readonly _cryptOptions = [
-        uiValue(guideEncryption.FREE, 'Nur unverschlüsselt'),
-        uiValue(guideEncryption.PAY, 'Nur verschlüsselt'),
-        uiValue(guideEncryption.ALL, 'Alle Quellen'),
+        uiValue(guideEncryption.Free, 'Nur unverschlüsselt'),
+        uiValue(guideEncryption.Encrypted, 'Nur verschlüsselt'),
+        uiValue(guideEncryption.All, 'Alle Quellen'),
     ]
 
     // Optionen zur Auswahl der Einschränkuzng auf die Art der Quelle.
     private static readonly _typeOptions = [
-        uiValue(guideSource.TV, 'Nur Fernsehen'),
-        uiValue(guideSource.RADIO, 'Nur Radio'),
-        uiValue(guideSource.ALL, 'Alle Quellen'),
+        uiValue(guideSource.Television, 'Nur Fernsehen'),
+        uiValue(guideSource.Radio, 'Nur Radio'),
+        uiValue(guideSource.All, 'Alle Quellen'),
     ]
 
     // Für den Start der aktuellen Ergebnisliste verfügbaren Auswahloptionen für die Uhrzeit.
@@ -99,15 +99,15 @@ export class GuidePage extends Page implements IGuidePage {
 
     // Die aktuellen Einschränkungen.
     private _filter: IGuideFilterContract = {
-        content: '',
-        cryptFilter: guideEncryption.ALL,
-        device: '',
-        index: 0,
-        size: 20,
-        start: '',
-        station: '',
-        title: '',
-        typeFilter: guideSource.ALL,
+        contentPattern: '',
+        pageIndex: 0,
+        pageSize: 20,
+        profileName: '',
+        source: '',
+        sourceEncryption: guideEncryption.All,
+        sourceType: guideSource.All,
+        startISO: '',
+        titlePattern: '',
     }
 
     // Schnittstelle zur Auswahl des zu betrachtenden Gerätes.
@@ -171,16 +171,16 @@ export class GuidePage extends Page implements IGuidePage {
 
     // Befehl zur Anzeige des Anfangs der Ergebnisliste.
     readonly firstPage = new Command(
-        () => this.changePage(-this._filter.index),
+        () => this.changePage(-this._filter.pageIndex),
         'Erste Seite',
-        () => this._filter.index > 0
+        () => this._filter.pageIndex > 0
     )
 
     // Befehl zur Anzeige der vorherigen Seite der Ergebnisliste.
     readonly prevPage = new Command(
         () => this.changePage(-1),
         'Vorherige Seite',
-        () => this._filter.index > 0
+        () => this._filter.pageIndex > 0
     )
 
     // Befehl zur Anzeige der nächsten Seite der Ergebnisliste.
@@ -202,7 +202,7 @@ export class GuidePage extends Page implements IGuidePage {
 
     // Meldet, ob die Auswahl der Verschlüsselung angeboten werden soll.
     get showEncryption(): boolean {
-        return !this._filter.station
+        return !this._filter.source
     }
 
     // Meldet, ob die Auswahl der Art der Quelle angeboten werden soll.
@@ -252,7 +252,7 @@ export class GuidePage extends Page implements IGuidePage {
         this.addFavorite.reset()
 
         // Größe der Anzeigeliste auf den neusten Stand bringen - alle anderen Einschränkungen bleiben erhalten!
-        this._filter.size = this.application.profile.guideRows
+        this._filter.pageSize = this.application.profile.guideRows
 
         // Die Liste aller bekannten Geräte ermitteln.
         ProfileCache.getAllProfiles().then((profiles) => {
@@ -261,8 +261,8 @@ export class GuidePage extends Page implements IGuidePage {
             this.profiles.validate()
 
             // Erstes Gerät vorauswählen.
-            if (!this._filter.device || this.profiles.message)
-                this._filter.device = this.profiles.allowedValues[0].value
+            if (!this._filter.profileName || this.profiles.message)
+                this._filter.profileName = this.profiles.allowedValues[0].value
 
             // Die Startphase ist erst einmal abgeschlossen.
             this._disableQuery = false
@@ -295,14 +295,14 @@ export class GuidePage extends Page implements IGuidePage {
     // Alle Einschränkungen entfernen.
     private clearFilter(): void {
         this.disableQuery(() => {
-            this._filter.cryptFilter = guideEncryption.ALL
-            this._filter.typeFilter = guideSource.ALL
-            this._filter.content = ''
+            this._filter.sourceEncryption = guideEncryption.All
+            this._filter.sourceType = guideSource.All
+            this._filter.contentPattern = ''
             this._fulltextQuery = true
-            this._filter.station = ''
-            this._filter.start = ''
-            this._filter.title = ''
-            this._filter.index = 0
+            this._filter.source = ''
+            this._filter.startISO = ''
+            this._filter.titlePattern = ''
+            this._filter.pageIndex = 0
 
             this.queryString.value = ''
             this.withContent.value = true
@@ -317,8 +317,8 @@ export class GuidePage extends Page implements IGuidePage {
 
         this.disableQuery(() => {
             // Textsuche auf den Namen auf dem selben Gerät.
-            this._filter.device = model.id.split(':')[1]
-            this._filter.station = model.station
+            this._filter.profileName = model.identifier.split(':')[1]
+            this._filter.source = model.station
 
             this.queryString.value = model.name
             this.withContent.value = false
@@ -340,9 +340,9 @@ export class GuidePage extends Page implements IGuidePage {
             // Der Suchtext beginnt immer mit der Art des Vergleichs.
             const query = filter.text || ''
 
-            this._filter.cryptFilter = filter.encryption
-            this._filter.typeFilter = filter.sourceType
-            this._filter.station = filter.source
+            this._filter.sourceEncryption = filter.encryption
+            this._filter.sourceType = filter.sourceType
+            this._filter.source = filter.source
 
             this.queryString.value = query.substr(1)
             this._fulltextQuery = query[0] === '*'
@@ -362,7 +362,7 @@ export class GuidePage extends Page implements IGuidePage {
         // Und auch kontrolliert immer nur einmal.
         this._disableQuery = true
 
-        GuideInfoCache.getPromise(this._filter.device)
+        GuideInfoCache.getPromise(this._filter.profileName)
             .then((info) => {
                 // Informationen zur Programmzeitschrift des Gerätes festhalten.
                 this._profileInfo = info
@@ -372,11 +372,11 @@ export class GuidePage extends Page implements IGuidePage {
                 this.refreshDays()
 
                 // Liste der Aufträge laden.
-                return getProfileJobInfos(this._filter.device)
+                return getProfileJobInfos(this._filter.profileName)
             })
             .then((jobs) => {
                 // Liste der bekannten Aufträge aktualisieren.
-                const selection = jobs?.map((job) => uiValue(job.id, job.name))
+                const selection = jobs?.map((job) => uiValue(job.jobIdentifier, job.name))
 
                 selection?.unshift(uiValue('', '(neuen Auftrag anlegen)'))
 
@@ -395,7 +395,7 @@ export class GuidePage extends Page implements IGuidePage {
     private refreshSources(): void {
         // Der erste Eintrag erlaubt immer die Anzeige ohne vorausgewählter Quelle.
         this.sources.allowedValues = [uiValue('', '(Alle Sender)')].concat(
-            (this._profileInfo.stations || []).map((s) => uiValue(s))
+            (this._profileInfo.sourceNames || []).map((s) => uiValue(s))
         )
     }
 
@@ -405,10 +405,10 @@ export class GuidePage extends Page implements IGuidePage {
         const days = [uiValue<string>('', 'Jetzt')]
 
         // Das geht nur, wenn mindestens ein Eintrag in der Programmzeitschrift der aktuellen Quelle vorhanden ist.
-        if (this._profileInfo.first && this._profileInfo.last) {
+        if (this._profileInfo.firstStartISO && this._profileInfo.lastStartISO) {
             // Die Zeiten werden immer in UTC gemeldet, die Anzeige erfolgt aber immer lokal - das kann am ersten Tag zu fehlenden Einträgen führen.
-            let first = new Date(this._profileInfo.first)
-            const last = new Date(this._profileInfo.last)
+            let first = new Date(this._profileInfo.firstStartISO)
+            const last = new Date(this._profileInfo.lastStartISO)
 
             // Es werden maximal 14 mögliche Starttage angezeigt.
             for (let i = 0; i < 14 && first.getTime() <= last.getTime(); i++) {
@@ -453,7 +453,7 @@ export class GuidePage extends Page implements IGuidePage {
             if (!this.view) return
 
             // Suche starten.
-            this._filter.index = 0
+            this._filter.pageIndex = 0
             this.query()
         }, 250)
     }
@@ -466,7 +466,7 @@ export class GuidePage extends Page implements IGuidePage {
 
     // Setzt die Ergebnisliste auf den Anfang und führt eine neue Suche aus.
     private resetIndexAndQuery(): void {
-        this._filter.index = 0
+        this._filter.pageIndex = 0
         this.query()
     }
 
@@ -481,9 +481,9 @@ export class GuidePage extends Page implements IGuidePage {
         // Ausstehende Änderung der Startzeit einmischen.
         if ((this.hours.value ?? 0) >= 0) {
             // Vollen Startzeitpunkt bestimmen.
-            const start = this._filter.start ? new Date(this._filter.start) : new Date()
+            const start = this._filter.startISO ? new Date(this._filter.startISO) : new Date()
 
-            this._filter.start = new Date(
+            this._filter.startISO = new Date(
                 start.getFullYear(),
                 start.getMonth(),
                 start.getDate(),
@@ -497,8 +497,8 @@ export class GuidePage extends Page implements IGuidePage {
         // Suchbedingung vorbereiten und übernehmen.
         const query = this.queryString.value?.trim()
 
-        this._filter.title = !query ? '' : `${this._fulltextQuery ? '*' : '='}${query}`
-        this._filter.content = this.withContent.value && this._fulltextQuery ? this._filter.title : ''
+        this._filter.titlePattern = !query ? '' : `${this._fulltextQuery ? '*' : '='}${query}`
+        this._filter.contentPattern = this.withContent.value && this._fulltextQuery ? this._filter.titlePattern : ''
 
         // Auszug aus der Programmzeitschrift abrufen.
         queryProgramGuide(this._filter).then((items) => {
@@ -508,9 +508,9 @@ export class GuidePage extends Page implements IGuidePage {
             const similiar = this.findInGuide.bind(this)
 
             this.entries = (items || [])
-                .slice(0, this._filter.size)
+                .slice(0, this._filter.pageSize)
                 .map((i) => new GuideEntry(i, similiar, toggleDetails, createNew, this._jobSelector))
-            this._hasMore = items && items.length > this._filter.size
+            this._hasMore = items && items.length > this._filter.pageSize
 
             // Anwendung zur Bedienung freischalten.
             this.application.isBusy = false
@@ -544,7 +544,7 @@ export class GuidePage extends Page implements IGuidePage {
     // In der Ergebnisliste bättern.
     private changePage(delta: number): void {
         // Startseite ändern und neue Suche ausführen.
-        this._filter.index += delta
+        this._filter.pageIndex += delta
         this.query()
     }
 
@@ -552,10 +552,10 @@ export class GuidePage extends Page implements IGuidePage {
     private createFavorite(): Promise<void> {
         // Protokollstruktur anlegen.
         const query: ISavedGuideQueryContract = {
-            device: this._filter.device,
-            encryption: this._filter.station ? guideEncryption.ALL : this._filter.cryptFilter,
-            source: this._filter.station,
-            sourceType: this._filter.station ? guideSource.ALL : this._filter.typeFilter,
+            device: this._filter.profileName,
+            encryption: this._filter.source ? guideEncryption.All : this._filter.sourceEncryption,
+            source: this._filter.source,
+            sourceType: this._filter.source ? guideSource.All : this._filter.sourceType,
             text: `${this._fulltextQuery ? '*' : '='}${this.queryString.value}`,
             titleOnly: !this.withContent.value,
         }

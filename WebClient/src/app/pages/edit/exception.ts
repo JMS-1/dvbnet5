@@ -35,16 +35,16 @@ export class ScheduleException implements IScheduleException {
 
     // Der Tag für den die Ausnahmeregel gilt.
     get dayDisplay(): string {
-        return DateTimeUtils.formatStartDate(new Date(parseInt(this.model.referenceDayDisplay, 10)))
+        return DateTimeUtils.formatStartDate(new Date(parseInt(this.model.exceptionDateUnix, 10)))
     }
 
     // Die Startverschiebung (in Minuten).
     get startShift(): number {
-        return this.model.startShift
+        return this.model.exceptionStartShift
     }
 
     // Die Laufzeitänderung (in Minuten).
     get timeDelta(): number {
-        return this.model.timeDelta
+        return this.model.exceptionDurationDelta
     }
 }

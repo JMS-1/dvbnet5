@@ -4,10 +4,10 @@ import { doUrlCall } from '../VCRServer'
 // Repräsentiert die Klasse GuideSettings
 export interface IGuideSettingsContract extends ISettingsContract {
     // Das Zeitintervall (in Stunden) für vorgezogene Aktualisierungen
-    joinHours: string
+    threshold: string
 
     // Das minimale Intervall (in Stunden) zwischen Aktualisierungen
-    minDelay: string
+    interval: string
 
     // Die maximale Dauer einer Aktualisierung (in Minuten)
     duration: number
@@ -19,7 +19,7 @@ export interface IGuideSettingsContract extends ISettingsContract {
     sources: string[]
 
     // Gesetzt, um auch die britische Programmzeitschrift auszuwerten
-    includeUK: boolean
+    withUKGuide: boolean
 }
 
 export function getGuideSettings(): Promise<IGuideSettingsContract | undefined> {

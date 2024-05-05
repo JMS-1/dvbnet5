@@ -1,13 +1,10 @@
-﻿using System.Reflection;
-using System.Threading;
-using JMS.DVB.Algorithms.Scheduler;
+﻿using JMS.DVB.Algorithms.Scheduler;
 using JMS.DVB.NET.Recording.Actions;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Requests;
 using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Logging;
 using JMS.DVB.NET.Recording.Services.Planning;
-using Microsoft.Extensions.DependencyModel.Resolution;
 
 namespace JMS.DVB.NET.Recording.Server;
 

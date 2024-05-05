@@ -1,13 +1,10 @@
 ﻿using JMS.DVB.CardServer;
-using System.Runtime.Serialization;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
     /// <summary>
     /// Beschreibt den aktuellen Zustand.
     /// </summary>
-    [Serializable]
-    [DataContract]
     public class ZappingStatus
     {
         /// <summary>
@@ -18,19 +15,16 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Das aktuelle Ziel der Nutzdaten.
         /// </summary>
-        [DataMember(Name = "target")]
         public string Target { get; set; } = null!;
 
         /// <summary>
         /// Die aktuelle Quelle.
         /// </summary>
-        [DataMember(Name = "source")]
         public string Source { get; set; } = null!;
 
         /// <summary>
         /// Alle auf der aktuellen Quellgruppe verfügbaren Dienste.
         /// </summary>
-        [DataMember(Name = "services")]
         public ZappingService[] Services { get; set; } = null!;
 
         /// <summary>

@@ -23,7 +23,7 @@ export class Streaming extends HelpComponent {
                 von anderen Media Player Anwendungen wie <ExternalLink url='http://www.videolan.org/'>VLC</ExternalLink>{' '}
                 verstanden und kann zur Anzeige verwendet werden. Bei Benutzung des DVB.NET / VCR.NET Viewers übernimmt
                 dieser alle notwendigen Maßnahmen zur Steuerung des Netzwerkversands.
-                <ScreenShot description='Netzwerkversand' name='FAQ/sendtonetwork' />
+                <ScreenShot description='Netzwerkversand' name='faq/sendtonetwork' />
                 Ist auf dem Rechner, von dem aus die Web Oberfläche aufgerufen wurde, der DVB.NET / VCR.NET Viewer lokal
                 installiert, so kann dieser über den ersten Verweis gestartet werden, wobei die Wiedergabe der aktuellen
                 Aufzeichnung erfolgt. Der zweite Verweis handelt analog, startet allerdings die Wiedergabe am Anfang der
