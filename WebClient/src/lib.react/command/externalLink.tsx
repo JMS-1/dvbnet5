@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+
 import { IEmpty } from '../reactUi'
 
 // Konfiguration eines externen Verweises.
@@ -19,9 +20,10 @@ export class ExternalLink extends React.Component<IExternalLink, IEmpty> {
     render(): JSX.Element {
         return (
             <a
-                target={this.props.sameWindow ? undefined : '_blank'}
                 className='jmslib-externalLink'
                 href={this.props.url}
+                rel='noreferrer'
+                target={this.props.sameWindow ? undefined : '_blank'}
             >
                 {this.props.children}
             </a>

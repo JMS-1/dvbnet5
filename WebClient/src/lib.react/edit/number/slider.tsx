@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+
 import { INumberWithSlider } from '../../../lib/edit/number/slider'
 import { ComponentWithSite } from '../../reactUi'
 
@@ -17,13 +18,13 @@ export class EditNumberSlider extends ComponentWithSite<INumberWithSlider> {
                 </div>
                 <div
                     draggable={false}
-                    onDragStart={() => false}
-                    onMouseMove={(ev) => this.doMove(ev)}
-                    onKeyUp={(ev) => this.doKey(ev)}
                     tabIndex={0}
-                    onMouseUp={(ev) => (this.props.uvm.isDragging = false)}
-                    onMouseLeave={(ev) => (this.props.uvm.isDragging = false)}
+                    onDragStart={() => false}
+                    onKeyUp={(ev) => this.doKey(ev)}
                     onMouseDown={(ev) => (this.props.uvm.isDragging = ev.buttons === 1)}
+                    onMouseLeave={(ev) => (this.props.uvm.isDragging = false)}
+                    onMouseMove={(ev) => this.doMove(ev)}
+                    onMouseUp={(ev) => (this.props.uvm.isDragging = false)}
                 ></div>
             </div>
         )
@@ -35,11 +36,11 @@ export class EditNumberSlider extends ComponentWithSite<INumberWithSlider> {
         if (!this.props.uvm.isDragging) return
 
         // Der äußere Bereich des Reglers.
-        var bounds = (ev.target as HTMLDivElement).getBoundingClientRect()
+        const bounds = (ev.target as HTMLDivElement).getBoundingClientRect()
 
         // Die relative horizontale Mausposition.
-        var absX = ev.clientX
-        var relX = absX - bounds.left
+        const absX = ev.clientX
+        const relX = absX - bounds.left
 
         // Als relativen Wert zwischen 0 und 1 an die Anwendungslogik melden - hier ist noch ein Bug mit einem leichten Offset!
         this.props.uvm.position = relX / bounds.width

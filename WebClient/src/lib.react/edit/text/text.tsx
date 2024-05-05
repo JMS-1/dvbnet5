@@ -1,6 +1,7 @@
 ﻿import * as React from 'react'
+
 import { IString } from '../../../lib/edit/text/text'
-import { IComponent, ComponentExWithSite } from '../../reactUi'
+import { ComponentExWithSite, IComponent } from '../../reactUi'
 
 // Konfiguration einer einfachen Texteingabe.
 interface IEditText extends IComponent<IString> {
@@ -17,12 +18,12 @@ export class EditText extends ComponentExWithSite<IString, IEditText> {
     render(): JSX.Element {
         return (
             <input
-                type='TEXT'
-                size={this.props.chars}
-                value={this.props.uvm.value ?? ''}
-                placeholder={this.props.hint}
-                title={this.props.uvm.message}
                 className='jmslib-edittext jmslib-validatable'
+                placeholder={this.props.hint}
+                size={this.props.chars}
+                title={this.props.uvm.message}
+                type='TEXT'
+                value={this.props.uvm.value ?? ''}
                 onChange={(ev) => (this.props.uvm.value = (ev.target as HTMLInputElement).value)}
             />
         )

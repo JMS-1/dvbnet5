@@ -1,6 +1,7 @@
 ﻿import * as React from 'react'
+
 import { INumber } from '../../../lib/edit/number/number'
-import { IComponent, ComponentExWithSite } from '../../reactUi'
+import { ComponentExWithSite, IComponent } from '../../reactUi'
 
 // Konfiguration der Anzeige einer Zahl.
 interface IEditNumber extends IComponent<INumber> {
@@ -14,11 +15,11 @@ export class EditNumber extends ComponentExWithSite<INumber, IEditNumber> {
     render(): JSX.Element {
         return (
             <input
-                type='TEXT'
+                className='jmslib-editnumber jmslib-validatable'
                 size={this.props.chars}
                 title={this.props.uvm.message}
+                type='TEXT'
                 value={this.props.uvm.rawValue}
-                className='jmslib-editnumber jmslib-validatable'
                 onChange={(ev) => (this.props.uvm.rawValue = (ev.target as HTMLInputElement).value)}
             />
         )

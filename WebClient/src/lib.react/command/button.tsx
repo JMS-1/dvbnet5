@@ -1,6 +1,7 @@
 ﻿import * as React from 'react'
+
 import { ICommand } from '../../lib/command/command'
-import { IComponent, ComponentExWithSite } from '../reactUi'
+import { ComponentExWithSite, IComponent } from '../reactUi'
 
 // Schnittstelle zur Anzeige einer Schaltfläche.
 interface IButtonCommand extends IComponent<ICommand> {
@@ -15,10 +16,10 @@ export class ButtonCommand extends ComponentExWithSite<ICommand, IButtonCommand>
         return (
             this.props.uvm.isVisible && (
                 <a
-                    className={`jmslib-command${this.props.className ? ` ${this.props.className}` : ``}${this.props.uvm.isDangerous ? ` jmslib-command-dangerous` : ``}${this.props.uvm.isEnabled ? `` : ` jmslib-command-disabled`}`}
-                    onClick={(ev) => this.props.uvm.execute()}
-                    title={this.props.uvm.message}
+                    className={`jmslib-command${this.props.className ? ` ${this.props.className}` : ''}${this.props.uvm.isDangerous ? ' jmslib-command-dangerous' : ''}${this.props.uvm.isEnabled ? '' : ' jmslib-command-disabled'}`}
                     href='javascript:void(0)'
+                    title={this.props.uvm.message}
+                    onClick={(ev) => this.props.uvm.execute()}
                 >
                     {this.props.uvm.text}
                 </a>

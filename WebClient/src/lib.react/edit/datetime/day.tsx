@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+
 import { IDaySelector, ISelectableDay } from '../../../lib/edit/datetime/day'
 import { ButtonCommand } from '../../command/button'
 import { Pictogram } from '../../command/pictogram'
@@ -63,7 +64,7 @@ export class EditDay extends ComponentWithSite<IDaySelector> {
         return (
             <tr key={rowKey}>
                 {days.map((day, index) => {
-                    var classes: string[] = []
+                    const classes: string[] = []
 
                     // Visualisierung der Sondertage vorbereiten.
                     if (day.isCurrentMonth) classes.push('jmslib-editday-month')
@@ -72,7 +73,7 @@ export class EditDay extends ComponentWithSite<IDaySelector> {
 
                     // Oberflächenelemente für einen einzelnen Tag auswählbaren erstellen.
                     return (
-                        <td onClick={day.select} key={`${index}`} className={classes.join(' ')}>
+                        <td key={`${index}`} className={classes.join(' ')} onClick={day.select}>
                             {day.display}
                         </td>
                     )
@@ -83,10 +84,10 @@ export class EditDay extends ComponentWithSite<IDaySelector> {
 
     // Teilt die zur Auswahl anzubietende Tage in Häppchen zu je einer Woche.
     private getRows(days: ISelectableDay[]): (JSX.Element | null)[] {
-        var rows: (JSX.Element | null)[] = []
+        const rows: (JSX.Element | null)[] = []
 
         // Tage in Schritten einer Woche zerlegen.
-        for (var ix = 0; ix < days.length; ix += 7) rows.push(this.getRow(days.slice(ix, ix + 7), ix))
+        for (let ix = 0; ix < days.length; ix += 7) rows.push(this.getRow(days.slice(ix, ix + 7), ix))
 
         return rows
     }

@@ -1,6 +1,8 @@
 ﻿import * as React from 'react'
-import { IEmpty } from '../reactUi'
+
 import { Pictogram } from './pictogram'
+
+import { IEmpty } from '../reactUi'
 
 // Konfigurationzur Anzeige eines internen Verweises.
 interface IInternalLink {
@@ -22,8 +24,8 @@ export class InternalLink extends React.Component<IInternalLink, IEmpty> {
     // Erstellt die Oberflächenelemente.
     render(): JSX.Element {
         // Konfiguration des HTML A Verweises je nach Parameter der Komponente.
-        var target = 'javascript:void(0)'
-        var click = undefined
+        let target = 'javascript:void(0)'
+        let click = undefined
 
         if (typeof this.props.view === 'function') click = this.props.view
         else target = '#' + this.props.view

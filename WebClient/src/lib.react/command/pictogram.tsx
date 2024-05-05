@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+
 import { IEmpty } from '../reactUi'
 
 // Konfiguration zur Anzeige eines Symbols.
@@ -22,10 +23,10 @@ export class Pictogram extends React.Component<IPictogram, IEmpty> {
     render(): JSX.Element {
         return (
             <img
-                className='jmslib-pict'
                 alt={this.props.description}
-                onClick={this.props.onClick}
+                className='jmslib-pict'
                 src={`${Pictogram.imageRoot}${this.props.name}.png`}
+                onClick={this.props.onClick}
             />
         )
     }

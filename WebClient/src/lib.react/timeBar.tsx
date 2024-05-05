@@ -1,6 +1,8 @@
 ﻿import * as React from 'react'
-import { ITimeBar } from '../lib/timebar'
+
 import { Component } from './reactUi'
+
+import { ITimeBar } from '../lib/timebar'
 
 // Eine React.Js Komponente zur Anzeige einer Zeitschiene.
 export class TimeBar extends Component<ITimeBar> {
@@ -11,14 +13,14 @@ export class TimeBar extends Component<ITimeBar> {
                 <div>
                     {this.props.uvm.prefixTime > 0 && <div style={{ width: `${this.props.uvm.prefixTime}%` }}></div>}
                     <div
-                        style={{ width: `${this.props.uvm.time}%`, left: `${this.props.uvm.prefixTime}%` }}
-                        className={this.props.uvm.timeIsComplete ? `jmslib-timebar-good` : `jmslib-timebar-bad`}
+                        className={this.props.uvm.timeIsComplete ? 'jmslib-timebar-good' : 'jmslib-timebar-bad'}
+                        style={{ left: `${this.props.uvm.prefixTime}%`, width: `${this.props.uvm.time}%` }}
                     ></div>
                     {this.props.uvm.suffixTime > 0 && (
                         <div
                             style={{
-                                width: `${this.props.uvm.suffixTime}%`,
                                 left: `${this.props.uvm.prefixTime + this.props.uvm.time}%`,
+                                width: `${this.props.uvm.suffixTime}%`,
                             }}
                         ></div>
                     )}
@@ -26,7 +28,7 @@ export class TimeBar extends Component<ITimeBar> {
                 <div
                     style={
                         this.props.uvm.currentTime === undefined
-                            ? { display: `none` }
+                            ? { display: 'none' }
                             : { left: `${this.props.uvm.currentTime}%` }
                     }
                 ></div>

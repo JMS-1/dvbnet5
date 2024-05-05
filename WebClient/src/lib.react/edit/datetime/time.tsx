@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+
 import { ITime } from '../../../lib/edit/datetime/time'
 import { ComponentWithSite } from '../../reactUi'
 
@@ -8,11 +9,11 @@ export class EditTime extends ComponentWithSite<ITime> {
     render(): JSX.Element {
         return (
             <input
-                size={5}
-                type='TEXT'
-                title={this.props.uvm.message}
-                value={this.props.uvm.rawValue}
                 className='jmslib-edittime jmslib-validatable'
+                size={5}
+                title={this.props.uvm.message}
+                type='TEXT'
+                value={this.props.uvm.rawValue}
                 onChange={(ev) => (this.props.uvm.rawValue = (ev.target as HTMLInputElement).value)}
             />
         )
