@@ -86,7 +86,7 @@ export class SingleListProperty<TValueType> extends Property<TValueType> impleme
 
     // Legt ein neues Präsentationsmodell an.
     constructor(
-        data?: any,
+        data?: unknown,
         prop?: string,
         name?: string,
         onChange?: () => void,
@@ -105,7 +105,7 @@ export class SingleListProperty<TValueType> extends Property<TValueType> impleme
     }
 
     // Prüft ob der aktuelle Wert in der Liste der erlaubten Werte ist.
-    private static isInList(list: SingleListProperty<any>): string | undefined {
+    private static isInList(list: SingleListProperty<unknown>): string | undefined {
         // Der Wert muss in der Liste sein.
         const value = list.value
 

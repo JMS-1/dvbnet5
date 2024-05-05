@@ -63,7 +63,7 @@ class SelectableValue<TValueType> implements IToggableUiValue<TValueType> {
 export class MultiListProperty<TValueType> extends Property<TValueType[]> implements IMultiValueFromList<TValueType> {
     // Legt eine neue Liste an.
     constructor(
-        data?: any,
+        data?: unknown,
         prop?: string,
         name?: string,
         onChange?: () => void,

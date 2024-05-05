@@ -5,7 +5,7 @@ export class DateTimeUtils {
 
     // Stellt sicher, dass eine Zahl immer zweistellig ist.
     static formatNumber(num: number): string {
-        var asString = num.toString()
+        const asString = num.toString()
         if (asString.length > 1) return asString
         else return `0${asString}`
     }
@@ -37,20 +37,20 @@ export class DateTimeUtils {
 
     // Ermittelt einen Startzeitpunkt.
     static formatStartTime(start: Date): string {
-        var time = `${DateTimeUtils.formatNumber(start.getHours())}:${DateTimeUtils.formatNumber(start.getMinutes())}`
+        const time = `${DateTimeUtils.formatNumber(start.getHours())}:${DateTimeUtils.formatNumber(start.getMinutes())}`
 
         return `${DateTimeUtils.formatStartDate(start)} ${time}`
     }
 
     // Prüft eine Eingabe auf eine gültige Uhrzeit (H:M, jeweils ein oder zweistellig).
     static parseTime(time: string): number | null {
-        var parts = time.split(':')
+        const parts = time.split(':')
         if (parts.length != 2) return null
 
-        var hour = DateTimeUtils.parseHourMinute(parts[0])
+        const hour = DateTimeUtils.parseHourMinute(parts[0])
         if (hour == null) return null
         if (hour > 23) return null
-        var minute = DateTimeUtils.parseHourMinute(parts[1])
+        const minute = DateTimeUtils.parseHourMinute(parts[1])
         if (minute == null) return null
         if (minute > 59) return null
 
@@ -62,9 +62,9 @@ export class DateTimeUtils {
         if (hourMinute.length == 1) hourMinute = '0' + hourMinute
         if (hourMinute.length != 2) return null
 
-        var upper = DateTimeUtils.parseDigit(hourMinute.charCodeAt(0))
+        const upper = DateTimeUtils.parseDigit(hourMinute.charCodeAt(0))
         if (upper == null) return null
-        var lower = DateTimeUtils.parseDigit(hourMinute.charCodeAt(1))
+        const lower = DateTimeUtils.parseDigit(hourMinute.charCodeAt(1))
         if (lower == null) return null
 
         return upper * 10 + lower
@@ -81,10 +81,10 @@ export class DateTimeUtils {
     // Ermittelt aus einem Startzeitpunkt und einer Dauer die tatsächlich Dauer unter Berücksichtigung der Zeitumstellung.
     static getRealDurationInMinutes(isoStart: string, durationInMinutes: number): number {
         // Startzeitpunkt aus der ISO Notation in die lokale Zeit umrechnen.
-        var start = new Date(isoStart)
+        const start = new Date(isoStart)
 
         // Die ursprüngliche Dauer in der lokalen Zeit hinzufügen.
-        var end = new Date(
+        const end = new Date(
             start.getFullYear(),
             start.getMonth(),
             start.getDate(),

@@ -17,8 +17,8 @@ export interface IProperty<TValueType> extends IDisplay, IConnectable {
 export abstract class Property<TValueType> implements IProperty<TValueType> {
     // Initialisiert die Verwaltung des Wertes einer einzelnen Eigenschaft (_prop) im Modell (_data).
     protected constructor(
-        private _data: any = {},
-        private readonly _prop: string = `value`,
+        private _data: unknown = {},
+        private readonly _prop: string = 'value',
         public readonly text: string | null = null,
         private readonly _onChange?: () => void,
         private readonly _testReadOnly?: () => boolean
@@ -68,7 +68,9 @@ export abstract class Property<TValueType> implements IProperty<TValueType> {
     }
 
     // Wird ausgelöst, wenn eine Anmeldung der Oberfläche erfolgt ist.
-    protected onSiteChanged(): void {}
+    protected onSiteChanged(): void {
+        //
+    }
 
     // Meldet den aktuellen Wert.
     get value(): TValueType | null {
@@ -93,7 +95,7 @@ export abstract class Property<TValueType> implements IProperty<TValueType> {
     }
 
     // Verwaltung des Prüfergebnisses - die Basisimplementierung meldet die Eigenschaft immer als gültig (leere Zeichenkette).
-    private _message? = ``
+    private _message? = ''
 
     get message(): string | undefined {
         return this._message
@@ -101,18 +103,20 @@ export abstract class Property<TValueType> implements IProperty<TValueType> {
 
     validate(): void {
         // Alle Prüfalgorithmen durchgehen.
-        for (var i = 0; i < this._validators.length; i++) if ((this._message = this._validators[i](this))) return
+        for (let i = 0; i < this._validators.length; i++) if ((this._message = this._validators[i](this))) return
 
         // Kein Fehler.
-        this._message = ``
+        this._message = ''
     }
 
     // Meldet das aktuell zugeordnete Modell.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     get data(): any {
         return this._data
     }
 
     // Ändert das aktuell zugeordnete Modell.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     set data(newValue: any) {
         this._data = newValue
 

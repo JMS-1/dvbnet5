@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+
 import { Component, IComponent, IEmpty } from './reactUi'
 
 // Schnittstelle eines Präsentationsmodell, das als Ziel einer Navigation dienen kann.
@@ -11,14 +12,14 @@ export interface IRoutablePage {
 export interface IPageFactory<TPageType extends IRoutablePage> {
     // Ermittelt zu dem Präsentationsmodell Navigationsziel eine geeignet React.Js Komponente.
     [route: string]: {
-        new (props?: IComponent<any>, context?: IEmpty): Component<TPageType>
+        new (props?: IComponent<unknown>, context?: IEmpty): Component<TPageType>
     }
 }
 
 // Basisklasse zur Implementierung eines Navigationsverteilers.
 export abstract class Router<TPageType extends IRoutablePage> extends Component<TPageType> {
     // Alle bekannten Navigationsziele und deren React.Js Komponentenerzeuger.
-    private static _pages: IPageFactory<any>
+    private static _pages: IPageFactory<IRoutablePage>
 
     protected abstract getPages(page: TPageType): IPageFactory<TPageType>
 
@@ -28,7 +29,7 @@ export abstract class Router<TPageType extends IRoutablePage> extends Component<
         if (!Router._pages) if (this.props.uvm) Router._pages = this.getPages(this.props.uvm)
 
         // Erzeuger für das aktuelle Navigationsziel ermitteln.
-        var factory = Router._pages && Router._pages[this.props.uvm.route]
+        const factory = Router._pages && Router._pages[this.props.uvm.route]
 
         // React.Js Komponente für das Navigationsziel anlegen.
         return (

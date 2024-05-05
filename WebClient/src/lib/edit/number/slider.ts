@@ -29,7 +29,7 @@ export class NumberWithSlider extends Property<number> implements INumberWithSli
 
     // Erstellt eine neue Steuerung.
     constructor(
-        data: any,
+        data: unknown,
         prop: string,
         onChange: () => void,
         private _min: number,

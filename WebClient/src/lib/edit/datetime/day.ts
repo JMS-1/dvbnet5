@@ -306,7 +306,7 @@ export class DayProperty extends Property<string> implements IDaySelector {
 
     // Erstelle ein präsentationsmodell zur Auswahl eines Datums.
     constructor(
-        data?: any,
+        data?: unknown,
         prop?: string,
         text?: string,
         onChange?: () => void,

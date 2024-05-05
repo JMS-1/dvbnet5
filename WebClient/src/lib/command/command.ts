@@ -29,7 +29,7 @@ export class Command<TResponseType> implements ICommand {
 
     // Setzt den Befehl auf den Initialzustand zurück.
     reset(): void {
-        this._message = ``
+        this._message = ''
         this._busy = false
 
         // Anzeige aktualisieren.
@@ -37,7 +37,7 @@ export class Command<TResponseType> implements ICommand {
     }
 
     // Fehlermeldung zur letzen Ausführung.
-    private _message = ``
+    private _message = ''
 
     // Meldet die Fehlermeldung zur letzten Ausführung.
     get message(): string {
@@ -135,13 +135,13 @@ export class Command<TResponseType> implements ICommand {
         if (!this.isEnabled) return
 
         // Fehlermeldung zurücksetzen.
-        this.message = ``
+        this.message = ''
 
         // Gegen erneutes Aufrufen sperren.
         this.setBusy(true)
 
         // Aktion starten.
-        var begin = this._begin()
+        const begin = this._begin()
 
         // Auf das Ende der Aktion warten und Aktion wieder freigeben.
         if (begin)

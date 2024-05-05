@@ -1,50 +1,51 @@
 ﻿import * as React from 'react'
-import { InternalLink } from '../lib.react/command/internalLink'
+
 import { IPage } from '../app/pages/page'
+import { InternalLink } from '../lib.react/command/internalLink'
 import { Component } from '../lib.react/reactUi'
 
 // React.Js Komponente zur Anzeige der Navigationsleiste.
 export class Navigation extends Component<IPage> {
     // Erstellt die Anzeige.
     render(): React.ReactNode {
-        var page = this.props.uvm
+        const page = this.props.uvm
 
         if (!page || !page.navigation) return null
 
-        var application = page.application
+        const application = page.application
 
         return (
             <div className='vcrnet-navigation vcrnet-bar'>
                 {page.navigation.refresh && (
-                    <InternalLink view={() => page.reload()} pict='refresh'>
+                    <InternalLink pict='refresh' view={() => page.reload()}>
                         Aktualisieren
                     </InternalLink>
                 )}
-                <InternalLink view={application.homePage.route} pict='home'>
+                <InternalLink pict='home' view={application.homePage.route}>
                     Startseite
                 </InternalLink>
                 {page.navigation.favorites && (
-                    <InternalLink view={application.favoritesPage.route} pict='fav'>
+                    <InternalLink pict='fav' view={application.favoritesPage.route}>
                         Favoriten
                     </InternalLink>
                 )}
                 {page.navigation.guide && (
-                    <InternalLink view={application.guidePage.route} pict='guide'>
+                    <InternalLink pict='guide' view={application.guidePage.route}>
                         Programmzeitschrift
                     </InternalLink>
                 )}
                 {page.navigation.plan && (
-                    <InternalLink view={application.planPage.route} pict='plan'>
+                    <InternalLink pict='plan' view={application.planPage.route}>
                         Aufzeichnungsplan
                     </InternalLink>
                 )}
                 {page.navigation.new && (
-                    <InternalLink view={application.editPage.route} pict='new'>
+                    <InternalLink pict='new' view={application.editPage.route}>
                         Neue Aufzeichnung
                     </InternalLink>
                 )}
                 {page.navigation.current && (
-                    <InternalLink view={application.devicesPage.route} pict='devices'>
+                    <InternalLink pict='devices' view={application.devicesPage.route}>
                         Geräte
                     </InternalLink>
                 )}

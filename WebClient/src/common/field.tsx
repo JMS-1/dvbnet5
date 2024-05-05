@@ -1,7 +1,9 @@
 ﻿import * as React from 'react'
-import { IEmpty } from '../lib.react/reactUi'
+
 import { HelpLink } from './helpLink'
+
 import { IPage } from '../app/pages/page'
+import { IEmpty } from '../lib.react/reactUi'
 
 // Die Konfiguration eines Eingabefeldes.
 interface IFieldStatic {

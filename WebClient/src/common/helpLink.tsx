@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+
 import { IPage } from '../app/pages/page'
 import { InternalLink } from '../lib.react/command/internalLink'
 import { IEmpty } from '../lib.react/reactUi'
@@ -18,7 +19,7 @@ export class HelpLink extends React.Component<IHelpLinkStatic, IEmpty> {
     render(): JSX.Element {
         return (
             <span className='vcrnet-helpLink'>
-                <InternalLink view={`${this.props.page.application.helpPage.route};${this.props.topic}`} pict='info' />
+                <InternalLink pict='info' view={`${this.props.page.application.helpPage.route};${this.props.topic}`} />
             </span>
         )
     }

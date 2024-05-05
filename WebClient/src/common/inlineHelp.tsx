@@ -19,7 +19,7 @@ interface IInlineHelpDynamic {
 export class InlineHelp extends React.Component<IInlineHelpStatic, IInlineHelpDynamic> {
     // Erstellt die Oberflächenelement.
     render(): JSX.Element {
-        var isOpen = this.state && this.state.open
+        const isOpen = this.state && this.state.open
 
         return (
             <div className='vcrnet-inline-help'>

@@ -24,16 +24,16 @@ export class TimeBar implements ITimeBar {
         this.timeIsComplete = startRecording <= startProgram && endRecording >= endProgram
 
         // Die tatsächliche Dauer.
-        var total = endRecording.getTime() - startRecording.getTime()
+        const total = endRecording.getTime() - startRecording.getTime()
 
         // Prozentuale Vorlaufzeit berechnen.
-        var prefixTime = startProgram.getTime() - startRecording.getTime()
+        const prefixTime = startProgram.getTime() - startRecording.getTime()
 
         if (prefixTime <= 0) this.prefixTime = 0
         else this.prefixTime = Math.floor((prefixTime * 100) / total)
 
         // Prozentuale Nachlaufzeit berechnen.
-        var suffixTime = endRecording.getTime() - endProgram.getTime()
+        const suffixTime = endRecording.getTime() - endProgram.getTime()
 
         if (suffixTime <= 0) this.suffixTime = 0
         else this.suffixTime = Math.floor((suffixTime * 100) / total)
@@ -42,7 +42,7 @@ export class TimeBar implements ITimeBar {
         this.time = Math.max(0, Math.min(100, 100 - (this.prefixTime + this.suffixTime)))
 
         // Aktuelle Uhrzeit einblenden, wenn möglich.
-        var currentTime = Date.now() - startRecording.getTime()
+        const currentTime = Date.now() - startRecording.getTime()
 
         if (currentTime >= 0 && currentTime <= total) this.currentTime = Math.floor((currentTime * 100) / total)
     }

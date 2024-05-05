@@ -21,7 +21,7 @@ export class DurationEditor extends Property<number> implements IDurationEditor 
     readonly endTime: TimeProperty
 
     // Erstellt ein neues Präsentationsmodell.
-    constructor(data: any, propTime: string, propDuration: string, text: string, onChange: () => void) {
+    constructor(data: unknown, propTime: string, propDuration: string, text: string, onChange: () => void) {
         super(data, propDuration, text, onChange)
 
         // Die Startzeit ändert direkt den entsprechenden Wert in den Daten der Aufzeichnung.

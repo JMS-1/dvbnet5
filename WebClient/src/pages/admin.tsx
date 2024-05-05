@@ -1,8 +1,5 @@
 ﻿import * as React from 'react'
-import { AdminPage, IAdminPage } from '../app/pages/admin'
-import { ISection } from '../app/pages/admin/section'
-import { InternalLink } from '../lib.react/command/internalLink'
-import { IComponent, IEmpty, ComponentWithSite } from '../lib.react/reactUi'
+
 import { AdminDevices } from './admin/devices'
 import { AdminDirectories } from './admin/directories'
 import { AdminGuide } from './admin/guide'
@@ -11,6 +8,11 @@ import { AdminRules } from './admin/rules'
 import { AdminSection } from './admin/section'
 import { AdminSecurity } from './admin/security'
 import { AdminSources } from './admin/sources'
+
+import { AdminPage, IAdminPage } from '../app/pages/admin'
+import { ISection } from '../app/pages/admin/section'
+import { InternalLink } from '../lib.react/command/internalLink'
+import { ComponentWithSite, IComponent, IEmpty } from '../lib.react/reactUi'
 
 // Hilfsschnittstelle zur Signature des Konstruktors eines Ui View Models.
 export interface IAdminSectionFactory<TSectionType extends ISection> {
@@ -33,7 +35,7 @@ interface IAdminUiSectionFactory<TSectionType extends ISection> {
 // Nachschlageliste für die React.Js Komponenten der Konfigurationsbereiche.
 interface IAdminSectionFactoryMap {
     // Ermittelt einen Konfigurationsbereich.
-    [route: string]: IAdminUiSectionFactory<any>
+    [route: string]: IAdminUiSectionFactory<ISection>
 }
 
 // React.Js Komponente zur Anzeige der Konfiguration.
@@ -48,15 +50,13 @@ export class Admin extends ComponentWithSite<IAdminPage> {
 
     // Oberflächenelemente erstellen.
     render(): JSX.Element {
-        var test: IAdminUiSectionFactory<any> = AdminDevices
-
         const section = this.props.uvm.sections.value
 
         return (
             <div className='vcrnet-admin'>
                 <div>
                     {this.props.uvm.sections.allowedValues.map((si) => (
-                        <div key={si.display} className={`${si.value === section ? `jmslib-command-checked` : ``}`}>
+                        <div key={si.display} className={`${si.value === section ? 'jmslib-command-checked' : ''}`}>
                             <InternalLink view={`${this.props.uvm.route};${si.value.route}`}>{si.display}</InternalLink>
                         </div>
                     ))}

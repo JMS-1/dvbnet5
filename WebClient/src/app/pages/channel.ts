@@ -185,7 +185,7 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
     // Erstellt eine neue Logik zur Senderauswahl.
     constructor(
         profile: IUserProfileContract,
-        data: any,
+        data: unknown,
         prop: string,
         favoriteSources: string[],
         onChange: () => void

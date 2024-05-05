@@ -1,9 +1,11 @@
 ﻿import * as React from 'react'
-import { IApplicationSite, IApplication, Application } from '../app/app'
-import { IHelpComponent, IHelpComponentProvider } from '../app/pages/help'
-import { IEmpty } from '../lib.react/reactUi'
+
 import { Navigation } from './navigation'
 import { View } from './view'
+
+import { Application, IApplication, IApplicationSite } from '../app/app'
+import { IHelpComponent, IHelpComponentProvider } from '../app/pages/help'
+import { IEmpty } from '../lib.react/reactUi'
 import { AdminProgramGuide } from '../pages/help/adminGuide'
 import { AdminSourceScan } from '../pages/help/adminScan'
 import { Archive } from '../pages/help/archive'
@@ -19,6 +21,7 @@ import { FileContents } from '../pages/help/fileContents'
 import { Hibernation } from '../pages/help/hibernation'
 import { Overview } from '../pages/help/home'
 import { JobsAndSchedules } from '../pages/help/jobsAndSchedules'
+import { Log } from '../pages/help/log'
 import { Nexus } from '../pages/help/nexus'
 import { NumberOfFiles } from '../pages/help/numberOfFiles'
 import { ParallelRecording } from '../pages/help/parallelRecording'
@@ -29,38 +32,37 @@ import { Streaming } from '../pages/help/streaming'
 import { Tasks } from '../pages/help/tasks'
 import { TsPlayer } from '../pages/help/tsPlayer'
 import { WebSettings } from '../pages/help/webSettings'
-import { Log } from '../pages/help/log'
 
 // React.Js Komponente für die Hauptseite der Anwendung - im Prinzip der gesamte sichtbare Bereich im Browser.
 export class Main extends React.Component<IEmpty, IEmpty> implements IApplicationSite {
     // Alle bekannten Hilfeseiten.
     private readonly _topics: { [section: string]: IHelpComponent } = {
-        repeatingschedules: new RepeatingSchedules(),
-        parallelrecording: new ParallelRecording(),
-        jobsandschedules: new JobsAndSchedules(),
-        customschedule: new CustomSchedule(),
+        archive: new Archive(),
         configuration: new Configuration(),
         controlcenter: new ControlCenter(),
         currentstream: new CurrentStream(),
-        epgconfig: new AdminProgramGuide(),
-        numberoffiles: new NumberOfFiles(),
-        sourcechooser: new SourceChooser(),
-        filecontents: new FileContents(),
-        psiconfig: new AdminSourceScan(),
-        editcurrent: new EditCurrent(),
-        hibernation: new Hibernation(),
-        sourcelimit: new SourceLimit(),
-        websettings: new WebSettings(),
+        customschedule: new CustomSchedule(),
         decryption: new Decryption(),
-        streaming: new Streaming(),
-        overview: new Overview(),
-        tsplayer: new TsPlayer(),
-        epg: new ProgramGuide(),
-        archive: new Archive(),
         dvbnet: new DvbNet(),
-        nexus: new Nexus(),
-        tasks: new Tasks(),
+        editcurrent: new EditCurrent(),
+        epg: new ProgramGuide(),
+        epgconfig: new AdminProgramGuide(),
+        filecontents: new FileContents(),
+        hibernation: new Hibernation(),
+        jobsandschedules: new JobsAndSchedules(),
         log: new Log(),
+        nexus: new Nexus(),
+        numberoffiles: new NumberOfFiles(),
+        overview: new Overview(),
+        parallelrecording: new ParallelRecording(),
+        psiconfig: new AdminSourceScan(),
+        repeatingschedules: new RepeatingSchedules(),
+        sourcechooser: new SourceChooser(),
+        sourcelimit: new SourceLimit(),
+        streaming: new Streaming(),
+        tasks: new Tasks(),
+        tsplayer: new TsPlayer(),
+        websettings: new WebSettings(),
     }
 
     // Das Präsentationsmodell der Anwendung.
@@ -95,8 +97,8 @@ export class Main extends React.Component<IEmpty, IEmpty> implements IApplicatio
     // Oberflächenelemente erstellen.
     render(): JSX.Element {
         // Überschrift ermitteln.
-        var title = this._application.title
-        var page = this._application.page
+        const title = this._application.title
+        const page = this._application.page
 
         if (document.title !== title) document.title = title
 
@@ -126,27 +128,27 @@ export class Main extends React.Component<IEmpty, IEmpty> implements IApplicatio
     // Wird zur Aktualisierung des Navigationsbereichs aufgerufen.
     private onhashchange(): void {
         // Auslesen der Kennung - für FireFox ist es nicht möglich, .hash direkt zu verwenden, da hierbei eine Decodierung durchgeführt wird
-        var query = window.location.href.split('#')
-        var hash = query.length > 1 ? query[1] : ''
+        const query = window.location.href.split('#')
+        const hash = query.length > 1 ? query[1] : ''
 
         // Erst mal auf die Einstiegsseite prüfen.
         if (hash.length < 1) this.setPage()
         else {
             // Ansonsten den Navigationsbereich mit Parametern aufrufen.
-            var sections = hash.split(';')
+            const sections = hash.split(';')
 
             this.setPage(sections[0], sections.slice(1))
         }
     }
 
     // Den Navigationsbereich wechseln.
-    private setPage(name: string = '', sections?: string[]) {
+    private setPage(name = '', sections?: string[]) {
         this._application.switchPage(name, sections)
     }
 
     // Den Navigationsberecich über den Browser ändern.
     goto(name: string): void {
-        window.location.href = name ? `#${name}` : `#`
+        window.location.href = name ? `#${name}` : '#'
     }
 
     // Die Verwaltung der Hilfeseiten melden.

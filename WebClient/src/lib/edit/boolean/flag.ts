@@ -32,7 +32,7 @@ export class BooleanProperty extends Property<boolean> implements IToggableFlag 
     }
 
     // Legt eine neue Verwaltung an.
-    constructor(data?: any, prop?: string, name?: string, onChange?: () => void, testReadOnly?: () => boolean) {
+    constructor(data?: unknown, prop?: string, name?: string, onChange?: () => void, testReadOnly?: () => boolean) {
         super(data, prop, name, onChange, testReadOnly)
     }
 }

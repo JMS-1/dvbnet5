@@ -227,7 +227,7 @@ export class EditPage extends Page implements IEditPage {
         if (!this.job) return
 
         // Quellen neu anfordern - da passiert im Allgemeinen nicht wirklich viel, trotzdem optimieren wir das ein bißchen.
-        let requireRefresh: any = true
+        let requireRefresh: unknown = true
 
         this.loadSources().then(() => (requireRefresh = this.refreshUi()))
 

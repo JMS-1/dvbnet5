@@ -1,5 +1,5 @@
 ﻿import { IPage } from '../app/pages/page'
-import { Router, IPageFactory } from '../lib.react/router'
+import { IPageFactory, Router } from '../lib.react/router'
 import { Admin } from '../pages/admin'
 import { Devices } from '../pages/devices'
 import { Edit } from '../pages/edit'

@@ -12,7 +12,7 @@ export class NumberProperty extends Property<number> implements INumber {
     private static readonly _positiveNumber = /^(0+|(0*[1-9][0-9]{0,5}))$/
 
     // Legt eine neue Verwaltung an.
-    constructor(data?: any, prop?: string, name?: string, onChange?: () => void) {
+    constructor(data?: unknown, prop?: string, name?: string, onChange?: () => void) {
         super(data, prop, name, onChange)
 
         // Spezielle Prüfung auf Fehleingaben.

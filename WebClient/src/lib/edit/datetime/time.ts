@@ -22,7 +22,7 @@ export class TimeProperty extends Property<string> implements ITime {
     }
 
     // Erstellt ein neues Präsentationsmodell.
-    constructor(data?: any, prop?: string, name?: string, onChange?: () => void) {
+    constructor(data?: unknown, prop?: string, name?: string, onChange?: () => void) {
         super(data, prop, name, onChange)
 
         // Syntaxprüfung durchführen.

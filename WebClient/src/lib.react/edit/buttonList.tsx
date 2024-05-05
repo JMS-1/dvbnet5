@@ -1,27 +1,28 @@
 ﻿import * as React from 'react'
+
 import { IValueFromList } from '../../lib/edit/list'
 import { ButtonCommand } from '../command/button'
-import { IComponent, ComponentExWithSite } from '../reactUi'
+import { ComponentExWithSite, IComponent } from '../reactUi'
 
 // Schnittstelle zur Anzeige einer Liste von Schaltflächen.
-interface ISingleSelectButton extends IComponent<IValueFromList<any>> {
+interface ISingleSelectButton extends IComponent<IValueFromList<unknown>> {
     // Gesetzt, wenn die Schaltflächen nicht separiert werden sollen.
     merge?: boolean
 }
 
 // React.Js Komponente zur Anzeige einer Liste von Schaltflächen.
-export class SingleSelectButton extends ComponentExWithSite<IValueFromList<any>, ISingleSelectButton> {
+export class SingleSelectButton extends ComponentExWithSite<IValueFromList<unknown>, ISingleSelectButton> {
     // Erstellt die Anzeige für die Komponente.
     render(): JSX.Element {
-        var value = this.props.uvm.value
+        const value = this.props.uvm.value
 
         return (
-            <div className={`jmslib-editbuttonlist${this.props.merge ? ` jmslib-command-mergelist` : ``}`}>
+            <div className={`jmslib-editbuttonlist${this.props.merge ? ' jmslib-command-mergelist' : ''}`}>
                 {this.props.uvm.allowedValues.map((av) => (
                     <ButtonCommand
-                        uvm={av.select!}
                         key={av.display}
-                        className={av.isSelected ? `jmslib-command-checked` : ``}
+                        className={av.isSelected ? 'jmslib-command-checked' : ''}
+                        uvm={av.select!}
                     />
                 ))}
             </div>
