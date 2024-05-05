@@ -1,11 +1,11 @@
-﻿import { ICommand, Command } from '../../lib/command/command'
-import { IFlag, Flag } from '../../lib/edit/boolean/flag'
-import { IValueFromList, uiValue, SelectSingleFromList } from '../../lib/edit/list'
-import { INumber } from '../../lib/edit/number/number'
+﻿import { IPage, Page } from './page'
+
+import { Command, ICommand } from '../../lib/command/command'
+import { Flag, IFlag } from '../../lib/edit/boolean/flag'
+import { IValueFromList, SelectSingleFromList, uiValue } from '../../lib/edit/list'
+import { INumber, NumberProperty } from '../../lib/edit/number/number'
 import { setUserProfile } from '../../web/IUserProfileContract'
 import { Application } from '../app'
-import { IPage, Page } from './page'
-import { Number } from '../../lib/edit/number/number'
 
 // Schnittstelle zur Pflege der Benutzereinstellung.
 export interface ISettingsPage extends IPage {
@@ -76,7 +76,7 @@ export class SettingsPage extends Page implements ISettingsPage {
     )
 
     // Die Anzahl von Tagen im Aufzeichnungsplan.
-    readonly planDays = new Number({}, 'planDays', 'Anzahl der Vorschautage im Aufzeichnungsplan', () =>
+    readonly planDays = new NumberProperty({}, 'planDays', 'Anzahl der Vorschautage im Aufzeichnungsplan', () =>
         this.update.refreshUi()
     )
         .addRequiredValidator()
@@ -84,7 +84,7 @@ export class SettingsPage extends Page implements ISettingsPage {
         .addMaxValidator(50)
 
     // Die maximale Anzahl von Quellen in der Liste zuletzt verwendeter Quellen.
-    readonly maxFavorites = new Number(
+    readonly maxFavorites = new NumberProperty(
         {},
         'recentSourceLimit',
         'Maximale Größe der Liste zuletzt verwendeter Sendern',
@@ -95,15 +95,18 @@ export class SettingsPage extends Page implements ISettingsPage {
         .addMaxValidator(50)
 
     // Die Anzahl der Einträge auf einer Seite der Programmzeitschrift.
-    readonly guideRows = new Number({}, 'guideRows', 'Anzahl der Einträge pro Seite in der Programmzeitschrift', () =>
-        this.update.refreshUi()
+    readonly guideRows = new NumberProperty(
+        {},
+        'guideRows',
+        'Anzahl der Einträge pro Seite in der Programmzeitschrift',
+        () => this.update.refreshUi()
     )
         .addRequiredValidator()
         .addMinValidator(10)
         .addMaxValidator(100)
 
     // Die Vorlaufzeit für neue Aufzeichnung, die aus der Programmzeitschrift angelegt werden (in Minuten).
-    readonly preGuide = new Number(
+    readonly preGuide = new NumberProperty(
         {},
         'guideAheadStart',
         'Vorlaufzeit bei Programmierung über die Programmzeitschrift (in Minuten)',
@@ -114,7 +117,7 @@ export class SettingsPage extends Page implements ISettingsPage {
         .addMaxValidator(240)
 
     // Die Nachlaufzeit für neue Aufzeichnung, die aus der Programmzeitschrift angelegt werden (in Minuten).
-    readonly postGuide = new Number(
+    readonly postGuide = new NumberProperty(
         {},
         'guideBeyondEnd',
         'Nachlaufzeit bei Programmierung über die Programmzeitschrift (in Minuten)',
@@ -170,7 +173,7 @@ export class SettingsPage extends Page implements ISettingsPage {
 
     // Erstellt ein neues Präsentationsmodell.
     constructor(application: Application) {
-        super(`settings`, application)
+        super('settings', application)
     }
 
     // Initialisiert das Präsentationsmodell.
@@ -178,7 +181,7 @@ export class SettingsPage extends Page implements ISettingsPage {
         this.update.reset()
 
         // Einfache Kopie.
-        var newProfile = { ...this.application.profile }
+        const newProfile = { ...this.application.profile }
 
         // Tiefe Kopie der Liste.
         newProfile.recentSources = newProfile.recentSources.slice()
@@ -204,7 +207,7 @@ export class SettingsPage extends Page implements ISettingsPage {
 
     // Die Überschrift für die Anzeige des Präsentationsmodells.
     get title(): string {
-        return `Individuelle Einstellungen ändern`
+        return 'Individuelle Einstellungen ändern'
     }
 
     // Gesetzt wenn alle Eingaben konsistenz sind.

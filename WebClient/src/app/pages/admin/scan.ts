@@ -3,7 +3,7 @@
 import { Flag, IFlag } from '../../../lib/edit/boolean/flag'
 import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
 import { IMultiValueFromList, SelectMultipleFromList } from '../../../lib/edit/multiList'
-import { INumber, Number } from '../../../lib/edit/number/number'
+import { INumber, NumberProperty } from '../../../lib/edit/number/number'
 import {
     getSourceScanSettings,
     ISourceScanSettingsContract,
@@ -69,8 +69,11 @@ export class ScanSection extends Section implements IAdminScanPage {
     readonly hours = new SelectMultipleFromList({}, 'hours', 'Uhrzeiten', undefined, AdminPage.hoursOfDay)
 
     // Die maximale Dauer eines Suchlaufs (in Minuten).
-    readonly duration = new Number({}, 'duration', 'Maximale Laufzeit für einen Sendersuchlauf in Minuten', () =>
-        this.update.refreshUi()
+    readonly duration = new NumberProperty(
+        {},
+        'duration',
+        'Maximale Laufzeit für einen Sendersuchlauf in Minuten',
+        () => this.update.refreshUi()
     )
         .addRequiredValidator()
         .addMinValidator(5)
@@ -84,7 +87,7 @@ export class ScanSection extends Section implements IAdminScanPage {
     )
 
     // Die minimale zeit zwischen zwei automatischen Aktualisierungen (in Tagen).
-    readonly gapDays = new Number({}, 'interval', 'Minimale Anzahl von Tagen zwischen zwei Suchläufen', () =>
+    readonly gapDays = new NumberProperty({}, 'interval', 'Minimale Anzahl von Tagen zwischen zwei Suchläufen', () =>
         this.update.refreshUi()
     )
         .addRequiredValidator()
@@ -92,7 +95,7 @@ export class ScanSection extends Section implements IAdminScanPage {
         .addMaxValidator(28)
 
     // Die Zeit für eine vorgezogene Aktualisierung (in Tagen).
-    readonly latency = new Number(
+    readonly latency = new NumberProperty(
         {},
         'joinDays',
         'Latenzzeit für vorgezogene Aktualisierungen in Tagen (optional)',

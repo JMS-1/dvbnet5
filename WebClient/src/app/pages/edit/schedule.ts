@@ -1,13 +1,13 @@
-﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
-import { IFlag, FlagSet } from '../../../lib/edit/boolean/flag'
-import { IDaySelector, DayEditor } from '../../../lib/edit/datetime/day'
-import { INumber } from '../../../lib/edit/number/number'
-import { IEditScheduleContract } from '../../../web/IEditScheduleContract'
-import { IPage } from '../page'
-import { IDurationEditor, DurationEditor } from './duration'
+﻿import { DurationEditor, IDurationEditor } from './duration'
 import { IScheduleException, ScheduleException } from './exception'
 import { IJobScheduleEditor, JobScheduleEditor } from './jobSchedule'
-import { Number } from '../../../lib/edit/number/number'
+
+import { DateTimeUtils } from '../../../lib/dateTimeUtils'
+import { FlagSet, IFlag } from '../../../lib/edit/boolean/flag'
+import { DayEditor, IDaySelector } from '../../../lib/edit/datetime/day'
+import { INumber, NumberProperty } from '../../../lib/edit/number/number'
+import { IEditScheduleContract } from '../../../web/IEditScheduleContract'
+import { IPage } from '../page'
 
 // Schnittstelle zur Pflege einer Aufzeichnung.
 export interface IScheduleEditor extends IJobScheduleEditor {
@@ -53,7 +53,7 @@ export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> imp
         if (!model.lastDay) model.lastDay = ScheduleEditor.maximumDate.toISOString()
 
         // Pflegbare Eigenschaften anlegen.
-        this.repeat = new Number(model, 'repeatPattern', 'Wiederholung', () => this.onChange(onChange))
+        this.repeat = new NumberProperty(model, 'repeatPattern', 'Wiederholung', () => this.onChange(onChange))
         this.duration = new DurationEditor(model, 'firstStart', 'duration', 'Zeitraum', () => this.onChange(onChange))
         this.firstStart = new DayEditor(model, 'firstStart', 'Datum', onChange).addValidator(() =>
             this.validateFirstRecording()
@@ -78,8 +78,8 @@ export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> imp
         // Zusätzliche Prüfung einrichten.
         this.source.sourceName.addValidator((c) => {
             if (!hasJobSource())
-                if ((c.value || ``).trim().length < 1)
-                    return `Entweder für die Aufzeichnung oder für den Auftrag muss eine Quelle angegeben werden.`
+                if ((c.value || '').trim().length < 1)
+                    return 'Entweder für die Aufzeichnung oder für den Auftrag muss eine Quelle angegeben werden.'
         })
 
         // Initiale Prüfung.
@@ -106,7 +106,7 @@ export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> imp
     readonly duration: DurationEditor
 
     // Muster zur Wiederholung.
-    readonly repeat: Number
+    readonly repeat: NumberProperty
 
     // Ende der Wiederholung
     readonly lastDay: DayEditor
@@ -180,22 +180,22 @@ export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> imp
 
     // Prüft ob eon ausgewähltes Datum im unterstützten Bereich liegt.
     private static validateDateRange(day: DayEditor): string | undefined {
-        var lastDay = new Date(day.value ?? 0)
+        const lastDay = new Date(day.value ?? 0)
 
-        if (lastDay < ScheduleEditor.minimumDate) return `Datum liegt zu weit in der Vergangenheit.`
-        else if (lastDay > ScheduleEditor.maximumDateLegacy) return `Datum liegt zu weit in der Zukunft.`
+        if (lastDay < ScheduleEditor.minimumDate) return 'Datum liegt zu weit in der Vergangenheit.'
+        else if (lastDay > ScheduleEditor.maximumDateLegacy) return 'Datum liegt zu weit in der Zukunft.'
     }
 
     // Prüft ob die Aufzeichnung überhaupt einmal stattfinden wird.
     private validateFirstRecording(): string | undefined {
         // Der letzte Tage einer Wiederholung.
-        var lastDay = new Date(this.lastDay.value ?? 0)
+        const lastDay = new Date(this.lastDay.value ?? 0)
 
         // Geplanter erster (evt. einziger Start).
-        var start = new Date(this.firstStart.value ?? 0)
+        let start = new Date(this.firstStart.value ?? 0)
 
         // Die echte Dauer unter Berücksichtigung der Zeitumstellung ermitteln.
-        var duration = DateTimeUtils.getRealDurationInMinutes(this.firstStart.value ?? '', this.duration.value ?? 0)
+        const duration = DateTimeUtils.getRealDurationInMinutes(this.firstStart.value ?? '', this.duration.value ?? 0)
 
         // Ende der ersten Aufzeichnung ermitteln - das sollte in den meisten Fällen schon passen.
         var end = new Date(
@@ -207,10 +207,10 @@ export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> imp
         )
 
         // Aktuelle Uhrzeit ermitteln.
-        var now = new Date()
+        const now = new Date()
 
         // Ansonsten kann uns nur noch das Wiederholen retten.
-        var repeat = this.repeat.value
+        const repeat = this.repeat.value
 
         if (repeat !== 0) {
             // Zur Vereinfachung der Vergleiche beginnen wir etwas vor dem aktuellen Tag.
@@ -231,7 +231,7 @@ export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> imp
                 } while ((ScheduleEditor._flags[start.getDay()] & (repeat ?? 0)) === 0)
 
                 // Dazu das eine Datum ermitteln - UTC, da auch unser Enddatum UTC ist.
-                var startDay = ScheduleEditor.makePureDate(start)
+                const startDay = ScheduleEditor.makePureDate(start)
 
                 // Der Startzeitpunkt ist leider verboten.
                 if (startDay > lastDay) break
@@ -253,7 +253,7 @@ export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> imp
         else if (end > now) return
 
         // Die Aufzeichnung findet sicher niemals statt.
-        return `Die Aufzeichnung liegt in der Vergangenheit.`
+        return 'Die Aufzeichnung liegt in der Vergangenheit.'
     }
 
     // Gesetzt, wie die Daten der Aufzeichnung konsistent sind.

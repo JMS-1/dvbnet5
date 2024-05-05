@@ -2,7 +2,7 @@
 
 import { Flag, IFlag } from '../../../lib/edit/boolean/flag'
 import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
-import { INumber, Number } from '../../../lib/edit/number/number'
+import { INumber, NumberProperty } from '../../../lib/edit/number/number'
 import { getOtherSettings, setOtherSettings } from '../../../web/admin/IOtherSettingsContract'
 
 // Die Art des zu verwendenden Schlafzustands.
@@ -80,7 +80,7 @@ export class OtherSection extends Section implements IAdminOtherPage {
     ]
 
     // Der TCP/IP Port des Web Clients.
-    readonly port = new Number({}, 'webPort', 'TCP/IP Port für den Web Server', () => this.update.refreshUi())
+    readonly port = new NumberProperty({}, 'webPort', 'TCP/IP Port für den Web Server', () => this.update.refreshUi())
         .addRequiredValidator()
         .addMinValidator(1)
         .addMaxValidator(0xffff)
@@ -89,7 +89,7 @@ export class OtherSection extends Section implements IAdminOtherPage {
     readonly ssl = new Flag({}, 'ssl', 'Sichere Verbindung zusätzlich anbieten')
 
     // Der sichere (SSL) TCP/IP Port des Web Clients.
-    readonly securePort = new Number({}, 'sslPort', 'TCP/IP Port für den sicheren Zugang', () =>
+    readonly securePort = new NumberProperty({}, 'sslPort', 'TCP/IP Port für den sicheren Zugang', () =>
         this.update.refreshUi()
     )
         .addRequiredValidator()
@@ -104,7 +104,7 @@ export class OtherSection extends Section implements IAdminOtherPage {
     )
 
     // Die Zeit zum vorzeitigen Aufwachen für eine Aufzeichnung oder Sonderaufgabe (in Sekunden).
-    readonly preSleep = new Number(
+    readonly preSleep = new NumberProperty(
         {},
         'hibernationDelay',
         'Vorlaufzeit für das Aufwachen aus dem Schlafzustand in Sekunden',
@@ -115,7 +115,7 @@ export class OtherSection extends Section implements IAdminOtherPage {
         .addMaxValidator(600)
 
     // Die minimale Verweildauer im Schalfzustand (in Minuten).
-    readonly minSleep = new Number(
+    readonly minSleep = new NumberProperty(
         {},
         'forcedHibernationDelay',
         'Minimale Pause nach einem erzwungenen Schlafzustand in Minuten',
@@ -129,7 +129,7 @@ export class OtherSection extends Section implements IAdminOtherPage {
     readonly ignoreMinSleep = new Flag({}, 'suppressHibernationDelay', 'Pause für erzwungenen Schlafzustand ignorieren')
 
     // Die Verweildauer eines Protokolleintrags vor der automatischen Löscung (in Wochen).
-    readonly logKeep = new Number({}, 'protocol', 'Aufbewahrungsdauer für Protokolle in Wochen', () =>
+    readonly logKeep = new NumberProperty({}, 'protocol', 'Aufbewahrungsdauer für Protokolle in Wochen', () =>
         this.update.refreshUi()
     )
         .addRequiredValidator()
@@ -137,8 +137,11 @@ export class OtherSection extends Section implements IAdminOtherPage {
         .addMaxValidator(13)
 
     // Die Verweildauer eines Auftrags im Archiv vor der automatischen Löschung (in Wochen).
-    readonly jobKeep = new Number({}, 'archive', 'Aufbewahrungsdauer von archivierten Aufzeichnungen in Wochen', () =>
-        this.update.refreshUi()
+    readonly jobKeep = new NumberProperty(
+        {},
+        'archive',
+        'Aufbewahrungsdauer von archivierten Aufzeichnungen in Wochen',
+        () => this.update.refreshUi()
     )
         .addRequiredValidator()
         .addMinValidator(1)

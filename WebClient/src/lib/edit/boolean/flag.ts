@@ -1,7 +1,7 @@
-﻿import { ICommand, Command } from '../../command/command'
+﻿import { Command, ICommand } from '../../command/command'
 import { IView } from '../../site'
 import { IProperty, Property } from '../edit'
-import { Number } from '../number/number'
+import { NumberProperty } from '../number/number'
 
 // Schnittstelle zur Pflege einer Eigenschaft mit einem Wahrheitswert.
 export interface IFlag extends IProperty<boolean> {}
@@ -40,12 +40,12 @@ export class Flag extends Property<boolean> implements IToggableFlag {
 // Verwaltet ein Bitfeld von Wahrheitswerten in einer Eigenschaft mit einer Zahl als Wert.
 export class FlagSet implements IFlag {
     // Prüfungen werden hierbei nicht individuell unterstützt.
-    readonly message = ``
+    readonly message = ''
 
     // Erstelle eine Verwaltungsinstanz auf Basis der Verwaltung der elementaren Zahl.
     constructor(
         private _mask: number,
-        private readonly _flags: Number,
+        private readonly _flags: NumberProperty,
         public text: string
     ) {}
 
@@ -59,7 +59,7 @@ export class FlagSet implements IFlag {
 
     set value(newValue: boolean) {
         // Änderung bitweise an die eigentliche Eigenschaft übertragen.
-        var flags = newValue ? (this._flags.value ?? 0) | this._mask : (this._flags.value ?? 0) & ~this._mask
+        const flags = newValue ? (this._flags.value ?? 0) | this._mask : (this._flags.value ?? 0) & ~this._mask
 
         // Keine Änderung.
         if (flags === this._flags.value) return

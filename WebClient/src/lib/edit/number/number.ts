@@ -7,7 +7,7 @@ export interface INumber extends IProperty<number> {
 }
 
 // Verwaltet eine Eigenschaft mit einer (ganzen) Zahl (mit maximal 6 Ziffern - ohne führende Nullen).
-export class Number extends Property<number> implements INumber {
+export class NumberProperty extends Property<number> implements INumber {
     // Erlaubt sind beliebige Sequenzen von Nullen oder maximal 6 Ziffern - mit einer beliebigen Anzahl von führenden Nullen.
     private static readonly _positiveNumber = /^(0+|(0*[1-9][0-9]{0,5}))$/
 
@@ -16,12 +16,12 @@ export class Number extends Property<number> implements INumber {
         super(data, prop, name, onChange)
 
         // Spezielle Prüfung auf Fehleingaben.
-        this.addValidator(Number.isValidNumber)
+        this.addValidator(NumberProperty.isValidNumber)
     }
 
     // Prüft, ob eine gültige Zahl vorliegt.
-    private static isValidNumber(num: Number): string | undefined {
-        if (num._rawInput !== undefined) return `Ungültige Zahl`
+    private static isValidNumber(num: NumberProperty): string | undefined {
+        if (num._rawInput !== undefined) return 'Ungültige Zahl'
     }
 
     // Entählt die aktuelle Fehleingabe.
@@ -29,14 +29,14 @@ export class Number extends Property<number> implements INumber {
 
     // Meldet die aktuelle Eingabe - entweder eine Fehleingabe oder der Wert als Zeichenkette.
     get rawValue(): string {
-        if (this._rawInput === undefined) return this.value === null ? `` : this.value.toString()
+        if (this._rawInput === undefined) return this.value === null ? '' : this.value.toString()
         else return this._rawInput
     }
 
     // Übermittelt eine neue Eingabe.
     set rawValue(newValue: string) {
         // Leerzeichen ignorieren wir für die Prüfung.
-        var test = (newValue || ``).trim()
+        const test = (newValue || '').trim()
 
         // Keine Eingabe und ein Wert ist optional.
         if (test.length < 1) {
@@ -45,7 +45,7 @@ export class Number extends Property<number> implements INumber {
         }
 
         // Eine (nach unseren Regeln) gültige Zahl.
-        else if (Number._positiveNumber.test(test)) {
+        else if (NumberProperty._positiveNumber.test(test)) {
             this._rawInput = undefined
             this.value = parseInt(test)
         }
@@ -60,7 +60,7 @@ export class Number extends Property<number> implements INumber {
     }
 
     // Ergänzt eine Prüfung auf einen vorhandenen Wert.
-    addRequiredValidator(message: string = `Es muss eine Zahl eingegeben werden.`): this {
+    addRequiredValidator(message = 'Es muss eine Zahl eingegeben werden.'): this {
         return this.addValidator((p) => {
             if (this.value === null) return message
         })

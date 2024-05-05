@@ -4,7 +4,7 @@ import { Command, ICommand } from '../../../lib/command/command'
 import { Flag, IFlag } from '../../../lib/edit/boolean/flag'
 import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
 import { IMultiValueFromList, SelectMultipleFromList } from '../../../lib/edit/multiList'
-import { INumber, Number } from '../../../lib/edit/number/number'
+import { INumber, NumberProperty } from '../../../lib/edit/number/number'
 import { getGuideSettings, IGuideSettingsContract, setGuideSettings } from '../../../web/admin/IGuideSettingsContract'
 import { ProfileCache } from '../../../web/ProfileCache'
 import { ProfileSourcesCache } from '../../../web/ProfileSourcesCache'
@@ -95,7 +95,7 @@ export class GuideSection extends Section implements IAdminGuidePage {
     )
 
     // Maximale Dauer für die Sammlung der Programmzeitschrift (in Minuten).
-    readonly duration = new Number({}, 'duration', 'Maximale Laufzeit einer Aktualisierung in Minuten', () =>
+    readonly duration = new NumberProperty({}, 'duration', 'Maximale Laufzeit einer Aktualisierung in Minuten', () =>
         this.update.refreshUi()
     )
         .addRequiredValidator()
@@ -103,14 +103,17 @@ export class GuideSection extends Section implements IAdminGuidePage {
         .addMaxValidator(55)
 
     // Minimale Dauer zwischen zwei Sammlungen (in Minuten).
-    readonly delay = new Number({}, 'minDelay', 'Wartezeit zwischen zwei Aktualisierungen in Stunden (optional)', () =>
-        this.update.refreshUi()
+    readonly delay = new NumberProperty(
+        {},
+        'minDelay',
+        'Wartezeit zwischen zwei Aktualisierungen in Stunden (optional)',
+        () => this.update.refreshUi()
     )
         .addMinValidator(1)
         .addMaxValidator(23)
 
     // Interval für die vorgezogene Sammlung (in Minuten).
-    readonly latency = new Number(
+    readonly latency = new NumberProperty(
         {},
         'joinHours',
         'Latenzzeit für vorgezogene Aktualisierungen in Stunden (optional)',
