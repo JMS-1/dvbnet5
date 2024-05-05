@@ -1,8 +1,5 @@
 module.exports = {
     extends: '@insynergie',
-    parserOptions: {
-        tsconfigRootDir: __dirname,
-    },
     rules: {
         '@typescript-eslint/explicit-function-return-type': 'off',
         'react/no-unescaped-entities': 'off',
