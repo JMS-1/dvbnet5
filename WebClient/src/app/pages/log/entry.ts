@@ -1,5 +1,5 @@
 ﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
-import { IFlag, BooleanProperty } from '../../../lib/edit/boolean/flag'
+import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
 import { IProtocolEntryContract } from '../../../web/IProtocolEntryContract'
 import { getFilePlayUrl } from '../../../web/VCRServer'
 
@@ -89,7 +89,7 @@ export class LogEntry implements ILogEntry {
         private readonly _model: IProtocolEntryContract,
         toggleDetail: (entry: LogEntry) => void
     ) {
-        this.showDetail = new BooleanProperty({ value: false }, `value`, undefined, () => toggleDetail(this))
+        this.showDetail = new BooleanProperty({ value: false }, 'value', undefined, () => toggleDetail(this))
 
         // Art der Aufzeichnung zum Filtern umsetzen.
         switch (_model.firstSourceName) {

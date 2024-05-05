@@ -205,6 +205,7 @@ export class Application implements IApplication {
         getUserProfile()
             .then((profile) => {
                 // Benutzereinstellungen übernehmen.
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 this.profile = profile!
 
                 // Versionsinformationen anfordern.
@@ -212,6 +213,7 @@ export class Application implements IApplication {
             })
             .then((info) => {
                 // Versionsinformationen aktualisieren.
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 this.version = info!
 
                 // Navigationsbereich starten.

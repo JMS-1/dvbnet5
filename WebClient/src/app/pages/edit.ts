@@ -134,14 +134,14 @@ export class EditPage extends Page implements IEditPage {
                 const info = <IJobScheduleInfoContract>{
                     job: newJob,
                     jobId: '',
-                    schedule: this.createEmptySchedule()!,
+                    schedule: this.createEmptySchedule(),
                     scheduleId: '',
                 }
 
                 // Die neue Aufzeichnung können wir auch direkt synchron bearbeiten.
                 return info
             })
-            .then((info) => this.setJobSchedule(info!, profileSelection, folderSelection))
+            .then((info) => info && this.setJobSchedule(info, profileSelection, folderSelection))
     }
 
     // Erstellt eine neue leere Aufzeichnung.
@@ -184,7 +184,7 @@ export class EditPage extends Page implements IEditPage {
         // Präsentationsmodelle anlegen.
         this._jobScheduleInfo = info
         this.job = new JobEditor(this, info.job, profiles, favorites, folders, () => {
-            this.schedule && this.schedule.source.sourceName.validate()
+            this.schedule?.source.sourceName.validate()
             this.onChanged()
         })
         this.schedule = new ScheduleEditor(
@@ -201,9 +201,11 @@ export class EditPage extends Page implements IEditPage {
 
     // Die aktuelle Liste der Quellen zum ausgewählten Gerät anfordern.
     private loadSources(): Promise<void> {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const profile = this.job?.device.value
 
         // Das kann man ruhig öfter mal machen, da das Ergebnis nach dem ersten asynchronen Abruf gespeichert wird.
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return ProfileSourcesCache.getSources(profile!).then((sources) => {
             // Nur übernehmen, wenn das Gerät noch passt.
             if (this.job?.device.value === profile) {
@@ -243,6 +245,7 @@ export class EditPage extends Page implements IEditPage {
 
         // Asynchrone Operation anfordern.
         return updateSchedule(this._jobScheduleInfo?.jobId ?? '', this._jobScheduleInfo?.scheduleId ?? '', {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             job: this._jobScheduleInfo?.job!,
             schedule,
         }).then(() => {

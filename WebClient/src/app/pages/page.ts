@@ -1,5 +1,5 @@
 ﻿import { IConnectable, IView } from '../../lib/site'
-import { IApplication, Application } from '../app'
+import { Application, IApplication } from '../app'
 
 // Die äußere Sicht auf eine Seite der Anwendung.
 export interface IPage extends IConnectable {
@@ -55,12 +55,12 @@ export abstract class Page implements IPage {
 
     // Initialisiert die Navigationsleiste.
     navigation = {
-        favorites: false,
-        refresh: false,
         current: true,
+        favorites: false,
         guide: true,
-        plan: true,
         new: true,
+        plan: true,
+        refresh: false,
     }
 
     // Initialisiert eine neue Seite.
@@ -70,5 +70,7 @@ export abstract class Page implements IPage {
     ) {}
 
     // Aktualisiert den Inhalt der Seite.
-    reload(): void {}
+    reload(): void {
+        //
+    }
 }

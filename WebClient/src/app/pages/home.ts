@@ -1,9 +1,10 @@
-﻿import { ICommand, Command } from '../../lib/command/command'
-import { IFlag, BooleanProperty } from '../../lib/edit/boolean/flag'
+﻿import { IPage, Page } from './page'
+
+import { Command, ICommand } from '../../lib/command/command'
+import { BooleanProperty, IFlag } from '../../lib/edit/boolean/flag'
 import { triggerTask } from '../../web/IPlanCurrentContract'
 import { doUrlCall } from '../../web/VCRServer'
 import { Application } from '../app'
-import { IPage, Page } from './page'
 
 // Schnittstelle zur Anzeige der Startseite.
 export interface IHomePage extends IPage {
@@ -45,7 +46,7 @@ export class HomePage extends Page implements IHomePage {
 
     // Befehl zum Starten der Aktualisierung der Programmzeichschrift.
     readonly startGuide = new Command(
-        () => this.startTask(`guideUpdate`),
+        () => this.startTask('guideUpdate'),
         'Aktualisierung anfordern',
         () => this.application.version.hasGuides
     )
@@ -61,7 +62,7 @@ export class HomePage extends Page implements IHomePage {
 
     // Befehl zum Starten eines Sendersuchlaufs.
     readonly startScan = new Command(
-        () => this.startTask(`sourceScan`),
+        () => this.startTask('sourceScan'),
         'Aktualisierung anfordern',
         () => this.application.version.canScan
     )
@@ -83,6 +84,7 @@ export class HomePage extends Page implements IHomePage {
         super('home', application)
 
         // Meldet, dass die Navigationsleiste nicht angezeigt werden soll.
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.navigation = null!
     }
 
@@ -95,7 +97,7 @@ export class HomePage extends Page implements IHomePage {
     private _onlineVersion?: string
 
     get onlineVersion(): string {
-        return this._onlineVersion || `(wird ermittelt)`
+        return this._onlineVersion || '(wird ermittelt)'
     }
 
     // Gesetzt, wenn die Online verfügbare Version anders ist als die lokal installierte - im Allgemeinen natürlich neuer.
@@ -115,9 +117,9 @@ export class HomePage extends Page implements IHomePage {
             this._onlineVersion = undefined
 
             // Downloadverzeichnis abrufen.
-            doUrlCall(`http://downloads.psimarron.net`).then((html: string) => {
+            doUrlCall('http://downloads.psimarron.net').then((html: string) => {
                 // Versionsnummer extrahieren.
-                var match = HomePage._versionExtract.exec(html)
+                const match = HomePage._versionExtract.exec(html)
                 if (match == null) return
                 if (match.length < 2) return
 
@@ -151,8 +153,8 @@ export class HomePage extends Page implements IHomePage {
     // Meldet die Überschrift der Startseite.
     get title(): string {
         // Der Titel wird dem aktuellen Kenntnisstand angepasst.
-        var version = this.application.version
-        var title = this.application.title
+        const version = this.application.version
+        const title = this.application.title
 
         if (version) return `${title} (${version.msiVersion})`
         else return title

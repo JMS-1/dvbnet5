@@ -1,8 +1,9 @@
-﻿import { IFlag, BooleanProperty } from '../../../lib/edit/boolean/flag'
-import { IValueFromList, IUiValue, SingleListProperty } from '../../../lib/edit/list'
+﻿import { IJobScheduleEditor, JobScheduleEditor } from './jobSchedule'
+
+import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
+import { IUiValue, IValueFromList, SingleListProperty } from '../../../lib/edit/list'
 import { IEditJobContract } from '../../../web/IEditJobContract'
 import { IPage } from '../page'
-import { IJobScheduleEditor, JobScheduleEditor } from './jobSchedule'
 
 // Schnittstelle zur Pflege eines Auftrags.
 export interface IJobEditor extends IJobScheduleEditor {
@@ -41,7 +42,7 @@ export class JobEditor extends JobScheduleEditor<IEditJobContract> implements IJ
         ).addRequiredValidator()
 
         // Zusätzliche Prüfungen einrichten.
-        this.name.addRequiredValidator(`Ein Auftrag muss einen Namen haben.`)
+        this.name.addRequiredValidator('Ein Auftrag muss einen Namen haben.')
 
         // Initiale Prüfung.
         this.name.validate()

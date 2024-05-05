@@ -1,5 +1,6 @@
-﻿import { Application } from '../app'
-import { IPage, Page } from './page'
+﻿import { IPage, Page } from './page'
+
+import { Application } from '../app'
 
 // Informationen zu einzelnen Aspekten der Hilfe.
 export interface IHelpComponent {
@@ -37,14 +38,14 @@ export class HelpPage extends Page implements IHelpPage {
 
     // Meldet die aktuelle Überschrift.
     get title(): string {
-        var topic = this.getHelpComponent<IHelpComponent>()
+        const topic = this.getHelpComponent<IHelpComponent>()
 
         return topic && topic.title
     }
 
     // Der aktuell ausgewählte Aspekt.
     getHelpComponent<TComponentType extends IHelpComponent>(): TComponentType {
-        var provider = this.application.getHelpComponentProvider<TComponentType>()
+        const provider = this.application.getHelpComponentProvider<TComponentType>()
 
         return provider && provider[this.section]
     }

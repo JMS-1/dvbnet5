@@ -5,27 +5,27 @@ import { IUserProfileContract } from '../../web/IUserProfileContract'
 import { SourceEntry } from '../../web/ProfileSourcesCache'
 
 // Die Einschränkung auf die Verschlüsselung.
-export enum EncryptionFilter {
+export enum encryptionFilter {
     // Keine Einschränkung.
-    all,
+    All,
 
     // Nur verschlüsselte Sender.
-    payTv,
+    PayTv,
 
     // Nur unverschlüsselte Sender.
-    freeTv,
+    FreeTv,
 }
 
 // Die Arten von zu berücksichtigenden Quellen.
-export enum TypeFilter {
+export enum typeFilter {
     // Alle Quellen.
-    all,
+    All,
 
     // Nur Radiosender.
-    radio,
+    Radio,
 
     // Nur Fernsehsender.
-    tv,
+    Tv,
 }
 
 // Schnitstelle zur Pflege der Senderauswahl.
@@ -34,10 +34,10 @@ export interface IChannelSelector extends IProperty<string>, IConnectable {
     readonly section: IValueFromList<string>
 
     // Die Vorauswahl der Quellen über die Art (Fernsehen oder Radio).
-    readonly type: IValueFromList<TypeFilter>
+    readonly type: IValueFromList<typeFilter>
 
     // Die Vorauswahl der Quellen über die Verschlüsselung.
-    readonly encryption: IValueFromList<EncryptionFilter>
+    readonly encryption: IValueFromList<encryptionFilter>
 
     // Die komplette Liste aller verfügbaren Quellen.
     readonly sourceName: IValueFromList<string>
@@ -50,9 +50,9 @@ export interface IChannelSelector extends IProperty<string>, IConnectable {
 export class ChannelEditor extends Property<string> implements IChannelSelector {
     // Die Auswahl der Verschlüsselung.
     private static readonly _encryptions = [
-        uiValue(EncryptionFilter.all, 'Alle Quellen'),
-        uiValue(EncryptionFilter.payTv, 'Nur verschlüsselte Quellen'),
-        uiValue(EncryptionFilter.freeTv, 'Nur unverschlüsselte Quellen'),
+        uiValue(encryptionFilter.All, 'Alle Quellen'),
+        uiValue(encryptionFilter.PayTv, 'Nur verschlüsselte Quellen'),
+        uiValue(encryptionFilter.FreeTv, 'Nur unverschlüsselte Quellen'),
     ]
 
     // Prüft ob eine Quelle der aktuellen Einschränkung der Verschlüsselung entspricht.
@@ -61,11 +61,11 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
         if (!this.showFilter) return true
 
         switch (this.encryption.value) {
-            case EncryptionFilter.all:
+            case encryptionFilter.All:
                 return true
-            case EncryptionFilter.payTv:
+            case encryptionFilter.PayTv:
                 return source.isEncrypted
-            case EncryptionFilter.freeTv:
+            case encryptionFilter.FreeTv:
                 return !source.isEncrypted
             default:
                 return false
@@ -73,13 +73,13 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
     }
 
     // Alle Auswahlmöglichkeiten der Verschlüsselung.
-    readonly encryption: IValueFromList<EncryptionFilter>
+    readonly encryption: IValueFromList<encryptionFilter>
 
     // Die Auswahlmöglichkeiten zur Art der Quelle.
     private static readonly _types = [
-        uiValue(TypeFilter.all, 'Alle Quellen'),
-        uiValue(TypeFilter.radio, 'Nur Radio'),
-        uiValue(TypeFilter.tv, 'Nur Fernsehen'),
+        uiValue(typeFilter.All, 'Alle Quellen'),
+        uiValue(typeFilter.Radio, 'Nur Radio'),
+        uiValue(typeFilter.Tv, 'Nur Fernsehen'),
     ]
 
     // Prüft, ob eine Quelle der aktuell ausgewählten Art entspricht.
@@ -88,11 +88,11 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
         if (!this.showFilter) return true
 
         switch (this.type.value) {
-            case TypeFilter.all:
+            case typeFilter.All:
                 return true
-            case TypeFilter.radio:
+            case typeFilter.Radio:
                 return !source.isTelevision
-            case TypeFilter.tv:
+            case typeFilter.Tv:
                 return source.isTelevision
             default:
                 return false
@@ -100,7 +100,7 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
     }
 
     // Alle Auswahlmöglichkeiten für die Art der Quelle.
-    readonly type: IValueFromList<TypeFilter>
+    readonly type: IValueFromList<typeFilter>
 
     // Alle möglichen Einschränkungen auf die Namen der Quellen.
     private static readonly _sections = [
@@ -218,25 +218,25 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
         }
     }
 
-    private static lookupType(profile: IUserProfileContract): TypeFilter {
+    private static lookupType(profile: IUserProfileContract): typeFilter {
         switch (profile && profile.typeFilter) {
             case 'R':
-                return TypeFilter.radio
+                return typeFilter.Radio
             case 'T':
-                return TypeFilter.tv
+                return typeFilter.Tv
             default:
-                return TypeFilter.all
+                return typeFilter.All
         }
     }
 
-    private static lookupEncryption(profile: IUserProfileContract): EncryptionFilter {
+    private static lookupEncryption(profile: IUserProfileContract): encryptionFilter {
         switch (profile && profile.encryptionFilter) {
             case 'F':
-                return EncryptionFilter.freeTv
+                return encryptionFilter.FreeTv
             case 'P':
-                return EncryptionFilter.payTv
+                return encryptionFilter.PayTv
             default:
-                return EncryptionFilter.all
+                return encryptionFilter.All
         }
     }
 
@@ -254,11 +254,11 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
             .map((s) => s.name)
 
         // Aktuelle Quelle zusätzliche in die Liste einmischen, so dass immer eine korrekte Auswahl existiert.
-        const source = this.value
+        const source = this.value || ''
 
-        if ((source || '').trim().length > 0)
-            if (sourceNames.indexOf(source!) < 0) {
-                const cmp = source!.toLocaleUpperCase()
+        if (source.trim().length > 0)
+            if (sourceNames.indexOf(source) < 0) {
+                const cmp = source.toLocaleUpperCase()
                 let insertAt = -1
 
                 for (let i = 0; i < sourceNames.length; i++)
@@ -269,8 +269,8 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
                     }
 
                 // Bereits gewählte Quelle an der korrekten Position in der Liste eintragen.
-                if (insertAt < 0) sourceNames.push(source!)
-                else sourceNames.splice(insertAt, 0, source!)
+                if (insertAt < 0) sourceNames.push(source)
+                else sourceNames.splice(insertAt, 0, source)
             }
 
         // Der erste Eintrag erlaubt es immer auch einfach mal keinen Sender auszuwählen.

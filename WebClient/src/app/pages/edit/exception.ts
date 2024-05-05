@@ -1,5 +1,5 @@
 ﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
-import { IFlag, BooleanProperty } from '../../../lib/edit/boolean/flag'
+import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
 import { IPlanExceptionContract } from '../../../web/IPlanExceptionContract'
 
 // Schnittstelle zur Anzeige und zum Entfernen einer Ausnahmeregel.
@@ -24,7 +24,7 @@ export class ScheduleException implements IScheduleException {
         public readonly model: IPlanExceptionContract,
         onChange: () => void
     ) {
-        this.isActive = new BooleanProperty({ value: true }, `value`, undefined, onChange)
+        this.isActive = new BooleanProperty({ value: true }, 'value', undefined, onChange)
 
         // Initiale Prüfungen ausführen.
         this.isActive.validate()

@@ -6,15 +6,15 @@ import { INumber, NumberProperty } from '../../../lib/edit/number/number'
 import { getOtherSettings, setOtherSettings } from '../../../web/admin/IOtherSettingsContract'
 
 // Die Art des zu verwendenden Schlafzustands.
-export enum HibernationMode {
+export enum hibernationMode {
     // Kein automatischer Übergang in den Schlafzustand.
-    disabled,
+    Disabled,
 
     // Für den Schlafzustand Stand-By verwenden.
-    standBy,
+    StandBy,
 
     // Für den Schlafzustand Hibernate verwenden.
-    hibernate,
+    Hibernate,
 }
 
 // Schnittstelle zur Pflege sonstiger Konfigurationswerte.
@@ -53,7 +53,7 @@ export interface IAdminOtherPage extends ISection {
     readonly noMPEG2PCR: IFlag
 
     // Die Art des automatischen Schlafzustands.
-    readonly hibernation: IValueFromList<HibernationMode>
+    readonly hibernation: IValueFromList<hibernationMode>
 
     // Die Art der Protokollierung.
     readonly logging: IValueFromList<string>
@@ -74,9 +74,9 @@ export class OtherSection extends Section implements IAdminOtherPage {
 
     // Die einzelnen Arten des Schlafzustands als Auswahlliste für den Anwender.
     private static readonly _hibernation = [
-        uiValue(HibernationMode.disabled, 'Nicht verwenden'),
-        uiValue(HibernationMode.standBy, 'StandBy / Suspend (S3)'),
-        uiValue(HibernationMode.hibernate, 'Hibernate (S4)'),
+        uiValue(hibernationMode.Disabled, 'Nicht verwenden'),
+        uiValue(hibernationMode.StandBy, 'StandBy / Suspend (S3)'),
+        uiValue(hibernationMode.Hibernate, 'Hibernate (S4)'),
     ]
 
     // Der TCP/IP Port des Web Clients.

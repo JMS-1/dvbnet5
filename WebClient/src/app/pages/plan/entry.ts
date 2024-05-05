@@ -1,12 +1,12 @@
-﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
+﻿import { IPlanException, PlanException } from './exception'
+
+import { DateTimeUtils } from '../../../lib/dateTimeUtils'
 import { IConnectable, IView } from '../../../lib/site'
 import { ITimeBar, TimeBar } from '../../../lib/timebar'
-import { Guide } from '../../../pages/guide'
-import { IGuideItemContract, getGuideItem } from '../../../web/IGuideItemContract'
+import { getGuideItem, IGuideItemContract } from '../../../web/IGuideItemContract'
 import { IPlanActivityContract } from '../../../web/IPlanActivityContract'
 import { Application } from '../../app'
 import { GuideInfo, IGuideInfo } from '../guide/entry'
-import { IPlanException, PlanException } from './exception'
 
 // Erweiterte Schnittstelle (View Model) zur Anzeige eines Eintrags des Aufzeichnunsplans.
 export interface IPlanEntry extends IConnectable {

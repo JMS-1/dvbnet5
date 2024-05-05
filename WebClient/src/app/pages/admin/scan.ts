@@ -4,29 +4,25 @@ import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
 import { IValueFromList, SingleListProperty, uiValue } from '../../../lib/edit/list'
 import { IMultiValueFromList, MultiListProperty } from '../../../lib/edit/multiList'
 import { INumber, NumberProperty } from '../../../lib/edit/number/number'
-import {
-    getSourceScanSettings,
-    ISourceScanSettingsContract,
-    setSourceScanSettings,
-} from '../../../web/admin/ISourceScanSettingsContract'
+import * as contract from '../../../web/admin/ISourceScanSettingsContract'
 import { AdminPage } from '../admin'
 
 // Die Art der Aktualisierung der Quellenlisten.
-export enum ScanConfigMode {
+export enum scanConfigMode {
     // Eine Aktualisierung ist nicht möglich.
-    disabled,
+    Disabled,
 
     // Die Aktualisierung wird manuell gestartet.
-    manual,
+    Manual,
 
     // Die Aktualisierung wird nach einem Zeitplan durchgeführt.
-    automatic,
+    Automatic,
 }
 
 // Schnittstelle zur Konfiguration des Sendersuchlaufs.
 export interface IAdminScanPage extends ISection {
     // Die Art der Aktualisierung.
-    readonly mode: IValueFromList<ScanConfigMode>
+    readonly mode: IValueFromList<scanConfigMode>
 
     // Gesetzt, wenn die Konfiguration überhaupt angezeigt werden soll.
     readonly showConfiguration: boolean
@@ -57,9 +53,9 @@ export class ScanSection extends Section implements IAdminScanPage {
 
     // Die Anzeigewerte für die einzelnen Arten der Aktualisierung.
     private static readonly _scanModes = [
-        uiValue(ScanConfigMode.disabled, 'Aktualisierung deaktivieren'),
-        uiValue(ScanConfigMode.manual, 'Manuell aktualisieren'),
-        uiValue(ScanConfigMode.automatic, 'Aktualisieren nach Zeitplan'),
+        uiValue(scanConfigMode.Disabled, 'Aktualisierung deaktivieren'),
+        uiValue(scanConfigMode.Manual, 'Manuell aktualisieren'),
+        uiValue(scanConfigMode.Automatic, 'Aktualisieren nach Zeitplan'),
     ]
 
     // Die Art der Aktualisierung.
@@ -106,17 +102,17 @@ export class ScanSection extends Section implements IAdminScanPage {
 
     // Gesetzt, wenn die Konfiguration überhaupt angezeigt werden soll.
     get showConfiguration(): boolean {
-        return this.mode.value !== ScanConfigMode.disabled
+        return this.mode.value !== scanConfigMode.Disabled
     }
 
     // Gesetzt, wenn die Einstellungen der automatischen Aktualisierung angezeigt werden sollen.
     get configureAutomatic(): boolean {
-        return this.mode.value === ScanConfigMode.automatic
+        return this.mode.value === scanConfigMode.Automatic
     }
 
     // Forder die aktuelle Konfiguration vom VCR.NET Recordings Service an.
     protected loadAsync(): void {
-        getSourceScanSettings().then((settings) => {
+        contract.getSourceScanSettings().then((settings) => {
             // Präsentationsmodell mit den Daten verbinden.
             this.duration.data = settings
             this.gapDays.data = settings
@@ -125,12 +121,13 @@ export class ScanSection extends Section implements IAdminScanPage {
             this.merge.data = settings
 
             // Die Art erfordert eine Sonderbehandlung.
-            if (settings?.interval === null) this.mode.value = ScanConfigMode.disabled
+            if (settings?.interval === null) this.mode.value = scanConfigMode.Disabled
             else if ((settings?.interval ?? 0) < 0) {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 settings!.interval = 0
 
-                this.mode.value = ScanConfigMode.manual
-            } else this.mode.value = ScanConfigMode.automatic
+                this.mode.value = scanConfigMode.Manual
+            } else this.mode.value = scanConfigMode.Automatic
 
             // Anwendung zur Bedienung freischalten.
             this.page.application.isBusy = false
@@ -160,12 +157,12 @@ export class ScanSection extends Section implements IAdminScanPage {
     // Fordert den VCR.NET Recording Service zur Aktualisierung der Konfiguration an.
     protected saveAsync(): Promise<boolean | undefined> {
         // Die Art wird in die Konfigurationsdaten zurückgespiegelt.
-        const settings = <ISourceScanSettingsContract>this.hours.data
+        const settings = <contract.ISourceScanSettingsContract>this.hours.data
 
         if (!this.showConfiguration) settings.interval = 0
         else if (!this.configureAutomatic) settings.interval = -1
 
         // Änderung der Konfiguration asynchron starten.
-        return setSourceScanSettings(settings)
+        return contract.setSourceScanSettings(settings)
     }
 }

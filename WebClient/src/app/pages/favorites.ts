@@ -1,8 +1,9 @@
-﻿import { IValueFromList, IUiValue, uiValue, SingleListProperty } from '../../lib/edit/list'
+﻿import { Favorite, IFavorite } from './favorites/entry'
+import { IPage, Page } from './page'
+
+import { IUiValue, IValueFromList, SingleListProperty, uiValue } from '../../lib/edit/list'
 import { ISavedGuideQueryContract, updateSearchQueries } from '../../web/ISavedGuideQueryContract'
 import { Application } from '../app'
-import { IFavorite, Favorite } from './favorites/entry'
-import { IPage, Page } from './page'
 
 // Schnittstelle zur Pflege der gespeicherten Suchen.
 export interface IFavoritesPage extends IPage {
@@ -41,7 +42,7 @@ export class FavoritesPage extends Page implements IFavoritesPage {
 
     // Erstellt ein neues Präsentationsmodell.
     constructor(application: Application) {
-        super(`favorites`, application)
+        super('favorites', application)
     }
 
     // Ermittelt die Liste der gespeicherten Suche neu - dabei wird auch eine neue Anfrage der Anzahl der Sender gestellt.
@@ -71,7 +72,7 @@ export class FavoritesPage extends Page implements IFavoritesPage {
 
     // Der Titel des Präsentationsmodells.
     get title(): string {
-        return `Gespeicherte Suchen`
+        return 'Gespeicherte Suchen'
     }
 
     // Zeigt das Ergebnis einer gespeicherten Suche in der Programmzeitschrift an.
@@ -81,7 +82,7 @@ export class FavoritesPage extends Page implements IFavoritesPage {
 
     // Entfernt eine gespeicherte Suche aus der Liste der gespeicherten Suchen.
     private remove(favorite: Favorite): Promise<void> {
-        var favorites = this._entries.filter((f) => f !== favorite)
+        const favorites = this._entries.filter((f) => f !== favorite)
 
         // Dazu müssen wir uns eine asynchrone Bestätigung vom VCR.NET Recording Service holen.
         return updateSearchQueries(favorites.map((f) => f.model)).then(() => {

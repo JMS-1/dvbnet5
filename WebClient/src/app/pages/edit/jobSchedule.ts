@@ -40,7 +40,7 @@ export abstract class JobScheduleEditor<TModelType extends IEditJobScheduleCommo
     implements IJobScheduleEditor
 {
     // Ein Muster zum Erkennen gültiger Namen von Aufzeichnungen.
-    private static readonly _allowedCharacters = /^[^\\\/\:\*\?\"\<\>\|]*$/
+    private static readonly _allowedCharacters = /^[^\\/:*?"<>|]*$/
 
     // Erstelltein neues Präsentationsmodell an.
     constructor(
@@ -50,7 +50,7 @@ export abstract class JobScheduleEditor<TModelType extends IEditJobScheduleCommo
         onChange: () => void
     ) {
         // Prüfung auf die Auswahl einer Quelle - ohne eine solche machen die Optionen zur Aufzeichnung auch keinen Sinn.
-        const noSource = () => (this.source.value || '').trim().length < 1
+        const noSource = (): boolean => (this.source.value || '').trim().length < 1
 
         // Pflegekomponenten erstellen
         this.name = new StringProperty(this.model, 'name', 'Name', onChange)

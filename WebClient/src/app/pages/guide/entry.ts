@@ -1,4 +1,4 @@
-﻿import { ICommand, Command } from '../../../lib/command/command'
+﻿import { Command, ICommand } from '../../../lib/command/command'
 import { DateTimeUtils } from '../../../lib/dateTimeUtils'
 import { IValueFromList } from '../../../lib/edit/list'
 import { IGuideItemContract } from '../../../web/IGuideItemContract'

@@ -1,7 +1,8 @@
-﻿import { getPlanCurrent } from '../../web/IPlanCurrentContract'
-import { Application } from '../app'
-import { IDeviceInfo, Info } from './devices/entry'
+﻿import { IDeviceInfo, Info } from './devices/entry'
 import { IPage, Page } from './page'
+
+import { getPlanCurrent } from '../../web/IPlanCurrentContract'
+import { Application } from '../app'
 
 // Schnittstelle zur Anzeige der aktuellen Aktivitäten.
 export interface IDevicesPage extends IPage {
@@ -16,7 +17,7 @@ export class DevicesPage extends Page implements IDevicesPage {
 
     // Erstellt ein neues Präsentationsmodell.
     constructor(application: Application) {
-        super(`current`, application)
+        super('current', application)
 
         // Der Anwender kann die Ansicht aktualisieren.
         this.navigation.refresh = true
@@ -38,9 +39,9 @@ export class DevicesPage extends Page implements IDevicesPage {
     reload(): void {
         getPlanCurrent().then((plan) => {
             // Aktionen des Anwenders einmal binden.
-            var similiar = this.application.guidePage.findInGuide.bind(this.application.guidePage)
-            var refresh = this.toggleDetails.bind(this)
-            var reload = this.reload.bind(this)
+            const similiar = this.application.guidePage.findInGuide.bind(this.application.guidePage)
+            const refresh = this.toggleDetails.bind(this)
+            const reload = this.reload.bind(this)
 
             // Die aktuellen Aktivitäten umwandeln.
             this.infos = (plan || []).map(
@@ -64,8 +65,8 @@ export class DevicesPage extends Page implements IDevicesPage {
         this._refreshing = true
 
         // Aktuellen Stand auslesen.
-        var flag = guide ? info.showGuide : info.showControl
-        var state = flag.value
+        const flag = guide ? info.showGuide : info.showControl
+        const state = flag.value
 
         // Alle anderen Detailansichten schliessen.
         this.infos.forEach((i) => (i.showControl.value = i.showGuide.value = false))
@@ -82,6 +83,6 @@ export class DevicesPage extends Page implements IDevicesPage {
 
     // Die Überschreibt für die Ansicht des Präsentationsmodells.
     get title(): string {
-        return `Geräteübersicht`
+        return 'Geräteübersicht'
     }
 }

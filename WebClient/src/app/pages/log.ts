@@ -1,11 +1,12 @@
-﻿import { DateTimeUtils } from '../../lib/dateTimeUtils'
-import { IToggableFlag, BooleanProperty } from '../../lib/edit/boolean/flag'
-import { IValueFromList, SingleListProperty, IUiValue, uiValue } from '../../lib/edit/list'
-import { ProfileCache } from '../../web/ProfileCache'
-import { getProtocolEntries } from '../../web/IProtocolEntryContract'
-import { Application } from '../app'
-import { ILogEntry, LogEntry } from './log/entry'
+﻿import { ILogEntry, LogEntry } from './log/entry'
 import { IPage, Page } from './page'
+
+import { DateTimeUtils } from '../../lib/dateTimeUtils'
+import { BooleanProperty, IToggableFlag } from '../../lib/edit/boolean/flag'
+import { IUiValue, IValueFromList, SingleListProperty, uiValue } from '../../lib/edit/list'
+import { getProtocolEntries } from '../../web/IProtocolEntryContract'
+import { ProfileCache } from '../../web/ProfileCache'
+import { Application } from '../app'
 
 // Schnittstelle zur Anzeige des Protokolls.
 export interface ILogPage extends IPage {
@@ -67,11 +68,11 @@ export class LogPage extends Page implements ILogPage {
         super('log', application)
 
         // Die Liste der Starttage erstellen wir nur ein einziges Mal.
-        var now = new Date()
-        var start = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()))
-        var days: IUiValue<string>[] = []
+        const now = new Date()
+        let start = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()))
+        const days: IUiValue<string>[] = []
 
-        for (var i = 0; i < 10; i++) {
+        for (let i = 0; i < 10; i++) {
             // Zur Auswahl durch den Anwender.
             days.push(
                 uiValue(
@@ -118,17 +119,17 @@ export class LogPage extends Page implements ILogPage {
         if (this._disableLoad) return
 
         // Suchparameter erstellen.
-        var profile = this.profiles.value
-        var endDay = new Date(this.startDay.value ?? 0)
-        var startDay = new Date(endDay.getTime() - 7 * 86400000)
+        const profile = this.profiles.value ?? ''
+        const endDay = new Date(this.startDay.value ?? 0)
+        const startDay = new Date(endDay.getTime() - 7 * 86400000)
 
         // Protokolle vom VCR.NET Recording Service anfordern.
-        getProtocolEntries(profile!, startDay, endDay).then((entries) => {
+        getProtocolEntries(profile, startDay, endDay).then((entries) => {
             // Die Anzeige erfolgt immer mit den neuesten als erstes.
             entries?.reverse()
 
             // Präsentationsmodell erstellen.
-            var toggleDetail = this.toggleDetail.bind(this)
+            const toggleDetail = this.toggleDetail.bind(this)
 
             this._entries = entries?.map((e) => new LogEntry(e, toggleDetail)) || []
 
@@ -151,6 +152,6 @@ export class LogPage extends Page implements ILogPage {
 
     // Der Titel für die Anzeige des Präsentationsmodells.
     get title(): string {
-        return `Aufzeichnungsprotokolle einsehen`
+        return 'Aufzeichnungsprotokolle einsehen'
     }
 }

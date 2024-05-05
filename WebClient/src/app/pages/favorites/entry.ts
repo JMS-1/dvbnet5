@@ -1,8 +1,8 @@
-﻿import { ICommand, Command } from '../../../lib/command/command'
+﻿import { Command, ICommand } from '../../../lib/command/command'
 import { IConnectable, IView } from '../../../lib/site'
 import { guideEncryption } from '../../../web/guideEncryption'
-import { IGuideFilterContract, countProgramGuide } from '../../../web/IGuideFilterContract'
 import { guideSource } from '../../../web/guideSource'
+import { countProgramGuide, IGuideFilterContract } from '../../../web/IGuideFilterContract'
 import { ISavedGuideQueryContract } from '../../../web/ISavedGuideQueryContract'
 
 // Schnittstelle zur Anzeige und Pflege einer gespeicherten Suche.
@@ -55,7 +55,7 @@ export class Favorite implements IFavorite {
 
     // Die Beschreibung der gespeicherten Suche.
     get title(): string {
-        var display = 'Alle '
+        let display = 'Alle '
 
         // Einige Einschränkungen machen nur Sinn, wenn keine Quelle ausgewählt ist.
         if ((this.model.source || '') === '') {
@@ -115,23 +115,23 @@ export class Favorite implements IFavorite {
         this._count = null
 
         // Suchbedingung in die Protokollnotation wandeln - naja, das ist nicht wirklich schwer.
-        var filter: IGuideFilterContract = {
+        const filter: IGuideFilterContract = {
             content: this.model.titleOnly ? '' : this.model.text,
             cryptFilter: this.model.encryption,
-            typeFilter: this.model.sourceType,
-            station: this.model.source,
             device: this.model.device,
-            title: this.model.text,
-            start: '',
             index: 0,
             size: 0,
+            start: '',
+            station: this.model.source,
+            title: this.model.text,
+            typeFilter: this.model.sourceType,
         }
 
         // Laden anstossen.
         Favorite._loader = Favorite._loader.then(() =>
             countProgramGuide(filter).then((count) => {
                 // Wert vermerken.
-                this._count = Favorite._countCache[this._cacheKey] = count!
+                this._count = Favorite._countCache[this._cacheKey] = count ?? 0
 
                 // Oberfläche zur Aktualisierung auffordern.
                 if (this.view) this.view.refreshUi()

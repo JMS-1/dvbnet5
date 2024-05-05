@@ -1,6 +1,6 @@
-﻿import { ICommand, Command } from '../../../lib/command/command'
+﻿import { Command, ICommand } from '../../../lib/command/command'
 import { IConnectable, IView } from '../../../lib/site'
-import { IAdminPage, AdminPage } from '../admin'
+import { AdminPage, IAdminPage } from '../admin'
 
 // Gemeinsame Schnittstelle für alle Konfigurationsbereiche der Administration.
 export interface ISection extends IConnectable {

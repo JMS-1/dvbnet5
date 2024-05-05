@@ -28,10 +28,10 @@ export class DurationEditor extends Property<number> implements IDurationEditor 
         this.startTime = new TimeProperty(data, propTime, undefined, () => this.onChanged())
 
         // Aus der aktuellen Startzeit und der aktuellen Dauer das Ende ermitteln.
-        var end = new Date(new Date(this.startTime.value ?? 0).getTime() + 60000 * (this.value ?? 0))
+        const end = new Date(new Date(this.startTime.value ?? 0).getTime() + 60000 * (this.value ?? 0))
 
         // Die Endzeit wird hier als absolute Zeit verwaltet.
-        this.endTime = new TimeProperty({ value: end.toISOString() }, `value`, undefined, () =>
+        this.endTime = new TimeProperty({ value: end.toISOString() }, 'value', undefined, () =>
             this.onChanged()
         ).addValidator((t) => this.checkLimit())
 
@@ -44,12 +44,12 @@ export class DurationEditor extends Property<number> implements IDurationEditor 
     // Wird bei jeder Eingabe von Start- oder Endzeit ausgelöst.
     private onChanged(): void {
         // Wir greifen hier direkt auf die Roheingaben zu - ansonsten müssten wir die Uhrzeit aus der tatsächlich verwalteten ISO Zeichenkette mühsam ermitteln.
-        var start = DateTimeUtils.parseTime(this.startTime.rawValue)
-        var end = DateTimeUtils.parseTime(this.endTime.rawValue)
+        const start = DateTimeUtils.parseTime(this.startTime.rawValue)
+        const end = DateTimeUtils.parseTime(this.endTime.rawValue)
 
         if (start !== null && end !== null) {
             // Die Dauer ist einfach die Differen aus Ende oder Start - liegt das Ende vor dem Start wird einfach nur von einem Tagessprung ausgegangen.
-            var duration = (end - start) / 60000
+            let duration = (end - start) / 60000
             if (duration <= 0) duration += 24 * 60
 
             // Das ist nun erst einmal der aktuelle Wert.

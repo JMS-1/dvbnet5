@@ -198,7 +198,7 @@ export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> imp
         const duration = DateTimeUtils.getRealDurationInMinutes(this.firstStart.value ?? '', this.duration.value ?? 0)
 
         // Ende der ersten Aufzeichnung ermitteln - das sollte in den meisten Fällen schon passen.
-        var end = new Date(
+        let end = new Date(
             start.getFullYear(),
             start.getMonth(),
             start.getDate(),
@@ -237,7 +237,7 @@ export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> imp
                 if (startDay > lastDay) break
 
                 // Nun müssen wir uns das zugehörige Ende der Aufzeichnung anschauen.
-                var end = new Date(
+                end = new Date(
                     start.getFullYear(),
                     start.getMonth(),
                     start.getDate(),

@@ -1,16 +1,17 @@
-﻿import { Command } from '../../lib/command/command'
-import { DateTimeUtils } from '../../lib/dateTimeUtils'
-import { IValueFromList, IUiValue, uiValue, SingleListProperty } from '../../lib/edit/list'
-import { Application } from '../app'
-import { DevicesSection } from './admin/devices'
+﻿import { DevicesSection } from './admin/devices'
 import { DirectoriesSection } from './admin/directories'
 import { GuideSection } from './admin/guide'
 import { OtherSection } from './admin/other'
 import { RulesSection } from './admin/rules'
 import { ScanSection } from './admin/scan'
-import { ISectionInfoFactory, Section, ISectionInfo, ISection } from './admin/section'
+import { ISection, ISectionInfo, ISectionInfoFactory, Section } from './admin/section'
 import { SecuritySection } from './admin/security'
 import { IPage, Page } from './page'
+
+import { Command } from '../../lib/command/command'
+import { DateTimeUtils } from '../../lib/dateTimeUtils'
+import { IUiValue, IValueFromList, SingleListProperty, uiValue } from '../../lib/edit/list'
+import { Application } from '../app'
 
 // Interne Verwaltungseinheit für Konfigurationsbereiche.
 class SectionInfo implements ISectionInfoFactory {
@@ -46,7 +47,7 @@ export interface IAdminPage extends IPage {
 // Das Präsentationsmodell für die Konfiguration des VCR.NET Recording Service.
 export class AdminPage extends Page implements IAdminPage {
     // Einmalig berechnet die Liste aller Stunden des Tages.
-    static readonly hoursOfDay: IUiValue<number>[] = Array.apply(null, Array(24)).map((_d: number, i: number) =>
+    static readonly hoursOfDay: IUiValue<number>[] = Array(24).map((_d: number, i: number) =>
         uiValue(i, DateTimeUtils.formatNumber(i))
     )
 
@@ -72,8 +73,8 @@ export class AdminPage extends Page implements IAdminPage {
     // Bereitet die Seite für die Anzeige vor.
     reset(sections: string[]): void {
         // Den aktuellen Konfigurationsbereich ermittelt - im Zweifel verwenden wir den ersten der Liste.
-        var allSections = this.sections.allowedValues
-        var curSection = allSections.filter((v) => v.value.route === sections[0])[0] || allSections[0]
+        const allSections = this.sections.allowedValues
+        const curSection = allSections.filter((v) => v.value.route === sections[0])[0] || allSections[0]
 
         // Auswahl übernehmen.
         this.sections.value = curSection.value
@@ -89,7 +90,7 @@ export class AdminPage extends Page implements IAdminPage {
             (restartRequired) => {
                 if (restartRequired === true) this.application.restart()
                 else if (restartRequired === false) this.application.gotoPage(null)
-                else command.message = `Ausführung zurzeit nicht möglich`
+                else command.message = 'Ausführung zurzeit nicht möglich'
             },
             (error) => {
                 // Fehlermeldung eintragen.
@@ -108,6 +109,6 @@ export class AdminPage extends Page implements IAdminPage {
 
     // Überschrift melden.
     get title(): string {
-        return `Administration und Konfiguration`
+        return 'Administration und Konfiguration'
     }
 }

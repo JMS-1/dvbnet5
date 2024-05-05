@@ -297,11 +297,11 @@ export class GuidePage extends Page implements IGuidePage {
         this.disableQuery(() => {
             this._filter.cryptFilter = guideEncryption.ALL
             this._filter.typeFilter = guideSource.ALL
-            this._filter.content = null!
+            this._filter.content = ''
             this._fulltextQuery = true
             this._filter.station = ''
-            this._filter.start = null!
-            this._filter.title = null!
+            this._filter.start = ''
+            this._filter.title = ''
             this._filter.index = 0
 
             this.queryString.value = ''
@@ -497,8 +497,8 @@ export class GuidePage extends Page implements IGuidePage {
         // Suchbedingung vorbereiten und übernehmen.
         const query = this.queryString.value?.trim()
 
-        this._filter.title = !query ? null! : `${this._fulltextQuery ? '*' : '='}${query}`
-        this._filter.content = this.withContent.value && this._fulltextQuery ? this._filter.title : null!
+        this._filter.title = !query ? '' : `${this._fulltextQuery ? '*' : '='}${query}`
+        this._filter.content = this.withContent.value && this._fulltextQuery ? this._filter.title : ''
 
         // Auszug aus der Programmzeitschrift abrufen.
         queryProgramGuide(this._filter).then((items) => {

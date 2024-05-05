@@ -1,10 +1,11 @@
-﻿import { DateTimeUtils } from '../../lib/dateTimeUtils'
-import { IToggableFlag, BooleanProperty } from '../../lib/edit/boolean/flag'
-import { IValueFromList, SingleListProperty, IUiValue, uiValue } from '../../lib/edit/list'
+﻿import { IPage, Page } from './page'
+import { IPlanEntry, PlanEntry } from './plan/entry'
+
+import { DateTimeUtils } from '../../lib/dateTimeUtils'
+import { BooleanProperty, IToggableFlag } from '../../lib/edit/boolean/flag'
+import { IUiValue, IValueFromList, SingleListProperty, uiValue } from '../../lib/edit/list'
 import { getPlan } from '../../web/IPlanActivityContract'
 import { Application } from '../app'
-import { IPage, Page } from './page'
-import { IPlanEntry, PlanEntry } from './plan/entry'
 
 // Schnittstelle zur Anzeige des Aufzeichnungsplans.
 export interface IPlanPage extends IPage {
@@ -54,14 +55,14 @@ export class PlanPage extends Page implements IPlanPage {
     // Wird beim Aufruf der Seite aktiviert.
     reset(sections: string[]): void {
         // Aktuelles Dateum ermitteln - ohne Berücksichtigung der Uhrzeit.
-        var now = new Date()
+        let now = new Date()
 
         now = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
         // Datumsfilter basierend darauf erstellen.
-        var start: IUiValue<Date>[] = []
+        const start: IUiValue<Date>[] = []
 
-        for (var i = 0; i < 7; i++) {
+        for (let i = 0; i < 7; i++) {
             // Eintrag erstellen.
             start.push(uiValue(now, i === 0 ? 'Jetzt' : DateTimeUtils.formatShortDate(now)))
 
@@ -83,15 +84,16 @@ export class PlanPage extends Page implements IPlanPage {
     // Prüft, ob ein Auftrag den aktuellen Einschränkungen entspricht.
     private filterJob(job: PlanEntry): boolean {
         // Datumsfilter.
-        var startDay = this.startFilter.value
-        var endDay = new Date(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const startDay = this.startFilter.value!
+        const endDay = new Date(
             startDay?.getFullYear() ?? 0,
             startDay?.getMonth() ?? 0,
             (startDay?.getDate() ?? 0) + this.application.profile.planDays
         )
 
         if (job.start >= endDay) return false
-        else if (job.end <= startDay!) return false
+        else if (job.end <= startDay) return false
 
         // Aufgabenfilter.
         if (!this.showTasks.value) if (!job.mode) return false
@@ -102,14 +104,14 @@ export class PlanPage extends Page implements IPlanPage {
     // Ermittelt die aktuell gültigen Aufträge.
     private query(): void {
         // Wir schauen maximal 13 Wochen in die Zukunft
-        var endOfTime = new Date(Date.now() + 13 * 7 * 86400000)
+        const endOfTime = new Date(Date.now() + 13 * 7 * 86400000)
 
         // Zusätzlich beschränken wir uns auf maximal 500 Einträge
         getPlan(500, endOfTime).then((plan) => {
             // Anzeigedarstellung für alle Aufträge erstellen.
-            var similiar = this.application.guidePage.findInGuide.bind(this.application.guidePage)
-            var toggleDetail = this.toggleDetail.bind(this)
-            var reload = this.reload.bind(this)
+            const similiar = this.application.guidePage.findInGuide.bind(this.application.guidePage)
+            const toggleDetail = this.toggleDetail.bind(this)
+            const reload = this.reload.bind(this)
 
             this._jobs = plan?.map((job) => new PlanEntry(job, toggleDetail, this.application, reload, similiar)) ?? []
 
@@ -149,7 +151,7 @@ export class PlanPage extends Page implements IPlanPage {
 
     // Meldet die Überschrift der Seite.
     get title(): string {
-        var days = this.application.profile.planDays
+        const days = this.application.profile.planDays
 
         return `Geplante Aufzeichnungen für ${days} Tag${days === 1 ? '' : 'e'}`
     }

@@ -1,11 +1,7 @@
 ﻿import { ISection, Section } from './section'
 
 import { IUiValue, IValueFromList, SingleListProperty, uiValue } from '../../../lib/edit/list'
-import {
-    getSecuritySettings,
-    getWindowsGroups,
-    setSecuritySettings,
-} from '../../../web/admin/ISecuritySettingsContract'
+import * as contract from '../../../web/admin/ISecuritySettingsContract'
 
 // Schnittstelle zur Konfiguration der Benutzergruppen.
 export interface IAdminSecurityPage extends ISection {
@@ -32,7 +28,8 @@ export class SecuritySection extends Section implements IAdminSecurityPage {
 
     // Beginnt mit der Abfrage der aktuellen Einstellungen.
     protected loadAsync(): void {
-        getSecuritySettings()
+        contract
+            .getSecuritySettings()
             .then((settings) => {
                 // Daten an die Präsentationsmodelle binden.
                 this.userGroups.data = settings
@@ -41,9 +38,11 @@ export class SecuritySection extends Section implements IAdminSecurityPage {
                 // Windows Kontogruppen einmalig anfordern.
                 if (!SecuritySection._windowsGroups)
                     // Immer die Leerauswahl ergänzen - damit werden automatisch alle Benutzer erfasst.
-                    SecuritySection._windowsGroups = getWindowsGroups().then((names) =>
-                        [uiValue('', '(Alle Benutzer)')].concat(names?.map((name) => uiValue(name)) ?? [])
-                    )
+                    SecuritySection._windowsGroups = contract
+                        .getWindowsGroups()
+                        .then((names) =>
+                            [uiValue('', '(Alle Benutzer)')].concat(names?.map((name) => uiValue(name)) ?? [])
+                        )
 
                 // Windows Kontogruppen direkt oder verzögert laden.
                 return SecuritySection._windowsGroups
@@ -63,6 +62,6 @@ export class SecuritySection extends Section implements IAdminSecurityPage {
 
     // Beginnt mit der Aktualisierung der aktuellen Einstellungen.
     protected saveAsync(): Promise<boolean | undefined> {
-        return setSecuritySettings(this.userGroups.data)
+        return contract.setSecuritySettings(this.userGroups.data)
     }
 }

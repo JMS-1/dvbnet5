@@ -1,4 +1,4 @@
-﻿import { ICommand, Command } from '../../../lib/command/command'
+﻿import { Command, ICommand } from '../../../lib/command/command'
 import { DateTimeUtils } from '../../../lib/dateTimeUtils'
 import { INumberWithSlider, NumberWithSlider } from '../../../lib/edit/number/slider'
 import { IConnectable, IView } from '../../../lib/site'

@@ -4,13 +4,7 @@ import { Command, ICommand } from '../../../lib/command/command'
 import { IValueFromList, SingleListProperty, uiValue } from '../../../lib/edit/list'
 import { IMultiValueFromList, MultiListProperty } from '../../../lib/edit/multiList'
 import { IString, StringProperty } from '../../../lib/edit/text/text'
-import {
-    browseDirectories,
-    getDirectorySettings,
-    IDirectorySettingsContract,
-    setDirectorySettings,
-    validateDirectory,
-} from '../../../web/admin/IDirectorySettingsContract'
+import * as contract from '../../../web/admin/IDirectorySettingsContract'
 
 // Schnittstelle zur Pflege der erlaubten Aufzeichnungsverzeichnisse.
 export interface IAdminDirectoriesPage extends ISection {
@@ -107,7 +101,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
         this.share.value = null
 
         // Konfiguration anfordern.
-        getDirectorySettings().then((settings) => {
+        contract.getDirectorySettings().then((settings) => {
             // Liste der erlaubten Verzeichnisse laden.
             this.directories.allowedValues = settings?.directories.map((d) => uiValue(d)) ?? []
 
@@ -115,7 +109,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
             this.pattern.data = settings
 
             // Wurzelverzeichnisse laden.
-            browseDirectories('', true).then((dirs) => this.setDirectories(dirs!))
+            contract.browseDirectories('', true).then((dirs) => this.setDirectories(dirs ?? []))
         })
     }
 
@@ -145,14 +139,14 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
 
         // Alle Unterverzeichnisse ermitteln.
         const folder = this.browse.value
-        if (folder) browseDirectories(folder, true).then((dirs) => this.setDirectories(dirs!))
+        if (folder) contract.browseDirectories(folder, true).then((dirs) => this.setDirectories(dirs ?? []))
     }
 
     // Das übergeordnete Verzeichnis soll angezeigt werden.
     private doBrowseUp(): void {
         // In eine höhere Ansicht wechseln.
         const folder = this.browse.allowedValues[0].value
-        if (folder) browseDirectories(folder, false).then((dirs) => this.setDirectories(dirs!))
+        if (folder) contract.browseDirectories(folder, false).then((dirs) => this.setDirectories(dirs ?? []))
     }
 
     // Ausgewählte Verzeichnisse aus der Liste entfernen.
@@ -168,12 +162,12 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     // Sendet die veränderte Konfiguration an den VCR.NET Recording Service.
     protected saveAsync(): Promise<boolean | undefined> {
         // Die aktuell erlaubten Verzeichnisse werden als Verzeichnisliste übernommen.
-        const settings: IDirectorySettingsContract = this.pattern.data
+        const settings: contract.IDirectorySettingsContract = this.pattern.data
 
         settings.directories = this.directories.allowedValues.map((v) => v.value)
 
         // Neue Konfiguration senden.
-        return setDirectorySettings(settings)
+        return contract.setDirectorySettings(settings)
     }
 
     // Ergänzt ein Verzeichnis.
@@ -199,7 +193,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
         this.share.refreshUi()
 
         // Verzeichnis durch den VCR.NET Recording Service prüfen lassen.
-        return validateDirectory(share).then((ok) => {
+        return contract.validateDirectory(share).then((ok) => {
             // Gültige Verzeichnisse werden direkt in die Liste übernommen.
             if (ok) {
                 // Das brauchen wir jetzt nicht mehr.
