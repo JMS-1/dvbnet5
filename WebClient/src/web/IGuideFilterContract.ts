@@ -34,9 +34,9 @@ export interface IGuideFilterContract {
 }
 
 export function queryProgramGuide(filter: IGuideFilterContract): Promise<IGuideItemContract[] | undefined> {
-    return doUrlCall('guide', 'POST', filter)
+    return doUrlCall('guide/query', 'POST', filter)
 }
 
 export function countProgramGuide(filter: IGuideFilterContract): Promise<number | undefined> {
-    return doUrlCall('guide?countOnly', 'POST', filter)
+    return doUrlCall('guide/count', 'POST', filter)
 }

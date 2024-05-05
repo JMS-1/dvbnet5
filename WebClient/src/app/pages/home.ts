@@ -46,7 +46,7 @@ export class HomePage extends Page implements IHomePage {
 
     // Befehl zum Starten der Aktualisierung der Programmzeichschrift.
     readonly startGuide = new Command(
-        () => this.startTask('guideUpdate'),
+        () => this.startTask('guide'),
         'Aktualisierung anfordern',
         () => this.application.version.hasGuides
     )
@@ -62,7 +62,7 @@ export class HomePage extends Page implements IHomePage {
 
     // Befehl zum Starten eines Sendersuchlaufs.
     readonly startScan = new Command(
-        () => this.startTask('sourceScan'),
+        () => this.startTask('scan'),
         'Aktualisierung anfordern',
         () => this.application.version.canScan
     )
@@ -166,7 +166,7 @@ export class HomePage extends Page implements IHomePage {
     }
 
     // Aktiviert eine Sonderaufgabe und wechselt im Erfolgsfall nach Bestätigung durch den VCR.NET Recording Service auf die Geräteübersicht.
-    private startTask(task: string): Promise<void> {
+    private startTask(task: 'guide' | 'scan'): Promise<void> {
         return triggerTask(task).then(() => this.application.gotoPage(this.application.devicesPage.route))
     }
 }

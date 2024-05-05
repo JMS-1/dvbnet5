@@ -42,7 +42,5 @@ export function getGuideItem(
     start: Date,
     end: Date
 ): Promise<IGuideItemContract | undefined> {
-    return doUrlCall(
-        `guide?profile=${encodeURIComponent(device)}&source=${source}&pattern=${start.getTime()}-${end.getTime()}`
-    )
+    return doUrlCall(`guide/${encodeURIComponent(device)}?source=${source}&pattern=${start.getTime()}-${end.getTime()}`)
 }

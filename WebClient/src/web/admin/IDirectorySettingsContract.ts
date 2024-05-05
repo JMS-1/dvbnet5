@@ -11,17 +11,17 @@ export interface IDirectorySettingsContract extends ISettingsContract {
 }
 
 export function getDirectorySettings(): Promise<IDirectorySettingsContract | undefined> {
-    return doUrlCall('configuration?directory')
+    return doUrlCall('configuration/folder')
 }
 
 export function setDirectorySettings(data: IDirectorySettingsContract): Promise<boolean | undefined> {
-    return doUrlCall('configuration?directory', 'PUT', data)
+    return doUrlCall('configuration/folder', 'PUT', data)
 }
 
 export function validateDirectory(path: string): Promise<boolean | undefined> {
-    return doUrlCall(`configuration?validate&directory=${encodeURIComponent(path)}`)
+    return doUrlCall(`configuration/validate?directory=${encodeURIComponent(path)}`)
 }
 
 export function browseDirectories(root: string, children: boolean): Promise<string[] | undefined> {
-    return doUrlCall(`configuration?browse&toParent=${!children}&root=${encodeURIComponent(root)}`)
+    return doUrlCall(`configuration/browse?toParent=${!children}&root=${encodeURIComponent(root)}`)
 }

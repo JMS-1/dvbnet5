@@ -13,5 +13,5 @@ export interface IGuideInfoContract {
 }
 
 export function getGuideInfo(device: string): Promise<IGuideInfoContract | undefined> {
-    return doUrlCall(`guide/${device}`)
+    return doUrlCall(`guide/info/${device}`)
 }

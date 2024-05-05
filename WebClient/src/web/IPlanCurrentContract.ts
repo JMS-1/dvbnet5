@@ -58,11 +58,11 @@ export function updateEndTime(
     newEnd: Date
 ): Promise<void> {
     return doUrlCall<void, void>(
-        `profile/${device}?disableHibernate=${suppressHibernate}&schedule=${scheduleIdentifier}&endTime=${newEnd.toISOString()}`,
+        `profile/endtime/${device}?disableHibernate=${suppressHibernate}&schedule=${scheduleIdentifier}&endTime=${newEnd.toISOString()}`,
         'PUT'
     )
 }
 
-export function triggerTask(taskName: string): Promise<void> {
-    return doUrlCall<void, void>(`plan?${taskName}`, 'POST')
+export function triggerTask(taskName: 'guide' | 'scan'): Promise<void> {
+    return doUrlCall<void, void>(`plan/${taskName}`, 'POST')
 }

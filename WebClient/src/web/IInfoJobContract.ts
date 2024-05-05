@@ -17,5 +17,5 @@ export interface IInfoJobContract {
 }
 
 export function getInfoJobs(): Promise<IInfoJobContract[] | undefined> {
-    return doUrlCall('info?jobs')
+    return doUrlCall('info/jobs')
 }

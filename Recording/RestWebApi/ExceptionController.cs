@@ -17,7 +17,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="when">Der Referenztag.</param>
         /// <param name="startDelta">Die Verschiebung des Aufzeichnungsbeginns in Minuten.</param>
         /// <param name="durationDelta">Die Verschiebung der Aufzeichnungsdauer in Minuten.</param>
-        [HttpPut]
+        [HttpPut("{detail}")]
         public void ChangeException(string detail, string when, int startDelta, int durationDelta)
         {
             // Parse the date

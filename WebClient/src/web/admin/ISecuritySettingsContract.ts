@@ -11,13 +11,13 @@ export interface ISecuritySettingsContract extends ISettingsContract {
 }
 
 export function getSecuritySettings(): Promise<ISecuritySettingsContract | undefined> {
-    return doUrlCall('configuration?security')
+    return doUrlCall('configuration/security')
 }
 
 export function setSecuritySettings(data: ISecuritySettingsContract): Promise<boolean | undefined> {
-    return doUrlCall('configuration?security', 'PUT', data)
+    return doUrlCall('configuration/security', 'PUT', data)
 }
 
 export function getWindowsGroups(): Promise<string[] | undefined> {
-    return doUrlCall('info?groups')
+    return doUrlCall('info/groups')
 }

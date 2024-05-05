@@ -10,5 +10,5 @@ export interface IProfileJobInfoContract {
 }
 
 export function getProfileJobInfos(device: string): Promise<IProfileJobInfoContract[] | undefined> {
-    return doUrlCall(`profile/${device}?activeJobs`)
+    return doUrlCall(`profile/jobs/${device}`)
 }

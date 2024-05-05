@@ -21,5 +21,5 @@ export interface IEditScheduleContract extends IEditJobScheduleCommonContract {
 }
 
 export function deleteSchedule(jobId: string, scheduleId: string): Promise<void> {
-    return doUrlCall<void, void>(`edit/${jobId}${scheduleId}`, 'DELETE')
+    return doUrlCall<void, void>(`edit/recording/${jobId}${scheduleId}`, 'DELETE')
 }

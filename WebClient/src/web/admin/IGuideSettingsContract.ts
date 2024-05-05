@@ -23,9 +23,9 @@ export interface IGuideSettingsContract extends ISettingsContract {
 }
 
 export function getGuideSettings(): Promise<IGuideSettingsContract | undefined> {
-    return doUrlCall('configuration?guide')
+    return doUrlCall('configuration/guide')
 }
 
 export function setGuideSettings(data: IGuideSettingsContract): Promise<boolean | undefined> {
-    return doUrlCall('configuration?guide', 'PUT', data)
+    return doUrlCall('configuration/guide', 'PUT', data)
 }

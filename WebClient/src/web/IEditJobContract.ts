@@ -14,5 +14,5 @@ export interface IEditJobContract extends IEditJobScheduleCommonContract {
 }
 
 export function getRecordingDirectories(): Promise<string[] | undefined> {
-    return doUrlCall('info?directories')
+    return doUrlCall('info/folder')
 }

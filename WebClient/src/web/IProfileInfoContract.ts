@@ -6,5 +6,5 @@ export interface IProfileInfoContract {
 }
 
 export function getProfileInfos(): Promise<IProfileInfoContract[] | undefined> {
-    return doUrlCall('profile')
+    return doUrlCall('profile/profiles')
 }

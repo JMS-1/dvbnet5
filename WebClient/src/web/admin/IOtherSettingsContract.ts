@@ -47,9 +47,9 @@ export interface IOtherSettingsContract extends ISettingsContract {
 }
 
 export function getOtherSettings(): Promise<IOtherSettingsContract | undefined> {
-    return doUrlCall('configuration?other')
+    return doUrlCall('configuration/other')
 }
 
 export function setOtherSettings(data: IOtherSettingsContract): Promise<boolean | undefined> {
-    return doUrlCall('configuration?other', 'PUT', data)
+    return doUrlCall('configuration/other', 'PUT', data)
 }

@@ -8,9 +8,9 @@ export interface ISchedulerRulesContract extends ISettingsContract {
 }
 
 export function getSchedulerRules(): Promise<ISchedulerRulesContract | undefined> {
-    return doUrlCall('configuration?rules')
+    return doUrlCall('configuration/rules')
 }
 
 export function setSchedulerRules(data: ISchedulerRulesContract): Promise<boolean | undefined> {
-    return doUrlCall('configuration?rules', 'PUT', data)
+    return doUrlCall('configuration/rules', 'PUT', data)
 }

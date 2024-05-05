@@ -20,9 +20,9 @@ export interface ISourceScanSettingsContract extends ISettingsContract {
 }
 
 export function getSourceScanSettings(): Promise<ISourceScanSettingsContract | undefined> {
-    return doUrlCall('configuration?scan')
+    return doUrlCall('configuration/scan')
 }
 
 export function setSourceScanSettings(data: ISourceScanSettingsContract): Promise<boolean | undefined> {
-    return doUrlCall('configuration?scan', 'PUT', data)
+    return doUrlCall('configuration/scan', 'PUT', data)
 }

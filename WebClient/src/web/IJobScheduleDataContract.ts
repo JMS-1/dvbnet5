@@ -16,15 +16,15 @@ export function createScheduleFromGuide(
     legacyId: string,
     epgId: string
 ): Promise<IJobScheduleInfoContract | undefined> {
-    return doUrlCall(`edit/${legacyId}?epg=${epgId}`)
+    return doUrlCall(`edit/recording/${legacyId}?epg=${epgId}`)
 }
 
 export function updateSchedule(jobId: string, scheduleId: string, data: IJobScheduleDataContract): Promise<void> {
     let method = 'POST'
-    let url = 'edit'
+    let url = 'edit/job'
 
     if (jobId != null) {
-        url += '/' + jobId
+        url = 'recording/' + jobId
 
         if (scheduleId != null) {
             url += scheduleId

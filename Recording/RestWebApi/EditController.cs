@@ -56,7 +56,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="detail">Die Referenz auf die Aufzeichnung.</param>
         /// <param name="epg">Informationen zu einem Eintrag aus der Programmzeitschrift.</param>
         /// <returns>Die Daten zur gewünschten Aufzeichnung.</returns>
-        [HttpGet("job/{detail}")]
+        [HttpGet("recording/{detail}")]
         public JobScheduleInfo FindJob(string detail, string epg = null!)
         {
             // May need to recreate the identifier

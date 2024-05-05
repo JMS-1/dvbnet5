@@ -8,5 +8,5 @@ export interface IProfileSourceContract extends ISourceInformationContract {
 }
 
 export function getProfileSources(device: string): Promise<IProfileSourceContract[] | undefined> {
-    return doUrlCall(`profile/${device}`)
+    return doUrlCall(`profile/sources/${device}`)
 }
