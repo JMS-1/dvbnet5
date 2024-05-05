@@ -1,6 +1,6 @@
 ﻿import { ISection, Section } from './section'
 
-import { IUiValue, IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
+import { IUiValue, IValueFromList, SingleListProperty, uiValue } from '../../../lib/edit/list'
 import {
     getSecuritySettings,
     getWindowsGroups,
@@ -25,10 +25,10 @@ export class SecuritySection extends Section implements IAdminSecurityPage {
     private static _windowsGroups: Promise<IUiValue<string>[]>
 
     // Die Gruppe der normalen Benutzer mit Auswahl.
-    readonly userGroups = new SelectSingleFromList<string>({}, 'users', 'Benutzer')
+    readonly userGroups = new SingleListProperty<string>({}, 'users', 'Benutzer')
 
     // Die Gruppe der Administratoren mit Auswahl.
-    readonly adminGroups = new SelectSingleFromList<string>({}, 'admins', 'Administratoren')
+    readonly adminGroups = new SingleListProperty<string>({}, 'admins', 'Administratoren')
 
     // Beginnt mit der Abfrage der aktuellen Einstellungen.
     protected loadAsync(): void {

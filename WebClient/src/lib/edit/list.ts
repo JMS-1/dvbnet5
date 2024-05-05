@@ -1,5 +1,6 @@
-﻿import { ICommand, Command } from '../command/command'
-import { IProperty, Property } from './edit'
+﻿import { IProperty, Property } from './edit'
+
+import { Command, ICommand } from '../command/command'
 
 // Beschreibt einen Wert zur Auswahl durch den Anwender.
 export interface IUiValue<TValueType> {
@@ -28,8 +29,8 @@ export interface ISelectableUiValue<TValueType> extends IUiValue<TValueType> {
 // Hilfsmethode zum Erstellen eines Auswahlwertes.
 export function uiValue<TValueType>(value: TValueType, display?: string): IUiValue<TValueType> {
     return {
+        display: display === undefined ? (value === null ? '' : (value ?? '').toString()) : display,
         value: value,
-        display: display === undefined ? (value === null ? `` : (value ?? '').toString()) : display,
     }
 }
 
@@ -38,7 +39,7 @@ class SelectableValue<TValueType> implements ISelectableUiValue<TValueType> {
     // Erstellt eine neue Beschreibung für einen Wert.
     constructor(
         value: IUiValue<TValueType>,
-        private readonly _list: SelectSingleFromList<TValueType>
+        private readonly _list: SingleListProperty<TValueType>
     ) {
         this.display = value.display
         this.value = value.value
@@ -79,7 +80,7 @@ export interface IValueFromList<TValueType> extends IProperty<TValueType> {
 }
 
 // Erlaubt die Auswahl eines einzelnen Wertes aus einer Liste erlaubter Werte.
-export class SelectSingleFromList<TValueType> extends Property<TValueType> implements IValueFromList<TValueType> {
+export class SingleListProperty<TValueType> extends Property<TValueType> implements IValueFromList<TValueType> {
     // Gesetzt während der Initialisierung.
     private readonly _startUp: boolean = true
 
@@ -97,16 +98,16 @@ export class SelectSingleFromList<TValueType> extends Property<TValueType> imple
         this.allowedValues = allowedValues
 
         // Prüfung anmelden.
-        this.addValidator(SelectSingleFromList.isInList)
+        this.addValidator(SingleListProperty.isInList)
 
         // Jetzt kann es losgehen.
         this._startUp = false
     }
 
     // Prüft ob der aktuelle Wert in der Liste der erlaubten Werte ist.
-    private static isInList(list: SelectSingleFromList<any>): string | undefined {
+    private static isInList(list: SingleListProperty<any>): string | undefined {
         // Der Wert muss in der Liste sein.
-        var value = list.value
+        const value = list.value
 
         if (value !== null && !list.allowedValues.some((av) => av.value === value))
             return 'Der Wert ist nicht in der Liste der erlaubten Werte enthalten.'
@@ -129,7 +130,7 @@ export class SelectSingleFromList<TValueType> extends Property<TValueType> imple
     }
 
     // Ergänzt eine Prüfung auf eine fehlende Auswahl.
-    addRequiredValidator(message: string = `Es muss ein Wert angegeben werden.`): this {
+    addRequiredValidator(message = 'Es muss ein Wert angegeben werden.'): this {
         return this.addValidator((p) => {
             if (this.value === null) return message
         })
@@ -137,7 +138,7 @@ export class SelectSingleFromList<TValueType> extends Property<TValueType> imple
 
     // Meldet die laufende Nummer des Wertes in der Liste der erlaubten Werte - existiert ein solcher nicht, wird 0 gemeldet.
     get valueIndex(): number {
-        for (var i = 0; i < this.allowedValues.length; i++) if (this.allowedValues[i].value === this.value) return i
+        for (let i = 0; i < this.allowedValues.length; i++) if (this.allowedValues[i].value === this.value) return i
 
         return 0
     }

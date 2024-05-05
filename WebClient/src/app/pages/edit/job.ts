@@ -1,5 +1,5 @@
 ﻿import { IFlag, BooleanProperty } from '../../../lib/edit/boolean/flag'
-import { IValueFromList, IUiValue, SelectSingleFromList } from '../../../lib/edit/list'
+import { IValueFromList, IUiValue, SingleListProperty } from '../../../lib/edit/list'
 import { IEditJobContract } from '../../../web/IEditJobContract'
 import { IPage } from '../page'
 import { IJobScheduleEditor, JobScheduleEditor } from './jobSchedule'
@@ -31,8 +31,8 @@ export class JobEditor extends JobScheduleEditor<IEditJobContract> implements IJ
 
         // Pflegekomponenten erstellen
         this.deviceLock = new BooleanProperty(this.model, 'lockedToDevice', '(auf diesem Gerät aufzeichnen)', onChange)
-        this.folder = new SelectSingleFromList(this.model, 'directory', 'Verzeichnis', onChange, folders)
-        this.device = new SelectSingleFromList(
+        this.folder = new SingleListProperty(this.model, 'directory', 'Verzeichnis', onChange, folders)
+        this.device = new SingleListProperty(
             this.model,
             'device',
             'DVB.NET Geräteprofil',
@@ -51,10 +51,10 @@ export class JobEditor extends JobScheduleEditor<IEditJobContract> implements IJ
     }
 
     // Das Aufzeichnungsverzeichnis.
-    readonly folder: SelectSingleFromList<string>
+    readonly folder: SingleListProperty<string>
 
     // Das zu verwendende DVB Gerät.
-    readonly device: SelectSingleFromList<string>
+    readonly device: SingleListProperty<string>
 
     // Gesetzt, wenn die Aufzeichnung immer auf dem Gerät stattfinden soll.
     readonly deviceLock: BooleanProperty

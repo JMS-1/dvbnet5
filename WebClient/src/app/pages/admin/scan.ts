@@ -1,8 +1,8 @@
 ﻿import { ISection, Section } from './section'
 
 import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
-import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
-import { IMultiValueFromList, SelectMultipleFromList } from '../../../lib/edit/multiList'
+import { IValueFromList, SingleListProperty, uiValue } from '../../../lib/edit/list'
+import { IMultiValueFromList, MultiListProperty } from '../../../lib/edit/multiList'
 import { INumber, NumberProperty } from '../../../lib/edit/number/number'
 import {
     getSourceScanSettings,
@@ -63,10 +63,10 @@ export class ScanSection extends Section implements IAdminScanPage {
     ]
 
     // Die Art der Aktualisierung.
-    readonly mode = new SelectSingleFromList({}, 'value', undefined, () => this.refreshUi(), ScanSection._scanModes)
+    readonly mode = new SingleListProperty({}, 'value', undefined, () => this.refreshUi(), ScanSection._scanModes)
 
     // Die Stunden, an denen eine Aktualisierung ausgeführt werden soll.
-    readonly hours = new SelectMultipleFromList({}, 'hours', 'Uhrzeiten', undefined, AdminPage.hoursOfDay)
+    readonly hours = new MultiListProperty({}, 'hours', 'Uhrzeiten', undefined, AdminPage.hoursOfDay)
 
     // Die maximale Dauer eines Suchlaufs (in Minuten).
     readonly duration = new NumberProperty(

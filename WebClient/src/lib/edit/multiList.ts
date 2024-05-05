@@ -1,6 +1,7 @@
-﻿import { Command } from '../command/command'
-import { IProperty, Property } from './edit'
+﻿import { IProperty, Property } from './edit'
 import { IToggableUiValue, IUiValue } from './list'
+
+import { Command } from '../command/command'
 
 // Beschreibt die Auswahl einer Liste von Werten aus einer Liste von erlaubten Werten.
 export interface IMultiValueFromList<TValueType> extends IProperty<TValueType[]> {
@@ -59,10 +60,7 @@ class SelectableValue<TValueType> implements IToggableUiValue<TValueType> {
 }
 
 // Präsentationsmodell für eine Mehrfachauswahl von Werten aus einer Liste erlaubter Werte.
-export class SelectMultipleFromList<TValueType>
-    extends Property<TValueType[]>
-    implements IMultiValueFromList<TValueType>
-{
+export class MultiListProperty<TValueType> extends Property<TValueType[]> implements IMultiValueFromList<TValueType> {
     // Legt eine neue Liste an.
     constructor(
         data?: any,
@@ -105,7 +103,7 @@ export class SelectMultipleFromList<TValueType>
     // Anzeige aktualisieren.
     refresh(): void {
         // Tatsächlich ausgewählte Werte in der Auswahlliste markieren.
-        var values = this.value || []
+        const values = this.value || []
 
         this._allowedValues.forEach((av) => (av.selected = values.some((v) => v === av.value)))
 

@@ -1,6 +1,6 @@
 ﻿import { DateTimeUtils } from '../../lib/dateTimeUtils'
 import { IToggableFlag, BooleanProperty } from '../../lib/edit/boolean/flag'
-import { IValueFromList, SelectSingleFromList, IUiValue, uiValue } from '../../lib/edit/list'
+import { IValueFromList, SingleListProperty, IUiValue, uiValue } from '../../lib/edit/list'
 import { getPlan } from '../../web/IPlanActivityContract'
 import { Application } from '../app'
 import { IPage, Page } from './page'
@@ -32,7 +32,7 @@ export class PlanPage extends Page implements IPlanPage {
     readonly showTasks = new BooleanProperty({}, 'value', 'Aufgaben einblenden', () => this.fireRefresh())
 
     // Alle bekannten Datumsfilter.
-    readonly startFilter = new SelectSingleFromList<Date>({}, 'value', undefined, () => this.fireRefresh(true), [])
+    readonly startFilter = new SingleListProperty<Date>({}, 'value', undefined, () => this.fireRefresh(true), [])
 
     // Gesetzt, wenn keine Abfragen abgesendet werden sollen.
     private _disableQuery: boolean

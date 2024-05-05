@@ -1,8 +1,8 @@
 ﻿import { ISection, Section } from './section'
 
 import { Command, ICommand } from '../../../lib/command/command'
-import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
-import { IMultiValueFromList, SelectMultipleFromList } from '../../../lib/edit/multiList'
+import { IValueFromList, SingleListProperty, uiValue } from '../../../lib/edit/list'
+import { IMultiValueFromList, MultiListProperty } from '../../../lib/edit/multiList'
 import { IString, StringProperty } from '../../../lib/edit/text/text'
 import {
     browseDirectories,
@@ -45,7 +45,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     static readonly route = 'directories'
 
     // Die aktuelle Liste der Aufzeichnungsverzeichnisse.
-    readonly directories = new SelectMultipleFromList<string>(
+    readonly directories = new MultiListProperty<string>(
         {},
         'value',
         undefined,
@@ -78,7 +78,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     }
 
     // Die aktuelle Verzeichnisauswahl.
-    readonly browse = new SelectSingleFromList<string>({}, 'value', 'Server-Verzeichnis', () => this.doBrowse())
+    readonly browse = new SingleListProperty<string>({}, 'value', 'Server-Verzeichnis', () => this.doBrowse())
 
     // Befehl um in der Verzeichnisauswahl zum übergeordneten Verzeichnis zu wechseln.
     readonly parent = new Command(

@@ -1,6 +1,6 @@
 ﻿import { Command } from '../../lib/command/command'
 import { DateTimeUtils } from '../../lib/dateTimeUtils'
-import { IValueFromList, IUiValue, uiValue, SelectSingleFromList } from '../../lib/edit/list'
+import { IValueFromList, IUiValue, uiValue, SingleListProperty } from '../../lib/edit/list'
 import { Application } from '../app'
 import { DevicesSection } from './admin/devices'
 import { DirectoriesSection } from './admin/directories'
@@ -62,7 +62,7 @@ export class AdminPage extends Page implements IAdminPage {
     ]
 
     // Präsentationsmodell zur Auswahl des aktuellen Konfigurationsbereichs.
-    readonly sections = new SelectSingleFromList({}, 'value', undefined, undefined, this._sections)
+    readonly sections = new SingleListProperty({}, 'value', undefined, undefined, this._sections)
 
     // Erstellt ein neues Präsentationsmodell für die Seite.
     constructor(application: Application) {

@@ -2,8 +2,8 @@
 
 import { Command, ICommand } from '../../../lib/command/command'
 import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
-import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
-import { IMultiValueFromList, SelectMultipleFromList } from '../../../lib/edit/multiList'
+import { IValueFromList, SingleListProperty, uiValue } from '../../../lib/edit/list'
+import { IMultiValueFromList, MultiListProperty } from '../../../lib/edit/multiList'
 import { INumber, NumberProperty } from '../../../lib/edit/number/number'
 import { getGuideSettings, IGuideSettingsContract, setGuideSettings } from '../../../web/admin/IGuideSettingsContract'
 import { ProfileCache } from '../../../web/ProfileCache'
@@ -56,10 +56,10 @@ export class GuideSection extends Section implements IAdminGuidePage {
     readonly isActive = new BooleanProperty({}, 'value', 'Aktualisierung aktivieren', () => this.refreshUi())
 
     // Die Liste der Stunden, an denen eine automatische Aktivierung stattfinden soll.
-    readonly hours = new SelectMultipleFromList<number>({}, 'hours', 'Uhrzeiten', undefined, AdminPage.hoursOfDay)
+    readonly hours = new MultiListProperty<number>({}, 'hours', 'Uhrzeiten', undefined, AdminPage.hoursOfDay)
 
     // Alle Quellen, deren Programmzeitschrift ausgelesen werden soll.
-    readonly sources = new SelectMultipleFromList<string>(
+    readonly sources = new MultiListProperty<string>(
         {},
         'value',
         undefined,
@@ -77,7 +77,7 @@ export class GuideSection extends Section implements IAdminGuidePage {
     )
 
     // Die Auswahl eines Geräte für die folgende Auswahl einer Quelle.
-    readonly device = new SelectSingleFromList<string>(
+    readonly device = new SingleListProperty<string>(
         {},
         'value',
         'Gerät',

@@ -2,7 +2,7 @@
 import { IPage, Page } from './page'
 
 import { DateTimeUtils } from '../../lib/dateTimeUtils'
-import { IValueFromList, SelectSingleFromList, uiValue } from '../../lib/edit/list'
+import { IValueFromList, SingleListProperty, uiValue } from '../../lib/edit/list'
 import { getInfoJobs } from '../../web/IInfoJobContract'
 import { IInfoScheduleContract } from '../../web/IInfoScheduleContract'
 import { Application } from '../app'
@@ -43,7 +43,7 @@ export class JobPage extends Page implements IJobPage {
     private static readonly _types = [uiValue(false, 'Aktiv'), uiValue(true, 'Archiviert')]
 
     // Schaltet zwischen der Ansicht der aktiven und archivierten Aufzeichnungen um.
-    readonly showArchived = new SelectSingleFromList({}, 'value', undefined, () => this.refreshUi(), JobPage._types)
+    readonly showArchived = new SingleListProperty({}, 'value', undefined, () => this.refreshUi(), JobPage._types)
 
     // Alle Aufträge.
     private _jobs: IJobPageJob[] = []

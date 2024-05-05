@@ -1,7 +1,7 @@
 ﻿import { Device, IDevice } from './device'
 import { ISection, Section } from './section'
 
-import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
+import { IValueFromList, SingleListProperty, uiValue } from '../../../lib/edit/list'
 import { getProfileSettings, setProfileSettings } from '../../../web/admin/IProfileSettingsContract'
 
 // Schnittstelle zur Konfiguration der Geräteprofile.
@@ -19,7 +19,7 @@ export class DevicesSection extends Section implements IAdminDevicesPage {
     static readonly route = 'devices'
 
     // Präsentationsmodell zur Pflege des bevorzugten Gerätes.
-    readonly defaultDevice = new SelectSingleFromList<string>(
+    readonly defaultDevice = new SingleListProperty<string>(
         {},
         'defaultProfile',
         'Bevorzugtes Gerät (zum Beispiel für neue Aufzeichnungen)',

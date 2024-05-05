@@ -1,7 +1,7 @@
 ﻿import { ISection, Section } from './section'
 
 import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
-import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
+import { IValueFromList, SingleListProperty, uiValue } from '../../../lib/edit/list'
 import { INumber, NumberProperty } from '../../../lib/edit/number/number'
 import { getOtherSettings, setOtherSettings } from '../../../web/admin/IOtherSettingsContract'
 
@@ -166,7 +166,7 @@ export class OtherSection extends Section implements IAdminOtherPage {
     )
 
     // Die Art des automatischen Schlafzustands.
-    readonly hibernation = new SelectSingleFromList(
+    readonly hibernation = new SingleListProperty(
         this,
         'hibernationMode',
         'Art des von VCR.NET ausgelösten Schlafzustands',
@@ -175,7 +175,7 @@ export class OtherSection extends Section implements IAdminOtherPage {
     )
 
     // Die Art der Protokollierung.
-    readonly logging = new SelectSingleFromList(
+    readonly logging = new SingleListProperty(
         {},
         'logging',
         'Umfang der Protokollierung in das Windows Ereignisprotokoll',

@@ -1,8 +1,8 @@
 ﻿import { IProperty, Property } from '../../lib/edit/edit'
-import { IValueFromList, uiValue, SelectSingleFromList } from '../../lib/edit/list'
+import { IValueFromList, SingleListProperty, uiValue } from '../../lib/edit/list'
 import { IConnectable } from '../../lib/site'
-import { SourceEntry } from '../../web/ProfileSourcesCache'
 import { IUserProfileContract } from '../../web/IUserProfileContract'
+import { SourceEntry } from '../../web/ProfileSourcesCache'
 
 // Die Einschränkung auf die Verschlüsselung.
 export enum EncryptionFilter {
@@ -121,7 +121,7 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
 
     // Prüft, ob der Name einer Quelle der aktuellen Auswahl entspricht.
     private applySectionFilter(source: SourceEntry): boolean {
-        var first = source.firstNameCharacter
+        const first = source.firstNameCharacter
 
         switch (this.section.valueIndex) {
             case 0:
@@ -156,22 +156,22 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
     }
 
     // Alle Auswahlmöglichkeiten zum Namen der Quellen.
-    readonly section = new SelectSingleFromList(
+    readonly section = new SingleListProperty(
         { value: 0 },
-        `value`,
+        'value',
         undefined,
         () => this.refreshFilter(),
         ChannelEditor._sections
     )
 
     // Alle aktuell bezüglich aller Einschränkungen relevanten Quellen.
-    readonly sourceName = new SelectSingleFromList<string>(this, `value`).addValidator((n) => {
-        var source = n.value
+    readonly sourceName = new SingleListProperty<string>(this, 'value').addValidator((n) => {
+        const source = n.value
 
         // Wenn eine Quelle ausgewählt wurde, dann muss sie auch von dem aktuellen Gerät empfangen werden können.
         if ((source || '').trim().length > 0)
             if (!this.allSources.some((s) => s.name === source))
-                return `Die Quelle wird von dem ausgewählten Gerät nicht empfangen.`
+                return 'Die Quelle wird von dem ausgewählten Gerät nicht empfangen.'
     })
 
     // Die bevorzugten Quellen des Anwenders - hier in einem Dictionary zur Prüfung optimiert.
@@ -193,16 +193,16 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
         super(data, prop, 'Quelle', onChange)
 
         // Voreinstellungen vorbereiten.
-        this.encryption = new SelectSingleFromList(
+        this.encryption = new SingleListProperty(
             { value: ChannelEditor.lookupEncryption(profile) },
-            `value`,
+            'value',
             undefined,
             () => this.refreshFilter(),
             ChannelEditor._encryptions
         )
-        this.type = new SelectSingleFromList(
+        this.type = new SingleListProperty(
             { value: ChannelEditor.lookupType(profile) },
-            `value`,
+            'value',
             undefined,
             () => this.refreshFilter(),
             ChannelEditor._types
@@ -243,7 +243,7 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
     // Ermittelt die Liste der relevanten Quellen neu.
     private refreshFilter(): void {
         // Alle Quellen bezüglich der aktiven Filter untersuchen.
-        var sourceNames = this.allSources
+        const sourceNames = this.allSources
             .filter((s) => {
                 if (!this.applyEncryptionFilter(s)) return false
                 if (!this.applyTypeFilter(s)) return false
@@ -254,14 +254,14 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
             .map((s) => s.name)
 
         // Aktuelle Quelle zusätzliche in die Liste einmischen, so dass immer eine korrekte Auswahl existiert.
-        var source = this.value
+        const source = this.value
 
         if ((source || '').trim().length > 0)
             if (sourceNames.indexOf(source!) < 0) {
-                var cmp = source!.toLocaleUpperCase()
-                var insertAt = -1
+                const cmp = source!.toLocaleUpperCase()
+                let insertAt = -1
 
-                for (var i = 0; i < sourceNames.length; i++)
+                for (let i = 0; i < sourceNames.length; i++)
                     if (cmp.localeCompare(sourceNames[i].toLocaleUpperCase()) < 0) {
                         insertAt = i
 
@@ -274,7 +274,7 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
             }
 
         // Der erste Eintrag erlaubt es immer auch einfach mal keinen Sender auszuwählen.
-        this.sourceName.allowedValues = [uiValue(``, '(Keine Quelle)')].concat(sourceNames.map((s) => uiValue(s)))
+        this.sourceName.allowedValues = [uiValue('', '(Keine Quelle)')].concat(sourceNames.map((s) => uiValue(s)))
 
         // Anzeige aktualisieren.
         this.refresh()

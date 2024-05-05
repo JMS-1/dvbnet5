@@ -4,7 +4,7 @@ import { IPage, Page } from './page'
 import { Command, ICommand } from '../../lib/command/command'
 import { DateTimeUtils } from '../../lib/dateTimeUtils'
 import { BooleanProperty, IToggableFlag } from '../../lib/edit/boolean/flag'
-import { IValueFromList, SelectSingleFromList, uiValue } from '../../lib/edit/list'
+import { IValueFromList, SingleListProperty, uiValue } from '../../lib/edit/list'
 import { IString, StringProperty } from '../../lib/edit/text/text'
 import { guideEncryption } from '../../web/guideEncryption'
 import { GuideInfoCache } from '../../web/GuideInfoCache'
@@ -111,7 +111,7 @@ export class GuidePage extends Page implements IGuidePage {
     }
 
     // Schnittstelle zur Auswahl des zu betrachtenden Gerätes.
-    readonly profiles = new SelectSingleFromList<string>(
+    readonly profiles = new SingleListProperty<string>(
         this._filter,
         'device',
         'Gerät',
@@ -120,10 +120,10 @@ export class GuidePage extends Page implements IGuidePage {
     )
 
     // Schnittstelle zur Auswahl der Quelle.
-    readonly sources = new SelectSingleFromList<string>(this._filter, 'station', 'Quelle', () => this.query(), [])
+    readonly sources = new SingleListProperty<string>(this._filter, 'station', 'Quelle', () => this.query(), [])
 
     // Schnittstelle zur Auswahl der Einschränkung auf die Verschlüsselung.
-    readonly encrpytion = new SelectSingleFromList(
+    readonly encrpytion = new SingleListProperty(
         this._filter,
         'cryptFilter',
         undefined,
@@ -132,7 +132,7 @@ export class GuidePage extends Page implements IGuidePage {
     )
 
     // Schnittstelle zur Auswahl der Einschränkung auf die Art der Quelle.
-    readonly sourceType = new SelectSingleFromList(
+    readonly sourceType = new SingleListProperty(
         this._filter,
         'typeFilter',
         undefined,
@@ -141,7 +141,7 @@ export class GuidePage extends Page implements IGuidePage {
     )
 
     // Schnittstelle zum Setzen eines bestimmten Tags für den Anfang der Ergebnisliste.
-    readonly days = new SelectSingleFromList<string>(
+    readonly days = new SingleListProperty<string>(
         this._filter,
         'start',
         undefined,
@@ -150,7 +150,7 @@ export class GuidePage extends Page implements IGuidePage {
     )
 
     // Schnittstelle zum Setzen einer bestimmten Uhrzeit für den Anfange der Ergebnisliste.
-    readonly hours = new SelectSingleFromList(
+    readonly hours = new SingleListProperty(
         { value: -1 },
         'value',
         undefined,
@@ -214,7 +214,7 @@ export class GuidePage extends Page implements IGuidePage {
     entries: GuideEntry[] = []
 
     // Die aktuelle Liste der für das Gerät angelegten Aufträg.
-    private _jobSelector = new SelectSingleFromList<string>({}, 'value', 'zum Auftrag').addRequiredValidator()
+    private _jobSelector = new SingleListProperty<string>({}, 'value', 'zum Auftrag').addRequiredValidator()
 
     // Gesetzt, wenn eine nächste Seite der Ergebnisliste existiert.
     private _hasMore? = false

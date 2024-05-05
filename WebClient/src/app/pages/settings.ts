@@ -2,7 +2,7 @@
 
 import { Command, ICommand } from '../../lib/command/command'
 import { BooleanProperty, IFlag } from '../../lib/edit/boolean/flag'
-import { IValueFromList, SelectSingleFromList, uiValue } from '../../lib/edit/list'
+import { IValueFromList, SingleListProperty, uiValue } from '../../lib/edit/list'
 import { INumber, NumberProperty } from '../../lib/edit/number/number'
 import { setUserProfile } from '../../web/IUserProfileContract'
 import { Application } from '../app'
@@ -154,7 +154,7 @@ export class SettingsPage extends Page implements ISettingsPage {
     )
 
     // Die bevorzugte Einschränkung auf die Art der Quellen bei der Auswahl einer Quelle für eine Aufzeichnung.
-    readonly sourceType = new SelectSingleFromList(
+    readonly sourceType = new SingleListProperty(
         {},
         'typeFilter',
         undefined,
@@ -163,7 +163,7 @@ export class SettingsPage extends Page implements ISettingsPage {
     ).addRequiredValidator()
 
     // Die bevorzugte Einschränkung auf die Verschlüsselung der Quellen bei der Auswahl einer Quelle für eine Aufzeichnung.
-    readonly encryption = new SelectSingleFromList(
+    readonly encryption = new SingleListProperty(
         {},
         'encryptionFilter',
         undefined,

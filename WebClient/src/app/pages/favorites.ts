@@ -1,4 +1,4 @@
-﻿import { IValueFromList, IUiValue, uiValue, SelectSingleFromList } from '../../lib/edit/list'
+﻿import { IValueFromList, IUiValue, uiValue, SingleListProperty } from '../../lib/edit/list'
 import { ISavedGuideQueryContract, updateSearchQueries } from '../../web/ISavedGuideQueryContract'
 import { Application } from '../app'
 import { IFavorite, Favorite } from './favorites/entry'
@@ -22,7 +22,7 @@ export class FavoritesPage extends Page implements IFavoritesPage {
     ]
 
     // Erlaubt die Einschränklung der Anzeige auf nur die Suchen, zu denen aktuell auch Sendungen in der Programmzeitschrift existieren.
-    readonly onlyWithCount = new SelectSingleFromList(
+    readonly onlyWithCount = new SingleListProperty(
         { value: true },
         'value',
         undefined,

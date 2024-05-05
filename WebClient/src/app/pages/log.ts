@@ -1,6 +1,6 @@
 ﻿import { DateTimeUtils } from '../../lib/dateTimeUtils'
 import { IToggableFlag, BooleanProperty } from '../../lib/edit/boolean/flag'
-import { IValueFromList, SelectSingleFromList, IUiValue, uiValue } from '../../lib/edit/list'
+import { IValueFromList, SingleListProperty, IUiValue, uiValue } from '../../lib/edit/list'
 import { ProfileCache } from '../../web/ProfileCache'
 import { getProtocolEntries } from '../../web/IProtocolEntryContract'
 import { Application } from '../app'
@@ -34,7 +34,7 @@ export class LogPage extends Page implements ILogPage {
     private _disableLoad = true
 
     // Alle benutzen Geräte.
-    readonly profiles = new SelectSingleFromList<string>({}, 'value', 'Protokollbereich', () => this.load(), [])
+    readonly profiles = new SingleListProperty<string>({}, 'value', 'Protokollbereich', () => this.load(), [])
 
     // Anzahl zur Anzeige von Aktualisierungen der Programmzeitschrift.
     readonly showGuide = new BooleanProperty({}, 'value', 'Programmzeitschrift', () => this.refreshUi())
@@ -46,7 +46,7 @@ export class LogPage extends Page implements ILogPage {
     readonly showLive = new BooleanProperty({}, 'value', 'Zapping', () => this.refreshUi())
 
     // Auswahl des Startzeitpunkts zur Anzeige.
-    readonly startDay: SelectSingleFromList<string>
+    readonly startDay: SingleListProperty<string>
 
     // Alle Protokolleinträge.
     private _entries: LogEntry[] = []
@@ -87,7 +87,7 @@ export class LogPage extends Page implements ILogPage {
         }
 
         // Auswahlliste aufsetzen.
-        this.startDay = new SelectSingleFromList({}, '_value', undefined, () => this.load(), days)
+        this.startDay = new SingleListProperty({}, '_value', undefined, () => this.load(), days)
     }
 
     // Initialisiert das Präsentationsmodell.
