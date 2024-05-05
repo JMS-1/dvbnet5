@@ -1,4 +1,6 @@
-﻿import * as React from 'react'
+﻿/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
+import * as React from 'react'
 
 import { EditException } from './edit/exception'
 import { JobData } from './edit/job'

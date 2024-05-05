@@ -245,7 +245,7 @@ export class EditPage extends Page implements IEditPage {
 
         // Asynchrone Operation anfordern.
         return updateSchedule(this._jobScheduleInfo?.jobId ?? '', this._jobScheduleInfo?.scheduleId ?? '', {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
             job: this._jobScheduleInfo?.job!,
             schedule,
         }).then(() => {
