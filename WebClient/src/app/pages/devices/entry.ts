@@ -1,12 +1,12 @@
-﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
-import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+﻿import { Controller, IDeviceController } from './controller'
+
+import { DateTimeUtils } from '../../../lib/dateTimeUtils'
+import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
 import { IConnectable, IView } from '../../../lib/site'
 import { ITimeBar, TimeBar } from '../../../lib/timebar'
-import { Guide } from '../../../pages/guide'
-import { IGuideItemContract, getGuideItem } from '../../../web/IGuideItemContract'
+import { getGuideItem, IGuideItemContract } from '../../../web/IGuideItemContract'
 import { IPlanCurrentContract } from '../../../web/IPlanCurrentContract'
 import { GuideInfo, IGuideInfo } from '../guide/entry'
-import { IDeviceController, Controller } from './controller'
 
 // Ansicht einer Aktivität.
 export interface IDeviceInfo extends IConnectable {
@@ -74,18 +74,18 @@ export class Info implements IDeviceInfo {
             this.displayEnd = DateTimeUtils.formatEndTime(this._end)
 
             // Das Präsentationsmodell für die Steuerung bei Bedarf erstellen.
-            if (this.mode === `running`) this.controller = new Controller(_model, suppressHibernate, reload)
+            if (this.mode === 'running') this.controller = new Controller(_model, suppressHibernate, reload)
         }
 
         // Präsentationsmodell für die Detailansicht erstellen.
-        this.showGuide = new Flag(
+        this.showGuide = new BooleanProperty(
             {},
             'value',
             undefined,
             () => toggleDetails(this, true),
-            () => !this._model.epg || !this._model.device || !this._model.source || this.mode === `null`
+            () => !this._model.epg || !this._model.device || !this._model.source || this.mode === 'null'
         )
-        this.showControl = new Flag(
+        this.showControl = new BooleanProperty(
             {},
             'value',
             undefined,

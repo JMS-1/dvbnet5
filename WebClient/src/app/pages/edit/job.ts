@@ -1,4 +1,4 @@
-﻿import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+﻿import { IFlag, BooleanProperty } from '../../../lib/edit/boolean/flag'
 import { IValueFromList, IUiValue, SelectSingleFromList } from '../../../lib/edit/list'
 import { IEditJobContract } from '../../../web/IEditJobContract'
 import { IPage } from '../page'
@@ -30,7 +30,7 @@ export class JobEditor extends JobScheduleEditor<IEditJobContract> implements IJ
         super(page, model, favoriteSources, onChange)
 
         // Pflegekomponenten erstellen
-        this.deviceLock = new Flag(this.model, 'lockedToDevice', '(auf diesem Gerät aufzeichnen)', onChange)
+        this.deviceLock = new BooleanProperty(this.model, 'lockedToDevice', '(auf diesem Gerät aufzeichnen)', onChange)
         this.folder = new SelectSingleFromList(this.model, 'directory', 'Verzeichnis', onChange, folders)
         this.device = new SelectSingleFromList(
             this.model,
@@ -57,7 +57,7 @@ export class JobEditor extends JobScheduleEditor<IEditJobContract> implements IJ
     readonly device: SelectSingleFromList<string>
 
     // Gesetzt, wenn die Aufzeichnung immer auf dem Gerät stattfinden soll.
-    readonly deviceLock: Flag
+    readonly deviceLock: BooleanProperty
 
     // Gesetzt, wenn die Einstellungen des Auftrags gültig sind.
     isValid(): boolean {

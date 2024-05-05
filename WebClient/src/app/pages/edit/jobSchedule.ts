@@ -1,4 +1,4 @@
-﻿import { Flag, IFlag } from '../../../lib/edit/boolean/flag'
+﻿import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
 import { IString, StringProperty } from '../../../lib/edit/text/text'
 import { IDisplay } from '../../../lib/localizable'
 import { IEditJobScheduleCommonContract } from '../../../web/IEditJobScheduleCommonContract'
@@ -56,11 +56,11 @@ export abstract class JobScheduleEditor<TModelType extends IEditJobScheduleCommo
         this.name = new StringProperty(this.model, 'name', 'Name', onChange)
         this.source = new ChannelEditor(page.application.profile, this.model, 'sourceName', favoriteSources, onChange)
         this.sourceFlags = {
-            allLanguages: new Flag(this.model, 'allLanguages', 'Alle Sprachen', onChange, noSource),
-            includeDolby: new Flag(this.model, 'includeDolby', 'Dolby Digital (AC3)', onChange, noSource),
+            allLanguages: new BooleanProperty(this.model, 'allLanguages', 'Alle Sprachen', onChange, noSource),
+            includeDolby: new BooleanProperty(this.model, 'includeDolby', 'Dolby Digital (AC3)', onChange, noSource),
             text: 'Besonderheiten',
-            withSubtitles: new Flag(this.model, 'withSubtitles', 'DVB Untertitel', onChange, noSource),
-            withVideotext: new Flag(this.model, 'withVideotext', 'Videotext', onChange, noSource),
+            withSubtitles: new BooleanProperty(this.model, 'withSubtitles', 'DVB Untertitel', onChange, noSource),
+            withVideotext: new BooleanProperty(this.model, 'withVideotext', 'Videotext', onChange, noSource),
         }
 
         // Zusätzliche Prüfungen einrichten.
@@ -83,10 +83,10 @@ export abstract class JobScheduleEditor<TModelType extends IEditJobScheduleCommo
     // Aufzeichnungsoptionen.
     readonly sourceFlags: {
         readonly text: string
-        readonly allLanguages: Flag
-        readonly includeDolby: Flag
-        readonly withVideotext: Flag
-        readonly withSubtitles: Flag
+        readonly allLanguages: BooleanProperty
+        readonly includeDolby: BooleanProperty
+        readonly withVideotext: BooleanProperty
+        readonly withSubtitles: BooleanProperty
     }
 
     // Gesetzt, wenn die Einstellungen der Quelle gültig sind.

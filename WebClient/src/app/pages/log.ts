@@ -1,5 +1,5 @@
 ﻿import { DateTimeUtils } from '../../lib/dateTimeUtils'
-import { IToggableFlag, Flag } from '../../lib/edit/boolean/flag'
+import { IToggableFlag, BooleanProperty } from '../../lib/edit/boolean/flag'
 import { IValueFromList, SelectSingleFromList, IUiValue, uiValue } from '../../lib/edit/list'
 import { ProfileCache } from '../../web/ProfileCache'
 import { getProtocolEntries } from '../../web/IProtocolEntryContract'
@@ -37,13 +37,13 @@ export class LogPage extends Page implements ILogPage {
     readonly profiles = new SelectSingleFromList<string>({}, 'value', 'Protokollbereich', () => this.load(), [])
 
     // Anzahl zur Anzeige von Aktualisierungen der Programmzeitschrift.
-    readonly showGuide = new Flag({}, 'value', 'Programmzeitschrift', () => this.refreshUi())
+    readonly showGuide = new BooleanProperty({}, 'value', 'Programmzeitschrift', () => this.refreshUi())
 
     // Auswahl zur Anzige der Aktualisierungen der Quellen.
-    readonly showScan = new Flag({}, 'value', 'Sendersuchlauf', () => this.refreshUi())
+    readonly showScan = new BooleanProperty({}, 'value', 'Sendersuchlauf', () => this.refreshUi())
 
     // Auswahl zur Anzeige von LIVE Verwendung.
-    readonly showLive = new Flag({}, 'value', 'Zapping', () => this.refreshUi())
+    readonly showLive = new BooleanProperty({}, 'value', 'Zapping', () => this.refreshUi())
 
     // Auswahl des Startzeitpunkts zur Anzeige.
     readonly startDay: SelectSingleFromList<string>

@@ -1,6 +1,6 @@
 ﻿import { Command, ICommand } from '../../../lib/command/command'
 import { DateTimeUtils } from '../../../lib/dateTimeUtils'
-import { Flag, IFlag } from '../../../lib/edit/boolean/flag'
+import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
 import { INumberWithSlider, NumberWithSlider } from '../../../lib/edit/number/slider'
 import { IConnectable, IView } from '../../../lib/site'
 import { IPlanCurrentContract, updateEndTime } from '../../../web/IPlanCurrentContract'
@@ -49,7 +49,7 @@ export class Controller implements IDeviceController {
     )
 
     // Einstellung zum Umgang mit dem Schlafzustand beim Vorzeitigen beenden.
-    readonly noHibernate = new Flag({}, 'value', 'Übergang in den Schlafzustand unterdrücken')
+    readonly noHibernate = new BooleanProperty({}, 'value', 'Übergang in den Schlafzustand unterdrücken')
 
     // Befehl zur Aktualisierung der Endzeit.
     readonly update = new Command(() => this.save(), 'Übernehmen')

@@ -1,5 +1,5 @@
 ﻿import { ICommand, Command } from '../../lib/command/command'
-import { IFlag, Flag } from '../../lib/edit/boolean/flag'
+import { IFlag, BooleanProperty } from '../../lib/edit/boolean/flag'
 import { triggerTask } from '../../web/IPlanCurrentContract'
 import { doUrlCall } from '../../web/VCRServer'
 import { Application } from '../app'
@@ -51,7 +51,7 @@ export class HomePage extends Page implements IHomePage {
     )
 
     // Umschalter zur Anzeige des bereichs zum Starten der Programmzeitschrift.
-    readonly showStartGuide = new Flag(
+    readonly showStartGuide = new BooleanProperty(
         {},
         'value',
         'die Programmzeitschrift sobald wie möglich aktualisieren',
@@ -67,7 +67,7 @@ export class HomePage extends Page implements IHomePage {
     )
 
     // Umschalter zur Anzeige des Bereichs zum Starten eines Sendersuchlaufs.
-    readonly showStartScan = new Flag(
+    readonly showStartScan = new BooleanProperty(
         {},
         'value',
         'einen Sendersuchlauf sobald wie möglich durchführen',
@@ -76,7 +76,7 @@ export class HomePage extends Page implements IHomePage {
     )
 
     // Umschalter zur prüfung der Online verfügbaren Version des VCR.NET Recording Service.
-    readonly checkVersion = new Flag({}, 'value', 'neue Version', () => this.toggleVersionCheck())
+    readonly checkVersion = new BooleanProperty({}, 'value', 'neue Version', () => this.toggleVersionCheck())
 
     // Erstellt die Anwendungslogik.
     constructor(application: Application) {

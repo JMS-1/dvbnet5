@@ -1,5 +1,5 @@
 ﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
-import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+import { IFlag, BooleanProperty } from '../../../lib/edit/boolean/flag'
 import { IPlanExceptionContract } from '../../../web/IPlanExceptionContract'
 
 // Schnittstelle zur Anzeige und zum Entfernen einer Ausnahmeregel.
@@ -24,14 +24,14 @@ export class ScheduleException implements IScheduleException {
         public readonly model: IPlanExceptionContract,
         onChange: () => void
     ) {
-        this.isActive = new Flag({ value: true }, `value`, undefined, onChange)
+        this.isActive = new BooleanProperty({ value: true }, `value`, undefined, onChange)
 
         // Initiale Prüfungen ausführen.
         this.isActive.validate()
     }
 
     // Wird zurückgesetzt um die Ausnahmeregel beim Speichern zu entfernen.
-    readonly isActive: Flag
+    readonly isActive: BooleanProperty
 
     // Der Tag für den die Ausnahmeregel gilt.
     get dayDisplay(): string {

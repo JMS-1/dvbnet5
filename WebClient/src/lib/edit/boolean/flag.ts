@@ -13,7 +13,7 @@ export interface IToggableFlag extends IFlag {
 }
 
 // Verwaltet den Wahrheitswert in einer Eigenschaft - hier können wir uns vollständig auf die Implementierung der Basisklasse verlassen.
-export class Flag extends Property<boolean> implements IToggableFlag {
+export class BooleanProperty extends Property<boolean> implements IToggableFlag {
     // Befehl zum Umschalten des Wahrheitswertes.
     private _toggle: Command<void>
 

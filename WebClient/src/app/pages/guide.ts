@@ -3,7 +3,7 @@ import { IPage, Page } from './page'
 
 import { Command, ICommand } from '../../lib/command/command'
 import { DateTimeUtils } from '../../lib/dateTimeUtils'
-import { Flag, IToggableFlag } from '../../lib/edit/boolean/flag'
+import { BooleanProperty, IToggableFlag } from '../../lib/edit/boolean/flag'
 import { IValueFromList, SelectSingleFromList, uiValue } from '../../lib/edit/list'
 import { IString, StringProperty } from '../../lib/edit/text/text'
 import { guideEncryption } from '../../web/guideEncryption'
@@ -162,7 +162,9 @@ export class GuidePage extends Page implements IGuidePage {
     readonly queryString = new StringProperty({ value: '' }, 'value', 'Suche nach', () => this.delayedQuery())
 
     // Schnittstelle zur Pflege der Auswahl der Freitextsuche auf die Beschreibung.
-    readonly withContent = new Flag({ value: true }, 'value', 'Auch in Beschreibung suchen', () => this.query())
+    readonly withContent = new BooleanProperty({ value: true }, 'value', 'Auch in Beschreibung suchen', () =>
+        this.query()
+    )
 
     // Aktuelle Anmeldung für verzögerte Suchanfragen.
     private _timeout?: number

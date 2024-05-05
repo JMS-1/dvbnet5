@@ -1,7 +1,7 @@
 ﻿import { ISection, Section } from './section'
 
 import { Command, ICommand } from '../../../lib/command/command'
-import { Flag, IFlag } from '../../../lib/edit/boolean/flag'
+import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
 import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
 import { IMultiValueFromList, SelectMultipleFromList } from '../../../lib/edit/multiList'
 import { INumber, NumberProperty } from '../../../lib/edit/number/number'
@@ -53,7 +53,7 @@ export class GuideSection extends Section implements IAdminGuidePage {
     static readonly route = 'guide'
 
     // Gesetzt, wenn die automatische Aktualisierung der Programmzeitschrift aktiviert wurde.
-    readonly isActive = new Flag({}, 'value', 'Aktualisierung aktivieren', () => this.refreshUi())
+    readonly isActive = new BooleanProperty({}, 'value', 'Aktualisierung aktivieren', () => this.refreshUi())
 
     // Die Liste der Stunden, an denen eine automatische Aktivierung stattfinden soll.
     readonly hours = new SelectMultipleFromList<number>({}, 'hours', 'Uhrzeiten', undefined, AdminPage.hoursOfDay)
@@ -67,7 +67,7 @@ export class GuideSection extends Section implements IAdminGuidePage {
     )
 
     // Gesetzt, wenn auch die englische programmzeitschrift eingeschlossen werden soll.
-    readonly ukTv = new Flag({}, 'includeUK', 'Sendungsvorschau englischer Sender (FreeSat UK) abrufen')
+    readonly ukTv = new BooleanProperty({}, 'includeUK', 'Sendungsvorschau englischer Sender (FreeSat UK) abrufen')
 
     // Entfernt die ausgewählten Quellen aus der Liste der zu untersuchenden Quellen.
     readonly remove: Command<unknown> = new Command(

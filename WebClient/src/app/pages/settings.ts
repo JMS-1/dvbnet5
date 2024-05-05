@@ -1,7 +1,7 @@
 ﻿import { IPage, Page } from './page'
 
 import { Command, ICommand } from '../../lib/command/command'
-import { Flag, IFlag } from '../../lib/edit/boolean/flag'
+import { BooleanProperty, IFlag } from '../../lib/edit/boolean/flag'
 import { IValueFromList, SelectSingleFromList, uiValue } from '../../lib/edit/list'
 import { INumber, NumberProperty } from '../../lib/edit/number/number'
 import { setUserProfile } from '../../web/IUserProfileContract'
@@ -128,26 +128,26 @@ export class SettingsPage extends Page implements ISettingsPage {
         .addMaxValidator(240)
 
     // Gesetzt, wenn bevorzugt das Dolby-Digital Tonsignal mit aufgezeichnet werden soll.
-    readonly dolby = new Flag({}, 'dolby', 'Dolby Digital (AC3)')
+    readonly dolby = new BooleanProperty({}, 'dolby', 'Dolby Digital (AC3)')
 
     // Gesetzt, wenn bevorzugt alle Sprachen aufgezeichnet werden sollen.
-    readonly allAudio = new Flag({}, 'languages', 'Alle Sprachen')
+    readonly allAudio = new BooleanProperty({}, 'languages', 'Alle Sprachen')
 
     // Gesetzt, wenn bevorzugt der Videotext mit aufgezeichnet werden soll.
-    readonly ttx = new Flag({}, 'videotext', 'Videotext')
+    readonly ttx = new BooleanProperty({}, 'videotext', 'Videotext')
 
     // Gesetzt, wenn bevorzugt die DVB Untertitel mit aufgezeichnet werden soll.
-    readonly subs = new Flag({}, 'subtitles', 'DVB Untertitel')
+    readonly subs = new BooleanProperty({}, 'subtitles', 'DVB Untertitel')
 
     // Gesetzt, wenn beim Abbruch einer laufenden Aufzeichnung bevorzugt der Schlafzustand unterdrückt werden soll.
-    readonly noSleep = new Flag(
+    readonly noSleep = new BooleanProperty(
         {},
         'suppressHibernate',
         'Beim Abbrechen von Aufzeichnungen bevorzugt den Schlafzustand unterdrücken'
     )
 
     // Gesetzt, wenn nach dem Anlegen einer neuen Aufzeichnung aus der Programmzeitschrift in diese zurück gekehrt werden soll.
-    readonly backToGuide = new Flag(
+    readonly backToGuide = new BooleanProperty(
         {},
         'backToGuide',
         'Nach Anlegen einer neuen Aufzeichnung zurück zur Programmzeitschrift'

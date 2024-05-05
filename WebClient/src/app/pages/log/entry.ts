@@ -1,5 +1,5 @@
 ﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
-import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
+import { IFlag, BooleanProperty } from '../../../lib/edit/boolean/flag'
 import { IProtocolEntryContract } from '../../../web/IProtocolEntryContract'
 import { getFilePlayUrl } from '../../../web/VCRServer'
 
@@ -82,14 +82,14 @@ export class LogEntry implements ILogEntry {
     readonly isLive: boolean = false
 
     // Umschaltung für die Detailansicht.
-    readonly showDetail: Flag
+    readonly showDetail: BooleanProperty
 
     // Erstellt ein neues Präsentationsmodell.
     constructor(
         private readonly _model: IProtocolEntryContract,
         toggleDetail: (entry: LogEntry) => void
     ) {
-        this.showDetail = new Flag({ value: false }, `value`, undefined, () => toggleDetail(this))
+        this.showDetail = new BooleanProperty({ value: false }, `value`, undefined, () => toggleDetail(this))
 
         // Art der Aufzeichnung zum Filtern umsetzen.
         switch (_model.firstSourceName) {

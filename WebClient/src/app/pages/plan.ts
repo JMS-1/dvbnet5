@@ -1,5 +1,5 @@
 ﻿import { DateTimeUtils } from '../../lib/dateTimeUtils'
-import { IToggableFlag, Flag } from '../../lib/edit/boolean/flag'
+import { IToggableFlag, BooleanProperty } from '../../lib/edit/boolean/flag'
 import { IValueFromList, SelectSingleFromList, IUiValue, uiValue } from '../../lib/edit/list'
 import { getPlan } from '../../web/IPlanActivityContract'
 import { Application } from '../app'
@@ -29,7 +29,7 @@ export class PlanPage extends Page implements IPlanPage {
     }
 
     // Pflegt die Anzeige der Aufgaben.
-    readonly showTasks = new Flag({}, 'value', 'Aufgaben einblenden', () => this.fireRefresh())
+    readonly showTasks = new BooleanProperty({}, 'value', 'Aufgaben einblenden', () => this.fireRefresh())
 
     // Alle bekannten Datumsfilter.
     readonly startFilter = new SelectSingleFromList<Date>({}, 'value', undefined, () => this.fireRefresh(true), [])

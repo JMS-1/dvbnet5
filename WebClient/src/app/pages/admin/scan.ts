@@ -1,6 +1,6 @@
 ﻿import { ISection, Section } from './section'
 
-import { Flag, IFlag } from '../../../lib/edit/boolean/flag'
+import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
 import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
 import { IMultiValueFromList, SelectMultipleFromList } from '../../../lib/edit/multiList'
 import { INumber, NumberProperty } from '../../../lib/edit/number/number'
@@ -80,7 +80,7 @@ export class ScanSection extends Section implements IAdminScanPage {
         .addMaxValidator(55)
 
     // Gesetzt, wenn das Ergebnis der Aktualisierung mit der aktuellen Liste der Quellen zusammengeführt werden soll.
-    readonly merge = new Flag(
+    readonly merge = new BooleanProperty(
         {},
         'merge',
         'Senderliste nach dem Suchlauf mit der vorherigen zusammenführen (empfohlen)'

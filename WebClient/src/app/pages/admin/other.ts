@@ -1,6 +1,6 @@
 ﻿import { ISection, Section } from './section'
 
-import { Flag, IFlag } from '../../../lib/edit/boolean/flag'
+import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
 import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
 import { INumber, NumberProperty } from '../../../lib/edit/number/number'
 import { getOtherSettings, setOtherSettings } from '../../../web/admin/IOtherSettingsContract'
@@ -86,7 +86,7 @@ export class OtherSection extends Section implements IAdminOtherPage {
         .addMaxValidator(0xffff)
 
     // Gesetzt, wenn auch eine sichere Verbindung (SSL / HTTPS) unterstützt werden soll.
-    readonly ssl = new Flag({}, 'ssl', 'Sichere Verbindung zusätzlich anbieten')
+    readonly ssl = new BooleanProperty({}, 'ssl', 'Sichere Verbindung zusätzlich anbieten')
 
     // Der sichere (SSL) TCP/IP Port des Web Clients.
     readonly securePort = new NumberProperty({}, 'sslPort', 'TCP/IP Port für den sicheren Zugang', () =>
@@ -97,7 +97,7 @@ export class OtherSection extends Section implements IAdminOtherPage {
         .addMaxValidator(0xffff)
 
     // Gesetzt, wenn neben der integrierten Windows Sicherheit (NTLM Challenge/Response) auch die Standard Autorisierung (Basic) verwendet werden kann.
-    readonly basicAuth = new Flag(
+    readonly basicAuth = new BooleanProperty(
         {},
         'basicAuth',
         'Benutzererkennung über Basic (RFC 2617) zusätzlich erlauben (nicht empfohlen)'
@@ -126,7 +126,11 @@ export class OtherSection extends Section implements IAdminOtherPage {
         .addMaxValidator(60)
 
     // Gesetzt um die minimale Verweildauer im Schlafzustand zu unterdrücken.
-    readonly ignoreMinSleep = new Flag({}, 'suppressHibernationDelay', 'Pause für erzwungenen Schlafzustand ignorieren')
+    readonly ignoreMinSleep = new BooleanProperty(
+        {},
+        'suppressHibernationDelay',
+        'Pause für erzwungenen Schlafzustand ignorieren'
+    )
 
     // Die Verweildauer eines Protokolleintrags vor der automatischen Löscung (in Wochen).
     readonly logKeep = new NumberProperty({}, 'protocol', 'Aufbewahrungsdauer für Protokolle in Wochen', () =>
@@ -148,14 +152,14 @@ export class OtherSection extends Section implements IAdminOtherPage {
         .addMaxValidator(13)
 
     // Gesetzt, wenn die Systemzeit einer HDTV Aufzeichnung nicht automatisch ermittelt werden soll.
-    readonly noH264PCR = new Flag(
+    readonly noH264PCR = new BooleanProperty(
         {},
         'noH264PCR',
         'Systemzeit (PCR) in Aufzeichnungsdateien nicht aus einem H.264 Bildsignal ableiten'
     )
 
     // Gesetzt, wenn die Systemzeit einer SDTV Aufzeichnung nicht automatisch ermittelt werden soll.
-    readonly noMPEG2PCR = new Flag(
+    readonly noMPEG2PCR = new BooleanProperty(
         {},
         'noMPEG2PCR',
         'Systemzeit (PCR) in Aufzeichnungsdateien nicht aus einem MPEG2 Bildsignal ableiten'

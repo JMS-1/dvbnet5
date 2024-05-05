@@ -1,4 +1,4 @@
-﻿import { Flag, IFlag } from '../../../lib/edit/boolean/flag'
+﻿import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
 import { INumber, NumberProperty } from '../../../lib/edit/number/number'
 import { IProfileContract } from '../../../web/IProfileContract'
 
@@ -26,7 +26,7 @@ export class Device implements IDevice {
     readonly name: string
 
     // Gesetzt, wenn das Gerät für den VCR.NET Recording Service verwendet werden soll.
-    readonly active: Flag
+    readonly active: BooleanProperty
 
     // Planungspriorität des Gerätes.
     readonly priority: NumberProperty
@@ -56,13 +56,13 @@ export class Device implements IDevice {
             .addRequiredValidator()
             .addMinValidator(1)
             .addMaxValidator(32)
-        this.active = new Flag(profile, 'active', undefined, onChange).addValidator((flag) =>
+        this.active = new BooleanProperty(profile, 'active', undefined, onChange).addValidator((flag) =>
             this.validateDefaultDevice(flag)
         )
     }
 
     // Wird ein Gerät nicht verwendet, so darf es auch nicht als Vorgabegerät eingetragen sein.
-    private validateDefaultDevice(active: Flag): string | undefined {
+    private validateDefaultDevice(active: BooleanProperty): string | undefined {
         if (!active.value)
             if (this.name === this._defaultDevice())
                 return 'Das bevorzugte Geräteprofil muss auch für Aufzeichnungen verwendet werden.'
