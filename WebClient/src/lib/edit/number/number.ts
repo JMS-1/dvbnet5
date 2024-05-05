@@ -7,21 +7,21 @@ export interface INumber extends IProperty<number> {
 }
 
 // Verwaltet eine Eigenschaft mit einer (ganzen) Zahl (mit maximal 6 Ziffern - ohne führende Nullen).
-export class NumberProperty extends Property<number> implements INumber {
+export class NumberProperty<TDataType> extends Property<TDataType, number> implements INumber {
     // Erlaubt sind beliebige Sequenzen von Nullen oder maximal 6 Ziffern - mit einer beliebigen Anzahl von führenden Nullen.
     private static readonly _positiveNumber = /^(0+|(0*[1-9][0-9]{0,5}))$/
 
     // Legt eine neue Verwaltung an.
-    constructor(data?: unknown, prop?: string, name?: string, onChange?: () => void) {
+    constructor(data: TDataType, prop: keyof TDataType, name?: string, onChange?: () => void) {
         super(data, prop, name, onChange)
 
         // Spezielle Prüfung auf Fehleingaben.
-        this.addValidator(NumberProperty.isValidNumber)
+        this.addValidator((num) => num.isValidNumber)
     }
 
     // Prüft, ob eine gültige Zahl vorliegt.
-    private static isValidNumber(num: NumberProperty): string | undefined {
-        if (num._rawInput !== undefined) return 'Ungültige Zahl'
+    private get isValidNumber(): string | undefined {
+        if (this._rawInput !== undefined) return 'Ungültige Zahl'
     }
 
     // Entählt die aktuelle Fehleingabe.

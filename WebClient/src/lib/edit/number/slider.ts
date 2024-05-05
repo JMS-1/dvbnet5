@@ -17,7 +17,7 @@ export interface INumberWithSlider extends IConnectable {
 }
 
 // Steuerung für einen Schieberegeler für die Auswahl eines Wertes.
-export class NumberWithSlider extends Property<number> implements INumberWithSlider {
+export class NumberWithSlider<TDataType> extends Property<TDataType, number> implements INumberWithSlider {
     // Die aktuelle relative (0..1) Position des Reglers.
     private _position = 0
 
@@ -29,8 +29,8 @@ export class NumberWithSlider extends Property<number> implements INumberWithSli
 
     // Erstellt eine neue Steuerung.
     constructor(
-        data: unknown,
-        prop: string,
+        data: TDataType,
+        prop: keyof TDataType,
         onChange: () => void,
         private _min: number,
         private _max: number

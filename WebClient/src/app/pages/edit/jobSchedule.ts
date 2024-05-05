@@ -2,7 +2,7 @@
 import { IString, StringProperty } from '../../../lib/edit/text/text'
 import { IDisplay } from '../../../lib/localizable'
 import { IEditJobScheduleCommonContract } from '../../../web/IEditJobScheduleCommonContract'
-import { ChannelEditor, IChannelSelector } from '../channel'
+import { ChannelProperty, IChannelSelector } from '../channel'
 import { IPage } from '../page'
 
 // Schnittstelle zur Pflege der gemeinsamen Daten eines Auftrags oder einer Aufzeichnung.
@@ -54,13 +54,13 @@ export abstract class JobScheduleEditor<TModelType extends IEditJobScheduleCommo
 
         // Pflegekomponenten erstellen
         this.name = new StringProperty(this.model, 'name', 'Name', onChange)
-        this.source = new ChannelEditor(page.application.profile, this.model, 'sourceName', favoriteSources, onChange)
+        this.source = new ChannelProperty(page.application.profile, this.model, 'source', favoriteSources, onChange)
         this.sourceFlags = {
             allLanguages: new BooleanProperty(this.model, 'allLanguages', 'Alle Sprachen', onChange, noSource),
-            includeDolby: new BooleanProperty(this.model, 'includeDolby', 'Dolby Digital (AC3)', onChange, noSource),
+            includeDolby: new BooleanProperty(this.model, 'dolbyDigital', 'Dolby Digital (AC3)', onChange, noSource),
             text: 'Besonderheiten',
-            withSubtitles: new BooleanProperty(this.model, 'withSubtitles', 'DVB Untertitel', onChange, noSource),
-            withVideotext: new BooleanProperty(this.model, 'withVideotext', 'Videotext', onChange, noSource),
+            withSubtitles: new BooleanProperty(this.model, 'dvbSubtitles', 'DVB Untertitel', onChange, noSource),
+            withVideotext: new BooleanProperty(this.model, 'videotext', 'Videotext', onChange, noSource),
         }
 
         // Zusätzliche Prüfungen einrichten.
@@ -75,18 +75,18 @@ export abstract class JobScheduleEditor<TModelType extends IEditJobScheduleCommo
     }
 
     // Der Name des Auftrags.
-    readonly name: StringProperty
+    readonly name: StringProperty<TModelType>
 
     // Der Name der Quelle, die aufgezeichnet werden soll.
-    readonly source: ChannelEditor
+    readonly source: ChannelProperty<TModelType>
 
     // Aufzeichnungsoptionen.
     readonly sourceFlags: {
         readonly text: string
-        readonly allLanguages: BooleanProperty
-        readonly includeDolby: BooleanProperty
-        readonly withVideotext: BooleanProperty
-        readonly withSubtitles: BooleanProperty
+        readonly allLanguages: BooleanProperty<TModelType>
+        readonly includeDolby: BooleanProperty<TModelType>
+        readonly withVideotext: BooleanProperty<TModelType>
+        readonly withSubtitles: BooleanProperty<TModelType>
     }
 
     // Gesetzt, wenn die Einstellungen der Quelle gültig sind.

@@ -43,10 +43,10 @@ export class PlanException implements IPlanException {
         private _reload: () => void
     ) {
         this._originalStart = new Date(model.plannedStartISO)
-        this.startSlider = new NumberWithSlider(model, 'startShift', () => this.refreshUi(), -480, +480)
+        this.startSlider = new NumberWithSlider(model, 'exceptionStartShift', () => this.refreshUi(), -480, +480)
         this.durationSlider = new NumberWithSlider(
             model,
-            'timeDelta',
+            'exceptionDurationDelta',
             () => this.refreshUi(),
             -model.plannedDuration,
             +480
@@ -57,10 +57,10 @@ export class PlanException implements IPlanException {
     private _originalStart: Date
 
     // Der Regler zur Einstellung der Startzeitverschiebung.
-    readonly startSlider: NumberWithSlider
+    readonly startSlider
 
     // Der Regler zur Einstellung der Laufzeitveränderung.
-    readonly durationSlider: NumberWithSlider
+    readonly durationSlider
 
     // Befehl zum Zurücksetzen des Aufzeichnungsbereichs of die originalen Werte.
     readonly originalTime = new Command(() => this.setToOriginal(), 'Ursprüngliche Planung')

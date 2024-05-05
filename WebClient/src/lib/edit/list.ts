@@ -35,11 +35,11 @@ export function uiValue<TValueType>(value: TValueType, display?: string): IUiVal
 }
 
 // Beschreibt einen auswählbaren Wert.
-class SelectableValue<TValueType> implements ISelectableUiValue<TValueType> {
+class SelectableValue<TDataType, TValueType> implements ISelectableUiValue<TValueType> {
     // Erstellt eine neue Beschreibung für einen Wert.
     constructor(
         value: IUiValue<TValueType>,
-        private readonly _list: SingleListProperty<TValueType>
+        private readonly _list: SingleListProperty<TDataType, TValueType>
     ) {
         this.display = value.display
         this.value = value.value
@@ -80,14 +80,17 @@ export interface IValueFromList<TValueType> extends IProperty<TValueType> {
 }
 
 // Erlaubt die Auswahl eines einzelnen Wertes aus einer Liste erlaubter Werte.
-export class SingleListProperty<TValueType> extends Property<TValueType> implements IValueFromList<TValueType> {
+export class SingleListProperty<TDataType, TValueType = string>
+    extends Property<TDataType, TValueType>
+    implements IValueFromList<TValueType>
+{
     // Gesetzt während der Initialisierung.
     private readonly _startUp: boolean = true
 
     // Legt ein neues Präsentationsmodell an.
     constructor(
-        data?: unknown,
-        prop?: string,
+        data: TDataType,
+        prop: keyof TDataType,
         name?: string,
         onChange?: () => void,
         allowedValues: ISelectableUiValue<TValueType>[] = []
@@ -98,7 +101,7 @@ export class SingleListProperty<TValueType> extends Property<TValueType> impleme
         this.allowedValues = allowedValues
 
         // Prüfung anmelden.
-        this.addValidator(SingleListProperty.isInList)
+        this.addValidator((list) => SingleListProperty.isInList(list as SingleListProperty<unknown>))
 
         // Jetzt kann es losgehen.
         this._startUp = false
@@ -114,7 +117,7 @@ export class SingleListProperty<TValueType> extends Property<TValueType> impleme
     }
 
     // Die Liste der erlaubten Werte.
-    private _allowedValues: SelectableValue<TValueType>[]
+    private _allowedValues: SelectableValue<TDataType, TValueType>[]
 
     // Meldet die Liste der aktuell erlaubten Werte.
     get allowedValues(): ISelectableUiValue<TValueType>[] {
@@ -123,7 +126,7 @@ export class SingleListProperty<TValueType> extends Property<TValueType> impleme
 
     // Legt die Liste der aktuell erlaubten Werte neu fest.
     set allowedValues(values: ISelectableUiValue<TValueType>[]) {
-        this._allowedValues = (values || []).map((v) => new SelectableValue<TValueType>(v, this))
+        this._allowedValues = (values || []).map((v) => new SelectableValue(v, this))
 
         // Anzeige erneuern.
         if (!this._startUp) this.refresh()

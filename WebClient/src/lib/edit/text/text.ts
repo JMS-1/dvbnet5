@@ -4,9 +4,9 @@
 export interface IString extends IProperty<string> {}
 
 // Verwaltet eine Eigenschaft der Art Zeichenkette.
-export class StringProperty extends Property<string> implements IString {
+export class StringProperty<TDataType> extends Property<TDataType, string> implements IString {
     // Legt eine neue Verwaltung an.
-    constructor(data?: unknown, prop?: string, name?: string, onChange?: () => void) {
+    constructor(data: TDataType, prop: keyof TDataType, name?: string, onChange?: () => void) {
         super(data, prop, name, onChange)
     }
 

@@ -35,19 +35,23 @@ export class LogPage extends Page implements ILogPage {
     private _disableLoad = true
 
     // Alle benutzen Geräte.
-    readonly profiles = new SingleListProperty<string>({}, 'value', 'Protokollbereich', () => this.load(), [])
+    readonly profiles = new SingleListProperty({} as { value?: string }, 'value', 'Protokollbereich', () => this.load())
 
     // Anzahl zur Anzeige von Aktualisierungen der Programmzeitschrift.
-    readonly showGuide = new BooleanProperty({}, 'value', 'Programmzeitschrift', () => this.refreshUi())
+    readonly showGuide = new BooleanProperty({} as { value?: boolean }, 'value', 'Programmzeitschrift', () =>
+        this.refreshUi()
+    )
 
     // Auswahl zur Anzige der Aktualisierungen der Quellen.
-    readonly showScan = new BooleanProperty({}, 'value', 'Sendersuchlauf', () => this.refreshUi())
+    readonly showScan = new BooleanProperty({} as { value?: boolean }, 'value', 'Sendersuchlauf', () =>
+        this.refreshUi()
+    )
 
     // Auswahl zur Anzeige von LIVE Verwendung.
-    readonly showLive = new BooleanProperty({}, 'value', 'Zapping', () => this.refreshUi())
+    readonly showLive = new BooleanProperty({} as { value?: boolean }, 'value', 'Zapping', () => this.refreshUi())
 
     // Auswahl des Startzeitpunkts zur Anzeige.
-    readonly startDay: SingleListProperty<string>
+    readonly startDay
 
     // Alle Protokolleinträge.
     private _entries: LogEntry[] = []
@@ -88,7 +92,7 @@ export class LogPage extends Page implements ILogPage {
         }
 
         // Auswahlliste aufsetzen.
-        this.startDay = new SingleListProperty({}, '_value', undefined, () => this.load(), days)
+        this.startDay = new SingleListProperty({} as { _value?: string }, '_value', undefined, () => this.load(), days)
     }
 
     // Initialisiert das Präsentationsmodell.

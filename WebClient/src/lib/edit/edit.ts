@@ -14,11 +14,11 @@ export interface IProperty<TValueType> extends IDisplay, IConnectable {
 }
 
 // Basisklasse zur Pflege des Wertes einer einzelnen Eigenschaft.
-export abstract class Property<TValueType> implements IProperty<TValueType> {
+export abstract class Property<TDataType, TValueType, TProp = keyof TDataType> implements IProperty<TValueType> {
     // Initialisiert die Verwaltung des Wertes einer einzelnen Eigenschaft (_prop) im Modell (_data).
     protected constructor(
-        private _data: unknown = {},
-        private readonly _prop: string = 'value',
+        private _data: TDataType = {} as TDataType,
+        private readonly _prop: TProp,
         public readonly text: string | null = null,
         private readonly _onChange?: () => void,
         private readonly _testReadOnly?: () => boolean

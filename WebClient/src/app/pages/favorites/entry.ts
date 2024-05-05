@@ -114,17 +114,17 @@ export class Favorite implements IFavorite {
         // Ladevorgang anzeigen.
         this._count = null
 
-        // Suchbedingung in die Protokollnotation wandeln - naja, das ist nicht wirklich schwer.
+        // Suchbedingung in die Protokollnotation wandeln - Auflistungen sind etwas trickreich..
         const filter: IGuideFilterContract = {
             contentPattern: this.model.titleOnly ? '' : this.model.text,
-            sourceEncryption: this.model.encryption,
-            profileName: this.model.device,
             pageIndex: 0,
             pageSize: 0,
-            startISO: '',
+            profileName: this.model.device,
             source: this.model.source,
-            titlePattern: this.model.text,
+            sourceEncryption: this.model.encryption,
             sourceType: this.model.sourceType,
+            startISO: '',
+            titlePattern: this.model.text,
         }
 
         // Laden anstossen.

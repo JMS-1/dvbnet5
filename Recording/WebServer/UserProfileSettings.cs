@@ -204,7 +204,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static int DaysToShow
         {
-            get { return Profile.Read<int>("DaysToShow"); }
+            get { return Profile.Read<int>("DaysToShow", 7); }
             set { Profile.Write("DaysToShow", value); }
         }
 

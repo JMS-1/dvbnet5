@@ -15,7 +15,7 @@ export class RulesSection extends Section implements IAdminRulesPage {
     static readonly route = 'rules'
 
     // Die aktuellen Planungsregeln.
-    readonly rules = new StringProperty({}, 'rules')
+    readonly rules = new StringProperty({} as { rules?: string }, 'rules')
 
     // Fordert die aktuellen Planungsregeln vom VCR.NET Recording Service an.
     protected loadAsync(): void {

@@ -47,7 +47,7 @@ export interface IChannelSelector extends IProperty<string>, IConnectable {
 }
 
 // Stellt die Logik zur Auswahl eines Senders zur Verfügung.
-export class ChannelEditor extends Property<string> implements IChannelSelector {
+export class ChannelProperty<TDataType> extends Property<TDataType, string> implements IChannelSelector {
     // Die Auswahl der Verschlüsselung.
     private static readonly _encryptions = [
         uiValue(encryptionFilter.All, 'Alle Quellen'),
@@ -161,11 +161,11 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
         'value',
         undefined,
         () => this.refreshFilter(),
-        ChannelEditor._sections
+        ChannelProperty._sections
     )
 
     // Alle aktuell bezüglich aller Einschränkungen relevanten Quellen.
-    readonly sourceName = new SingleListProperty<string>(this, 'value').addValidator((n) => {
+    readonly sourceName = new SingleListProperty(this, 'value').addValidator((n) => {
         const source = n.value
 
         // Wenn eine Quelle ausgewählt wurde, dann muss sie auch von dem aktuellen Gerät empfangen werden können.
@@ -185,8 +185,8 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
     // Erstellt eine neue Logik zur Senderauswahl.
     constructor(
         profile: IUserProfileContract,
-        data: unknown,
-        prop: string,
+        data: TDataType,
+        prop: keyof TDataType,
         favoriteSources: string[],
         onChange: () => void
     ) {
@@ -194,18 +194,18 @@ export class ChannelEditor extends Property<string> implements IChannelSelector 
 
         // Voreinstellungen vorbereiten.
         this.encryption = new SingleListProperty(
-            { value: ChannelEditor.lookupEncryption(profile) },
+            { value: ChannelProperty.lookupEncryption(profile) },
             'value',
             undefined,
             () => this.refreshFilter(),
-            ChannelEditor._encryptions
+            ChannelProperty._encryptions
         )
         this.type = new SingleListProperty(
-            { value: ChannelEditor.lookupType(profile) },
+            { value: ChannelProperty.lookupType(profile) },
             'value',
             undefined,
             () => this.refreshFilter(),
-            ChannelEditor._types
+            ChannelProperty._types
         )
 
         // Initialen Filter vorbereiten.

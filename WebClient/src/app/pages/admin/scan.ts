@@ -59,14 +59,26 @@ export class ScanSection extends Section implements IAdminScanPage {
     ]
 
     // Die Art der Aktualisierung.
-    readonly mode = new SingleListProperty({}, 'value', undefined, () => this.refreshUi(), ScanSection._scanModes)
+    readonly mode = new SingleListProperty(
+        {} as { value?: scanConfigMode },
+        'value',
+        undefined,
+        () => this.refreshUi(),
+        ScanSection._scanModes
+    )
 
     // Die Stunden, an denen eine Aktualisierung ausgeführt werden soll.
-    readonly hours = new MultiListProperty({}, 'hours', 'Uhrzeiten', undefined, AdminPage.hoursOfDay)
+    readonly hours = new MultiListProperty(
+        {} as { hours?: number },
+        'hours',
+        'Uhrzeiten',
+        undefined,
+        AdminPage.hoursOfDay
+    )
 
     // Die maximale Dauer eines Suchlaufs (in Minuten).
     readonly duration = new NumberProperty(
-        {},
+        {} as { duration?: number },
         'duration',
         'Maximale Laufzeit für einen Sendersuchlauf in Minuten',
         () => this.update.refreshUi()
@@ -77,14 +89,17 @@ export class ScanSection extends Section implements IAdminScanPage {
 
     // Gesetzt, wenn das Ergebnis der Aktualisierung mit der aktuellen Liste der Quellen zusammengeführt werden soll.
     readonly merge = new BooleanProperty(
-        {},
+        {} as { merge?: boolean },
         'merge',
         'Senderliste nach dem Suchlauf mit der vorherigen zusammenführen (empfohlen)'
     )
 
     // Die minimale zeit zwischen zwei automatischen Aktualisierungen (in Tagen).
-    readonly gapDays = new NumberProperty({}, 'interval', 'Minimale Anzahl von Tagen zwischen zwei Suchläufen', () =>
-        this.update.refreshUi()
+    readonly gapDays = new NumberProperty(
+        {} as { interval?: number },
+        'interval',
+        'Minimale Anzahl von Tagen zwischen zwei Suchläufen',
+        () => this.update.refreshUi()
     )
         .addRequiredValidator()
         .addMinValidator(1)
@@ -92,7 +107,7 @@ export class ScanSection extends Section implements IAdminScanPage {
 
     // Die Zeit für eine vorgezogene Aktualisierung (in Tagen).
     readonly latency = new NumberProperty(
-        {},
+        {} as { joinDays?: number },
         'joinDays',
         'Latenzzeit für vorgezogene Aktualisierungen in Tagen (optional)',
         () => this.update.refreshUi()

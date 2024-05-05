@@ -60,11 +60,14 @@ class SelectableValue<TValueType> implements IToggableUiValue<TValueType> {
 }
 
 // Präsentationsmodell für eine Mehrfachauswahl von Werten aus einer Liste erlaubter Werte.
-export class MultiListProperty<TValueType> extends Property<TValueType[]> implements IMultiValueFromList<TValueType> {
+export class MultiListProperty<TDataType, TValueType = string>
+    extends Property<TDataType, TValueType[]>
+    implements IMultiValueFromList<TValueType>
+{
     // Legt eine neue Liste an.
     constructor(
-        data?: unknown,
-        prop?: string,
+        data: TDataType,
+        prop: keyof TDataType,
         name?: string,
         onChange?: () => void,
         allowedValues: IToggableUiValue<TValueType>[] = []

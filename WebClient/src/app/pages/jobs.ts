@@ -43,7 +43,13 @@ export class JobPage extends Page implements IJobPage {
     private static readonly _types = [uiValue(false, 'Aktiv'), uiValue(true, 'Archiviert')]
 
     // Schaltet zwischen der Ansicht der aktiven und archivierten Aufzeichnungen um.
-    readonly showArchived = new SingleListProperty({}, 'value', undefined, () => this.refreshUi(), JobPage._types)
+    readonly showArchived = new SingleListProperty(
+        {} as { value?: boolean },
+        'value',
+        undefined,
+        () => this.refreshUi(),
+        JobPage._types
+    )
 
     // Alle Aufträge.
     private _jobs: IJobPageJob[] = []

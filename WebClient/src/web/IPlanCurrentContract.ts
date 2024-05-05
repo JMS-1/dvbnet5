@@ -48,7 +48,7 @@ export interface IPlanCurrentContract {
 }
 
 export function getPlanCurrent(): Promise<IPlanCurrentContract[] | undefined> {
-    return doUrlCall('plan')
+    return doUrlCall('plan/current')
 }
 
 export function updateEndTime(

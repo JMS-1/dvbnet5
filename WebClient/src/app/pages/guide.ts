@@ -111,21 +111,15 @@ export class GuidePage extends Page implements IGuidePage {
     }
 
     // Schnittstelle zur Auswahl des zu betrachtenden Gerätes.
-    readonly profiles = new SingleListProperty<string>(
-        this._filter,
-        'device',
-        'Gerät',
-        () => this.onDeviceChanged(true),
-        []
-    )
+    readonly profiles = new SingleListProperty(this._filter, 'profileName', 'Gerät', () => this.onDeviceChanged(true))
 
     // Schnittstelle zur Auswahl der Quelle.
-    readonly sources = new SingleListProperty<string>(this._filter, 'station', 'Quelle', () => this.query(), [])
+    readonly sources = new SingleListProperty(this._filter, 'source', 'Quelle', () => this.query())
 
     // Schnittstelle zur Auswahl der Einschränkung auf die Verschlüsselung.
     readonly encrpytion = new SingleListProperty(
         this._filter,
-        'cryptFilter',
+        'sourceEncryption',
         undefined,
         () => this.query(),
         GuidePage._cryptOptions
@@ -134,20 +128,14 @@ export class GuidePage extends Page implements IGuidePage {
     // Schnittstelle zur Auswahl der Einschränkung auf die Art der Quelle.
     readonly sourceType = new SingleListProperty(
         this._filter,
-        'typeFilter',
+        'sourceType',
         undefined,
         () => this.query(),
         GuidePage._typeOptions
     )
 
     // Schnittstelle zum Setzen eines bestimmten Tags für den Anfang der Ergebnisliste.
-    readonly days = new SingleListProperty<string>(
-        this._filter,
-        'start',
-        undefined,
-        () => this.resetIndexAndQuery(),
-        []
-    )
+    readonly days = new SingleListProperty(this._filter, 'startISO', undefined, () => this.resetIndexAndQuery())
 
     // Schnittstelle zum Setzen einer bestimmten Uhrzeit für den Anfange der Ergebnisliste.
     readonly hours = new SingleListProperty(
@@ -214,7 +202,11 @@ export class GuidePage extends Page implements IGuidePage {
     entries: GuideEntry[] = []
 
     // Die aktuelle Liste der für das Gerät angelegten Aufträg.
-    private _jobSelector = new SingleListProperty<string>({}, 'value', 'zum Auftrag').addRequiredValidator()
+    private _jobSelector = new SingleListProperty(
+        {} as { value?: string },
+        'value',
+        'zum Auftrag'
+    ).addRequiredValidator()
 
     // Gesetzt, wenn eine nächste Seite der Ergebnisliste existiert.
     private _hasMore? = false

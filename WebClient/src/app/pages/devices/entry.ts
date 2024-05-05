@@ -79,14 +79,14 @@ export class Info implements IDeviceInfo {
 
         // Präsentationsmodell für die Detailansicht erstellen.
         this.showGuide = new BooleanProperty(
-            {},
+            {} as { value?: boolean },
             'value',
             undefined,
             () => toggleDetails(this, true),
             () => !this._model.hasGuideEntry || !this._model.profileName || !this._model.source || this.mode === 'null'
         )
         this.showControl = new BooleanProperty(
-            {},
+            {} as { value?: boolean },
             'value',
             undefined,
             () => toggleDetails(this, false),

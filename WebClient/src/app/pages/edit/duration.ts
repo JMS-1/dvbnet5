@@ -13,15 +13,21 @@ export interface IDurationEditor extends IDisplay {
 }
 
 // Präsentationsmodell zur Eingabe der Dauer einer Aufzeichnung als Paar von Uhrzeiten.
-export class DurationEditor extends Property<number> implements IDurationEditor {
+export class DurationProperty<TDataType> extends Property<TDataType, number> implements IDurationEditor {
     // Beginn (als Uhrzeit).
-    readonly startTime: TimeProperty
+    readonly startTime
 
     // Ende (als Uhrzeit).
-    readonly endTime: TimeProperty
+    readonly endTime
 
     // Erstellt ein neues Präsentationsmodell.
-    constructor(data: unknown, propTime: string, propDuration: string, text: string, onChange: () => void) {
+    constructor(
+        data: TDataType,
+        propTime: keyof TDataType,
+        propDuration: keyof TDataType,
+        text: string,
+        onChange: () => void
+    ) {
         super(data, propDuration, text, onChange)
 
         // Die Startzeit ändert direkt den entsprechenden Wert in den Daten der Aufzeichnung.

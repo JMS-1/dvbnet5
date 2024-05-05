@@ -39,15 +39,15 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     static readonly route = 'directories'
 
     // Die aktuelle Liste der Aufzeichnungsverzeichnisse.
-    readonly directories = new MultiListProperty<string>(
-        {},
+    readonly directories = new MultiListProperty(
+        {} as { value?: string },
         'value',
         undefined,
         () => this.remove && this.remove.refreshUi()
     )
 
     // Das aktuelle Muster für die Namen von Aufzeichnungsdateien.
-    readonly pattern = new StringProperty({}, 'pattern', 'Muster für Dateinamen', () =>
+    readonly pattern = new StringProperty({} as { pattern?: string }, 'pattern', 'Muster für Dateinamen', () =>
         this.update.refreshUi()
     ).addRequiredValidator()
 
@@ -62,9 +62,9 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     private _shareValidation?: string
 
     // Eingabe eines Netzwerklaufwerks.
-    readonly share = new StringProperty({}, 'value', 'Netzwerk-Share', () => this.refreshUi()).addValidator(
-        (v) => this._shareValidation || ''
-    )
+    readonly share = new StringProperty({} as { value?: string }, 'value', 'Netzwerk-Share', () =>
+        this.refreshUi()
+    ).addValidator((v) => this._shareValidation || '')
 
     // Gesetzt wenn die Verzeichnisauswahl angezeigt werden soll.
     get showBrowse(): boolean {
@@ -72,7 +72,9 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     }
 
     // Die aktuelle Verzeichnisauswahl.
-    readonly browse = new SingleListProperty<string>({}, 'value', 'Server-Verzeichnis', () => this.doBrowse())
+    readonly browse = new SingleListProperty({} as { value?: string }, 'value', 'Server-Verzeichnis', () =>
+        this.doBrowse()
+    )
 
     // Befehl um in der Verzeichnisauswahl zum übergeordneten Verzeichnis zu wechseln.
     readonly parent = new Command(

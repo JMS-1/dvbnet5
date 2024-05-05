@@ -19,12 +19,11 @@ export class DevicesSection extends Section implements IAdminDevicesPage {
     static readonly route = 'devices'
 
     // Präsentationsmodell zur Pflege des bevorzugten Gerätes.
-    readonly defaultDevice = new SingleListProperty<string>(
-        {},
+    readonly defaultDevice = new SingleListProperty(
+        {} as { defaultProfile?: string },
         'defaultProfile',
         'Bevorzugtes Gerät (zum Beispiel für neue Aufzeichnungen)',
-        () => this.refresh(),
-        []
+        () => this.refresh()
     )
         .addRequiredValidator()
         .addValidator((list) => this.validateDefaultDevice(list.value))

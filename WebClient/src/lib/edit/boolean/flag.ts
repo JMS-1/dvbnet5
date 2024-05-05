@@ -13,7 +13,7 @@ export interface IToggableFlag extends IFlag {
 }
 
 // Verwaltet den Wahrheitswert in einer Eigenschaft - hier können wir uns vollständig auf die Implementierung der Basisklasse verlassen.
-export class BooleanProperty extends Property<boolean> implements IToggableFlag {
+export class BooleanProperty<TDataType> extends Property<TDataType, boolean> implements IToggableFlag {
     // Befehl zum Umschalten des Wahrheitswertes.
     private _toggle: Command<void>
 
@@ -32,20 +32,26 @@ export class BooleanProperty extends Property<boolean> implements IToggableFlag 
     }
 
     // Legt eine neue Verwaltung an.
-    constructor(data?: unknown, prop?: string, name?: string, onChange?: () => void, testReadOnly?: () => boolean) {
+    constructor(
+        data: TDataType,
+        prop: keyof TDataType,
+        name?: string,
+        onChange?: () => void,
+        testReadOnly?: () => boolean
+    ) {
         super(data, prop, name, onChange, testReadOnly)
     }
 }
 
 // Verwaltet ein Bitfeld von Wahrheitswerten in einer Eigenschaft mit einer Zahl als Wert.
-export class FlagSet implements IFlag {
+export class FlagSet<TDataType> implements IFlag {
     // Prüfungen werden hierbei nicht individuell unterstützt.
     readonly message = ''
 
     // Erstelle eine Verwaltungsinstanz auf Basis der Verwaltung der elementaren Zahl.
     constructor(
         private _mask: number,
-        private readonly _flags: NumberProperty,
+        private readonly _flags: NumberProperty<TDataType>,
         public text: string
     ) {}
 

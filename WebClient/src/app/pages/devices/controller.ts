@@ -39,7 +39,7 @@ export class Controller implements IDeviceController {
     view: IView
 
     // Einstellung für die verbleibende Restzeit.
-    readonly remaining = new NumberWithSlider({}, 'value', () => this.refreshUi(), 0, 480)
+    readonly remaining = new NumberWithSlider({} as { value?: number }, 'value', () => this.refreshUi(), 0, 480)
 
     // Befehl um das sofortige Beenden vorzubereiten.
     readonly stopNow = new Command(
@@ -49,7 +49,11 @@ export class Controller implements IDeviceController {
     )
 
     // Einstellung zum Umgang mit dem Schlafzustand beim Vorzeitigen beenden.
-    readonly noHibernate = new BooleanProperty({}, 'value', 'Übergang in den Schlafzustand unterdrücken')
+    readonly noHibernate = new BooleanProperty(
+        {} as { value?: boolean },
+        'value',
+        'Übergang in den Schlafzustand unterdrücken'
+    )
 
     // Befehl zur Aktualisierung der Endzeit.
     readonly update = new Command(() => this.save(), 'Übernehmen')

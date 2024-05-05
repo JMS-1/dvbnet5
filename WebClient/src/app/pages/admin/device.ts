@@ -26,16 +26,16 @@ export class Device implements IDevice {
     readonly name: string
 
     // Gesetzt, wenn das Gerät für den VCR.NET Recording Service verwendet werden soll.
-    readonly active: BooleanProperty
+    readonly active
 
     // Planungspriorität des Gerätes.
-    readonly priority: NumberProperty
+    readonly priority
 
     // Anzahl der gleichzeitg entschlüsselbaren Quellen.
-    readonly decryption: NumberProperty
+    readonly decryption
 
     // Anzahl der gleichzeitig empfangbaren Quellen.
-    readonly sources: NumberProperty
+    readonly sources
 
     // Erstellt ein neues Präsentationsmodell.
     constructor(
@@ -48,7 +48,7 @@ export class Device implements IDevice {
             .addRequiredValidator()
             .addMinValidator(0)
             .addMaxValidator(100)
-        this.decryption = new NumberProperty(profile, 'ciLimit', undefined, onChange)
+        this.decryption = new NumberProperty(profile, 'decryptionLimit', undefined, onChange)
             .addRequiredValidator()
             .addMinValidator(0)
             .addMaxValidator(16)
@@ -56,13 +56,13 @@ export class Device implements IDevice {
             .addRequiredValidator()
             .addMinValidator(1)
             .addMaxValidator(32)
-        this.active = new BooleanProperty(profile, 'active', undefined, onChange).addValidator((flag) =>
+        this.active = new BooleanProperty(profile, 'usedForRecording', undefined, onChange).addValidator((flag) =>
             this.validateDefaultDevice(flag)
         )
     }
 
     // Wird ein Gerät nicht verwendet, so darf es auch nicht als Vorgabegerät eingetragen sein.
-    private validateDefaultDevice(active: BooleanProperty): string | undefined {
+    private validateDefaultDevice(active: BooleanProperty<IProfileContract>): string | undefined {
         if (!active.value)
             if (this.name === this._defaultDevice())
                 return 'Das bevorzugte Geräteprofil muss auch für Aufzeichnungen verwendet werden.'

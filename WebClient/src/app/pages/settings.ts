@@ -76,8 +76,11 @@ export class SettingsPage extends Page implements ISettingsPage {
     )
 
     // Die Anzahl von Tagen im Aufzeichnungsplan.
-    readonly planDays = new NumberProperty({}, 'planDays', 'Anzahl der Vorschautage im Aufzeichnungsplan', () =>
-        this.update.refreshUi()
+    readonly planDays = new NumberProperty(
+        {} as { planDays?: number },
+        'planDays',
+        'Anzahl der Vorschautage im Aufzeichnungsplan',
+        () => this.update.refreshUi()
     )
         .addRequiredValidator()
         .addMinValidator(1)
@@ -85,7 +88,7 @@ export class SettingsPage extends Page implements ISettingsPage {
 
     // Die maximale Anzahl von Quellen in der Liste zuletzt verwendeter Quellen.
     readonly maxFavorites = new NumberProperty(
-        {},
+        {} as { recentSourceLimit?: number },
         'recentSourceLimit',
         'Maximale Größe der Liste zuletzt verwendeter Sendern',
         () => this.update.refreshUi()
@@ -96,7 +99,7 @@ export class SettingsPage extends Page implements ISettingsPage {
 
     // Die Anzahl der Einträge auf einer Seite der Programmzeitschrift.
     readonly guideRows = new NumberProperty(
-        {},
+        {} as { guideRows?: number },
         'guideRows',
         'Anzahl der Einträge pro Seite in der Programmzeitschrift',
         () => this.update.refreshUi()
@@ -107,7 +110,7 @@ export class SettingsPage extends Page implements ISettingsPage {
 
     // Die Vorlaufzeit für neue Aufzeichnung, die aus der Programmzeitschrift angelegt werden (in Minuten).
     readonly preGuide = new NumberProperty(
-        {},
+        {} as { guideAheadStart?: number },
         'guideAheadStart',
         'Vorlaufzeit bei Programmierung über die Programmzeitschrift (in Minuten)',
         () => this.update.refreshUi()
@@ -118,7 +121,7 @@ export class SettingsPage extends Page implements ISettingsPage {
 
     // Die Nachlaufzeit für neue Aufzeichnung, die aus der Programmzeitschrift angelegt werden (in Minuten).
     readonly postGuide = new NumberProperty(
-        {},
+        {} as { guideBeyondEnd?: number },
         'guideBeyondEnd',
         'Nachlaufzeit bei Programmierung über die Programmzeitschrift (in Minuten)',
         () => this.update.refreshUi()
@@ -128,34 +131,34 @@ export class SettingsPage extends Page implements ISettingsPage {
         .addMaxValidator(240)
 
     // Gesetzt, wenn bevorzugt das Dolby-Digital Tonsignal mit aufgezeichnet werden soll.
-    readonly dolby = new BooleanProperty({}, 'dolby', 'Dolby Digital (AC3)')
+    readonly dolby = new BooleanProperty({} as { dolby?: boolean }, 'dolby', 'Dolby Digital (AC3)')
 
     // Gesetzt, wenn bevorzugt alle Sprachen aufgezeichnet werden sollen.
-    readonly allAudio = new BooleanProperty({}, 'languages', 'Alle Sprachen')
+    readonly allAudio = new BooleanProperty({} as { languages?: boolean }, 'languages', 'Alle Sprachen')
 
     // Gesetzt, wenn bevorzugt der Videotext mit aufgezeichnet werden soll.
-    readonly ttx = new BooleanProperty({}, 'videotext', 'Videotext')
+    readonly ttx = new BooleanProperty({} as { videotext?: boolean }, 'videotext', 'Videotext')
 
     // Gesetzt, wenn bevorzugt die DVB Untertitel mit aufgezeichnet werden soll.
-    readonly subs = new BooleanProperty({}, 'subtitles', 'DVB Untertitel')
+    readonly subs = new BooleanProperty({} as { subtitles?: boolean }, 'subtitles', 'DVB Untertitel')
 
     // Gesetzt, wenn beim Abbruch einer laufenden Aufzeichnung bevorzugt der Schlafzustand unterdrückt werden soll.
     readonly noSleep = new BooleanProperty(
-        {},
+        {} as { suppressHibernate?: boolean },
         'suppressHibernate',
         'Beim Abbrechen von Aufzeichnungen bevorzugt den Schlafzustand unterdrücken'
     )
 
     // Gesetzt, wenn nach dem Anlegen einer neuen Aufzeichnung aus der Programmzeitschrift in diese zurück gekehrt werden soll.
     readonly backToGuide = new BooleanProperty(
-        {},
+        {} as { backToGuide?: boolean },
         'backToGuide',
         'Nach Anlegen einer neuen Aufzeichnung zurück zur Programmzeitschrift'
     )
 
     // Die bevorzugte Einschränkung auf die Art der Quellen bei der Auswahl einer Quelle für eine Aufzeichnung.
     readonly sourceType = new SingleListProperty(
-        {},
+        {} as { typeFilter?: string },
         'typeFilter',
         undefined,
         undefined,
@@ -164,7 +167,7 @@ export class SettingsPage extends Page implements ISettingsPage {
 
     // Die bevorzugte Einschränkung auf die Verschlüsselung der Quellen bei der Auswahl einer Quelle für eine Aufzeichnung.
     readonly encryption = new SingleListProperty(
-        {},
+        {} as { encryptionFilter?: string },
         'encryptionFilter',
         undefined,
         undefined,

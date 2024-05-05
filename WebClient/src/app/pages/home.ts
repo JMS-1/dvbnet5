@@ -53,7 +53,7 @@ export class HomePage extends Page implements IHomePage {
 
     // Umschalter zur Anzeige des bereichs zum Starten der Programmzeitschrift.
     readonly showStartGuide = new BooleanProperty(
-        {},
+        {} as { value?: boolean },
         'value',
         'die Programmzeitschrift sobald wie möglich aktualisieren',
         () => this.refreshUi(),
@@ -69,7 +69,7 @@ export class HomePage extends Page implements IHomePage {
 
     // Umschalter zur Anzeige des Bereichs zum Starten eines Sendersuchlaufs.
     readonly showStartScan = new BooleanProperty(
-        {},
+        {} as { value?: boolean },
         'value',
         'einen Sendersuchlauf sobald wie möglich durchführen',
         () => this.refreshUi(),
@@ -77,7 +77,9 @@ export class HomePage extends Page implements IHomePage {
     )
 
     // Umschalter zur prüfung der Online verfügbaren Version des VCR.NET Recording Service.
-    readonly checkVersion = new BooleanProperty({}, 'value', 'neue Version', () => this.toggleVersionCheck())
+    readonly checkVersion = new BooleanProperty({} as { value?: string }, 'value', 'neue Version', () =>
+        this.toggleVersionCheck()
+    )
 
     // Erstellt die Anwendungslogik.
     constructor(application: Application) {

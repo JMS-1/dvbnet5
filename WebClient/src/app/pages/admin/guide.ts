@@ -9,7 +9,7 @@ import { getGuideSettings, IGuideSettingsContract, setGuideSettings } from '../.
 import { ProfileCache } from '../../../web/ProfileCache'
 import { ProfileSourcesCache } from '../../../web/ProfileSourcesCache'
 import { AdminPage } from '../admin'
-import { ChannelEditor, IChannelSelector } from '../channel'
+import { ChannelProperty, IChannelSelector } from '../channel'
 
 // Schnittstelle zur Pflege der Konfiguration der Programmzeitschrift.
 export interface IAdminGuidePage extends ISection {
@@ -53,21 +53,33 @@ export class GuideSection extends Section implements IAdminGuidePage {
     static readonly route = 'guide'
 
     // Gesetzt, wenn die automatische Aktualisierung der Programmzeitschrift aktiviert wurde.
-    readonly isActive = new BooleanProperty({}, 'value', 'Aktualisierung aktivieren', () => this.refreshUi())
+    readonly isActive = new BooleanProperty({} as { value?: boolean }, 'value', 'Aktualisierung aktivieren', () =>
+        this.refreshUi()
+    )
 
     // Die Liste der Stunden, an denen eine automatische Aktivierung stattfinden soll.
-    readonly hours = new MultiListProperty<number>({}, 'hours', 'Uhrzeiten', undefined, AdminPage.hoursOfDay)
+    readonly hours = new MultiListProperty(
+        {} as { hours?: number },
+        'hours',
+        'Uhrzeiten',
+        undefined,
+        AdminPage.hoursOfDay
+    )
 
     // Alle Quellen, deren Programmzeitschrift ausgelesen werden soll.
-    readonly sources = new MultiListProperty<string>(
-        {},
+    readonly sources = new MultiListProperty(
+        {} as { value?: string },
         'value',
         undefined,
         () => this.remove && this.remove.refreshUi()
     )
 
     // Gesetzt, wenn auch die englische programmzeitschrift eingeschlossen werden soll.
-    readonly ukTv = new BooleanProperty({}, 'includeUK', 'Sendungsvorschau englischer Sender (FreeSat UK) abrufen')
+    readonly ukTv = new BooleanProperty(
+        {} as { includeUK?: boolean },
+        'includeUK',
+        'Sendungsvorschau englischer Sender (FreeSat UK) abrufen'
+    )
 
     // Entfernt die ausgewählten Quellen aus der Liste der zu untersuchenden Quellen.
     readonly remove: Command<unknown> = new Command(
@@ -77,15 +89,15 @@ export class GuideSection extends Section implements IAdminGuidePage {
     )
 
     // Die Auswahl eines Geräte für die folgende Auswahl einer Quelle.
-    readonly device = new SingleListProperty<string>(
-        {},
+    readonly device = new SingleListProperty(
+        {} as { value?: string },
         'value',
         'Gerät',
         () => !this.page.application.isBusy && this.loadSources()
     )
 
     // Die Auswahl einer Quelle des aktuell ausgewählten Gerätes.
-    readonly source: ChannelEditor
+    readonly source
 
     // Fügt eine Quelle zur Liste der zu untersuchenden Quellen hinzu.
     readonly add = new Command(
@@ -95,8 +107,11 @@ export class GuideSection extends Section implements IAdminGuidePage {
     )
 
     // Maximale Dauer für die Sammlung der Programmzeitschrift (in Minuten).
-    readonly duration = new NumberProperty({}, 'duration', 'Maximale Laufzeit einer Aktualisierung in Minuten', () =>
-        this.update.refreshUi()
+    readonly duration = new NumberProperty(
+        {} as { duration?: number },
+        'duration',
+        'Maximale Laufzeit einer Aktualisierung in Minuten',
+        () => this.update.refreshUi()
     )
         .addRequiredValidator()
         .addMinValidator(5)
@@ -104,7 +119,7 @@ export class GuideSection extends Section implements IAdminGuidePage {
 
     // Minimale Dauer zwischen zwei Sammlungen (in Minuten).
     readonly delay = new NumberProperty(
-        {},
+        {} as { minDelay?: number },
         'minDelay',
         'Wartezeit zwischen zwei Aktualisierungen in Stunden (optional)',
         () => this.update.refreshUi()
@@ -114,7 +129,7 @@ export class GuideSection extends Section implements IAdminGuidePage {
 
     // Interval für die vorgezogene Sammlung (in Minuten).
     readonly latency = new NumberProperty(
-        {},
+        {} as { joinHours?: number },
         'joinHours',
         'Latenzzeit für vorgezogene Aktualisierungen in Stunden (optional)',
         () => this.update.refreshUi()
@@ -127,9 +142,9 @@ export class GuideSection extends Section implements IAdminGuidePage {
         super(page)
 
         // Auswahl der Quelle vorbereiten.
-        this.source = new ChannelEditor(
+        this.source = new ChannelProperty(
             page.application.profile,
-            {},
+            {} as { value?: boolean },
             'value',
             this.page.application.profile.recentSources || [],
             () => this.refreshUi()

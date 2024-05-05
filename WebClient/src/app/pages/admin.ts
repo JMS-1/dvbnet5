@@ -63,7 +63,13 @@ export class AdminPage extends Page implements IAdminPage {
     ]
 
     // Präsentationsmodell zur Auswahl des aktuellen Konfigurationsbereichs.
-    readonly sections = new SingleListProperty({}, 'value', undefined, undefined, this._sections)
+    readonly sections = new SingleListProperty(
+        {} as { value?: SectionInfo },
+        'value',
+        undefined,
+        undefined,
+        this._sections
+    )
 
     // Erstellt ein neues Präsentationsmodell für die Seite.
     constructor(application: Application) {

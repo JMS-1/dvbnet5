@@ -31,7 +31,7 @@ export class ScheduleException implements IScheduleException {
     }
 
     // Wird zurückgesetzt um die Ausnahmeregel beim Speichern zu entfernen.
-    readonly isActive: BooleanProperty
+    readonly isActive
 
     // Der Tag für den die Ausnahmeregel gilt.
     get dayDisplay(): string {

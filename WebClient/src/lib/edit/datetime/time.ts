@@ -12,7 +12,7 @@ export interface ITime extends IConnectable {
 }
 
 // Erlaubt die Eingabe einer Uhrzeit - tatsächlich gespeichert wird ein volles Datum mit Uhrezit.
-export class TimeProperty extends Property<string> implements ITime {
+export class TimeProperty<TDataType> extends Property<TDataType, string> implements ITime {
     // Die aktuelle Uhrzeit.
     private _rawValue: string
 
@@ -22,17 +22,17 @@ export class TimeProperty extends Property<string> implements ITime {
     }
 
     // Erstellt ein neues Präsentationsmodell.
-    constructor(data?: unknown, prop?: string, name?: string, onChange?: () => void) {
+    constructor(data: TDataType, prop: keyof TDataType, name?: string, onChange?: () => void) {
         super(data, prop, name, onChange)
 
         // Syntaxprüfung durchführen.
-        this.addValidator(TimeProperty.isValidTime)
+        this.addValidator((time) => time.isValidTime)
     }
 
     // Prüft, ob eine gültige Uhrzeit eingegeben wurde.
-    private static isValidTime(time: TimeProperty): string | undefined {
-        if (time._rawValue !== undefined)
-            if (DateTimeUtils.parseTime(time._rawValue) === null) return 'Ungültige Uhrzeit.'
+    private get isValidTime(): string | undefined {
+        if (this._rawValue !== undefined)
+            if (DateTimeUtils.parseTime(this._rawValue) === null) return 'Ungültige Uhrzeit.'
     }
 
     // Meldet die aktuelle Uhrzeit.

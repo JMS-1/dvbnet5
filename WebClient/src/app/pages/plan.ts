@@ -30,10 +30,18 @@ export class PlanPage extends Page implements IPlanPage {
     }
 
     // Pflegt die Anzeige der Aufgaben.
-    readonly showTasks = new BooleanProperty({}, 'value', 'Aufgaben einblenden', () => this.fireRefresh())
+    readonly showTasks = new BooleanProperty({} as { value?: boolean }, 'value', 'Aufgaben einblenden', () =>
+        this.fireRefresh()
+    )
 
     // Alle bekannten Datumsfilter.
-    readonly startFilter = new SingleListProperty<Date>({}, 'value', undefined, () => this.fireRefresh(true), [])
+    readonly startFilter = new SingleListProperty(
+        {} as { value?: Date },
+        'value',
+        undefined,
+        () => this.fireRefresh(true),
+        [] as IUiValue<Date>[]
+    )
 
     // Erzeugt eine neue Steuerung.
     constructor(application: Application) {

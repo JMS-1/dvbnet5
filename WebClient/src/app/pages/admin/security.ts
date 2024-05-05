@@ -21,10 +21,10 @@ export class SecuritySection extends Section implements IAdminSecurityPage {
     private static _windowsGroups: Promise<IUiValue<string>[]>
 
     // Die Gruppe der normalen Benutzer mit Auswahl.
-    readonly userGroups = new SingleListProperty<string>({}, 'users', 'Benutzer')
+    readonly userGroups = new SingleListProperty({} as { users?: string }, 'users', 'Benutzer')
 
     // Die Gruppe der Administratoren mit Auswahl.
-    readonly adminGroups = new SingleListProperty<string>({}, 'admins', 'Administratoren')
+    readonly adminGroups = new SingleListProperty({} as { admins?: string }, 'admins', 'Administratoren')
 
     // Beginnt mit der Abfrage der aktuellen Einstellungen.
     protected loadAsync(): void {

@@ -82,7 +82,7 @@ export class LogEntry implements ILogEntry {
     readonly isLive: boolean = false
 
     // Umschaltung für die Detailansicht.
-    readonly showDetail: BooleanProperty
+    readonly showDetail
 
     // Erstellt ein neues Präsentationsmodell.
     constructor(

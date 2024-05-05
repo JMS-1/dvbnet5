@@ -1,11 +1,11 @@
 ﻿// Die Verschlüsselung der Quelle
 export enum guideEncryption {
     // Nur kostenlose Quellen
-    Free,
+    Free = 'Free',
 
     // Nur Bezahlsender
-    Encrypted,
+    Encrypted = 'Encrypted',
 
     // Alle Sender
-    All,
+    All = 'All',
 }

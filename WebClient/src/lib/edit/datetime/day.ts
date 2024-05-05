@@ -62,7 +62,7 @@ export interface IDaySelector extends IDisplay, IConnectable {
 }
 
 // Präsentastionsmodell zur Auswahl eines Tags.
-export class DayProperty extends Property<string> implements IDaySelector {
+export class DayProperty<TDataType> extends Property<TDataType, string> implements IDaySelector {
     // Die Namen aller Wochentage, wobei wir die Woche am Montag beginnen lassen.
     readonly dayNames = DateTimeUtils.germanDays.map((d, i) => DateTimeUtils.germanDays[(i + 1) % 7])
 
@@ -306,8 +306,8 @@ export class DayProperty extends Property<string> implements IDaySelector {
 
     // Erstelle ein präsentationsmodell zur Auswahl eines Datums.
     constructor(
-        data?: unknown,
-        prop?: string,
+        data: TDataType,
+        prop: keyof TDataType,
         text?: string,
         onChange?: () => void,
         private _pureDate: boolean = false

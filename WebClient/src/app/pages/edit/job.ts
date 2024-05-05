@@ -31,11 +31,16 @@ export class JobEditor extends JobScheduleEditor<IEditJobContract> implements IJ
         super(page, model, favoriteSources, onChange)
 
         // Pflegekomponenten erstellen
-        this.deviceLock = new BooleanProperty(this.model, 'lockedToDevice', '(auf diesem Gerät aufzeichnen)', onChange)
-        this.folder = new SingleListProperty(this.model, 'directory', 'Verzeichnis', onChange, folders)
+        this.deviceLock = new BooleanProperty(
+            this.model,
+            'useProfileForRecording',
+            '(auf diesem Gerät aufzeichnen)',
+            onChange
+        )
+        this.folder = new SingleListProperty(this.model, 'recordingDirectory', 'Verzeichnis', onChange, folders)
         this.device = new SingleListProperty(
             this.model,
-            'device',
+            'profile',
             'DVB.NET Geräteprofil',
             onChange,
             devices
@@ -52,13 +57,13 @@ export class JobEditor extends JobScheduleEditor<IEditJobContract> implements IJ
     }
 
     // Das Aufzeichnungsverzeichnis.
-    readonly folder: SingleListProperty<string>
+    readonly folder
 
     // Das zu verwendende DVB Gerät.
-    readonly device: SingleListProperty<string>
+    readonly device
 
     // Gesetzt, wenn die Aufzeichnung immer auf dem Gerät stattfinden soll.
-    readonly deviceLock: BooleanProperty
+    readonly deviceLock
 
     // Gesetzt, wenn die Einstellungen des Auftrags gültig sind.
     isValid(): boolean {
