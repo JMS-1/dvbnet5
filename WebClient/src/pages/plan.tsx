@@ -1,4 +1,9 @@
 ﻿import * as React from 'react'
+
+import { PlanException } from './plan/exception'
+import { PlanGuide } from './plan/guide'
+import { PlanRow } from './plan/row'
+
 import { IPlanPage } from '../app/pages/plan'
 import { HelpLink } from '../common/helpLink'
 import { InlineHelp } from '../common/inlineHelp'
@@ -8,15 +13,12 @@ import { ToggleCommand } from '../lib.react/command/toggle'
 import { DetailRow } from '../lib.react/detailRow'
 import { SingleSelectButton } from '../lib.react/edit/buttonList'
 import { ComponentWithSite } from '../lib.react/reactUi'
-import { PlanException } from './plan/exception'
-import { PlanGuide } from './plan/guide'
-import { PlanRow } from './plan/row'
 
 // React.Js Komponente zur Anzeige des Aufzeichnungsplans.
 export class Plan extends ComponentWithSite<IPlanPage> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {
-        var jobs = this.props.uvm.jobs
+        const jobs = this.props.uvm.jobs
 
         return (
             <div className='vcrnet-plan'>
@@ -24,7 +26,7 @@ export class Plan extends ComponentWithSite<IPlanPage> {
                 <HelpLink page={this.props.uvm} topic='parallelrecording' />
                 {this.getHelp()}
                 <div className='vcrnet-plan-filter vcrnet-bar'>
-                    <SingleSelectButton uvm={this.props.uvm.startFilter} merge={true} />
+                    <SingleSelectButton merge={true} uvm={this.props.uvm.startFilter} />
                     <ToggleCommand uvm={this.props.uvm.showTasks} />
                 </div>
                 {jobs && (
@@ -42,15 +44,15 @@ export class Plan extends ComponentWithSite<IPlanPage> {
                         </thead>
                         <tbody>
                             {jobs.map((job, index) => [
-                                <PlanRow uvm={job} key={index} />,
+                                <PlanRow key={index} uvm={job} />,
                                 job.showEpg && (
-                                    <DetailRow prefixColumns={1} dataColumns={6} key={`${index}Details`}>
-                                        <PlanGuide uvm={job} page={this.props.uvm} />
+                                    <DetailRow key={`${index}Details`} dataColumns={6} prefixColumns={1}>
+                                        <PlanGuide page={this.props.uvm} uvm={job} />
                                     </DetailRow>
                                 ),
                                 job.showException && (
-                                    <DetailRow prefixColumns={1} dataColumns={6} key={`${index}Exceptions`}>
-                                        <PlanException uvm={job.exception} page={this.props.uvm} />
+                                    <DetailRow key={`${index}Exceptions`} dataColumns={6} prefixColumns={1}>
+                                        <PlanException page={this.props.uvm} uvm={job.exception} />
                                     </DetailRow>
                                 ),
                             ])}
@@ -68,7 +70,7 @@ export class Plan extends ComponentWithSite<IPlanPage> {
                 Über die Datumsauswahl im linken Bereich kann der zeitliche Anfang des angezeigten Ausschnitts
                 festgelegt werden. Das Ende des Ausschnitts ergibt sich daraus und aus der gewünschten Anzahl von zu
                 berücksichtigenden Tagen.
-                <InternalLink view={this.props.uvm.application.settingsPage.route} pict='settings' />
+                <InternalLink pict='settings' view={this.props.uvm.application.settingsPage.route} />
                 <br />
                 <br />
                 Die beiden Schaltflächen direkt rechts neben der Datumsauswahl erlauben es zusätzlich zu den regulären

@@ -1,7 +1,8 @@
 ﻿import * as React from 'react'
-import { Component } from '../../lib.react/reactUi'
+
 import { IGuidePageNavigation } from '../../app/pages/guide'
 import { ButtonCommand } from '../../lib.react/command/button'
+import { Component } from '../../lib.react/reactUi'
 
 // React.Ks Komponente zur Navigation durch die Programmzeitschrift.
 export class GuideNavigation extends Component<IGuidePageNavigation> {

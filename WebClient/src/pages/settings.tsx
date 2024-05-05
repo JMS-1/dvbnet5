@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+
 import { ISettingsPage } from '../app/pages/settings'
 import { Field } from '../common/field'
 import { HelpLink } from '../common/helpLink'
@@ -20,8 +21,8 @@ export class Settings extends ComponentWithSite<ISettingsPage> {
                 Service festgelegt.
                 <form>
                     {this.getPlanHelp()}
-                    <Field page={this.props.uvm} label={`${this.props.uvm.planDays.text}:`}>
-                        <EditNumber uvm={this.props.uvm.planDays} chars={5} />
+                    <Field label={`${this.props.uvm.planDays.text}:`} page={this.props.uvm}>
+                        <EditNumber chars={5} uvm={this.props.uvm.planDays} />
                     </Field>
                     {this.getSourceHelp()}
                     <div className='vcrnet-settings-field'>
@@ -29,8 +30,8 @@ export class Settings extends ComponentWithSite<ISettingsPage> {
                         <SingleSelect uvm={this.props.uvm.sourceType} />
                         <SingleSelect uvm={this.props.uvm.encryption} />
                     </div>
-                    <Field page={this.props.uvm} label={`${this.props.uvm.maxFavorites.text}:`}>
-                        <EditNumber uvm={this.props.uvm.maxFavorites} chars={5} />
+                    <Field label={`${this.props.uvm.maxFavorites.text}:`} page={this.props.uvm}>
+                        <EditNumber chars={5} uvm={this.props.uvm.maxFavorites} />
                     </Field>
                     <div className='vcrnet-settings-field'>
                         Bevorzugte Zusatzoptionen für Aufzeichnungen:
@@ -44,14 +45,14 @@ export class Settings extends ComponentWithSite<ISettingsPage> {
                         <EditBoolean uvm={this.props.uvm.noSleep} />
                     </div>
                     {this.getGuideHelp()}
-                    <Field page={this.props.uvm} label={`${this.props.uvm.guideRows.text}:`}>
-                        <EditNumber uvm={this.props.uvm.guideRows} chars={5} />
+                    <Field label={`${this.props.uvm.guideRows.text}:`} page={this.props.uvm}>
+                        <EditNumber chars={5} uvm={this.props.uvm.guideRows} />
                     </Field>
-                    <Field page={this.props.uvm} label={`${this.props.uvm.preGuide.text}:`}>
-                        <EditNumber uvm={this.props.uvm.preGuide} chars={5} />
+                    <Field label={`${this.props.uvm.preGuide.text}:`} page={this.props.uvm}>
+                        <EditNumber chars={5} uvm={this.props.uvm.preGuide} />
                     </Field>
-                    <Field page={this.props.uvm} label={`${this.props.uvm.postGuide.text}:`}>
-                        <EditNumber uvm={this.props.uvm.postGuide} chars={5} />
+                    <Field label={`${this.props.uvm.postGuide.text}:`} page={this.props.uvm}>
+                        <EditNumber chars={5} uvm={this.props.uvm.postGuide} />
                     </Field>
                     <div className='vcrnet-settings-field'>
                         <EditBoolean uvm={this.props.uvm.backToGuide} />
@@ -69,7 +70,7 @@ export class Settings extends ComponentWithSite<ISettingsPage> {
         return (
             <InlineHelp title='Erläuterungen'>
                 Im Aufzeichnungsplan
-                <InternalLink view={this.props.uvm.application.planPage.route} pict='plan' /> werden die Daten aller
+                <InternalLink pict='plan' view={this.props.uvm.application.planPage.route} /> werden die Daten aller
                 geplanten Aufzeichnungen in einer Liste angezeigt. Um eine gewisse Übersichtlichkeit zu erhalten wird
                 allerdings nur eine begrenzte Anzahl von Aufzeichnungen auf einmal angezeigt. Die im Folgenden
                 angezeigte Zahl legt fest, wie viele Tage pro Seite im Aufzeichnungsplan berücksichtigt werden sollen.
@@ -83,7 +84,7 @@ export class Settings extends ComponentWithSite<ISettingsPage> {
             <InlineHelp title='Erläuterungen'>
                 Bei der Programmierung neuer Aufzeichnungen können eine ganze Reihe von Einstellungen verwendet werden,
                 die bei der Auswahl der zu verwendenden Quelle helfen.
-                <HelpLink topic='sourcechooser' page={this.props.uvm} /> Hier wird die gewünschte Vorbelegung dieser
+                <HelpLink page={this.props.uvm} topic='sourcechooser' /> Hier wird die gewünschte Vorbelegung dieser
                 Einstellungen festgelegt.
             </InlineHelp>
         )
@@ -94,9 +95,9 @@ export class Settings extends ComponentWithSite<ISettingsPage> {
         return (
             <InlineHelp title='Erläuterungen'>
                 Wird eine aktive Aufzeichnung
-                <InternalLink view={this.props.uvm.application.devicesPage.route} pict='devices' /> vorzeitig beendet,
+                <InternalLink pict='devices' view={this.props.uvm.application.devicesPage.route} /> vorzeitig beendet,
                 so wird der VCR.NET Recording Service prüfen, ob der Rechner in den Schlafzustand versetzt werden soll.
-                <HelpLink topic='hibernation' page={this.props.uvm} /> Diese Verhalten kann pro Abbruch gesondert
+                <HelpLink page={this.props.uvm} topic='hibernation' /> Diese Verhalten kann pro Abbruch gesondert
                 deaktiviert werden und die folgende Einstellung legt das bevorzugte Verhalten fest.
             </InlineHelp>
         )
@@ -107,7 +108,7 @@ export class Settings extends ComponentWithSite<ISettingsPage> {
         return (
             <InlineHelp title='Erläuterungen'>
                 Wird eine neue Aufzeichnung aus der Programmzeitschrift
-                <HelpLink topic='epg' page={this.props.uvm} /> heraus angelegt, so können hier vor allem die Vor- und
+                <HelpLink page={this.props.uvm} topic='epg' /> heraus angelegt, so können hier vor allem die Vor- und
                 Nachlaufzeiten der Aufzeichnung relativ zu den exakten Daten aus der Programmzeitschrift festgelegt
                 werden. Es handelt sich allerdings nur um Vorschlagswerte, die in den Daten der neuen Aufzeichnung
                 jederzeit korrigiert werden können. Da Sendungen in den seltensten Fällen genau wie von den
@@ -118,14 +119,14 @@ export class Settings extends ComponentWithSite<ISettingsPage> {
                 <br />
                 <br />
                 Hier wird auch festgelegt, wie viele Einträge die Programmzeitschrift
-                <InternalLink view={this.props.uvm.application.guidePage.route} pict='guide' /> pro Seite anzeigen soll.
+                <InternalLink pict='guide' view={this.props.uvm.application.guidePage.route} /> pro Seite anzeigen soll.
                 Zu große Werte erhöhen nicht nur die Zeit zur Anzeige einer Seite sondern sorgen oft auch dafür, dass
                 nicht alle Sendungen einer Seite auf einen Blick erfasst werden können.
                 <br />
                 <br />
                 Wenn die Programmierung einer Aufzeichnung aus der Programmzeitschrift abgeschlossen ist wird
                 normalerweise zum Aufzeichnungsplan
-                <InternalLink view={this.props.uvm.application.planPage.route} pict='plan' /> gewechselt. Ist die unten
+                <InternalLink pict='plan' view={this.props.uvm.application.planPage.route} /> gewechselt. Ist die unten
                 als letztes angebotene Einstellung aktiviert wird in diesem Fall erneut die Programmzeitschrift
                 aufgerufen.
             </InlineHelp>

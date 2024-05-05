@@ -1,10 +1,12 @@
 ﻿import * as React from 'react'
+
+import { Favorite } from './favorites/entry'
+
 import { IFavoritesPage } from '../app/pages/favorites'
 import { InlineHelp } from '../common/inlineHelp'
 import { Pictogram } from '../lib.react/command/pictogram'
 import { SingleSelectButton } from '../lib.react/edit/buttonList'
 import { ComponentWithSite } from '../lib.react/reactUi'
-import { Favorite } from './favorites/entry'
 
 // React.Js Komponente zur Anzeige der gespeicherten Suchen.
 export class Favorites extends ComponentWithSite<IFavoritesPage> {
@@ -13,7 +15,7 @@ export class Favorites extends ComponentWithSite<IFavoritesPage> {
         return (
             <div className='vcrnet-favorites'>
                 {this.getHelp()}
-                <SingleSelectButton uvm={this.props.uvm.onlyWithCount} merge={true} />
+                <SingleSelectButton merge={true} uvm={this.props.uvm.onlyWithCount} />
                 <table className='vcrnet-table'>
                     <thead>
                         <tr>

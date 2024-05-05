@@ -1,10 +1,12 @@
 ﻿import * as React from 'react'
+
+import { AdminSection } from './section'
+
 import { IAdminRulesPage, RulesSection } from '../../app/pages/admin/rules'
 import { HelpLink } from '../../common/helpLink'
 import { InlineHelp } from '../../common/inlineHelp'
 import { EditTextArea } from '../../lib.react/edit/text/textarea'
 import { IAdminSectionFactory } from '../admin'
-import { AdminSection } from './section'
 
 // React.Js Komponente zur Konfiguration der Planungsregeln.
 export class AdminRules extends AdminSection<IAdminRulesPage> {
@@ -14,7 +16,7 @@ export class AdminRules extends AdminSection<IAdminRulesPage> {
     }
 
     // Die Überschrift für diesen Bereich.
-    protected readonly title = `Regeln für die Planung von Aufzeichnungen`
+    protected readonly title = 'Regeln für die Planung von Aufzeichnungen'
 
     // Oberflächenelement anlegen.
     protected renderSection(): JSX.Element {
@@ -23,9 +25,9 @@ export class AdminRules extends AdminSection<IAdminRulesPage> {
                 Der VCR.NET Recording Service verwendet nach der Installation ein festes Regelwerk zur Planung von
                 Aufzeichnungen für den Fall, dass mehrere DVB.NET Geräteprofile verwendet werden. Hier ist es möglich,
                 dieses Regelwerk
-                <HelpLink topic='customschedule' page={this.props.uvm.page} /> anzupassen - auf eigene Gefahr, versteht
+                <HelpLink page={this.props.uvm.page} topic='customschedule' /> anzupassen - auf eigene Gefahr, versteht
                 sich.
-                <EditTextArea uvm={this.props.uvm.rules} columns={100} rows={25} />
+                <EditTextArea columns={100} rows={25} uvm={this.props.uvm.rules} />
                 {this.getHelp()}
             </div>
         )

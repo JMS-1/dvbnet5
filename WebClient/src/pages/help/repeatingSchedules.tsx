@@ -1,8 +1,10 @@
 ﻿import * as React from 'react'
-import { IPage } from '../../app/pages/page'
-import { InternalLink } from '../../lib.react/command/internalLink'
+
 import { HelpComponent } from './helpComponent'
 import { ScreenShot } from './screenShot'
+
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
 
 export class RepeatingSchedules extends HelpComponent {
     readonly title = 'Serienaufzeichnungen und Ausnahmeregelungen'
@@ -27,7 +29,7 @@ export class RepeatingSchedules extends HelpComponent {
                 Zeitpunkt stattfinden. Kleinere Abweichungen lassen sich durch vergrößerte Vor- und Nachlaufzeiten
                 kompensieren. Manchmal kann es aber durch Sondersendungen vor der gewünschten Ausstrahlung einmalig zu
                 deutlichen Verschiebungen kommen. Der VCR.NET Recording Service bietet hier im Aufzeichnungsplan
-                <InternalLink view={page.application.planPage.route} pict='plan' /> die Möglichkeit, Ausnahmeregelungen
+                <InternalLink pict='plan' view={page.application.planPage.route} /> die Möglichkeit, Ausnahmeregelungen
                 für die einzelnen Aufzeichnungstage zu definieren. Dabei kann der Startzeitpunkt verschoben oder die
                 Laufzeit und damit das Ende der Aufzeichnung pro geplanter Aufzeichnung individuell verändert werden -
                 auf Wunsch kann auch eine Aufzeichnung ganz entfallen.

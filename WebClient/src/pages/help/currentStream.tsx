@@ -1,8 +1,10 @@
 ﻿import * as React from 'react'
-import { IPage } from '../../app/pages/page'
-import { InternalLink } from '../../lib.react/command/internalLink'
+
 import { HelpComponent } from './helpComponent'
 import { ScreenShot } from './screenShot'
+
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
 
 export class CurrentStream extends HelpComponent {
     readonly title = 'Laufende Aufzeichnungen verändern'
@@ -11,7 +13,7 @@ export class CurrentStream extends HelpComponent {
         return (
             <div>
                 Die Aktivitäten
-                <InternalLink view={page.application.devicesPage.route} pict='devices' /> auf einem DVB Gerät können in
+                <InternalLink pict='devices' view={page.application.devicesPage.route} /> auf einem DVB Gerät können in
                 einem gewissen Rahmen verändert werden. Handelt es sich um eine{' '}
                 <InternalLink view={`${page.route};tasks`}>Sonderaufgabe</InternalLink> wie der Aktualisierung der{' '}
                 <InternalLink view={`${page.route};epgconfig`}>Programmzeitschrift</InternalLink>
@@ -35,7 +37,7 @@ export class CurrentStream extends HelpComponent {
                 Es empfiehlt sich grundsätzlich, Manipulationen an laufenden Aufzeichnungen mit Bedacht vorzunehmen. Bei
                 Veränderungen des Endzeitpunktes kann es etwa dazu kommen, dass die betroffenen Aufzeichnungen nicht
                 mehr in der Aufzeichnungsplanung erscheinen
-                <InternalLink view={page.application.planPage.route} pict='plan' />.
+                <InternalLink pict='plan' view={page.application.planPage.route} />.
             </div>
         )
     }

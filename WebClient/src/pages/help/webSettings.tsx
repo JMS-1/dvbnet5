@@ -1,9 +1,11 @@
 ﻿import * as React from 'react'
+
+import { HelpComponent } from './helpComponent'
+import { ScreenShot } from './screenShot'
+
 import { IPage } from '../../app/pages/page'
 import { ExternalLink } from '../../lib.react/command/externalLink'
 import { InternalLink } from '../../lib.react/command/internalLink'
-import { HelpComponent } from './helpComponent'
-import { ScreenShot } from './screenShot'
 
 export class WebSettings extends HelpComponent {
     readonly title = 'Web Dienste konfigurieren'
@@ -19,7 +21,7 @@ export class WebSettings extends HelpComponent {
                 <br />
                 <br />
                 Damit der Web Server auf Anfragen reagieren kann, müssen einige Einstellungen
-                <InternalLink view={`${page.application.adminPage.route};other`} pict='admin' /> korrekt vorgenommen
+                <InternalLink pict='admin' view={`${page.application.adminPage.route};other`} /> korrekt vorgenommen
                 werden. VCR.NET wurde ursprünglich für den Betrieb in einem lokalen (LAN) Windows Netzwerk entwickelt.
                 Für diese Nutzung muss lediglich der TCP/IP Port für das HTTP Protokoll festgelegt werden, üblicherweise
                 wird hier Port 80 verwendet, was auch der Voreinstellung nach der Erstinstallation entspricht.

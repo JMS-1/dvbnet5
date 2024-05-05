@@ -1,9 +1,10 @@
 ﻿import * as React from 'react'
+
 import { IDevicesPage } from '../../app/pages/devices'
 import { IDeviceInfo } from '../../app/pages/devices/entry'
 import { InternalLink } from '../../lib.react/command/internalLink'
 import { Pictogram } from '../../lib.react/command/pictogram'
-import { IComponent, ComponentEx } from '../../lib.react/reactUi'
+import { ComponentEx, IComponent } from '../../lib.react/reactUi'
 
 // Konfiguration zur Anzeige einer einzelnen Aktivität.
 interface IDevice extends IComponent<IDeviceInfo> {
@@ -15,8 +16,8 @@ interface IDevice extends IComponent<IDeviceInfo> {
 export class Device extends ComponentEx<IDeviceInfo, IDevice> {
     // Erstellt die Oberflächenelemente.
     render(): JSX.Element {
-        var showGuide = this.props.uvm.showGuide
-        var showControl = this.props.uvm.showControl
+        const showGuide = this.props.uvm.showGuide
+        const showControl = this.props.uvm.showControl
 
         return (
             <tr className='vcrnet-device'>

@@ -1,8 +1,10 @@
 ﻿import * as React from 'react'
+
+import { HelpComponent } from './helpComponent'
+
 import { IPage } from '../../app/pages/page'
 import { ExternalLink } from '../../lib.react/command/externalLink'
 import { InternalLink } from '../../lib.react/command/internalLink'
-import { HelpComponent } from './helpComponent'
 
 export class ControlCenter extends HelpComponent {
     readonly title = 'VCR.NET Kontrollzentrum'
@@ -29,14 +31,14 @@ export class ControlCenter extends HelpComponent {
                 gerade nicht aktiv ist und bei einem entfernten System kann es zusätzlich an der Konfiguration der
                 Firewalls liegen. Ist eine <span className='vccBlue'>blaue</span> Hinterlegung zu sehen, so führt der
                 VCR.NET Recording Service mindestens eine Aktivität
-                <InternalLink view={page.application.devicesPage.route} pict='devices' /> aus und es empfiehlt sich, den
+                <InternalLink pict='devices' view={page.application.devicesPage.route} /> aus und es empfiehlt sich, den
                 zugehörigen Rechner nicht neu zu starten oder in den{' '}
                 <InternalLink view={`${page.route};hibernation`}>Schlafzustand</InternalLink> zu versetzen. Das gilt
                 auch für eine <span className='vccYellow'>gelbe</span> Hinterlegung, bei der zwar kein DVB Gerät in
                 Benutzung ist, eine Aktivität aber kurz bevor steht. Im Normalzustand ist das Kamerasymbol{' '}
                 <span className='vccGreen'>Grün</span> hinterlegt und der VCR.NET Recording Service wartet auf die
                 nächste anstehende Aufzeichnung - fehlt die grüne Hinterlegung, so ist der Aufzeichnungsplan
-                <InternalLink view={page.application.planPage.route} pict='plan' /> leer.
+                <InternalLink pict='plan' view={page.application.planPage.route} /> leer.
                 <br />
                 <br />
                 Hier nun einige weitere Funktionalitäten des Kontrollzentrums - in einigen Fällen wird eine korrekte

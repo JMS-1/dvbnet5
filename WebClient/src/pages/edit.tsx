@@ -1,12 +1,14 @@
 ﻿import * as React from 'react'
+
+import { EditException } from './edit/exception'
+import { JobData } from './edit/job'
+import { ScheduleData } from './edit/schedule'
+
 import { IEditPage } from '../app/pages/edit'
 import { HelpLink } from '../common/helpLink'
 import { InlineHelp } from '../common/inlineHelp'
 import { ButtonCommand } from '../lib.react/command/button'
 import { ComponentWithSite } from '../lib.react/reactUi'
-import { EditException } from './edit/exception'
-import { JobData } from './edit/job'
-import { ScheduleData } from './edit/schedule'
 
 // React.Js Komponente zur Pflege einer Aufzeichnung.
 export class Edit extends ComponentWithSite<IEditPage> {

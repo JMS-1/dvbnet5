@@ -1,8 +1,10 @@
 ﻿import * as React from 'react'
-import { IPage } from '../../app/pages/page'
-import { InternalLink } from '../../lib.react/command/internalLink'
+
 import { HelpComponent } from './helpComponent'
 import { ScreenShot } from './screenShot'
+
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
 
 export class SourceLimit extends HelpComponent {
     readonly title = 'Beschränkung der Anzahl der Quellen'

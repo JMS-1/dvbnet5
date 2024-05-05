@@ -1,7 +1,9 @@
 ﻿import * as React from 'react'
+
+import { HelpComponent } from './helpComponent'
+
 import { IPage } from '../../app/pages/page'
 import { InternalLink } from '../../lib.react/command/internalLink'
-import { HelpComponent } from './helpComponent'
 
 export class ProgramGuide extends HelpComponent {
     readonly title = 'Die Programmzeitschrift'
@@ -23,7 +25,7 @@ export class ProgramGuide extends HelpComponent {
                 <InternalLink view={`${page.route};epgconfig`}>konfiguriert</InternalLink> werden, für eine ausgewählte
                 Liste von Quellen die Programmzeitschrift periodisch zu aktualisieren - üblich ist ein oder zweimal am
                 Tag. Auf Basis dieser Daten lassen sich dann Aufzeichnungen programmieren. Zur Auswahl
-                <InternalLink view={page.application.guidePage.route} pict='guide' /> stehen dabei erst einmal alle
+                <InternalLink pict='guide' view={page.application.guidePage.route} /> stehen dabei erst einmal alle
                 Informationen aller Quellen aller DVB Geräte, die der VCR.NET Recording Service verwenden darf. Um die
                 richtige Sendung zu finden gibt es neben der Inhaltssuche auf einen Freitext weitere
                 Filtermöglichkeiten. So ist es möglich, sich auf die Sendungen einer einzelnen Quelle zu beschränken
@@ -34,7 +36,7 @@ export class ProgramGuide extends HelpComponent {
                 der Auswahl eine neue Aufzeichnung angelegt - auf Wunsch kann auch eine Aufzeichnung zu einem
                 existierenden Auftrag ergänzt werden. Die Zeiten aus der Programmzeitschrift werden um Vor- und
                 Nachlaufzeiten gemäß den Voreinstellungen
-                <InternalLink view={page.application.settingsPage.route} pict='settings' /> des Anwenders erweitert. Die
+                <InternalLink pict='settings' view={page.application.settingsPage.route} /> des Anwenders erweitert. Die
                 eigentliche Programmierung muss noch einmal bestätigt werden, wobei dann auch noch Detailänderungen
                 möglich sind - zum Beispiel um direkt eine{' '}
                 <InternalLink view={`${page.route};repeatingschedules`}>Serienaufzeichnung</InternalLink> anzulegen.

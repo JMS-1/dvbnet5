@@ -1,7 +1,8 @@
 ﻿import * as React from 'react'
-import { Component } from '../../lib.react/reactUi'
+
 import { IGuideEntry } from '../../app/pages/guide/entry'
 import { InternalLink } from '../../lib.react/command/internalLink'
+import { Component } from '../../lib.react/reactUi'
 
 // React.Js Komponente zur Anzeige einer Sendung aus der Programmzeitschrift.
 export class GuideEntry extends Component<IGuideEntry> {

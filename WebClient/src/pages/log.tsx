@@ -1,4 +1,7 @@
 ﻿import * as React from 'react'
+
+import { LogDetails } from './log/details'
+
 import { ILogPage } from '../app/pages/log'
 import { Field } from '../common/field'
 import { HelpLink } from '../common/helpLink'
@@ -9,7 +12,6 @@ import { ToggleCommand } from '../lib.react/command/toggle'
 import { DetailRow } from '../lib.react/detailRow'
 import { SingleSelect } from '../lib.react/edit/list'
 import { ComponentWithSite } from '../lib.react/reactUi'
-import { LogDetails } from './log/details'
 
 // React.Js Komponente zur Anzeige des Protokolls.
 export class Log extends ComponentWithSite<ILogPage> {
@@ -18,11 +20,11 @@ export class Log extends ComponentWithSite<ILogPage> {
         return (
             <div className='vcrnet-log'>
                 Für jede Nutzung eines Gerätes erstellt der VCR.NET Recording Service einen Protokolleintrag
-                <HelpLink topic='log' page={this.props.uvm} />, der hier eingesehen werden kann. Bei überlappenden
+                <HelpLink page={this.props.uvm} topic='log' />, der hier eingesehen werden kann. Bei überlappenden
                 Aufzeichnung wird ein einziger Eintrag erstellt, der den gesamten Nutzungszeitraum beschreibt.
                 {this.getHelp()}
                 <form className='vcrnet-bar'>
-                    <Field page={this.props.uvm} label={`${this.props.uvm.profiles.text}:`}>
+                    <Field label={`${this.props.uvm.profiles.text}:`} page={this.props.uvm}>
                         <SingleSelect uvm={this.props.uvm.profiles} />
                         <SingleSelect uvm={this.props.uvm.startDay} />
                         <ToggleCommand uvm={this.props.uvm.showGuide} />
@@ -73,14 +75,14 @@ export class Log extends ComponentWithSite<ILogPage> {
                 <br />
                 Nach dem Aufruf der Seite werden erst einmal nur die regulären Aufzeichnungen angezeigt. Die Nutzung des
                 jeweiligen Gerätes durch Aktualisierungen
-                <HelpLink topic='tasks' page={this.props.uvm} /> und den LIVE Zugriff kann durch die entsprechenden
+                <HelpLink page={this.props.uvm} topic='tasks' /> und den LIVE Zugriff kann durch die entsprechenden
                 Schaltflächen neben der Auswahl der Woche eingeblendet werden.
                 <br />
                 <br />
                 Durch Anwahl des jeweiligen Startzeitpunkts eines Protokolleintrags wird die Detailanzeige geöffnet.
                 Handelt es sich bei der Nutzung des Geräte um eine oder mehrere reguläre Aufzeichnungen, so sind mit
                 dieser eventuell noch nicht gelöschte Aufzeichnungsdateien verbunden.
-                <HelpLink topic='filecontents' page={this.props.uvm} /> Durch Anwahl des jeweiligen Symbols können diese
+                <HelpLink page={this.props.uvm} topic='filecontents' /> Durch Anwahl des jeweiligen Symbols können diese
                 zur Anzeige durch den{' '}
                 <ExternalLink url='http://www.psimarron.net/DVBNETViewer/html/vcrfile.html'>
                     DVB.NET / VCR.NET Viewer

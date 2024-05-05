@@ -1,11 +1,13 @@
 ﻿import * as React from 'react'
+
+import { GuideEntryInfo } from './info'
+
+import { IGuidePage } from '../../app/pages/guide'
 import { IGuideEntry } from '../../app/pages/guide/entry'
 import { Field } from '../../common/field'
 import { ButtonCommand } from '../../lib.react/command/button'
 import { SingleSelect } from '../../lib.react/edit/list'
-import { IComponent, ComponentEx } from '../../lib.react/reactUi'
-import { IGuidePage } from '../../app/pages/guide'
-import { GuideEntryInfo } from './info'
+import { ComponentEx, IComponent } from '../../lib.react/reactUi'
 
 // Konfiguration zur Anzeige der Details zu einer Sendung der Programmzeitschrift.
 interface IGuideDetails extends IComponent<IGuideEntry> {
@@ -24,7 +26,7 @@ export class GuideDetails extends ComponentEx<IGuideEntry, IGuideDetails> {
                 </fieldset>
                 <div>
                     <ButtonCommand uvm={this.props.uvm.createNew} />
-                    <Field page={this.props.page} label={`(${this.props.uvm.jobSelector.text}:`}>
+                    <Field label={`(${this.props.uvm.jobSelector.text}:`} page={this.props.page}>
                         <SingleSelect uvm={this.props.uvm.jobSelector} />)
                     </Field>
                 </div>

@@ -1,6 +1,7 @@
 ﻿import * as React from 'react'
-import { Component } from '../../lib.react/reactUi'
+
 import { IHomePage } from '../../app/pages/home'
+import { Component } from '../../lib.react/reactUi'
 
 // React.Js Komponente zur Anzeige der Version (lokal installiert und Online verfügbar) des VCR.NET Recording Service.
 export class VersionCheck extends Component<IHomePage> {
@@ -19,7 +20,7 @@ export class VersionCheck extends Component<IHomePage> {
                             </tr>
                             <tr>
                                 <td>Aktuell verfügbare Version:</td>
-                                <td className={this.props.uvm.versionMismatch ? `vcrnet-warningtext` : undefined}>
+                                <td className={this.props.uvm.versionMismatch ? 'vcrnet-warningtext' : undefined}>
                                     {this.props.uvm.onlineVersion}
                                 </td>
                             </tr>

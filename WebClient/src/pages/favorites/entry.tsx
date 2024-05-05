@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+
 import { IFavorite } from '../../app/pages/favorites/entry'
 import { InternalLink } from '../../lib.react/command/internalLink'
 import { Pictogram } from '../../lib.react/command/pictogram'
@@ -15,11 +16,11 @@ export class Favorite extends ComponentWithSite<IFavorite> {
                         description='In der Programmzeitschrift anzeigen'
                         view={() => this.props.uvm.show.execute()}
                     >
-                        {this.props.uvm.count === null ? `-` : `${this.props.uvm.count}`}
+                        {this.props.uvm.count === null ? '-' : `${this.props.uvm.count}`}
                     </InternalLink>
                 </td>
                 <td>
-                    {this.props.uvm.title} <Pictogram onClick={() => this.props.uvm.remove.execute()} name='delete' />
+                    {this.props.uvm.title} <Pictogram name='delete' onClick={() => this.props.uvm.remove.execute()} />
                 </td>
             </tr>
         )

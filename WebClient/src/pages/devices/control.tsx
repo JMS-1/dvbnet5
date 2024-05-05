@@ -1,11 +1,12 @@
 ﻿import * as React from 'react'
+
 import { IDevicesPage } from '../../app/pages/devices'
 import { IDeviceController } from '../../app/pages/devices/controller'
 import { HelpLink } from '../../common/helpLink'
 import { ButtonCommand } from '../../lib.react/command/button'
 import { EditBoolean } from '../../lib.react/edit/boolean/flag'
 import { EditNumberSlider } from '../../lib.react/edit/number/slider'
-import { IComponent, ComponentExWithSite } from '../../lib.react/reactUi'
+import { ComponentExWithSite, IComponent } from '../../lib.react/reactUi'
 
 // Konfiguration der Steuerung einer laufenden Aufzeichnung.
 interface IDeviceControl extends IComponent<IDeviceController> {
@@ -32,7 +33,7 @@ export class DeviceControl extends ComponentExWithSite<IDeviceController, IDevic
                 {this.props.uvm.target && (
                     <div className='vcrnet-device-target'>
                         Aufzeichnung wird aktuell versendet, Empfänger ist {this.props.uvm.target}
-                        <HelpLink topic='streaming' page={this.props.page} />
+                        <HelpLink page={this.props.page} topic='streaming' />
                     </div>
                 )}
                 <table className='vcrnet-tableIsForm'>
@@ -43,7 +44,7 @@ export class DeviceControl extends ComponentExWithSite<IDeviceController, IDevic
                         </tr>
                         <tr>
                             <td>Verbleibende Dauer:</td>
-                            <td>{`${this.props.uvm.remaining.value} Minute${this.props.uvm.remaining.value === 1 ? `` : `n`}`}</td>
+                            <td>{`${this.props.uvm.remaining.value} Minute${this.props.uvm.remaining.value === 1 ? '' : 'n'}`}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -52,7 +53,7 @@ export class DeviceControl extends ComponentExWithSite<IDeviceController, IDevic
                     <ButtonCommand uvm={this.props.uvm.stopNow} />
                     <ButtonCommand uvm={this.props.uvm.update} />
                     <EditBoolean uvm={this.props.uvm.noHibernate} />
-                    <HelpLink topic='hibernation' page={this.props.page} />
+                    <HelpLink page={this.props.page} topic='hibernation' />
                 </div>
             </fieldset>
         )

@@ -1,9 +1,11 @@
 ﻿import * as React from 'react'
+
+import { HelpComponent } from './helpComponent'
+import { ScreenShot } from './screenShot'
+
 import { IPage } from '../../app/pages/page'
 import { ExternalLink } from '../../lib.react/command/externalLink'
 import { InternalLink } from '../../lib.react/command/internalLink'
-import { HelpComponent } from './helpComponent'
-import { ScreenShot } from './screenShot'
 
 export class Streaming extends HelpComponent {
     readonly title = 'Netzwerkversand'
@@ -12,7 +14,7 @@ export class Streaming extends HelpComponent {
         return (
             <div>
                 Laufen Aufzeichnungen
-                <InternalLink view={page.application.devicesPage.route} pict='devices' />, so erlaubt es der VCR.NET
+                <InternalLink pict='devices' view={page.application.devicesPage.route} />, so erlaubt es der VCR.NET
                 Recording Service auch, die{' '}
                 <InternalLink view={`${page.route};filecontents`}>Aufzeichnungsdateien</InternalLink> an eine
                 Netzwerkadresse zu senden. Übertragen wird dabei genau der Inhalt der Aufzeichnungsdatei. Dieses Format

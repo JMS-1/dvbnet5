@@ -1,9 +1,11 @@
 ﻿import * as React from 'react'
+
+import { HelpComponent } from './helpComponent'
+
 import { IPage } from '../../app/pages/page'
 import { ExternalLink } from '../../lib.react/command/externalLink'
 import { InternalLink } from '../../lib.react/command/internalLink'
 import { Pictogram } from '../../lib.react/command/pictogram'
-import { HelpComponent } from './helpComponent'
 
 export class Log extends HelpComponent {
     readonly title = 'Protokolle'
@@ -12,7 +14,7 @@ export class Log extends HelpComponent {
         return (
             <div>
                 Der VCR.NET Recording Service erstellt für jede ausgeführte Aktivität
-                <InternalLink view={page.application.devicesPage.route} pict='devices' /> einen gesonderten
+                <InternalLink pict='devices' view={page.application.devicesPage.route} /> einen gesonderten
                 Protokolleintrag. Eine Aktivität ist hierbei immer ein geschlossener Nutzungszeitraum eines DVB Gerätes.
                 In diesem Zeitraum kann entweder eine einzelne Sonderaufgabe oder eine{' '}
                 <InternalLink view={`${page.route};parallelrecording`}>Gruppe von Aufzeichnungen</InternalLink>{' '}
@@ -23,7 +25,7 @@ export class Log extends HelpComponent {
                 <br />
                 In der Liste sieht man immer die Einträge einer Woche für ein einzelnes DVB Geräte. Über Auswahllisten
                 ist es möglich, sowohl den Zeitraum als auch das betrachtete Gerät festzulegen. Die Konfiguration
-                <InternalLink view={`${page.application.adminPage.route};other`} pict='admin' /> des VCR.NET Recording
+                <InternalLink pict='admin' view={`${page.application.adminPage.route};other`} /> des VCR.NET Recording
                 Service sieht vor, dass veraltete Protokolleinträge automatisch entfernt werden. Man beachte aber, dass
                 dies nicht periodisch geschieht, sondern nur bei Aufruf der Liste über die Web Oberfläche.
                 <br />

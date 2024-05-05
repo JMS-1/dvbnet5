@@ -1,8 +1,10 @@
 ﻿import * as React from 'react'
-import { IPage } from '../../app/pages/page'
-import { InternalLink } from '../../lib.react/command/internalLink'
+
 import { HelpComponent } from './helpComponent'
 import { ScreenShot } from './screenShot'
+
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
 
 export class JobsAndSchedules extends HelpComponent {
     readonly title = 'Aufträge und Aufzeichnungen'
@@ -15,8 +17,8 @@ export class JobsAndSchedules extends HelpComponent {
                 <ScreenShot description='Auftrag und Aufzeichnung' name='FAQ/jobsandschedules' />
                 Eine Aufzeichnung wird grundsätzlich als Teil eines Auftrags angelegt. Über die Liste aller
                 Aufzeichnungen
-                <InternalLink view={page.application.jobPage.route} pict='jobs' /> (nicht den Aufzeichnungsplan
-                <InternalLink view={page.application.planPage.route} pict='plan' />) ist es dann auch möglich, einem
+                <InternalLink pict='jobs' view={page.application.jobPage.route} /> (nicht den Aufzeichnungsplan
+                <InternalLink pict='plan' view={page.application.planPage.route} />) ist es dann auch möglich, einem
                 Auftrag mehrere Aufzeichnungen zuzuordnen. Einige der für eine Aufzeichnung notwendigen Parameter sind
                 nur über den Auftrag verfügbar und werden von allen Aufzeichnungen gemeinsam genutzt.
                 <br />

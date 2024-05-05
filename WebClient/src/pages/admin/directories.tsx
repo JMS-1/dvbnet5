@@ -1,4 +1,7 @@
 ﻿import * as React from 'react'
+
+import { AdminSection } from './section'
+
 import { DirectoriesSection, IAdminDirectoriesPage } from '../../app/pages/admin/directories'
 import { Field } from '../../common/field'
 import { HelpLink } from '../../common/helpLink'
@@ -8,7 +11,6 @@ import { SingleSelect } from '../../lib.react/edit/list'
 import { MultiSelect } from '../../lib.react/edit/multiList'
 import { EditText } from '../../lib.react/edit/text/text'
 import { IAdminSectionFactory } from '../admin'
-import { AdminSection } from './section'
 
 // React.js Komponente zur Konfiguration der Aufzeichnungsverzeichnisse.
 export class AdminDirectories extends AdminSection<IAdminDirectoriesPage> {
@@ -18,7 +20,7 @@ export class AdminDirectories extends AdminSection<IAdminDirectoriesPage> {
     }
 
     // Die Überschrift für diesen Bereich.
-    protected readonly title = `Aufzeichnungsverzeichnisse und Dateinamen`
+    protected readonly title = 'Aufzeichnungsverzeichnisse und Dateinamen'
 
     // Oberflächenelemente erzeugen.
     protected renderSection(): JSX.Element {
@@ -30,7 +32,7 @@ export class AdminDirectories extends AdminSection<IAdminDirectoriesPage> {
                 wie sich die Namen von Aufzeichnungsdateien aus den Daten einer Aufzeichnung zusammensetzen sollen.
                 {this.getFolderHelp()}
                 <div>
-                    <MultiSelect uvm={this.props.uvm.directories} items={10} />
+                    <MultiSelect items={10} uvm={this.props.uvm.directories} />
                     <div>
                         <ButtonCommand uvm={this.props.uvm.remove} />
                     </div>
@@ -39,13 +41,13 @@ export class AdminDirectories extends AdminSection<IAdminDirectoriesPage> {
                 <form>
                     <fieldset>
                         <legend>Neues Verzeichnis</legend>
-                        <Field page={this.props.uvm.page} label={`${this.props.uvm.share.text}:`}>
-                            <EditText uvm={this.props.uvm.share} chars={80} />
+                        <Field label={`${this.props.uvm.share.text}:`} page={this.props.uvm.page}>
+                            <EditText chars={80} uvm={this.props.uvm.share} />
                         </Field>
                         {this.props.uvm.showBrowse && (
                             <div>
                                 <i>oder</i>
-                                <Field page={this.props.uvm.page} label={`${this.props.uvm.browse.text}:`}>
+                                <Field label={`${this.props.uvm.browse.text}:`} page={this.props.uvm.page}>
                                     <SingleSelect uvm={this.props.uvm.browse} />
                                 </Field>
                             </div>
@@ -55,8 +57,8 @@ export class AdminDirectories extends AdminSection<IAdminDirectoriesPage> {
                             <ButtonCommand uvm={this.props.uvm.add} />
                         </div>
                     </fieldset>
-                    <Field page={this.props.uvm.page} label={`${this.props.uvm.pattern.text}:`}>
-                        <EditText uvm={this.props.uvm.pattern} chars={60} />
+                    <Field label={`${this.props.uvm.pattern.text}:`} page={this.props.uvm.page}>
+                        <EditText chars={60} uvm={this.props.uvm.pattern} />
                     </Field>
                 </form>
                 {this.getPatternHelp()}
@@ -111,7 +113,7 @@ export class AdminDirectories extends AdminSection<IAdminDirectoriesPage> {
         return (
             <InlineHelp title='Mögliche Platzhalter in den Dateinamen'>
                 Für jede Aufzeichnung wird im Allgemeinen genau eine Aufzeichnungsdatei erstellt.
-                <HelpLink topic='numberoffiles' page={this.props.uvm.page} /> Der VCR.NET Recording Service nutzt die
+                <HelpLink page={this.props.uvm.page} topic='numberoffiles' /> Der VCR.NET Recording Service nutzt die
                 Daten der Programmierung sowie weitere Umgebungsparameter wie die aktuelle Uhrzeit zur Erzeugung eines
                 Dateinamens. Die Regeln zur Komposition dieses Namens können frei konfiguriert werden, es wird
                 allerdings dringend empfohlen ein Schema zu wählen, das eine Eindeutigkeit der Dateinamen garantiert -

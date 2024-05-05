@@ -1,8 +1,10 @@
 ﻿import * as React from 'react'
+
+import { HelpComponent } from './helpComponent'
+
 import { IPage } from '../../app/pages/page'
 import { ExternalLink } from '../../lib.react/command/externalLink'
 import { InternalLink } from '../../lib.react/command/internalLink'
-import { HelpComponent } from './helpComponent'
 
 export class TsPlayer extends HelpComponent {
     readonly title = 'Aufzeichnungsdateien verarbeiten'

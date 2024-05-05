@@ -1,4 +1,7 @@
 ﻿import * as React from 'react'
+
+import { AdminSection } from './section'
+
 import { IAdminScanPage, ScanSection } from '../../app/pages/admin/scan'
 import { Field } from '../../common/field'
 import { HelpLink } from '../../common/helpLink'
@@ -8,7 +11,6 @@ import { SingleSelect } from '../../lib.react/edit/list'
 import { MultiSelectButton } from '../../lib.react/edit/multiButtonList'
 import { EditNumber } from '../../lib.react/edit/number/number'
 import { IAdminSectionFactory } from '../admin'
-import { AdminSection } from './section'
 
 // React.Js Komponente zur Konfiguration des Sendersuchlaufs.
 export class AdminSources extends AdminSection<IAdminScanPage> {
@@ -18,7 +20,7 @@ export class AdminSources extends AdminSection<IAdminScanPage> {
     }
 
     // Die Überschrift für diesen Bereich.
-    protected readonly title = `Aktualisierung der Quellen konfigurieren`
+    protected readonly title = 'Aktualisierung der Quellen konfigurieren'
 
     // Oberflächenelemente erstellen.
     protected renderSection(): JSX.Element {
@@ -27,7 +29,7 @@ export class AdminSources extends AdminSection<IAdminScanPage> {
                 <div>
                     Der VCR.NET Recording Service ist in der Lage, die Liste der Quellen der verwendeten DVB.NET Geräte
                     zu aktualisieren.
-                    <HelpLink topic='psiconfig' page={this.props.uvm.page} /> Dies kann automatisch oder gemäß eines
+                    <HelpLink page={this.props.uvm.page} topic='psiconfig' /> Dies kann automatisch oder gemäß eines
                     Zeitplans erfolgen.
                 </div>
                 <div>
@@ -36,21 +38,21 @@ export class AdminSources extends AdminSection<IAdminScanPage> {
                 {this.props.uvm.showConfiguration && (
                     <form>
                         {this.getDurationHelp()}
-                        <Field page={this.props.uvm.page} label={`${this.props.uvm.duration.text}:`}>
-                            <EditNumber uvm={this.props.uvm.duration} chars={5} />
+                        <Field label={`${this.props.uvm.duration.text}:`} page={this.props.uvm.page}>
+                            <EditNumber chars={5} uvm={this.props.uvm.duration} />
                         </Field>
                         <EditBoolean uvm={this.props.uvm.merge} />
                         {this.props.uvm.configureAutomatic && (
                             <div>
                                 {this.getHourHelp()}
-                                <Field page={this.props.uvm.page} label={`${this.props.uvm.hours.text}:`}>
-                                    <MultiSelectButton uvm={this.props.uvm.hours} merge={true} />
+                                <Field label={`${this.props.uvm.hours.text}:`} page={this.props.uvm.page}>
+                                    <MultiSelectButton merge={true} uvm={this.props.uvm.hours} />
                                 </Field>
-                                <Field page={this.props.uvm.page} label={`${this.props.uvm.gapDays.text}:`}>
-                                    <EditNumber uvm={this.props.uvm.gapDays} chars={5} />
+                                <Field label={`${this.props.uvm.gapDays.text}:`} page={this.props.uvm.page}>
+                                    <EditNumber chars={5} uvm={this.props.uvm.gapDays} />
                                 </Field>
-                                <Field page={this.props.uvm.page} label={`${this.props.uvm.latency.text}:`}>
-                                    <EditNumber uvm={this.props.uvm.latency} chars={5} />
+                                <Field label={`${this.props.uvm.latency.text}:`} page={this.props.uvm.page}>
+                                    <EditNumber chars={5} uvm={this.props.uvm.latency} />
                                 </Field>
                             </div>
                         )}

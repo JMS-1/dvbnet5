@@ -1,4 +1,7 @@
 ﻿import * as React from 'react'
+
+import { AdminSection } from './section'
+
 import { GuideSection, IAdminGuidePage } from '../../app/pages/admin/guide'
 import { Field } from '../../common/field'
 import { HelpLink } from '../../common/helpLink'
@@ -12,7 +15,6 @@ import { MultiSelect } from '../../lib.react/edit/multiList'
 import { EditNumber } from '../../lib.react/edit/number/number'
 import { IAdminSectionFactory } from '../admin'
 import { EditChannel } from '../edit/channel'
-import { AdminSection } from './section'
 
 // React.Js Komponentezur Pflege der Konfiguration der Aktualisierung der Programmzeitschrift.
 export class AdminGuide extends AdminSection<IAdminGuidePage> {
@@ -22,7 +24,7 @@ export class AdminGuide extends AdminSection<IAdminGuidePage> {
     }
 
     // Die Überschrift für diesen Bereich.
-    protected readonly title = `Einstellungen zum Aufbau der Programmzeitschrift`
+    protected readonly title = 'Einstellungen zum Aufbau der Programmzeitschrift'
 
     // Oberflächenelemente erzeugen
     protected renderSection(): JSX.Element {
@@ -30,10 +32,10 @@ export class AdminGuide extends AdminSection<IAdminGuidePage> {
             <div className='vcrnet-admin-guide'>
                 <div>
                     Auf Wunsch kann der VCR.NET Recording Service die Elektronische Programmzeitschrift (EPG)
-                    <HelpLink topic='epg' page={this.props.uvm.page} /> periodisch aktualisieren
-                    <HelpLink topic='epgconfig' page={this.props.uvm.page} /> und dann zur Programmierung von neuen
+                    <HelpLink page={this.props.uvm.page} topic='epg' /> periodisch aktualisieren
+                    <HelpLink page={this.props.uvm.page} topic='epgconfig' /> und dann zur Programmierung von neuen
                     Aufzeichnungen anbieten.
-                    <InternalLink view={this.props.uvm.page.application.editPage.route} pict='new' /> Hier werden die
+                    <InternalLink pict='new' view={this.props.uvm.page.application.editPage.route} /> Hier werden die
                     Eckdaten für die Aktualisierung festgelegt.
                 </div>
                 <EditBoolean uvm={this.props.uvm.isActive} />
@@ -41,27 +43,27 @@ export class AdminGuide extends AdminSection<IAdminGuidePage> {
                     <form>
                         {this.getSourceHelp()}
                         <div>
-                            <MultiSelect uvm={this.props.uvm.sources} items={10} />
+                            <MultiSelect items={10} uvm={this.props.uvm.sources} />
                             <ButtonCommand uvm={this.props.uvm.remove} />
                         </div>
-                        <Field page={this.props.uvm.page} label={`${this.props.uvm.device.text}:`}>
+                        <Field label={`${this.props.uvm.device.text}:`} page={this.props.uvm.page}>
                             <SingleSelect uvm={this.props.uvm.device} />
                             <EditChannel uvm={this.props.uvm.source} />
                             <ButtonCommand uvm={this.props.uvm.add} />
                         </Field>
                         <EditBoolean uvm={this.props.uvm.ukTv} />
                         {this.getDurationHelp()}
-                        <Field page={this.props.uvm.page} label={`${this.props.uvm.duration.text}:`}>
-                            <EditNumber uvm={this.props.uvm.duration} chars={5} />
+                        <Field label={`${this.props.uvm.duration.text}:`} page={this.props.uvm.page}>
+                            <EditNumber chars={5} uvm={this.props.uvm.duration} />
                         </Field>
-                        <Field page={this.props.uvm.page} label={`${this.props.uvm.hours.text}:`}>
-                            <MultiSelectButton uvm={this.props.uvm.hours} merge={true} />
+                        <Field label={`${this.props.uvm.hours.text}:`} page={this.props.uvm.page}>
+                            <MultiSelectButton merge={true} uvm={this.props.uvm.hours} />
                         </Field>
-                        <Field page={this.props.uvm.page} label={`${this.props.uvm.delay.text}:`}>
-                            <EditNumber uvm={this.props.uvm.delay} chars={5} />
+                        <Field label={`${this.props.uvm.delay.text}:`} page={this.props.uvm.page}>
+                            <EditNumber chars={5} uvm={this.props.uvm.delay} />
                         </Field>
-                        <Field page={this.props.uvm.page} label={`${this.props.uvm.latency.text}:`}>
-                            <EditNumber uvm={this.props.uvm.latency} chars={5} />
+                        <Field label={`${this.props.uvm.latency.text}:`} page={this.props.uvm.page}>
+                            <EditNumber chars={5} uvm={this.props.uvm.latency} />
                         </Field>
                     </form>
                 )}
@@ -93,7 +95,7 @@ export class AdminGuide extends AdminSection<IAdminGuidePage> {
                 Sollen Quellen zur Liste hinzugeführt werden, so ist zuerst einmal das Gerät auszuwählen, über das die
                 gewünschten Quellen empfangen werden können. Danach können die von der Programmierung neuer
                 Aufzeichnungen her bekannten Mechanismen zur schnellen Auswahl der Quelle verwendet werden.
-                <HelpLink topic='sourcechooser' page={this.props.uvm.page} />
+                <HelpLink page={this.props.uvm.page} topic='sourcechooser' />
                 <br />
                 <br />
                 Wenn auch Quellen zu britischen Sendern in der Liste enthalten sind, so muss auch die Option aktiviert

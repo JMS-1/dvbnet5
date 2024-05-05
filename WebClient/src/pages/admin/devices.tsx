@@ -1,5 +1,8 @@
 ﻿import * as React from 'react'
-import { IAdminDevicesPage, DevicesSection } from '../../app/pages/admin/devices'
+
+import { AdminSection } from './section'
+
+import { DevicesSection, IAdminDevicesPage } from '../../app/pages/admin/devices'
 import { Field } from '../../common/field'
 import { HelpLink } from '../../common/helpLink'
 import { InlineHelp } from '../../common/inlineHelp'
@@ -8,7 +11,6 @@ import { EditBoolean } from '../../lib.react/edit/boolean/flag'
 import { SingleSelect } from '../../lib.react/edit/list'
 import { EditNumber } from '../../lib.react/edit/number/number'
 import { IAdminSectionFactory } from '../admin'
-import { AdminSection } from './section'
 
 // React.js Komponente zur Konfiguration der Geräte.
 export class AdminDevices extends AdminSection<IAdminDevicesPage> {
@@ -18,7 +20,7 @@ export class AdminDevices extends AdminSection<IAdminDevicesPage> {
     }
 
     // Die Überschrift für diesen Bereich.
-    protected readonly title = `Aktivierung von DVB.NET Geräteprofilen`
+    protected readonly title = 'Aktivierung von DVB.NET Geräteprofilen'
 
     // Oberflächenelemente anlegen.
     protected renderSection(): JSX.Element {
@@ -26,11 +28,11 @@ export class AdminDevices extends AdminSection<IAdminDevicesPage> {
             <div className='vcrnet-admin-devices'>
                 Für den VCR.NET Recording Service kann festgelegt werden, welche der auf dem zugehörigen Rechner
                 installierten DVB.NET
-                <HelpLink topic='dvbnet' page={this.props.uvm.page} /> Geräteprofile für Aufzeichnungen verwendet werden
+                <HelpLink page={this.props.uvm.page} topic='dvbnet' /> Geräteprofile für Aufzeichnungen verwendet werden
                 dürfen. Eines dieser Geräte muss dann als bevorzugtes Gerät festgelegt werden.
                 {this.getHelp()}
                 <form>
-                    <Field page={this.props.uvm.page} label={`${this.props.uvm.defaultDevice.text}:`}>
+                    <Field label={`${this.props.uvm.defaultDevice.text}:`} page={this.props.uvm.page}>
                         <SingleSelect uvm={this.props.uvm.defaultDevice} />
                     </Field>
                     <table className='vcrnet-table'>
@@ -51,13 +53,13 @@ export class AdminDevices extends AdminSection<IAdminDevicesPage> {
                                     </td>
                                     <td>{d.name}</td>
                                     <td>
-                                        <EditNumber uvm={d.priority} chars={5} />
+                                        <EditNumber chars={5} uvm={d.priority} />
                                     </td>
                                     <td>
-                                        <EditNumber uvm={d.decryption} chars={5} />
+                                        <EditNumber chars={5} uvm={d.decryption} />
                                     </td>
                                     <td>
-                                        <EditNumber uvm={d.sources} chars={5} />
+                                        <EditNumber chars={5} uvm={d.sources} />
                                     </td>
                                 </tr>
                             ))}

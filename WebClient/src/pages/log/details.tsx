@@ -1,8 +1,9 @@
 ﻿import * as React from 'react'
-import { Component } from '../../lib.react/reactUi'
+
 import { ILogEntry } from '../../app/pages/log/entry'
 import { ExternalLink } from '../../lib.react/command/externalLink'
 import { Pictogram } from '../../lib.react/command/pictogram'
+import { Component } from '../../lib.react/reactUi'
 
 // React.Js Komponente zur Anzeige der Details eines Protokolleintrags.
 export class LogDetails extends Component<ILogEntry> {
@@ -39,7 +40,7 @@ export class LogDetails extends Component<ILogEntry> {
                                     <td>Datei ansehen:</td>
                                     <td>
                                         {this.props.uvm.files.map((f, index) => (
-                                            <ExternalLink key={index} url={f} sameWindow={true}>
+                                            <ExternalLink key={index} sameWindow={true} url={f}>
                                                 <Pictogram name='recording' />
                                             </ExternalLink>
                                         ))}

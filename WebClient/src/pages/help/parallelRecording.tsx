@@ -1,7 +1,9 @@
 ﻿import * as React from 'react'
+
+import { HelpComponent } from './helpComponent'
+
 import { IPage } from '../../app/pages/page'
 import { InternalLink } from '../../lib.react/command/internalLink'
-import { HelpComponent } from './helpComponent'
 
 export class ParallelRecording extends HelpComponent {
     readonly title = 'Planung von Aufzeichnungen'
@@ -11,7 +13,7 @@ export class ParallelRecording extends HelpComponent {
             <div>
                 Selbstverständlich ist es keine Problem unabhängig Aufzeichnungen auf mehreren DVB Karten zu
                 programmieren, wenn diese dem VCR.NET Recording Service zur Nutzung zur Verfügung
-                <InternalLink view={`${page.application.adminPage.route};devices`} pict='admin' /> gestellt wurden. Hier
+                <InternalLink pict='admin' view={`${page.application.adminPage.route};devices`} /> gestellt wurden. Hier
                 soll allerdings beschrieben werden, unter welchen Bedingungen es möglich ist, mit einer DVB Hardware zum
                 gleichen Zeitpunkt mehrere Quellen aufzuzeichnen.
                 <br />
@@ -62,7 +64,7 @@ export class ParallelRecording extends HelpComponent {
                 <br />
                 <br />
                 Das Ergebnis einer Planung wird im Aufzeichnungsplan
-                <InternalLink view={page.application.planPage.route} pict='plan' /> durch entsprechende farbige Symbole
+                <InternalLink pict='plan' view={page.application.planPage.route} /> durch entsprechende farbige Symbole
                 dargestellt.
             </div>
         )

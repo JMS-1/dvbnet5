@@ -1,10 +1,12 @@
-﻿import React from 'react'
+﻿import * as React from 'react'
+
+import { AdminSection } from './section'
+
 import { IAdminSecurityPage, SecuritySection } from '../../app/pages/admin/security'
 import { Field } from '../../common/field'
 import { InlineHelp } from '../../common/inlineHelp'
 import { SingleSelect } from '../../lib.react/edit/list'
 import { IAdminSectionFactory } from '../admin'
-import { AdminSection } from './section'
 
 // ReacJs Komponente zur Pflege der Sicherheitskonfiguration.
 export class AdminSecurity extends AdminSection<IAdminSecurityPage> {
@@ -14,7 +16,7 @@ export class AdminSecurity extends AdminSection<IAdminSecurityPage> {
     }
 
     // Die Überschrift für diesen Bereich.
-    protected readonly title = `Auswahl der Benutzergruppen`
+    protected readonly title = 'Auswahl der Benutzergruppen'
 
     // Oberflächenelemente erstellen.
     protected renderSection(): JSX.Element {

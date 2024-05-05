@@ -1,7 +1,9 @@
 ﻿import * as React from 'react'
+
+import { HelpComponent } from './helpComponent'
+
 import { IPage } from '../../app/pages/page'
 import { InternalLink } from '../../lib.react/command/internalLink'
-import { HelpComponent } from './helpComponent'
 
 export class Archive extends HelpComponent {
     readonly title = 'Lebenszyklus von Aufträgen'
@@ -23,9 +25,9 @@ export class Archive extends HelpComponent {
                 <InternalLink view={`${page.route};jobsandschedules`}>Auftrag</InternalLink> nur abgeschlossene
                 Aufzeichnungen, so wird auch dieser als abgeschlossen betrachtet. Der Auftrag wird dann aus der Liste
                 der vorhandenen
-                <InternalLink view={page.application.jobPage.route} pict='jobs' /> Aufträge entfernt und in das so
+                <InternalLink pict='jobs' view={page.application.jobPage.route} /> Aufträge entfernt und in das so
                 genannte Archiv
-                <InternalLink view={`${page.application.jobPage.route};archive`} pict='jobs' /> übernommen. Die
+                <InternalLink pict='jobs' view={`${page.application.jobPage.route};archive`} /> übernommen. Die
                 Übertragung ins Archiv kann auch manuell über das Löschen eines Auftrags oder der letzten Aufzeichnung
                 eines Auftrags erfolgen. Die Aufzeichnungen des Auftrags werden dann nicht weiter bei der Planung
                 berücksichtigt.
@@ -38,11 +40,11 @@ export class Archive extends HelpComponent {
                 <br />
                 <br />
                 Abhängig von der Konfiguration
-                <InternalLink view={`${page.application.adminPage.route};other`} pict='admin' /> werden die Aufträge im
+                <InternalLink pict='admin' view={`${page.application.adminPage.route};other`} /> werden die Aufträge im
                 Archiv nach einer gewissen Zeit endgültig gelöscht - dies ist durch manuelles Löschen auch jederzeit
                 vorab möglich. Der VCR.NET Recording Service führt diese Bereinigung allerdings nur durch, wenn der
                 Anwender aktiv die Liste der Aufträge im Archiv aufruft
-                <InternalLink view={`${page.application.jobPage.route};archive`} pict='jobs' />. Als Kriterium wird der
+                <InternalLink pict='jobs' view={`${page.application.jobPage.route};archive`} />. Als Kriterium wird der
                 Zeitpunkt verwendet, an dem ein Auftrag in das Archiv übernommen wurde.
                 <br />
                 <br />

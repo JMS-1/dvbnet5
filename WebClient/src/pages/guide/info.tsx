@@ -1,7 +1,8 @@
 ﻿import * as React from 'react'
-import { Component } from '../../lib.react/reactUi'
+
 import { IGuideInfo } from '../../app/pages/guide/entry'
 import { ButtonCommand } from '../../lib.react/command/button'
+import { Component } from '../../lib.react/reactUi'
 
 // React.Js Komponente zur Anzeige der Details einer Sendung aus der Programmzeitschrift.
 export class GuideEntryInfo extends Component<IGuideInfo> {

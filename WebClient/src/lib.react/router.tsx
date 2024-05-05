@@ -1,4 +1,6 @@
-﻿import * as React from 'react'
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import * as React from 'react'
 
 import { Component, IComponent, IEmpty } from './reactUi'
 

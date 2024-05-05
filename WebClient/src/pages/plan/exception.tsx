@@ -1,10 +1,11 @@
 ﻿import * as React from 'react'
+
 import { IPlanPage } from '../../app/pages/plan'
 import { IPlanException } from '../../app/pages/plan/exception'
 import { HelpLink } from '../../common/helpLink'
 import { ButtonCommand } from '../../lib.react/command/button'
 import { EditNumberSlider } from '../../lib.react/edit/number/slider'
-import { IComponent, ComponentExWithSite } from '../../lib.react/reactUi'
+import { ComponentExWithSite, IComponent } from '../../lib.react/reactUi'
 
 // Schnittstelle zur Pflege einer Ausnahmeregel.
 interface IPlanExceptionStatic extends IComponent<IPlanException> {
@@ -37,7 +38,7 @@ export class PlanException extends ComponentExWithSite<IPlanException, IPlanExce
                         <tr>
                             <td
                                 className={
-                                    this.props.uvm.currentDuration <= 0 ? `vcrnet-planexception-discard` : undefined
+                                    this.props.uvm.currentDuration <= 0 ? 'vcrnet-planexception-discard' : undefined
                                 }
                             >
                                 Dauer

@@ -67,7 +67,7 @@ export class Admin extends ComponentWithSite<IAdminPage> {
     }
 
     // React.Js Komponente zum aktuellen Konfigurationsbereich ermitteln.
-    private renderSection(): JSX.Element {
+    private renderSection(): React.ReactNode {
         // Einmalig erzeugen.
         if (!Admin._sections) {
             // Leer anlegen.
@@ -84,9 +84,11 @@ export class Admin extends ComponentWithSite<IAdminPage> {
         }
 
         // Oberlfächenkomponente ermitteln.
-        const factory = Admin._sections[this.props.uvm.sections.value?.route!]
+        const route = this.props.uvm.sections.value?.route
+        const factory = route && Admin._sections[route]
 
         // Ui View Model ermitteln undReact.Js Komponente erstellen.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return factory && React.createElement(factory as any, { uvm: this.props.uvm.getOrCreateCurrentSection() })
     }
 }

@@ -1,7 +1,9 @@
 ﻿import * as React from 'react'
+
+import { HelpComponent } from './helpComponent'
+
 import { IPage } from '../../app/pages/page'
 import { InternalLink } from '../../lib.react/command/internalLink'
-import { HelpComponent } from './helpComponent'
 
 export class CustomSchedule extends HelpComponent {
     readonly title = 'Regeln für die Planung von Aufzeichnungen'
@@ -11,7 +13,7 @@ export class CustomSchedule extends HelpComponent {
             <div>
                 Der VCR.NET Recording Service verwendet nach der Installation ein festes Regelwerk zur Planung von
                 Aufzeichnungen für den Fall, dass mehrere DVB.NET Geräteprofile verwendet werden. Über die Konfiguration
-                <InternalLink view={`${page.application.adminPage.route};rules`} pict='admin' /> kann dieses speziellen
+                <InternalLink pict='admin' view={`${page.application.adminPage.route};rules`} /> kann dieses speziellen
                 Bedürfnissen angepasst werden.
                 <br />
                 <br />

@@ -1,4 +1,7 @@
 ﻿import * as React from 'react'
+
+import { AdminSection } from './section'
+
 import { IAdminOtherPage, OtherSection } from '../../app/pages/admin/other'
 import { Field } from '../../common/field'
 import { HelpLink } from '../../common/helpLink'
@@ -7,7 +10,6 @@ import { EditBoolean } from '../../lib.react/edit/boolean/flag'
 import { SingleSelect } from '../../lib.react/edit/list'
 import { EditNumber } from '../../lib.react/edit/number/number'
 import { IAdminSectionFactory } from '../admin'
-import { AdminSection } from './section'
 
 // React.Js Komponente zur Konfiguration sonstiger Einstellungen.
 export class AdminOther extends AdminSection<IAdminOtherPage> {
@@ -17,7 +19,7 @@ export class AdminOther extends AdminSection<IAdminOtherPage> {
     }
 
     // Die Überschrift für diesen Bereich.
-    protected readonly title = `Sonstige Betriebsparameter`
+    protected readonly title = 'Sonstige Betriebsparameter'
 
     // Erstellt die Oberflächenelemente.
     protected renderSection(): JSX.Element {
@@ -29,13 +31,13 @@ export class AdminOther extends AdminSection<IAdminOtherPage> {
                 <form>
                     {this.getWebHelp()}
                     <Field label={`${this.props.uvm.port.text}:`} page={this.props.uvm.page}>
-                        <EditNumber uvm={this.props.uvm.port} chars={8} />
+                        <EditNumber chars={8} uvm={this.props.uvm.port} />
                     </Field>
                     <div>
                         <EditBoolean uvm={this.props.uvm.ssl} />
                     </div>
                     <Field label={`${this.props.uvm.securePort.text}:`} page={this.props.uvm.page}>
-                        <EditNumber uvm={this.props.uvm.securePort} chars={8} />
+                        <EditNumber chars={8} uvm={this.props.uvm.securePort} />
                     </Field>
                     <div>
                         <EditBoolean uvm={this.props.uvm.basicAuth} />
@@ -45,18 +47,18 @@ export class AdminOther extends AdminSection<IAdminOtherPage> {
                         <SingleSelect uvm={this.props.uvm.hibernation} />
                     </Field>
                     <Field label={`${this.props.uvm.preSleep.text}:`} page={this.props.uvm.page}>
-                        <EditNumber uvm={this.props.uvm.preSleep} chars={8} />
+                        <EditNumber chars={8} uvm={this.props.uvm.preSleep} />
                     </Field>
                     <Field label={`${this.props.uvm.minSleep.text}:`} page={this.props.uvm.page}>
-                        <EditNumber uvm={this.props.uvm.minSleep} chars={8} />
+                        <EditNumber chars={8} uvm={this.props.uvm.minSleep} />
                     </Field>
                     <EditBoolean uvm={this.props.uvm.ignoreMinSleep} />
                     {this.getLogHelp()}
                     <Field label={`${this.props.uvm.logKeep.text}:`} page={this.props.uvm.page}>
-                        <EditNumber uvm={this.props.uvm.logKeep} chars={8} />
+                        <EditNumber chars={8} uvm={this.props.uvm.logKeep} />
                     </Field>
                     <Field label={`${this.props.uvm.jobKeep.text}:`} page={this.props.uvm.page}>
-                        <EditNumber uvm={this.props.uvm.jobKeep} chars={8} />
+                        <EditNumber chars={8} uvm={this.props.uvm.jobKeep} />
                     </Field>
                     <div>
                         <EditBoolean uvm={this.props.uvm.noH264PCR} />
@@ -78,7 +80,7 @@ export class AdminOther extends AdminSection<IAdminOtherPage> {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Der VCR.NET Recording Service ist ein Web Server
-                <HelpLink topic='websettings' page={this.props.uvm.page} /> auf Basis der Microsoft ASP.NET / .NET
+                <HelpLink page={this.props.uvm.page} topic='websettings' /> auf Basis der Microsoft ASP.NET / .NET
                 Technologie. Als solcher ist es mindestens notwendig, einen TCP/IP Port für die Kommunikation mit den
                 Clients und auch dieser Web Anwendung festzulegen. Weitere Einstellungen erlauben das Verschlüsseln der
                 Kommunikation mit dem Web Server oder alternative Autorisierungsprotokolle.
@@ -92,7 +94,7 @@ export class AdminOther extends AdminSection<IAdminOtherPage> {
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Es kann dem VCR.NET Recording Service gestattet werden, den Rechner nach erfolgten Aufzeichnungen in den
                 Schlafzustand zu versetzen.
-                <HelpLink topic='hibernation' page={this.props.uvm.page} /> Unabhängig davon wird der VCR.NET Dienst
+                <HelpLink page={this.props.uvm.page} topic='hibernation' /> Unabhängig davon wird der VCR.NET Dienst
                 versuchen, den Rechner für Aufzeichnungen aus dem Schlafzustand zu wecken, falls dieser nicht erst kurz
                 vorher ausgelöst wurde - dieser Grenzwert kann hier eingestellt werden. Da nicht jedes System gleich
                 schnell aus dem Schlafzustand in den Betriebszsutand wecheln kann, ist es ferner möglich, eine
@@ -107,13 +109,13 @@ export class AdminOther extends AdminSection<IAdminOtherPage> {
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Nach erfolgter Aufzeichnung erstellt der VCR.NET Recording Service automatisch einen Protokolleintrag
                 mit den Eckdaten der Gerätenutzung.
-                <HelpLink topic='log' page={this.props.uvm.page} /> Diese werden allerdings nur eine begrenzte Zeit
+                <HelpLink page={this.props.uvm.page} topic='log' /> Diese werden allerdings nur eine begrenzte Zeit
                 vorgehalten und dann automatisch endgültig gelöscht. Ähnlich verhält es sich mit vollständig
                 abgeschlossenen Aufträgen:
-                <HelpLink topic='archive' page={this.props.uvm.page} /> diese werden für einen gewissen Zeitraum
+                <HelpLink page={this.props.uvm.page} topic='archive' /> diese werden für einen gewissen Zeitraum
                 archiviert, bevor sie endgültig entfernt werden. Während des Verbleibs im Archive können sie jederzeit
                 abgefrufen
-                <HelpLink topic='archive' page={this.props.uvm.page} /> und erneut verwendet werden.
+                <HelpLink page={this.props.uvm.page} topic='archive' /> und erneut verwendet werden.
             </InlineHelp>
         )
     }

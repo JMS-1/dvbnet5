@@ -1,8 +1,10 @@
 ﻿import * as React from 'react'
-import { IPage } from '../../app/pages/page'
-import { InternalLink } from '../../lib.react/command/internalLink'
+
 import { HelpComponent } from './helpComponent'
 import { ScreenShot } from './screenShot'
+
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
 
 export class AdminSourceScan extends HelpComponent {
     readonly title = 'Quellen aktualisieren (Sendersuchlauf)'
@@ -21,7 +23,7 @@ export class AdminSourceScan extends HelpComponent {
                 <br />
                 Alternativ ist es aber auch möglich, dem VCR.NET Recording Service dafür einzurichten, für alle DVB
                 Geräte eine entsprechende Aktualisierung
-                <InternalLink view={`${page.application.adminPage.route};sources`} pict='admin' /> periodisch
+                <InternalLink pict='admin' view={`${page.application.adminPage.route};sources`} /> periodisch
                 auszuführen.
                 <ScreenShot description='Aktualisierung konfigurieren' name='FAQ/psi' />
                 Im Endeffekt erfolgt die Konfiguration ganz analog zur{' '}

@@ -1,8 +1,10 @@
 ﻿import * as React from 'react'
-import { IPage } from '../../app/pages/page'
-import { InternalLink } from '../../lib.react/command/internalLink'
+
 import { HelpComponent } from './helpComponent'
 import { ScreenShot } from './screenShot'
+
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
 
 export class AdminProgramGuide extends HelpComponent {
     readonly title = 'Konfiguration der Programmzeitschrift'
@@ -14,7 +16,7 @@ export class AdminProgramGuide extends HelpComponent {
                 <InternalLink view={`${page.route};epg`}>Programmzeitschrift</InternalLink> zur Programmierung neuer
                 Aufzeichnungen zur Verfügung stellen kann muss erst einmal festgelegt werden, mit welchem Inhalt diese
                 zu füllen ist. Im Administrationsbereich der Web Oberfläche gibt es dazu eine gesonderten Seite
-                <InternalLink view={`${page.application.adminPage.route};guide`} pict='admin' />. Damit die
+                <InternalLink pict='admin' view={`${page.application.adminPage.route};guide`} />. Damit die
                 Programmzeitschrift überhaupt erstellt wird, muss erst einmal die Sammlung der Informationen an sich
                 aktiviert werden.
                 <ScreenShot description='Sammlung aktivieren' name='FAQ/epgonoff' />
@@ -42,7 +44,7 @@ export class AdminProgramGuide extends HelpComponent {
                 VCR.NET Recording Service die Aktualisierung vorzeitig beenden und die Programmzeitschrift ist
                 unvollständig. Der genaue Wert ist abhängig von den ausgewählten Quellen und kann nur individuell selbst
                 bestimmt werden. Ist die Aktualisierung doch vorzeitig abgeschlossen, so wird auch die Aktivität{' '}
-                <InternalLink view={page.application.devicesPage.route} pict='devices' /> auf dem DVB Gerät beendet. Mit
+                <InternalLink pict='devices' view={page.application.devicesPage.route} /> auf dem DVB Gerät beendet. Mit
                 Hilfe der <InternalLink view={`${page.route};log`}>Protokollliste</InternalLink> lässt sich dann leicht
                 feststellen, was ein typischer Wert für die Laufzeit ist.
                 <ScreenShot description='Aktualisierungszeitpunkte' name='FAQ/epgtimes' />
@@ -55,7 +57,7 @@ export class AdminProgramGuide extends HelpComponent {
                 <br />
                 <br />
                 Ergänzend ist es jederzeit möglich, eine Aktualisierung manuell{' '}
-                <InternalLink view={page.application.homePage.route} pict='home' /> anzufordern. Der VCR.NET Recording
+                <InternalLink pict='home' view={page.application.homePage.route} /> anzufordern. Der VCR.NET Recording
                 Service wird dann zum nächstmöglichen Zeitpunkt die gewünschte Aktion ausführen. Hier gilt wie
                 grundsätzlich für alle Sonderaufgaben: ist eine programmiert Aufzeichnung aktiv oder steht kurz bevor,
                 so wird die Aktualisierung verschoben, bis das verwendete DVB Gerät sicher für die konfigurierte

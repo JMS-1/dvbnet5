@@ -1,8 +1,9 @@
 ﻿import * as React from 'react'
+
 import { IPlanPage } from '../../app/pages/plan'
 import { IPlanEntry } from '../../app/pages/plan/entry'
 import { HelpLink } from '../../common/helpLink'
-import { IComponent, ComponentExWithSite } from '../../lib.react/reactUi'
+import { ComponentExWithSite, IComponent } from '../../lib.react/reactUi'
 import { TimeBar } from '../../lib.react/timeBar'
 import { GuideEntryInfo } from '../guide/info'
 
@@ -16,20 +17,20 @@ interface IPlanGuide extends IComponent<IPlanEntry> {
 export class PlanGuide extends ComponentExWithSite<IPlanEntry, IPlanGuide> {
     // Oberflächenelemente erstellen.
     render(): JSX.Element {
-        var guide = this.props.uvm.guideItem
+        const guide = this.props.uvm.guideItem
 
         return (
             <div className='vcrnet-planguide'>
                 <div>
                     <span>Aufzeichnungsoptionen:</span>
-                    <HelpLink topic='filecontents' page={this.props.page} />
-                    <span className={this.props.uvm.allAudio ? undefined : `vcrnet-optionoff`}>
+                    <HelpLink page={this.props.page} topic='filecontents' />
+                    <span className={this.props.uvm.allAudio ? undefined : 'vcrnet-optionoff'}>
                         Alle Sprachen
                     </span>,{' '}
-                    <span className={this.props.uvm.dolby ? undefined : `vcrnet-optionoff`}>Dolby Digital</span>,{' '}
-                    <span className={this.props.uvm.ttx ? undefined : `vcrnet-optionoff`}>Videotext</span>,{' '}
-                    <span className={this.props.uvm.subs ? undefined : `vcrnet-optionoff`}>DVB-Untertitel</span>,{' '}
-                    <span className={this.props.uvm.guide ? undefined : `vcrnet-optionoff`}>Programminformationen</span>
+                    <span className={this.props.uvm.dolby ? undefined : 'vcrnet-optionoff'}>Dolby Digital</span>,{' '}
+                    <span className={this.props.uvm.ttx ? undefined : 'vcrnet-optionoff'}>Videotext</span>,{' '}
+                    <span className={this.props.uvm.subs ? undefined : 'vcrnet-optionoff'}>DVB-Untertitel</span>,{' '}
+                    <span className={this.props.uvm.guide ? undefined : 'vcrnet-optionoff'}>Programminformationen</span>
                 </div>
                 {guide ? (
                     <fieldset>

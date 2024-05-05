@@ -1,21 +1,23 @@
 ﻿import * as React from 'react'
+
+import { Task } from './home/task'
+import { VersionCheck } from './home/versionCheck'
+
 import { IHomePage } from '../app/pages/home'
 import { HelpLink } from '../common/helpLink'
 import { ExternalLink } from '../lib.react/command/externalLink'
 import { InternalLink } from '../lib.react/command/internalLink'
 import { Pictogram } from '../lib.react/command/pictogram'
 import { ComponentWithSite } from '../lib.react/reactUi'
-import { Task } from './home/task'
-import { VersionCheck } from './home/versionCheck'
 
 // Die React.Js Komponente zur Anzeige der Startseite.
 export class Home extends ComponentWithSite<IHomePage> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {
-        var versionCheck = this.props.uvm.checkVersion
-        var showGuide = this.props.uvm.showStartGuide
-        var showScan = this.props.uvm.showStartScan
-        var application = this.props.uvm.application
+        const versionCheck = this.props.uvm.checkVersion
+        const showGuide = this.props.uvm.showStartGuide
+        const showScan = this.props.uvm.showStartScan
+        const application = this.props.uvm.application
 
         return (
             <div className='vcrnet-home'>
@@ -95,11 +97,11 @@ export class Home extends ComponentWithSite<IHomePage> {
                             <Task uvm={this.props.uvm.startGuide}>
                                 Mit der Schaltfläche unter diesem Text kann eine baldmögliche Aktualisierung der
                                 Programmzeitschrift
-                                <HelpLink topic='epg' page={this.props.uvm} /> angefordert werden. Sind gerade
+                                <HelpLink page={this.props.uvm} topic='epg' /> angefordert werden. Sind gerade
                                 Aufzeichnungen aktiv oder in nächster Zeit geplant, so wird der VCR.NET Recording
                                 Service die Aktualisierung auf den nächstmöglichen Zeitpunkt verschieben, da die
                                 Ausführung regulärer Aufzeichnungen immer Priorität vor allen Aktualisierungen hat.
-                                <HelpLink topic='tasks' page={this.props.uvm} />
+                                <HelpLink page={this.props.uvm} topic='tasks' />
                             </Task>
                         )}
                         <li>
@@ -119,7 +121,7 @@ export class Home extends ComponentWithSite<IHomePage> {
                                 niedrigere Priorität besitzt als die Ausführung regulärer Aufzeichnungen kann es sein,
                                 dass sie nicht unmittelbar gestartet wird. Der VCR.NET Recording Service wird dies aber
                                 bei nächster Gelegenheit nachholen.
-                                <HelpLink topic='tasks' page={this.props.uvm} />
+                                <HelpLink page={this.props.uvm} topic='tasks' />
                             </Task>
                         )}
                         <li>
@@ -145,7 +147,7 @@ export class Home extends ComponentWithSite<IHomePage> {
                     <div className='vcrnet-warningtext'>
                         Hinweis: Der VCR.NET Recording Service führt gerade eine oder mehrere Aufzeichnungen oder
                         Aktualisierungen von Programmzeitschrift respektive Senderliste aus.
-                        <InternalLink view={this.props.uvm.application.devicesPage.route} pict='info' />
+                        <InternalLink pict='info' view={this.props.uvm.application.devicesPage.route} />
                     </div>
                 )}
                 <div>

@@ -1,4 +1,5 @@
 ﻿import * as React from 'react'
+
 import { IJobPage } from '../app/pages/jobs'
 import { HelpLink } from '../common/helpLink'
 import { InlineHelp } from '../common/inlineHelp'
@@ -18,7 +19,7 @@ export class Jobs extends ComponentWithSite<IJobPage> {
                 wurden.
                 {this.getHelp()}
                 <div>
-                    <SingleSelectButton uvm={this.props.uvm.showArchived} merge={true} />
+                    <SingleSelectButton merge={true} uvm={this.props.uvm.showArchived} />
                 </div>
                 <fieldset>
                     {this.props.uvm.jobs.map((job, index) => (

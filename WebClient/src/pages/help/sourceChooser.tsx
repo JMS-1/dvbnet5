@@ -1,8 +1,10 @@
 ﻿import * as React from 'react'
-import { IPage } from '../../app/pages/page'
-import { InternalLink } from '../../lib.react/command/internalLink'
+
 import { HelpComponent } from './helpComponent'
 import { ScreenShot } from './screenShot'
+
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
 
 export class SourceChooser extends HelpComponent {
     readonly title = 'Quellen (Sender)'
@@ -24,7 +26,7 @@ export class SourceChooser extends HelpComponent {
                         Interessant ist die Voreinstellung der ersten Auswahlliste direkt neben dem Namen der Quelle.
                         Bei dieser Auswahl werden die zuletzt verwendeten Quellen in alphabetischer Anordnung angezeigt
                         - jeder Anwender kann individuell festlegen
-                        <InternalLink view={page.application.settingsPage.route} pict='settings' />, wie viele Quellen
+                        <InternalLink pict='settings' view={page.application.settingsPage.route} />, wie viele Quellen
                         die Liste maximal enthalten darf. Nach einiger gewissen Nutzungszeit des VCR.NET Recording
                         Service zeigt sich im Allgemeinen, dass diese Liste fast immer die gewünschte Quelle enthält.
                         Ist die Liste leer, so werden automatisch alle möglichen Quellen zur Auswahl angeboten.

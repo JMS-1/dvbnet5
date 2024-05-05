@@ -1,8 +1,10 @@
 ﻿import * as React from 'react'
+
+import { HelpComponent } from './helpComponent'
+
 import { IPage } from '../../app/pages/page'
 import { InternalLink } from '../../lib.react/command/internalLink'
 import { Pictogram } from '../../lib.react/command/pictogram'
-import { HelpComponent } from './helpComponent'
 
 export class Overview extends HelpComponent {
     readonly title = 'Fragen und Antworten'

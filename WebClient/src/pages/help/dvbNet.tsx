@@ -1,8 +1,10 @@
 ﻿import * as React from 'react'
+
+import { HelpComponent } from './helpComponent'
+
 import { IPage } from '../../app/pages/page'
 import { ExternalLink } from '../../lib.react/command/externalLink'
 import { InternalLink } from '../../lib.react/command/internalLink'
-import { HelpComponent } from './helpComponent'
 
 export class DvbNet extends HelpComponent {
     readonly title = 'DVB.NET'
@@ -12,7 +14,7 @@ export class DvbNet extends HelpComponent {
             <div>
                 Der VCR.NET Recording Service ist ausschließlich der Koordinator von Aufzeichnungen. Die eigentlichen
                 Aktivitäten
-                <InternalLink view={page.application.devicesPage.route} pict='devices' /> auf den DVB Geräten werden mit
+                <InternalLink pict='devices' view={page.application.devicesPage.route} /> auf den DVB Geräten werden mit
                 Hilfe der <ExternalLink url='http://www.psimarron.net/DVBNET/'>DVB.NET Bibliothek</ExternalLink>{' '}
                 ausgeführt. Insbesondere muss für jedes DVB Gerät, das der VCR.NET Recording Service nutzen soll, ein{' '}
                 <ExternalLink url='http://www.psimarron.net/DVBNET/html/profiles.html'>

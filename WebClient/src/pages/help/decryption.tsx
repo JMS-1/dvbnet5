@@ -1,8 +1,10 @@
 ﻿import * as React from 'react'
-import { InternalLink } from '../../lib.react/command/internalLink'
-import { IPage } from '../../app/pages/page'
+
 import { HelpComponent } from './helpComponent'
 import { ScreenShot } from './screenShot'
+
+import { IPage } from '../../app/pages/page'
+import { InternalLink } from '../../lib.react/command/internalLink'
 
 export class Decryption extends HelpComponent {
     readonly title = 'Entschlüsselung'
@@ -18,7 +20,7 @@ export class Decryption extends HelpComponent {
                 <br />
                 <br />
                 Eine wichtige, wenn auch zurzeit noch irrelevante Einstellung
-                <InternalLink view={`${page.application.adminPage.route};devices`} pict='admin' /> ist die Anzahl der
+                <InternalLink pict='admin' view={`${page.application.adminPage.route};devices`} /> ist die Anzahl der
                 gleichzeitig entschlüsselbarer Quellen. Irrelevant ist diese Einstellung in der vorliegenden Version, da
                 DVB.NET zu jeder Zeit immer nur eine Quelle entschlüsseln kann. Im DVB.NET Geräteprofil wird bei den
                 Aufzeichnungseinstellungen ein entsprechender Grenzwert verwaltet, der als Voreinstellung 1 verwendet.
