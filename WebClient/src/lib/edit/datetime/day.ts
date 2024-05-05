@@ -1,4 +1,4 @@
-﻿import { ICommand, Command } from '../../command/command'
+﻿import { Command, ICommand } from '../../command/command'
 import { DateTimeUtils } from '../../dateTimeUtils'
 import { IDisplay } from '../../localizable'
 import { IConnectable } from '../../site'
@@ -62,7 +62,7 @@ export interface IDaySelector extends IDisplay, IConnectable {
 }
 
 // Präsentastionsmodell zur Auswahl eines Tags.
-export class DayEditor extends Property<string> implements IDaySelector {
+export class DayProperty extends Property<string> implements IDaySelector {
     // Die Namen aller Wochentage, wobei wir die Woche am Montag beginnen lassen.
     readonly dayNames = DateTimeUtils.germanDays.map((d, i) => DateTimeUtils.germanDays[(i + 1) % 7])
 
@@ -71,7 +71,7 @@ export class DayEditor extends Property<string> implements IDaySelector {
 
     private goBackward(): void {
         // Aktuelle Auswahl prüfen.
-        var monthIndex = this.months.indexOf(this._month)
+        let monthIndex = this.months.indexOf(this._month)
         if (monthIndex < 0) return
 
         // Monat anpassen.
@@ -94,7 +94,7 @@ export class DayEditor extends Property<string> implements IDaySelector {
 
     private goForward(): void {
         // Laufende Nummer ermitteln.
-        var monthIndex = this.months.indexOf(this._month)
+        let monthIndex = this.months.indexOf(this._month)
         if (monthIndex < 0) return
 
         // Monat anpassen.
@@ -115,7 +115,7 @@ export class DayEditor extends Property<string> implements IDaySelector {
     // Anzeige auf den aktuellen Monat setzen.
     readonly today = new Command(
         () => this.goToday(),
-        `Heute`,
+        'Heute',
         () => this.days.every((d) => !d.isToday)
     )
 
@@ -126,7 +126,7 @@ export class DayEditor extends Property<string> implements IDaySelector {
     // Anzeige auf den Monat mit der aktuellen Auswahl setzen.
     readonly reset = new Command(
         () => this.goSelected(),
-        `Zurück`,
+        'Zurück',
         () => this.days.every((d) => !d.isCurrentDay)
     )
 
@@ -160,7 +160,7 @@ export class DayEditor extends Property<string> implements IDaySelector {
         'Dezember',
     ]
 
-    readonly months: string[] = DayEditor._months
+    readonly months: string[] = DayProperty._months
 
     // Verwaltet den aktuellen Monat.
     private _month: string
@@ -213,7 +213,7 @@ export class DayEditor extends Property<string> implements IDaySelector {
     // Der aktuell ausgewählte Tag.
     private get day(): Date {
         // Aktuelles Datum auslesen.
-        var oldDay = new Date(this.value ?? 0)
+        let oldDay = new Date(this.value ?? 0)
 
         // Wird nur ein Datum (ohne Mitpflegen der Uhrzeit) verwaltet, verwenden wird eine interne UTC Repräsentation.
         if (this._pureDate) oldDay = new Date(oldDay.getUTCFullYear(), oldDay.getUTCMonth(), oldDay.getUTCDate())
@@ -224,7 +224,7 @@ export class DayEditor extends Property<string> implements IDaySelector {
 
     private set day(newDay: Date) {
         // Der aktuelle Wert.
-        var oldDay = this.day
+        const oldDay = this.day
 
         // Bei einem reinen Datum die Uhrzeit ausblenden.
         if (this._pureDate) newDay = new Date(Date.UTC(newDay.getFullYear(), newDay.getMonth(), newDay.getDate()))
@@ -244,34 +244,34 @@ export class DayEditor extends Property<string> implements IDaySelector {
         if (this.years) if (this.years[5] === this._year) return
 
         // Aktuelles Jahr ermitteln.
-        var year = parseInt(this._year)
+        const year = parseInt(this._year)
 
         // Auswahlliste füllen.
         this.years = []
 
-        for (var i = -5; i <= +5; i++) this.years.push(`${year + i}`)
+        for (let i = -5; i <= +5; i++) this.years.push(`${year + i}`)
     }
 
     // Die Liste der auswählbaren Tage erstellen - im Wesentlichen der aktuelle Monat und die Tage davor und danach, die zu jeweils vollen Wochen benötigt werden.
     private fillDaySelector(): void {
         // Aktuelle Auswahl.
-        var year = parseInt(this._year)
-        var month = this.months.indexOf(this._month)
+        const year = parseInt(this._year)
+        const month = this.months.indexOf(this._month)
 
         // Der erste des aktuellen Monats.
-        var current = new Date(year, month, 1)
+        let current = new Date(year, month, 1)
 
         // Zurück auf den Montag der Woche mit dem 1.
         current = new Date(year, month, 1 - ((current.getDay() + 6) % 7))
 
         // Zum Vergleich auch noch heute.
-        var now = new Date()
+        let now = new Date()
 
         // Aber nur das Datum.
         now = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
         // Die aktuelle Auswahl.
-        var selected = this.day
+        let selected = this.day
 
         // Auch hier nur das Datum.
         selected = new Date(selected.getFullYear(), selected.getMonth(), selected.getDate())
@@ -282,17 +282,17 @@ export class DayEditor extends Property<string> implements IDaySelector {
         do {
             // Jeweils sieben Tage auf einen Rutsch und dabei immer einen Tag weiter gehen.
             for (
-                var i = 7;
+                let i = 7;
                 i-- > 0;
                 current = new Date(current.getFullYear(), current.getMonth(), current.getDate() + 1)
             ) {
                 // Auswahlelement vorbereiten.
-                let day: ISelectableDay = {
+                const day: ISelectableDay = {
+                    date: current,
+                    display: `${current.getDate()}`,
                     isCurrentDay: current.getTime() === selected.getTime(),
                     isCurrentMonth: current.getMonth() === month,
                     isToday: current.getTime() === now.getTime(),
-                    display: `${current.getDate()}`,
-                    date: current,
                 }
 
                 // Auswahl ausser für die aktuelle Auswahl ermöglichen.
@@ -317,10 +317,10 @@ export class DayEditor extends Property<string> implements IDaySelector {
 
     // Wählt ein neues Datum aus.
     private selectDay(day: ISelectableDay): void {
-        var oldSelected = this.day
+        const oldSelected = this.day
 
         // Die neue Auswahl erhält die Uhrzeit eingemischt.
-        var newSelected = new Date(
+        const newSelected = new Date(
             day.date.getFullYear(),
             day.date.getMonth(),
             day.date.getDate(),
@@ -348,7 +348,7 @@ export class DayEditor extends Property<string> implements IDaySelector {
     }
 
     // Ergänzt eine Prüfung auf einen vorhandenen Wert.
-    addRequiredValidator(message: string = `Es muss ein Datum ausgewählt werden.`): this {
+    addRequiredValidator(message = 'Es muss ein Datum ausgewählt werden.'): this {
         return this.addValidator(() => {
             if (this.value === null) return message
         })

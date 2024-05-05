@@ -4,7 +4,7 @@ import { IJobScheduleEditor, JobScheduleEditor } from './jobSchedule'
 
 import { DateTimeUtils } from '../../../lib/dateTimeUtils'
 import { FlagSet, IFlag } from '../../../lib/edit/boolean/flag'
-import { DayEditor, IDaySelector } from '../../../lib/edit/datetime/day'
+import { DayProperty, IDaySelector } from '../../../lib/edit/datetime/day'
 import { INumber, NumberProperty } from '../../../lib/edit/number/number'
 import { IEditScheduleContract } from '../../../web/IEditScheduleContract'
 import { IPage } from '../page'
@@ -55,10 +55,10 @@ export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> imp
         // Pflegbare Eigenschaften anlegen.
         this.repeat = new NumberProperty(model, 'repeatPattern', 'Wiederholung', () => this.onChange(onChange))
         this.duration = new DurationEditor(model, 'firstStart', 'duration', 'Zeitraum', () => this.onChange(onChange))
-        this.firstStart = new DayEditor(model, 'firstStart', 'Datum', onChange).addValidator(() =>
+        this.firstStart = new DayProperty(model, 'firstStart', 'Datum', onChange).addValidator(() =>
             this.validateFirstRecording()
         )
-        this.lastDay = new DayEditor(model, 'lastDay', 'wiederholen bis zum', () => this.onChange(onChange), true)
+        this.lastDay = new DayProperty(model, 'lastDay', 'wiederholen bis zum', () => this.onChange(onChange), true)
             .addRequiredValidator()
             .addValidator((day) => ScheduleEditor.validateDateRange(day))
 
@@ -100,7 +100,7 @@ export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> imp
     }
 
     // Datum der ersten Aufzeichnung.
-    readonly firstStart: DayEditor
+    readonly firstStart: DayProperty
 
     // Uhrzeit der ersten Aufzeichnung.
     readonly duration: DurationEditor
@@ -109,7 +109,7 @@ export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> imp
     readonly repeat: NumberProperty
 
     // Ende der Wiederholung
-    readonly lastDay: DayEditor
+    readonly lastDay: DayProperty
 
     // Bekannte Ausnahmen der Wiederholungsregel.
     get hasExceptions(): boolean {
@@ -179,7 +179,7 @@ export class ScheduleEditor extends JobScheduleEditor<IEditScheduleContract> imp
     ]
 
     // Prüft ob eon ausgewähltes Datum im unterstützten Bereich liegt.
-    private static validateDateRange(day: DayEditor): string | undefined {
+    private static validateDateRange(day: DayProperty): string | undefined {
         const lastDay = new Date(day.value ?? 0)
 
         if (lastDay < ScheduleEditor.minimumDate) return 'Datum liegt zu weit in der Vergangenheit.'

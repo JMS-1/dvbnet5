@@ -12,7 +12,7 @@ export interface ITime extends IConnectable {
 }
 
 // Erlaubt die Eingabe einer Uhrzeit - tatsächlich gespeichert wird ein volles Datum mit Uhrezit.
-export class Time extends Property<string> implements ITime {
+export class TimeProperty extends Property<string> implements ITime {
     // Die aktuelle Uhrzeit.
     private _rawValue: string
 
@@ -26,13 +26,13 @@ export class Time extends Property<string> implements ITime {
         super(data, prop, name, onChange)
 
         // Syntaxprüfung durchführen.
-        this.addValidator(Time.isValidTime)
+        this.addValidator(TimeProperty.isValidTime)
     }
 
     // Prüft, ob eine gültige Uhrzeit eingegeben wurde.
-    private static isValidTime(time: Time): string | undefined {
+    private static isValidTime(time: TimeProperty): string | undefined {
         if (time._rawValue !== undefined)
-            if (DateTimeUtils.parseTime(time._rawValue) === null) return `Ungültige Uhrzeit.`
+            if (DateTimeUtils.parseTime(time._rawValue) === null) return 'Ungültige Uhrzeit.'
     }
 
     // Meldet die aktuelle Uhrzeit.
@@ -49,7 +49,7 @@ export class Time extends Property<string> implements ITime {
         this._rawValue = newTime
 
         // Schauen wir mal, ob das dem Format (H:M) entspricht.
-        var parsed = DateTimeUtils.parseTime(newTime)
+        let parsed = DateTimeUtils.parseTime(newTime)
 
         // Wenn ja, erhalten wir das Ergebnis in Millisekunden - so wie man das zum Rechnen mit Zeitebn eigentlich braucht.
         if (parsed !== null) {
@@ -57,8 +57,8 @@ export class Time extends Property<string> implements ITime {
             parsed /= 60000
 
             // Uhrzeit einmischen.
-            var oldDay = new Date(this.value ?? 0)
-            var newDate = new Date(
+            const oldDay = new Date(this.value ?? 0)
+            const newDate = new Date(
                 oldDay.getFullYear(),
                 oldDay.getMonth(),
                 oldDay.getDate(),

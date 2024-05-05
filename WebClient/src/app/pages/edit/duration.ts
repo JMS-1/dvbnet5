@@ -1,5 +1,5 @@
 ﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
-import { ITime, Time } from '../../../lib/edit/datetime/time'
+import { ITime, TimeProperty } from '../../../lib/edit/datetime/time'
 import { Property } from '../../../lib/edit/edit'
 import { IDisplay } from '../../../lib/localizable'
 
@@ -15,25 +15,25 @@ export interface IDurationEditor extends IDisplay {
 // Präsentationsmodell zur Eingabe der Dauer einer Aufzeichnung als Paar von Uhrzeiten.
 export class DurationEditor extends Property<number> implements IDurationEditor {
     // Beginn (als Uhrzeit).
-    readonly startTime: Time
+    readonly startTime: TimeProperty
 
     // Ende (als Uhrzeit).
-    readonly endTime: Time
+    readonly endTime: TimeProperty
 
     // Erstellt ein neues Präsentationsmodell.
     constructor(data: any, propTime: string, propDuration: string, text: string, onChange: () => void) {
         super(data, propDuration, text, onChange)
 
         // Die Startzeit ändert direkt den entsprechenden Wert in den Daten der Aufzeichnung.
-        this.startTime = new Time(data, propTime, undefined, () => this.onChanged())
+        this.startTime = new TimeProperty(data, propTime, undefined, () => this.onChanged())
 
         // Aus der aktuellen Startzeit und der aktuellen Dauer das Ende ermitteln.
         var end = new Date(new Date(this.startTime.value ?? 0).getTime() + 60000 * (this.value ?? 0))
 
         // Die Endzeit wird hier als absolute Zeit verwaltet.
-        this.endTime = new Time({ value: end.toISOString() }, `value`, undefined, () => this.onChanged()).addValidator(
-            (t) => this.checkLimit()
-        )
+        this.endTime = new TimeProperty({ value: end.toISOString() }, `value`, undefined, () =>
+            this.onChanged()
+        ).addValidator((t) => this.checkLimit())
 
         // Initiale Prüfungen ausführen.
         this.startTime.validate()
