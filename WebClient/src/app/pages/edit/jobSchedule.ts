@@ -1,10 +1,9 @@
-﻿import { IFlag, Flag } from '../../../lib/edit/boolean/flag'
-import { IString } from '../../../lib/edit/text/text'
+﻿import { Flag, IFlag } from '../../../lib/edit/boolean/flag'
+import { IString, StringProperty } from '../../../lib/edit/text/text'
 import { IDisplay } from '../../../lib/localizable'
 import { IEditJobScheduleCommonContract } from '../../../web/IEditJobScheduleCommonContract'
-import { IChannelSelector, ChannelEditor } from '../channel'
+import { ChannelEditor, IChannelSelector } from '../channel'
 import { IPage } from '../page'
-import { String } from '../../../lib/edit/text/text'
 
 // Schnittstelle zur Pflege der gemeinsamen Daten eines Auftrags oder einer Aufzeichnung.
 export interface ISourceFlagsEditor extends IDisplay {
@@ -51,21 +50,21 @@ export abstract class JobScheduleEditor<TModelType extends IEditJobScheduleCommo
         onChange: () => void
     ) {
         // Prüfung auf die Auswahl einer Quelle - ohne eine solche machen die Optionen zur Aufzeichnung auch keinen Sinn.
-        var noSource = () => (this.source.value || '').trim().length < 1
+        const noSource = () => (this.source.value || '').trim().length < 1
 
         // Pflegekomponenten erstellen
-        this.name = new String(this.model, 'name', 'Name', onChange)
+        this.name = new StringProperty(this.model, 'name', 'Name', onChange)
         this.source = new ChannelEditor(page.application.profile, this.model, 'sourceName', favoriteSources, onChange)
         this.sourceFlags = {
-            includeDolby: new Flag(this.model, 'includeDolby', 'Dolby Digital (AC3)', onChange, noSource),
-            withSubtitles: new Flag(this.model, 'withSubtitles', 'DVB Untertitel', onChange, noSource),
             allLanguages: new Flag(this.model, 'allLanguages', 'Alle Sprachen', onChange, noSource),
-            withVideotext: new Flag(this.model, 'withVideotext', 'Videotext', onChange, noSource),
+            includeDolby: new Flag(this.model, 'includeDolby', 'Dolby Digital (AC3)', onChange, noSource),
             text: 'Besonderheiten',
+            withSubtitles: new Flag(this.model, 'withSubtitles', 'DVB Untertitel', onChange, noSource),
+            withVideotext: new Flag(this.model, 'withVideotext', 'Videotext', onChange, noSource),
         }
 
         // Zusätzliche Prüfungen einrichten.
-        this.name.addPatternValidator(JobScheduleEditor._allowedCharacters, `Der Name enthält ungültige Zeichen`)
+        this.name.addPatternValidator(JobScheduleEditor._allowedCharacters, 'Der Name enthält ungültige Zeichen')
 
         // Initiale Prüfung.
         this.name.validate()
@@ -76,7 +75,7 @@ export abstract class JobScheduleEditor<TModelType extends IEditJobScheduleCommo
     }
 
     // Der Name des Auftrags.
-    readonly name: String
+    readonly name: StringProperty
 
     // Der Name der Quelle, die aufgezeichnet werden soll.
     readonly source: ChannelEditor

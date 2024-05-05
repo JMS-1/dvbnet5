@@ -1,6 +1,6 @@
 ﻿import { ISection, Section } from './section'
 
-import { IString, String } from '../../../lib/edit/text/text'
+import { IString, StringProperty } from '../../../lib/edit/text/text'
 import { getSchedulerRules, setSchedulerRules } from '../../../web/admin/ISchedulerRulesContract'
 
 // Schnittstelle zur Pflege der Planungsregeln.
@@ -15,7 +15,7 @@ export class RulesSection extends Section implements IAdminRulesPage {
     static readonly route = 'rules'
 
     // Die aktuellen Planungsregeln.
-    readonly rules = new String({}, 'rules')
+    readonly rules = new StringProperty({}, 'rules')
 
     // Fordert die aktuellen Planungsregeln vom VCR.NET Recording Service an.
     protected loadAsync(): void {

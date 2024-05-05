@@ -3,7 +3,7 @@
 import { Command, ICommand } from '../../../lib/command/command'
 import { IValueFromList, SelectSingleFromList, uiValue } from '../../../lib/edit/list'
 import { IMultiValueFromList, SelectMultipleFromList } from '../../../lib/edit/multiList'
-import { IString, String } from '../../../lib/edit/text/text'
+import { IString, StringProperty } from '../../../lib/edit/text/text'
 import {
     browseDirectories,
     getDirectorySettings,
@@ -53,7 +53,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     )
 
     // Das aktuelle Muster für die Namen von Aufzeichnungsdateien.
-    readonly pattern = new String({}, 'pattern', 'Muster für Dateinamen', () =>
+    readonly pattern = new StringProperty({}, 'pattern', 'Muster für Dateinamen', () =>
         this.update.refreshUi()
     ).addRequiredValidator()
 
@@ -68,7 +68,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     private _shareValidation?: string
 
     // Eingabe eines Netzwerklaufwerks.
-    readonly share = new String({}, 'value', 'Netzwerk-Share', () => this.refreshUi()).addValidator(
+    readonly share = new StringProperty({}, 'value', 'Netzwerk-Share', () => this.refreshUi()).addValidator(
         (v) => this._shareValidation || ''
     )
 

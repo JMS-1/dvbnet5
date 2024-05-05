@@ -5,7 +5,7 @@ import { Command, ICommand } from '../../lib/command/command'
 import { DateTimeUtils } from '../../lib/dateTimeUtils'
 import { Flag, IToggableFlag } from '../../lib/edit/boolean/flag'
 import { IValueFromList, SelectSingleFromList, uiValue } from '../../lib/edit/list'
-import { IString, String } from '../../lib/edit/text/text'
+import { IString, StringProperty } from '../../lib/edit/text/text'
 import { guideEncryption } from '../../web/guideEncryption'
 import { GuideInfoCache } from '../../web/GuideInfoCache'
 import { guideSource } from '../../web/guideSource'
@@ -13,8 +13,8 @@ import { IGuideFilterContract, queryProgramGuide } from '../../web/IGuideFilterC
 import { IGuideInfoContract } from '../../web/IGuideInfoContract'
 import { IGuideItemContract } from '../../web/IGuideItemContract'
 import { getProfileJobInfos } from '../../web/IProfileJobInfoContract'
-import { ProfileCache } from '../../web/ProfileCache'
 import { ISavedGuideQueryContract } from '../../web/ISavedGuideQueryContract'
+import { ProfileCache } from '../../web/ProfileCache'
 import { Application } from '../app'
 
 // Schnittstelle zum Blättern in der Programmzeitschrift.
@@ -159,7 +159,7 @@ export class GuidePage extends Page implements IGuidePage {
     )
 
     // Schnittstelle zur Pflege der Freitextsuchbedingung.
-    readonly queryString = new String({ value: '' }, 'value', 'Suche nach', () => this.delayedQuery())
+    readonly queryString = new StringProperty({ value: '' }, 'value', 'Suche nach', () => this.delayedQuery())
 
     // Schnittstelle zur Pflege der Auswahl der Freitextsuche auf die Beschreibung.
     readonly withContent = new Flag({ value: true }, 'value', 'Auch in Beschreibung suchen', () => this.query())
