@@ -59,7 +59,7 @@ export class GuideSection extends Section implements IAdminGuidePage {
 
     // Die Liste der Stunden, an denen eine automatische Aktivierung stattfinden soll.
     readonly hours = new MultiListProperty(
-        {} as { hours?: number },
+        {} as Pick<IGuideSettingsContract, 'hours'>,
         'hours',
         'Uhrzeiten',
         undefined,
@@ -76,8 +76,8 @@ export class GuideSection extends Section implements IAdminGuidePage {
 
     // Gesetzt, wenn auch die englische programmzeitschrift eingeschlossen werden soll.
     readonly ukTv = new BooleanProperty(
-        {} as { includeUK?: boolean },
-        'includeUK',
+        {} as Pick<IGuideSettingsContract, 'withUKGuide'>,
+        'withUKGuide',
         'Sendungsvorschau englischer Sender (FreeSat UK) abrufen'
     )
 
@@ -108,7 +108,7 @@ export class GuideSection extends Section implements IAdminGuidePage {
 
     // Maximale Dauer für die Sammlung der Programmzeitschrift (in Minuten).
     readonly duration = new NumberProperty(
-        {} as { duration?: number },
+        {} as Pick<IGuideSettingsContract, 'duration'>,
         'duration',
         'Maximale Laufzeit einer Aktualisierung in Minuten',
         () => this.update.refreshUi()
@@ -119,8 +119,8 @@ export class GuideSection extends Section implements IAdminGuidePage {
 
     // Minimale Dauer zwischen zwei Sammlungen (in Minuten).
     readonly delay = new NumberProperty(
-        {} as { minDelay?: number },
-        'minDelay',
+        {} as Pick<IGuideSettingsContract, 'interval'>,
+        'interval',
         'Wartezeit zwischen zwei Aktualisierungen in Stunden (optional)',
         () => this.update.refreshUi()
     )
@@ -129,8 +129,8 @@ export class GuideSection extends Section implements IAdminGuidePage {
 
     // Interval für die vorgezogene Sammlung (in Minuten).
     readonly latency = new NumberProperty(
-        {} as { joinHours?: number },
-        'joinHours',
+        {} as Pick<IGuideSettingsContract, 'threshold'>,
+        'threshold',
         'Latenzzeit für vorgezogene Aktualisierungen in Stunden (optional)',
         () => this.update.refreshUi()
     )

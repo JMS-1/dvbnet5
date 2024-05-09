@@ -20,8 +20,12 @@ export class EditNumber extends ComponentExWithSite<INumber, IEditNumber> {
                 title={this.props.uvm.message}
                 type='TEXT'
                 value={this.props.uvm.rawValue}
-                onChange={(ev) => (this.props.uvm.rawValue = (ev.target as HTMLInputElement).value)}
+                onChange={this.onChange}
             />
         )
+    }
+
+    private readonly onChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
+        this.props.uvm.rawValue = (ev.target as HTMLInputElement).value
     }
 }

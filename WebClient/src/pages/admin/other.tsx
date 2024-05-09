@@ -29,30 +29,6 @@ export class AdminOther extends AdminSection<IAdminOtherPage> {
                 üblicherweise ein tieferes Verständnis der Arbeitsweise des VCR.NET Recording Service, da
                 Fehleinstellungen durchaus dazu führen können, dass der Dienst nicht mehr funktionsfähig ist.
                 <form>
-                    {this.getWebHelp()}
-                    <Field label={`${this.props.uvm.port.text}:`} page={this.props.uvm.page}>
-                        <EditNumber chars={8} uvm={this.props.uvm.port} />
-                    </Field>
-                    <div>
-                        <EditBoolean uvm={this.props.uvm.ssl} />
-                    </div>
-                    <Field label={`${this.props.uvm.securePort.text}:`} page={this.props.uvm.page}>
-                        <EditNumber chars={8} uvm={this.props.uvm.securePort} />
-                    </Field>
-                    <div>
-                        <EditBoolean uvm={this.props.uvm.basicAuth} />
-                    </div>
-                    {this.getSleepHelp()}
-                    <Field label={`${this.props.uvm.hibernation.text}:`} page={this.props.uvm.page}>
-                        <SingleSelect uvm={this.props.uvm.hibernation} />
-                    </Field>
-                    <Field label={`${this.props.uvm.preSleep.text}:`} page={this.props.uvm.page}>
-                        <EditNumber chars={8} uvm={this.props.uvm.preSleep} />
-                    </Field>
-                    <Field label={`${this.props.uvm.minSleep.text}:`} page={this.props.uvm.page}>
-                        <EditNumber chars={8} uvm={this.props.uvm.minSleep} />
-                    </Field>
-                    <EditBoolean uvm={this.props.uvm.ignoreMinSleep} />
                     {this.getLogHelp()}
                     <Field label={`${this.props.uvm.logKeep.text}:`} page={this.props.uvm.page}>
                         <EditNumber chars={8} uvm={this.props.uvm.logKeep} />

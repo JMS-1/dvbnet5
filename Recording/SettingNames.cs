@@ -7,11 +7,6 @@ namespace JMS.DVB.NET.Recording
     public enum SettingNames
     {
         /// <summary>
-        /// Der TCP/IP Port, an den der Web Server gebunden werden soll.
-        /// </summary>
-        TCPPort,
-
-        /// <summary>
         /// Das Muster, nach dem die Namen der Aufzeichnungsdateien erzeugt werden.
         /// </summary>
         FileNamePattern,
@@ -145,20 +140,5 @@ namespace JMS.DVB.NET.Recording
         /// Verbietet es, aus einem MPEG2 Bildsignal die Zeitbasis (PCR) abzuleiten.
         /// </summary>
         DisablePCRFromMPEG2Generation,
-
-        /// <summary>
-        /// Gesetzt, wenn der Zugriff auf die Web Dienste verschlüsselt erfolgen soll.
-        /// </summary>
-        UseSSL,
-
-        /// <summary>
-        /// Der TCP/IP Port, an den der Web Server bei einer sicheren Verbindung gebunden werden soll.
-        /// </summary>
-        SSLPort,
-
-        /// <summary>
-        /// Gesetzt, wenn auch die unsichere Basic Authentisierung erlaubt ist.
-        /// </summary>
-        AllowBasic,
     }
 }

@@ -47,7 +47,7 @@ export interface IAdminPage extends IPage {
 // Das Präsentationsmodell für die Konfiguration des VCR.NET Recording Service.
 export class AdminPage extends Page implements IAdminPage {
     // Einmalig berechnet die Liste aller Stunden des Tages.
-    static readonly hoursOfDay: IUiValue<number>[] = Array(24).map((_d: number, i: number) =>
+    static readonly hoursOfDay: IUiValue<number>[] = [...Array(24)].map((_d: number, i: number) =>
         uiValue(i, DateTimeUtils.formatNumber(i))
     )
 

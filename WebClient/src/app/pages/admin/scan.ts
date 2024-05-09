@@ -69,7 +69,7 @@ export class ScanSection extends Section implements IAdminScanPage {
 
     // Die Stunden, an denen eine Aktualisierung ausgeführt werden soll.
     readonly hours = new MultiListProperty(
-        {} as { hours?: number },
+        {} as Pick<contract.ISourceScanSettingsContract, 'hours'>,
         'hours',
         'Uhrzeiten',
         undefined,
@@ -78,7 +78,7 @@ export class ScanSection extends Section implements IAdminScanPage {
 
     // Die maximale Dauer eines Suchlaufs (in Minuten).
     readonly duration = new NumberProperty(
-        {} as { duration?: number },
+        {} as Pick<contract.ISourceScanSettingsContract, 'duration'>,
         'duration',
         'Maximale Laufzeit für einen Sendersuchlauf in Minuten',
         () => this.update.refreshUi()
@@ -89,14 +89,14 @@ export class ScanSection extends Section implements IAdminScanPage {
 
     // Gesetzt, wenn das Ergebnis der Aktualisierung mit der aktuellen Liste der Quellen zusammengeführt werden soll.
     readonly merge = new BooleanProperty(
-        {} as { merge?: boolean },
-        'merge',
+        {} as Pick<contract.ISourceScanSettingsContract, 'mergeLists'>,
+        'mergeLists',
         'Senderliste nach dem Suchlauf mit der vorherigen zusammenführen (empfohlen)'
     )
 
     // Die minimale zeit zwischen zwei automatischen Aktualisierungen (in Tagen).
     readonly gapDays = new NumberProperty(
-        {} as { interval?: number },
+        {} as Pick<contract.ISourceScanSettingsContract, 'interval'>,
         'interval',
         'Minimale Anzahl von Tagen zwischen zwei Suchläufen',
         () => this.update.refreshUi()
@@ -107,8 +107,8 @@ export class ScanSection extends Section implements IAdminScanPage {
 
     // Die Zeit für eine vorgezogene Aktualisierung (in Tagen).
     readonly latency = new NumberProperty(
-        {} as { joinDays?: number },
-        'joinDays',
+        {} as Pick<contract.ISourceScanSettingsContract, 'threshold'>,
+        'threshold',
         'Latenzzeit für vorgezogene Aktualisierungen in Tagen (optional)',
         () => this.update.refreshUi()
     )

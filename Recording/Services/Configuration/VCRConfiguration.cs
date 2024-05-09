@@ -136,7 +136,6 @@ public class VCRConfiguration : IVCRConfiguration
 
         // Remember all
         Add(SettingNames.AdditionalRecorderPaths);
-        Add(SettingNames.AllowBasic, false);
         Add(SettingNames.ArchiveLifeTime, (uint)5);
         Add(SettingNames.DisablePCRFromH264Generation, false);
         Add(SettingNames.DisablePCRFromMPEG2Generation, false);
@@ -157,20 +156,13 @@ public class VCRConfiguration : IVCRConfiguration
         Add(SettingNames.ScanHours);
         Add(SettingNames.ScanInterval, 0);
         Add(SettingNames.ScanJoinThreshold, (uint?)null);
-        Add(SettingNames.SSLPort, (ushort)3909);
-        Add(SettingNames.TCPPort, (ushort)2909);
         Add(SettingNames.TSAudioBufferSize, 0);
         Add(SettingNames.TSHDTVBufferSize, 0);
         Add(SettingNames.TSSDTVBufferSize, 0);
-        Add(SettingNames.UseSSL, false);
         Add(SettingNames.VideoRecorderDirectory, "Recordings");
 
         // Set restart items
-        m_Restart[SettingNames.AllowBasic] = true;
         m_Restart[SettingNames.Profiles] = true;
-        m_Restart[SettingNames.SSLPort] = true;
-        m_Restart[SettingNames.TCPPort] = true;
-        m_Restart[SettingNames.UseSSL] = true;
     }
 
     /// <inheritdoc/>
@@ -444,18 +436,6 @@ public class VCRConfiguration : IVCRConfiguration
 
     /// <inheritdoc/>
     public Logging.LoggingLevel LoggingLevel => ReadSetting<Logging.LoggingLevel>(SettingNames.LoggingLevel);
-
-    /// <inheritdoc/>
-    public ushort WebServerTcpPort => ReadSetting<ushort>(SettingNames.TCPPort);
-
-    /// <inheritdoc/>
-    public ushort WebServerSecureTcpPort => ReadSetting<ushort>(SettingNames.SSLPort);
-
-    /// <inheritdoc/>
-    public bool EncryptWebCommunication => ReadSetting<bool>(SettingNames.UseSSL);
-
-    /// <inheritdoc/>
-    public bool EnableBasicAuthentication => ReadSetting<bool>(SettingNames.AllowBasic);
 
     /// <inheritdoc/>
     public string FileNamePattern => ReadStringSetting(SettingNames.FileNamePattern);

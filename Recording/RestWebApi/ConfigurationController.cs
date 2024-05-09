@@ -163,26 +163,6 @@ public class ConfigurationController(
         public bool DisablePCRFromMPEG2 { get; set; }
 
         /// <summary>
-        /// Gesetzt, wenn auch das <i>Basic</i> Protokoll zur Autorisierung verwendet werden darf.
-        /// </summary>
-        public bool AllowBasic { get; set; }
-
-        /// <summary>
-        /// Gesetzt, wenn auch eine verschlüsselter SSL Verbindung unterstützt werden soll.
-        /// </summary>
-        public bool UseSSL { get; set; }
-
-        /// <summary>
-        /// Der TCP/IP Port für verschlüsselte Verbindungen.
-        /// </summary>
-        public ushort SSLPort { get; set; }
-
-        /// <summary>
-        /// Der TCP/IP Port des Web Servers.
-        /// </summary>
-        public ushort WebPort { get; set; }
-
-        /// <summary>
         /// Die Art der Protokollierung.
         /// </summary>
         public LoggingLevel Logging { get; set; }
@@ -538,12 +518,8 @@ public class ConfigurationController(
             {
                 DisablePCRFromMPEG2 = configuration.DisablePCRFromMPEG2Generation,
                 DisablePCRFromH264 = configuration.DisablePCRFromH264Generation,
-                AllowBasic = configuration.EnableBasicAuthentication,
-                SSLPort = configuration.WebServerSecureTcpPort,
-                UseSSL = configuration.EncryptWebCommunication,
                 ArchiveTime = configuration.ArchiveLifeTime,
                 ProtocolTime = configuration.LogLifeTime,
-                WebPort = configuration.WebServerTcpPort,
                 Logging = configuration.LoggingLevel,
             };
     }
@@ -564,11 +540,7 @@ public class ConfigurationController(
                     SettingNames.DisablePCRFromH264Generation,
                     SettingNames.ArchiveLifeTime,
                     SettingNames.LoggingLevel,
-                    SettingNames.LogLifeTime,
-                    SettingNames.AllowBasic,
-                    SettingNames.TCPPort,
-                    SettingNames.SSLPort,
-                    SettingNames.UseSSL
+                    SettingNames.LogLifeTime
                 );
 
         // Change
@@ -576,11 +548,7 @@ public class ConfigurationController(
         update[SettingNames.DisablePCRFromH264Generation].NewValue = settings.DisablePCRFromH264.ToString();
         update[SettingNames.ArchiveLifeTime].NewValue = settings.ArchiveTime.ToString();
         update[SettingNames.LogLifeTime].NewValue = settings.ProtocolTime.ToString();
-        update[SettingNames.AllowBasic].NewValue = settings.AllowBasic.ToString();
         update[SettingNames.LoggingLevel].NewValue = settings.Logging.ToString();
-        update[SettingNames.SSLPort].NewValue = settings.SSLPort.ToString();
-        update[SettingNames.TCPPort].NewValue = settings.WebPort.ToString();
-        update[SettingNames.UseSSL].NewValue = settings.UseSSL.ToString();
 
         // Process
         return updateConfig.UpdateConfiguration(update.Values);

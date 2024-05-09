@@ -1,7 +1,7 @@
 ﻿import { ISection, Section } from './section'
 
 import { IString, StringProperty } from '../../../lib/edit/text/text'
-import { getSchedulerRules, setSchedulerRules } from '../../../web/admin/ISchedulerRulesContract'
+import * as contract from '../../../web/admin/ISchedulerRulesContract'
 
 // Schnittstelle zur Pflege der Planungsregeln.
 export interface IAdminRulesPage extends ISection {
@@ -15,11 +15,14 @@ export class RulesSection extends Section implements IAdminRulesPage {
     static readonly route = 'rules'
 
     // Die aktuellen Planungsregeln.
-    readonly rules = new StringProperty({} as { rules?: string }, 'rules')
+    readonly rules = new StringProperty(
+        {} as Pick<contract.ISchedulerRulesContract, 'ruleFileContents'>,
+        'ruleFileContents'
+    )
 
     // Fordert die aktuellen Planungsregeln vom VCR.NET Recording Service an.
     protected loadAsync(): void {
-        getSchedulerRules().then((settings) => {
+        contract.getSchedulerRules().then((settings) => {
             // Konfiguration an das Präsentationsmodell binden.
             this.rules.data = settings
 
@@ -36,6 +39,6 @@ export class RulesSection extends Section implements IAdminRulesPage {
 
     // Konfiguration asynchron aktualisieren.
     protected saveAsync(): Promise<boolean | undefined> {
-        return setSchedulerRules(this.rules.data)
+        return contract.setSchedulerRules(this.rules.data)
     }
 }

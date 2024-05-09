@@ -14,10 +14,8 @@ import { ComponentWithSite } from '../lib.react/reactUi'
 export class Home extends ComponentWithSite<IHomePage> {
     // Oberflächenelemente anlegen.
     render(): JSX.Element {
-        const versionCheck = this.props.uvm.checkVersion
-        const showGuide = this.props.uvm.showStartGuide
-        const showScan = this.props.uvm.showStartScan
-        const application = this.props.uvm.application
+        const { uvm } = this.props
+        const { checkVersion, showStartGuide, showStartScan, application } = uvm
 
         return (
             <div className='vcrnet-home'>
@@ -29,7 +27,7 @@ export class Home extends ComponentWithSite<IHomePage> {
                                 dem Aufzeichnungsplan
                             </InternalLink>{' '}
                             mit den anstehenden Aufzeichnungen
-                            <HelpLink page={this.props.uvm} topic='parallelrecording' />
+                            <HelpLink page={uvm} topic='parallelrecording' />
                         </li>
                         <li>
                             <InternalLink pict='devices' view={application.devicesPage.route}>
@@ -42,7 +40,7 @@ export class Home extends ComponentWithSite<IHomePage> {
                                 der Programmzeitschrift
                             </InternalLink>{' '}
                             zum Anlegen neuer Aufzeichnungen
-                            <HelpLink page={this.props.uvm} topic='epg' />
+                            <HelpLink page={uvm} topic='epg' />
                         </li>
                         <li>
                             <InternalLink pict='new' view={application.editPage.route}>
@@ -62,12 +60,12 @@ export class Home extends ComponentWithSite<IHomePage> {
                                 den archivierten Aufzeichnungen
                             </InternalLink>
                             , um diese anzusehen, zu verändern, zu reaktivieren oder endgültig zu löschen
-                            <HelpLink page={this.props.uvm} topic='archive' />
+                            <HelpLink page={uvm} topic='archive' />
                         </li>
                         <li>
                             <InternalLink view={application.logPage.route}>den Protokollen</InternalLink> von bereits
                             durchgeführten Aufzeichnungen
-                            <HelpLink page={this.props.uvm} topic='log' />
+                            <HelpLink page={uvm} topic='log' />
                         </li>
                     </ul>
                     <ul>
@@ -84,56 +82,56 @@ export class Home extends ComponentWithSite<IHomePage> {
                     Tätigkeiten wahrnehmen:
                     <ul>
                         <li>
-                            {showGuide.isReadonly ? (
-                                showGuide.text
+                            {showStartGuide.isReadonly ? (
+                                showStartGuide.text
                             ) : (
-                                <InternalLink view={() => (showGuide.value = !showGuide.value)}>
-                                    {showGuide.text}
+                                <InternalLink view={() => (showStartGuide.value = !showStartGuide.value)}>
+                                    {showStartGuide.text}
                                 </InternalLink>
                             )}
-                            <HelpLink page={this.props.uvm} topic='epgconfig' />
+                            <HelpLink page={uvm} topic='epgconfig' />
                         </li>
-                        {showGuide.value && (
-                            <Task uvm={this.props.uvm.startGuide}>
+                        {showStartGuide.value && (
+                            <Task uvm={uvm.startGuide}>
                                 Mit der Schaltfläche unter diesem Text kann eine baldmögliche Aktualisierung der
                                 Programmzeitschrift
-                                <HelpLink page={this.props.uvm} topic='epg' /> angefordert werden. Sind gerade
-                                Aufzeichnungen aktiv oder in nächster Zeit geplant, so wird der VCR.NET Recording
-                                Service die Aktualisierung auf den nächstmöglichen Zeitpunkt verschieben, da die
-                                Ausführung regulärer Aufzeichnungen immer Priorität vor allen Aktualisierungen hat.
-                                <HelpLink page={this.props.uvm} topic='tasks' />
+                                <HelpLink page={uvm} topic='epg' /> angefordert werden. Sind gerade Aufzeichnungen aktiv
+                                oder in nächster Zeit geplant, so wird der VCR.NET Recording Service die Aktualisierung
+                                auf den nächstmöglichen Zeitpunkt verschieben, da die Ausführung regulärer
+                                Aufzeichnungen immer Priorität vor allen Aktualisierungen hat.
+                                <HelpLink page={uvm} topic='tasks' />
                             </Task>
                         )}
                         <li>
-                            {showScan.isReadonly ? (
-                                showScan.text
+                            {showStartScan.isReadonly ? (
+                                showStartScan.text
                             ) : (
-                                <InternalLink view={() => (showScan.value = !showScan.value)}>
-                                    {showScan.text}
+                                <InternalLink view={() => (showStartScan.value = !showStartScan.value)}>
+                                    {showStartScan.text}
                                 </InternalLink>
                             )}
-                            <HelpLink page={this.props.uvm} topic='psiconfig' />
+                            <HelpLink page={uvm} topic='psiconfig' />
                         </li>
-                        {showScan.value && (
-                            <Task uvm={this.props.uvm.startScan}>
+                        {showStartScan.value && (
+                            <Task uvm={uvm.startScan}>
                                 Hier ist es nun möglich, die Aktualisierung der Quellen der vom VCR.NET Recording
                                 Service verwalteten DVB.NET Geräte anzufordern. Da die Aktualisierung der Quellen eine
                                 niedrigere Priorität besitzt als die Ausführung regulärer Aufzeichnungen kann es sein,
                                 dass sie nicht unmittelbar gestartet wird. Der VCR.NET Recording Service wird dies aber
                                 bei nächster Gelegenheit nachholen.
-                                <HelpLink page={this.props.uvm} topic='tasks' />
+                                <HelpLink page={uvm} topic='tasks' />
                             </Task>
                         )}
                         <li>
                             prüfen, ob inzwischen eine{' '}
-                            <InternalLink view={() => (versionCheck.value = !versionCheck.value)}>
+                            <InternalLink view={() => (checkVersion.value = !checkVersion.value)}>
                                 neuere Version
                             </InternalLink>{' '}
                             des VCR.NET Recording Service angeboten wird
                         </li>
-                        {versionCheck.value && <VersionCheck uvm={this.props.uvm} />}
+                        {checkVersion.value && <VersionCheck uvm={uvm} />}
                         <li>
-                            {this.props.uvm.showAdmin ? (
+                            {uvm.showAdmin ? (
                                 <InternalLink pict='admin' view={application.adminPage.route}>
                                     die Konfiguration des VCR.NET Recording Service verändern
                                 </InternalLink>
@@ -143,11 +141,11 @@ export class Home extends ComponentWithSite<IHomePage> {
                         </li>
                     </ul>
                 </div>
-                {this.props.uvm.isRecording && (
+                {uvm.isRecording && (
                     <div className='vcrnet-warningtext'>
                         Hinweis: Der VCR.NET Recording Service führt gerade eine oder mehrere Aufzeichnungen oder
                         Aktualisierungen von Programmzeitschrift respektive Senderliste aus.
-                        <InternalLink pict='info' view={this.props.uvm.application.devicesPage.route} />
+                        <InternalLink pict='info' view={uvm.application.devicesPage.route} />
                     </div>
                 )}
                 <div>
@@ -164,7 +162,7 @@ export class Home extends ComponentWithSite<IHomePage> {
                     <ExternalLink url='http://www.psimarron.net'>
                         <Pictogram name='psimarron' />
                     </ExternalLink>
-                    <span>Dr. Jochen Manns, 2003-19</span>
+                    <span>Dr. Jochen Manns, 2003-24</span>
                 </div>
             </div>
         )

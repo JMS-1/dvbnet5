@@ -1,4 +1,7 @@
-﻿using JMS.DVB.NET.Recording.Server;
+﻿using System.Management;
+using System.Runtime.Versioning;
+using System.Text.RegularExpressions;
+using JMS.DVB.NET.Recording.Server;
 using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
@@ -20,9 +23,14 @@ public class InfoController(
 ) : ControllerBase
 {
     /// <summary>
+    /// Muster zum Auslesen der Gruppendatei unter Linux.
+    /// </summary>
+    private static readonly Regex GroupPattern = new(@"^([^:]+):[^:]*:(\d+):.*$");
+
+    /// <summary>
     /// Wird beim Bauen automatisch eingemischt.
     /// </summary>
-    private const string CURRENTDATE = "2024/05/05";
+    private const string CURRENTDATE = "2024/05/09";
 
     /// <summary>
     /// Aktuelle Version des VCR.NET Recording Service.
@@ -42,6 +50,7 @@ public class InfoController(
                 GuideUpdateEnabled = configuration.ProgramGuideUpdateEnabled,
                 HasPendingExtensions = extensions.HasActiveProcesses,
                 InstalledVersion = "5.0.0",
+                IsAdmin = true,
                 IsRunning = server.IsActive,
                 ProfilesNames = server.ProfileNames.ToArray(),
                 SourceScanEnabled = configuration.SourceListUpdateInterval != 0,
@@ -52,10 +61,9 @@ public class InfoController(
     /// <summary>
     /// Meldet alle möglichen Aufzeichnungsverzeichnisse.
     /// </summary>
-    /// <param name="directories">Wird zur Unterscheidung der Methoden verwendet.</param>
     /// <returns>Die gewünschte Liste.</returns>
     [HttpGet("folder")]
-    public string[] GetRecordingDirectories(string directories) => configuration.TargetDirectoryNames.SelectMany(ScanDirectory).ToArray();
+    public string[] GetRecordingDirectories() => configuration.TargetDirectoryNames.SelectMany(ScanDirectory).ToArray();
 
     /// <summary>
     /// Meldet alle Aufträge.
@@ -121,11 +129,50 @@ public class InfoController(
                 yield return child;
     }
 
+    [SupportedOSPlatform("windows")]
+    private static List<string> GetGroupsWindows()
+    {
+        // Resulting groups
+        var result = new List<string>();
+
+        // Load list box
+        using (var query = new ManagementObjectSearcher("SELECT Name FROM Win32_Group WHERE LocalAccount = TRUE"))
+            foreach (var group in query.Get())
+                using (group)
+                    result.Add((string)group["Name"]);
+
+
+        // Report
+        return result;
+    }
+
+    [SupportedOSPlatform("linux")]
+    private static List<string> GetGroupsLinux()
+        => System.IO.File
+            .ReadAllLines("/etc/group")
+            .Select(g => GroupPattern.Match(g))
+            .Where(m => int.TryParse(m?.Groups[2].Value, out var gid) && gid >= 1000)
+            .Select(m => m.Groups[1].Value)
+            .ToList();
+
     /// <summary>
     /// Meldet alle Benutzergruppen des Rechners, auf dem der <i>VCR.NET Recording Service läuft.</i>
     /// </summary>
     /// <returns>Die gewünschte Liste.</returns>
     [HttpGet("groups")]
-    public string[] GetUserGroups() => [];
+    public string[] GetUserGroups()
+    {
+        // Resulting groups
+        var result =
+            OperatingSystem.IsLinux() ? GetGroupsLinux() :
+            OperatingSystem.IsWindows() ? GetGroupsWindows() :
+            [];
+
+        // Sort
+        result.Sort(StringComparer.InvariantCultureIgnoreCase);
+
+        // Report
+        return result.ToArray();
+    }
 }
 

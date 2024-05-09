@@ -112,31 +112,15 @@ public interface IVCRConfiguration
     bool DisablePCRFromMPEG2Generation { get; }
 
     /// <summary>
-    /// Gesetzt, wenn die Verbindung zu den Web Diensten verschlüsselt werden soll.
-    /// </summary>
-    bool EncryptWebCommunication { get; }
-
-    /// <summary>
     /// Gesetzt wenn es nicht gestattet ist, aus einem H.264 Bildsignal die Zeitbasis (PCR)
     /// abzuleiten.
     /// </summary>
     bool DisablePCRFromH264Generation { get; }
 
     /// <summary>
-    /// Gesetzt, wenn die Anwender sich auch über das Basic Prototokoll
-    /// autorisieren dürfen.
-    /// </summary>
-    bool EnableBasicAuthentication { get; }
-
-    /// <summary>
     /// Meldet die Größe für die Zwischenspeicherung bei Fernsehaufnahmen mit hoher Auflösung.
     /// </summary>
     int? HighDefinitionVideoBufferSize { get; }
-
-    /// <summary>
-    /// Meldet den TCP/IP Port, an den der Web Server bei einer sichen Verbindung gebunden werden soll.
-    /// </summary>
-    ushort WebServerSecureTcpPort { get; }
 
     /// <summary>
     /// Meldet die maximale Verweildauer eines archivierten Auftrags im Archiv, bevor
@@ -159,11 +143,6 @@ public interface IVCRConfiguration
     /// der Quellen eines Geräteprofils liegen müssen.
     /// </summary>
     int SourceListUpdateInterval { get; }
-
-    /// <summary>
-    /// Meldet den TCP/IP Port, an den der Web Server gebunden werden soll.
-    /// </summary>
-    ushort WebServerTcpPort { get; }
 
     /// <summary>
     /// Meldet die Zeit in Wochen, die ein Protokolleintrag vorgehalten wird.

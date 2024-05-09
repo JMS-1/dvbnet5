@@ -40,15 +40,18 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
 
     // Die aktuelle Liste der Aufzeichnungsverzeichnisse.
     readonly directories = new MultiListProperty(
-        {} as { value?: string },
+        {} as { value?: string[] },
         'value',
         undefined,
         () => this.remove && this.remove.refreshUi()
     )
 
     // Das aktuelle Muster für die Namen von Aufzeichnungsdateien.
-    readonly pattern = new StringProperty({} as { pattern?: string }, 'pattern', 'Muster für Dateinamen', () =>
-        this.update.refreshUi()
+    readonly pattern = new StringProperty(
+        {} as { recordingPattern?: string },
+        'recordingPattern',
+        'Muster für Dateinamen',
+        () => this.update.refreshUi()
     ).addRequiredValidator()
 
     // Befehl zum Entfernen der ausgewählten Verzeichnisse aus der Verzeichnisliste.
@@ -218,8 +221,6 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
     private addDirectory(folder: string): void {
         // Als Verzeichnis aufbereiten.
         folder = folder.trim()
-
-        if (folder.length > 0) if (folder[folder.length - 1] != '\\') folder += '\\'
 
         // Nur bisher unbekannte Verzeichnisse eintragen.
         if (!this.directories.allowedValues.some((v) => v.value === folder))

@@ -29,8 +29,9 @@ export class NumberProperty<TDataType> extends Property<TDataType, number> imple
 
     // Meldet die aktuelle Eingabe - entweder eine Fehleingabe oder der Wert als Zeichenkette.
     get rawValue(): string {
-        if (this._rawInput === undefined) return this.value === null ? '' : this.value.toString()
-        else return this._rawInput
+        if (this._rawInput === undefined) return this.value == null ? '' : this.value.toString()
+
+        return this._rawInput
     }
 
     // Übermittelt eine neue Eingabe.

@@ -3,7 +3,7 @@
 import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
 import { IValueFromList, SingleListProperty, uiValue } from '../../../lib/edit/list'
 import { INumber, NumberProperty } from '../../../lib/edit/number/number'
-import { getOtherSettings, setOtherSettings } from '../../../web/admin/IOtherSettingsContract'
+import { getOtherSettings, IOtherSettingsContract, setOtherSettings } from '../../../web/admin/IOtherSettingsContract'
 
 // Die Art des zu verwendenden Schlafzustands.
 export enum hibernationMode {
@@ -19,27 +19,6 @@ export enum hibernationMode {
 
 // Schnittstelle zur Pflege sonstiger Konfigurationswerte.
 export interface IAdminOtherPage extends ISection {
-    // Der TCP/IP Port des Web Clients.
-    readonly port: INumber
-
-    // Gesetzt, wenn auch eine sichere Verbindung (SSL / HTTPS) unterstützt werden soll.
-    readonly ssl: IFlag
-
-    // Der sichere (SSL) TCP/IP Port des Web Clients.
-    readonly securePort: INumber
-
-    // Gesetzt, wenn neben der integrierten Windows Sicherheit (NTLM Challenge/Response) auch die Standard Autorisierung (Basic) verwendet werden kann.
-    readonly basicAuth: IFlag
-
-    // Die Zeit zum vorzeitigen Aufwachen für eine Aufzeichnung oder Sonderaufgabe (in Sekunden).
-    readonly preSleep: INumber
-
-    // Die minimale Verweildauer im Schalfzustand (in Minuten).
-    readonly minSleep: INumber
-
-    // Gesetzt um die minimale Verweildauer im Schlafzustand zu unterdrücken.
-    readonly ignoreMinSleep: IFlag
-
     // Die Verweildauer eines Protokolleintrags vor der automatischen Löscung (in Wochen).
     readonly logKeep: INumber
 
@@ -51,9 +30,6 @@ export interface IAdminOtherPage extends ISection {
 
     // Gesetzt, wenn die Systemzeit einer SDTV Aufzeichnung nicht automatisch ermittelt werden soll.
     readonly noMPEG2PCR: IFlag
-
-    // Die Art des automatischen Schlafzustands.
-    readonly hibernation: IValueFromList<hibernationMode>
 
     // Die Art der Protokollierung.
     readonly logging: IValueFromList<string>
@@ -79,68 +55,10 @@ export class OtherSection extends Section implements IAdminOtherPage {
         uiValue(hibernationMode.Hibernate, 'Hibernate (S4)'),
     ]
 
-    // Der TCP/IP Port des Web Clients.
-    readonly port = new NumberProperty({} as { webPort?: number }, 'webPort', 'TCP/IP Port für den Web Server', () =>
-        this.update.refreshUi()
-    )
-        .addRequiredValidator()
-        .addMinValidator(1)
-        .addMaxValidator(0xffff)
-
-    // Gesetzt, wenn auch eine sichere Verbindung (SSL / HTTPS) unterstützt werden soll.
-    readonly ssl = new BooleanProperty({} as { ssl?: boolean }, 'ssl', 'Sichere Verbindung zusätzlich anbieten')
-
-    // Der sichere (SSL) TCP/IP Port des Web Clients.
-    readonly securePort = new NumberProperty(
-        {} as { sslPort?: number },
-        'sslPort',
-        'TCP/IP Port für den sicheren Zugang',
-        () => this.update.refreshUi()
-    )
-        .addRequiredValidator()
-        .addMinValidator(1)
-        .addMaxValidator(0xffff)
-
-    // Gesetzt, wenn neben der integrierten Windows Sicherheit (NTLM Challenge/Response) auch die Standard Autorisierung (Basic) verwendet werden kann.
-    readonly basicAuth = new BooleanProperty(
-        {} as { basicAuth?: boolean },
-        'basicAuth',
-        'Benutzererkennung über Basic (RFC 2617) zusätzlich erlauben (nicht empfohlen)'
-    )
-
-    // Die Zeit zum vorzeitigen Aufwachen für eine Aufzeichnung oder Sonderaufgabe (in Sekunden).
-    readonly preSleep = new NumberProperty(
-        {} as { hibernationDelay?: number },
-        'hibernationDelay',
-        'Vorlaufzeit für das Aufwachen aus dem Schlafzustand in Sekunden',
-        () => this.update.refreshUi()
-    )
-        .addRequiredValidator()
-        .addMinValidator(0)
-        .addMaxValidator(600)
-
-    // Die minimale Verweildauer im Schalfzustand (in Minuten).
-    readonly minSleep = new NumberProperty(
-        {} as { forcedHibernationDelay?: number },
-        'forcedHibernationDelay',
-        'Minimale Pause nach einem erzwungenen Schlafzustand in Minuten',
-        () => this.update.refreshUi()
-    )
-        .addRequiredValidator()
-        .addMinValidator(5)
-        .addMaxValidator(60)
-
-    // Gesetzt um die minimale Verweildauer im Schlafzustand zu unterdrücken.
-    readonly ignoreMinSleep = new BooleanProperty(
-        {} as { suppressHibernationDelay?: boolean },
-        'suppressHibernationDelay',
-        'Pause für erzwungenen Schlafzustand ignorieren'
-    )
-
     // Die Verweildauer eines Protokolleintrags vor der automatischen Löscung (in Wochen).
     readonly logKeep = new NumberProperty(
-        {} as { protocol?: number },
-        'protocol',
+        {} as Pick<IOtherSettingsContract, 'protocolTime'>,
+        'protocolTime',
         'Aufbewahrungsdauer für Protokolle in Wochen',
         () => this.update.refreshUi()
     )
@@ -150,8 +68,8 @@ export class OtherSection extends Section implements IAdminOtherPage {
 
     // Die Verweildauer eines Auftrags im Archiv vor der automatischen Löschung (in Wochen).
     readonly jobKeep = new NumberProperty(
-        {} as { archive?: number },
-        'archive',
+        {} as Pick<IOtherSettingsContract, 'archiveTime'>,
+        'archiveTime',
         'Aufbewahrungsdauer von archivierten Aufzeichnungen in Wochen',
         () => this.update.refreshUi()
     )
@@ -161,30 +79,21 @@ export class OtherSection extends Section implements IAdminOtherPage {
 
     // Gesetzt, wenn die Systemzeit einer HDTV Aufzeichnung nicht automatisch ermittelt werden soll.
     readonly noH264PCR = new BooleanProperty(
-        {} as { noH264PCR?: boolean },
-        'noH264PCR',
+        {} as Pick<IOtherSettingsContract, 'disablePCRFromH264'>,
+        'disablePCRFromH264',
         'Systemzeit (PCR) in Aufzeichnungsdateien nicht aus einem H.264 Bildsignal ableiten'
     )
 
     // Gesetzt, wenn die Systemzeit einer SDTV Aufzeichnung nicht automatisch ermittelt werden soll.
     readonly noMPEG2PCR = new BooleanProperty(
-        {} as { noMPEG2PCR?: boolean },
-        'noMPEG2PCR',
+        {} as Pick<IOtherSettingsContract, 'disablePCRFromMPEG2'>,
+        'disablePCRFromMPEG2',
         'Systemzeit (PCR) in Aufzeichnungsdateien nicht aus einem MPEG2 Bildsignal ableiten'
-    )
-
-    // Die Art des automatischen Schlafzustands.
-    readonly hibernation = new SingleListProperty(
-        {} as { hibernationMode?: hibernationMode },
-        'hibernationMode',
-        'Art des von VCR.NET ausgelösten Schlafzustands',
-        undefined,
-        OtherSection._hibernation
     )
 
     // Die Art der Protokollierung.
     readonly logging = new SingleListProperty(
-        {} as { logging?: string },
+        {} as Pick<IOtherSettingsContract, 'logging'>,
         'logging',
         'Umfang der Protokollierung in das Windows Ereignisprotokoll',
         undefined,
@@ -195,18 +104,11 @@ export class OtherSection extends Section implements IAdminOtherPage {
     protected loadAsync(): void {
         getOtherSettings().then((settings) => {
             // Alle Präsentationsmodelle verbinden.
-            this.ignoreMinSleep.data = settings
             this.noMPEG2PCR.data = settings
-            this.securePort.data = settings
-            this.basicAuth.data = settings
             this.noH264PCR.data = settings
-            this.minSleep.data = settings
-            this.preSleep.data = settings
             this.jobKeep.data = settings
             this.logKeep.data = settings
             this.logging.data = settings
-            this.port.data = settings
-            this.ssl.data = settings
 
             // Die Anwendung kann nun verwendet werden.
             this.page.application.isBusy = false
@@ -222,11 +124,6 @@ export class OtherSection extends Section implements IAdminOtherPage {
     // Gesetzt, wenn ein Speichern möglich ist.
     protected get isValid(): boolean {
         // Alle Zahlen müssen fehlerfrei eingegeben worden sein - dazu gehört immer auch ein Wertebereich.
-        if (this.port.message) return false
-        if (this.securePort.message) return false
-        if (this.hibernation.message) return false
-        if (this.preSleep.message) return false
-        if (this.minSleep.message) return false
         if (this.logKeep.message) return false
         if (this.jobKeep.message) return false
         if (this.logging.message) return false
@@ -237,6 +134,6 @@ export class OtherSection extends Section implements IAdminOtherPage {
 
     // Beginnt die asynchrone Speicherung der Konfiguration.
     protected saveAsync(): Promise<boolean | undefined> {
-        return setOtherSettings(this.port.data)
+        return setOtherSettings(this.logging.data)
     }
 }
