@@ -4,7 +4,6 @@ import { IDevicesPage } from '../../app/pages/devices'
 import { IDeviceController } from '../../app/pages/devices/controller'
 import { HelpLink } from '../../common/helpLink'
 import { ButtonCommand } from '../../lib.react/command/button'
-import { EditBoolean } from '../../lib.react/edit/boolean/flag'
 import { EditNumberSlider } from '../../lib.react/edit/number/slider'
 import { ComponentExWithSite, IComponent } from '../../lib.react/reactUi'
 
@@ -52,8 +51,6 @@ export class DeviceControl extends ComponentExWithSite<IDeviceController, IDevic
                 <div>
                     <ButtonCommand uvm={this.props.uvm.stopNow} />
                     <ButtonCommand uvm={this.props.uvm.update} />
-                    <EditBoolean uvm={this.props.uvm.noHibernate} />
-                    <HelpLink page={this.props.page} topic='hibernation' />
                 </div>
             </fieldset>
         )

@@ -195,7 +195,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         public static int EPGEntries
         {
-            get { return Profile.Read<int>("EPGEntries"); }
+            get { return Profile.Read<int>("EPGEntries", 25); }
             set { Profile.Write("EPGEntries", value); }
         }
 
@@ -209,7 +209,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         }
 
         /// <summary>
-        /// Meldet oder �ndert die gespeicherten Suchen der Programmzeichschrift.
+        /// Meldet oder ändert die gespeicherten Suchen der Programmzeichschrift.
         /// </summary>
         public static string GuideFavorites
         {

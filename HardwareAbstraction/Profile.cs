@@ -120,7 +120,7 @@ namespace JMS.DVB
 
             // Create serializer and settings
             var serializer = new XmlSerializer(GetType(), Namespace);
-            var settings = new XmlWriterSettings { Encoding = Encoding.Unicode, Indent = true };
+            var settings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true };
 
             // Store
             using var writer = XmlWriter.Create(file.FullName, settings);

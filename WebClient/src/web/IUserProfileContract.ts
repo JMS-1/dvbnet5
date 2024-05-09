@@ -41,9 +41,6 @@ export interface IUserProfileContract {
     // Die maximal erlaubte Anzahl von zuletzt verwendeten Quellen
     recentSourceLimit: number
 
-    // Gesetzt, wenn beim Abbruch einer Aufzeichnung der Übergang in den Schlafzustand deaktiviert werden soll
-    suppressHibernate: boolean
-
     // Die gespeicherten Suchen der Programmzeitschrift
     guideSearches: string
 }

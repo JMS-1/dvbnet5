@@ -58,7 +58,6 @@ export class Info implements IDeviceInfo {
     // Erstellt ein neues Präsentationsmodell.
     constructor(
         private readonly _model: IPlanCurrentContract,
-        suppressHibernate: boolean,
         toggleDetails: (info: Info, guide: boolean) => void,
         reload: () => void,
         private readonly _findInGuide: (model: IGuideItemContract) => void
@@ -74,7 +73,7 @@ export class Info implements IDeviceInfo {
             this.displayEnd = DateTimeUtils.formatEndTime(this._end)
 
             // Das Präsentationsmodell für die Steuerung bei Bedarf erstellen.
-            if (this.mode === 'running') this.controller = new Controller(_model, suppressHibernate, reload)
+            if (this.mode === 'running') this.controller = new Controller(_model, reload)
         }
 
         // Präsentationsmodell für die Detailansicht erstellen.

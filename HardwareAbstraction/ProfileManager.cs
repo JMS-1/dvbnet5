@@ -228,10 +228,7 @@ namespace JMS.DVB
                 throw new ArgumentException(name, nameof(name));
 
             // Create the new instance
-            T profile = new();
-
-            // Attach the file information to it
-            profile.ProfilePath = new FileInfo(Path.Combine(ProfilePath.FullName, name + "." + ProfileExtension));
+            T profile = new() { ProfilePath = new FileInfo(Path.Combine(ProfilePath.FullName, name + "." + ProfileExtension)) };
 
             // Validate
             if (profile.ProfilePath.Exists)

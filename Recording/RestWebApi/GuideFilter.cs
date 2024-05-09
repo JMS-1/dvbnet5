@@ -53,7 +53,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Die aktuell gewünschte Seite.
         /// </summary>
-        public int PageIndex;
+        public int PageIndex { get; set; }
 
         /// <summary>
         /// Die Art der Quelle.

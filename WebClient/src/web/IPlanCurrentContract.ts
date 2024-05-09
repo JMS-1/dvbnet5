@@ -51,14 +51,9 @@ export function getPlanCurrent(): Promise<IPlanCurrentContract[] | undefined> {
     return doUrlCall('plan/current')
 }
 
-export function updateEndTime(
-    device: string,
-    suppressHibernate: boolean,
-    scheduleIdentifier: string,
-    newEnd: Date
-): Promise<void> {
+export function updateEndTime(device: string, scheduleIdentifier: string, newEnd: Date): Promise<void> {
     return doUrlCall<void, void>(
-        `profile/endtime/${device}?disableHibernate=${suppressHibernate}&schedule=${scheduleIdentifier}&endTime=${newEnd.toISOString()}`,
+        `profile/endtime/${device}?schedule=${scheduleIdentifier}&endTime=${newEnd.toISOString()}`,
         'PUT'
     )
 }

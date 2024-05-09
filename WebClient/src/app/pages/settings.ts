@@ -4,7 +4,7 @@ import { Command, ICommand } from '../../lib/command/command'
 import { BooleanProperty, IFlag } from '../../lib/edit/boolean/flag'
 import { IValueFromList, SingleListProperty, uiValue } from '../../lib/edit/list'
 import { INumber, NumberProperty } from '../../lib/edit/number/number'
-import { setUserProfile } from '../../web/IUserProfileContract'
+import { IUserProfileContract, setUserProfile } from '../../web/IUserProfileContract'
 import { Application } from '../app'
 
 // Schnittstelle zur Pflege der Benutzereinstellung.
@@ -35,9 +35,6 @@ export interface ISettingsPage extends IPage {
 
     // Gesetzt, wenn bevorzugt die DVB Untertitel mit aufgezeichnet werden soll.
     readonly subs: IFlag
-
-    // Gesetzt, wenn beim Abbruch einer laufenden Aufzeichnung bevorzugt der Schlafzustand unterdrückt werden soll.
-    readonly noSleep: IFlag
 
     // Gesetzt, wenn nach dem Anlegen einer neuen Aufzeichnung aus der Programmzeitschrift in diese zurück gekehrt werden soll.
     readonly backToGuide: IFlag
@@ -77,7 +74,7 @@ export class SettingsPage extends Page implements ISettingsPage {
 
     // Die Anzahl von Tagen im Aufzeichnungsplan.
     readonly planDays = new NumberProperty(
-        {} as { planDays?: number },
+        {} as Pick<IUserProfileContract, 'planDays'>,
         'planDays',
         'Anzahl der Vorschautage im Aufzeichnungsplan',
         () => this.update.refreshUi()
@@ -88,7 +85,7 @@ export class SettingsPage extends Page implements ISettingsPage {
 
     // Die maximale Anzahl von Quellen in der Liste zuletzt verwendeter Quellen.
     readonly maxFavorites = new NumberProperty(
-        {} as { recentSourceLimit?: number },
+        {} as Pick<IUserProfileContract, 'recentSourceLimit'>,
         'recentSourceLimit',
         'Maximale Größe der Liste zuletzt verwendeter Sendern',
         () => this.update.refreshUi()
@@ -99,7 +96,7 @@ export class SettingsPage extends Page implements ISettingsPage {
 
     // Die Anzahl der Einträge auf einer Seite der Programmzeitschrift.
     readonly guideRows = new NumberProperty(
-        {} as { guideRows?: number },
+        {} as Pick<IUserProfileContract, 'guideRows'>,
         'guideRows',
         'Anzahl der Einträge pro Seite in der Programmzeitschrift',
         () => this.update.refreshUi()
@@ -110,7 +107,7 @@ export class SettingsPage extends Page implements ISettingsPage {
 
     // Die Vorlaufzeit für neue Aufzeichnung, die aus der Programmzeitschrift angelegt werden (in Minuten).
     readonly preGuide = new NumberProperty(
-        {} as { guideAheadStart?: number },
+        {} as Pick<IUserProfileContract, 'guideAheadStart'>,
         'guideAheadStart',
         'Vorlaufzeit bei Programmierung über die Programmzeitschrift (in Minuten)',
         () => this.update.refreshUi()
@@ -121,7 +118,7 @@ export class SettingsPage extends Page implements ISettingsPage {
 
     // Die Nachlaufzeit für neue Aufzeichnung, die aus der Programmzeitschrift angelegt werden (in Minuten).
     readonly postGuide = new NumberProperty(
-        {} as { guideBeyondEnd?: number },
+        {} as Pick<IUserProfileContract, 'guideBeyondEnd'>,
         'guideBeyondEnd',
         'Nachlaufzeit bei Programmierung über die Programmzeitschrift (in Minuten)',
         () => this.update.refreshUi()
@@ -131,34 +128,27 @@ export class SettingsPage extends Page implements ISettingsPage {
         .addMaxValidator(240)
 
     // Gesetzt, wenn bevorzugt das Dolby-Digital Tonsignal mit aufgezeichnet werden soll.
-    readonly dolby = new BooleanProperty({} as { dolby?: boolean }, 'dolby', 'Dolby Digital (AC3)')
+    readonly dolby = new BooleanProperty({} as Pick<IUserProfileContract, 'dolby'>, 'dolby', 'Dolby Digital (AC3)')
 
     // Gesetzt, wenn bevorzugt alle Sprachen aufgezeichnet werden sollen.
-    readonly allAudio = new BooleanProperty({} as { languages?: boolean }, 'languages', 'Alle Sprachen')
+    readonly allAudio = new BooleanProperty({} as Pick<IUserProfileContract, 'languages'>, 'languages', 'Alle Sprachen')
 
     // Gesetzt, wenn bevorzugt der Videotext mit aufgezeichnet werden soll.
-    readonly ttx = new BooleanProperty({} as { videotext?: boolean }, 'videotext', 'Videotext')
+    readonly ttx = new BooleanProperty({} as Pick<IUserProfileContract, 'videotext'>, 'videotext', 'Videotext')
 
     // Gesetzt, wenn bevorzugt die DVB Untertitel mit aufgezeichnet werden soll.
-    readonly subs = new BooleanProperty({} as { subtitles?: boolean }, 'subtitles', 'DVB Untertitel')
-
-    // Gesetzt, wenn beim Abbruch einer laufenden Aufzeichnung bevorzugt der Schlafzustand unterdrückt werden soll.
-    readonly noSleep = new BooleanProperty(
-        {} as { suppressHibernate?: boolean },
-        'suppressHibernate',
-        'Beim Abbrechen von Aufzeichnungen bevorzugt den Schlafzustand unterdrücken'
-    )
+    readonly subs = new BooleanProperty({} as Pick<IUserProfileContract, 'subtitles'>, 'subtitles', 'DVB Untertitel')
 
     // Gesetzt, wenn nach dem Anlegen einer neuen Aufzeichnung aus der Programmzeitschrift in diese zurück gekehrt werden soll.
     readonly backToGuide = new BooleanProperty(
-        {} as { backToGuide?: boolean },
+        {} as Pick<IUserProfileContract, 'backToGuide'>,
         'backToGuide',
         'Nach Anlegen einer neuen Aufzeichnung zurück zur Programmzeitschrift'
     )
 
     // Die bevorzugte Einschränkung auf die Art der Quellen bei der Auswahl einer Quelle für eine Aufzeichnung.
     readonly sourceType = new SingleListProperty(
-        {} as { typeFilter?: string },
+        {} as Pick<IUserProfileContract, 'typeFilter'>,
         'typeFilter',
         undefined,
         undefined,
@@ -167,7 +157,7 @@ export class SettingsPage extends Page implements ISettingsPage {
 
     // Die bevorzugte Einschränkung auf die Verschlüsselung der Quellen bei der Auswahl einer Quelle für eine Aufzeichnung.
     readonly encryption = new SingleListProperty(
-        {} as { encryptionFilter?: string },
+        {} as Pick<IUserProfileContract, 'encryptionFilter'>,
         'encryptionFilter',
         undefined,
         undefined,
@@ -198,7 +188,6 @@ export class SettingsPage extends Page implements ISettingsPage {
         this.preGuide.data = newProfile
         this.planDays.data = newProfile
         this.allAudio.data = newProfile
-        this.noSleep.data = newProfile
         this.dolby.data = newProfile
         this.sourceType.data = newProfile
         this.subs.data = newProfile

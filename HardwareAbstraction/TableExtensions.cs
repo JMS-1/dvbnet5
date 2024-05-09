@@ -140,23 +140,22 @@ namespace JMS.DVB
         public static LocationInformation? ToLocationInformation(this NIT[] tables, Hardware provider)
         {
             // Validate
-            if (null == provider)
-                throw new ArgumentNullException(nameof(provider));
+            ArgumentNullException.ThrowIfNull(provider, nameof(provider));
 
             // None
-            if (null == tables)
+            if (tables == null)
                 return null;
 
             // Check DVB-S(2)
-            if (provider is var sat)
+            if (provider is SatelliteHardware sat)
                 return tables.ToLocationInformation(sat);
 
             // Check DVB-C
-            if (provider is var cab)
+            if (provider is CableHardware cab)
                 return tables.ToLocationInformation(cab);
 
             // Check DVB-T
-            if (provider is var ter)
+            if (provider is TerrestrialHardware ter)
                 return tables.ToLocationInformation(ter);
 
             // Not supported

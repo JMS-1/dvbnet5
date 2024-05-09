@@ -48,7 +48,7 @@ export class DirectoriesSection extends Section implements IAdminDirectoriesPage
 
     // Das aktuelle Muster für die Namen von Aufzeichnungsdateien.
     readonly pattern = new StringProperty(
-        {} as { recordingPattern?: string },
+        {} as Pick<contract.IDirectorySettingsContract, 'recordingPattern'>,
         'recordingPattern',
         'Muster für Dateinamen',
         () => this.update.refreshUi()

@@ -2,7 +2,7 @@
 import { ISection, Section } from './section'
 
 import { IValueFromList, SingleListProperty, uiValue } from '../../../lib/edit/list'
-import { getProfileSettings, setProfileSettings } from '../../../web/admin/IProfileSettingsContract'
+import * as contract from '../../../web/admin/IProfileSettingsContract'
 
 // Schnittstelle zur Konfiguration der Geräteprofile.
 export interface IAdminDevicesPage extends ISection {
@@ -20,7 +20,7 @@ export class DevicesSection extends Section implements IAdminDevicesPage {
 
     // Präsentationsmodell zur Pflege des bevorzugten Gerätes.
     readonly defaultDevice = new SingleListProperty(
-        {} as { defaultProfile?: string },
+        {} as Pick<contract.IProfileSettingsContract, 'defaultProfile'>,
         'defaultProfile',
         'Bevorzugtes Gerät (zum Beispiel für neue Aufzeichnungen)',
         () => this.refresh()
@@ -33,7 +33,7 @@ export class DevicesSection extends Section implements IAdminDevicesPage {
 
     // Fordert die Konfiguration der Geräteprofile an.
     protected loadAsync(): void {
-        getProfileSettings().then((settings) => {
+        contract.getProfileSettings().then((settings) => {
             // Präsentationsmodelle aus den Rohdaten erstellen.
             this.devices =
                 settings?.systemProfiles.map(
@@ -83,6 +83,6 @@ export class DevicesSection extends Section implements IAdminDevicesPage {
 
     // Sendet die Konfiguration zur asynchronen Aktualisierung an den VCR.NET Recording Service.
     protected saveAsync(): Promise<boolean | undefined> {
-        return setProfileSettings(this.defaultDevice.data)
+        return contract.setProfileSettings(this.defaultDevice.data)
     }
 }

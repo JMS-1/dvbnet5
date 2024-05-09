@@ -44,9 +44,7 @@ export class DevicesPage extends Page implements IDevicesPage {
             const reload = this.reload.bind(this)
 
             // Die aktuellen Aktivitäten umwandeln.
-            this.infos = (plan || []).map(
-                (info) => new Info(info, this.application.profile.suppressHibernate, refresh, reload, similiar)
-            )
+            this.infos = (plan || []).map((info) => new Info(info, refresh, reload, similiar))
 
             // Anwendung kann nun bedient werden.
             this.application.isBusy = false

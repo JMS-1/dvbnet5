@@ -253,8 +253,11 @@ export class GuidePage extends Page implements IGuidePage {
             this.profiles.validate()
 
             // Erstes Gerät vorauswählen.
-            if (!this._filter.profileName || this.profiles.message)
+            if (!this._filter.profileName || this.profiles.message) {
                 this._filter.profileName = this.profiles.allowedValues[0].value
+
+                this.profiles.validate()
+            }
 
             // Die Startphase ist erst einmal abgeschlossen.
             this._disableQuery = false

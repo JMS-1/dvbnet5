@@ -1,6 +1,5 @@
 ﻿import { Command, ICommand } from '../../../lib/command/command'
 import { DateTimeUtils } from '../../../lib/dateTimeUtils'
-import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
 import { INumberWithSlider, NumberWithSlider } from '../../../lib/edit/number/slider'
 import { IConnectable, IView } from '../../../lib/site'
 import { IPlanCurrentContract, updateEndTime } from '../../../web/IPlanCurrentContract'
@@ -26,9 +25,6 @@ export interface IDeviceController extends IConnectable {
     // Befehl um das sofortige Beenden vorzubereiten.
     readonly stopNow: ICommand
 
-    // Einstellung zum Umgang mit dem Schlafzustand beim Vorzeitigen beenden.
-    readonly noHibernate: IFlag
-
     // Befehl zur Aktualisierung der Endzeit.
     readonly update: ICommand
 }
@@ -48,13 +44,6 @@ export class Controller implements IDeviceController {
         () => this.remaining.value !== 0
     )
 
-    // Einstellung zum Umgang mit dem Schlafzustand beim Vorzeitigen beenden.
-    readonly noHibernate = new BooleanProperty(
-        {} as { value?: boolean },
-        'value',
-        'Übergang in den Schlafzustand unterdrücken'
-    )
-
     // Befehl zur Aktualisierung der Endzeit.
     readonly update = new Command(() => this.save(), 'Übernehmen')
 
@@ -66,12 +55,10 @@ export class Controller implements IDeviceController {
 
     constructor(
         private readonly _model: IPlanCurrentContract,
-        suppressHibernate: boolean,
         private readonly _reload: () => void
     ) {
         // Präsentationsmodelle aufsetzen.
         this.remaining.value = _model.remainingTimeInMinutes
-        this.noHibernate.value = suppressHibernate
 
         // Nur wenn es sich um eine Aufzeichnung handelt müssen wir mehr tun - Sonderaufgaben kann man nicht ansehen!
         if (_model.index < 0) return
@@ -118,8 +105,6 @@ export class Controller implements IDeviceController {
         const end = (this.remaining.value ?? 0) > 0 ? this.currentEnd : this.start
 
         // Asynchronen Aufruf absetzen und im Erfolgsfall die Aktivitäten neu laden.
-        return updateEndTime(this._model.profileName, !!this.noHibernate.value, this._model.planIdentifier, end).then(
-            () => this._reload()
-        )
+        return updateEndTime(this._model.profileName, this._model.planIdentifier, end).then(() => this._reload())
     }
 }

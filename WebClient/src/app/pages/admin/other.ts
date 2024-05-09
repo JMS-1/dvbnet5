@@ -119,7 +119,7 @@ export class OtherSection extends Section implements IAdminOtherPage {
     }
 
     // Die Beschriftung der Schaltfläche zum Speichern.
-    protected readonly saveCaption = 'Ändern und eventuell neu Starten'
+    protected readonly saveCaption = 'Ändern'
 
     // Gesetzt, wenn ein Speichern möglich ist.
     protected get isValid(): boolean {

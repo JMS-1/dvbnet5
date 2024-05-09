@@ -40,10 +40,6 @@ export class Settings extends ComponentWithSite<ISettingsPage> {
                         <EditBoolean uvm={this.props.uvm.ttx} />
                         <EditBoolean uvm={this.props.uvm.subs} />
                     </div>
-                    {this.getSleepHelp()}
-                    <div className='vcrnet-settings-field'>
-                        <EditBoolean uvm={this.props.uvm.noSleep} />
-                    </div>
                     {this.getGuideHelp()}
                     <Field label={`${this.props.uvm.guideRows.text}:`} page={this.props.uvm}>
                         <EditNumber chars={5} uvm={this.props.uvm.guideRows} />
@@ -86,19 +82,6 @@ export class Settings extends ComponentWithSite<ISettingsPage> {
                 die bei der Auswahl der zu verwendenden Quelle helfen.
                 <HelpLink page={this.props.uvm} topic='sourcechooser' /> Hier wird die gewünschte Vorbelegung dieser
                 Einstellungen festgelegt.
-            </InlineHelp>
-        )
-    }
-
-    // Hilfe zum Schalfzustand.
-    private getSleepHelp(): JSX.Element {
-        return (
-            <InlineHelp title='Erläuterungen'>
-                Wird eine aktive Aufzeichnung
-                <InternalLink pict='devices' view={this.props.uvm.application.devicesPage.route} /> vorzeitig beendet,
-                so wird der VCR.NET Recording Service prüfen, ob der Rechner in den Schlafzustand versetzt werden soll.
-                <HelpLink page={this.props.uvm} topic='hibernation' /> Diese Verhalten kann pro Abbruch gesondert
-                deaktiviert werden und die folgende Einstellung legt das bevorzugte Verhalten fest.
             </InlineHelp>
         )
     }
