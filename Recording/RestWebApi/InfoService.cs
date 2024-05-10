@@ -21,11 +21,6 @@
         public bool IsRunning { get; set; }
 
         /// <summary>
-        /// Gesetzt, wenn der aktuelle Anwender ein Administrator ist.
-        /// </summary>
-        public bool IsAdmin { get; set; }
-
-        /// <summary>
         /// Gesetzt, wenn es möglich ist, die Liste der Quellen zu aktualisieren.
         /// </summary>
         public bool SourceScanEnabled { get; set; }

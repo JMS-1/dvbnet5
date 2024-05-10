@@ -6,7 +6,6 @@ import { AdminGuide } from './admin/guide'
 import { AdminOther } from './admin/other'
 import { AdminRules } from './admin/rules'
 import { AdminSection } from './admin/section'
-import { AdminSecurity } from './admin/security'
 import { AdminSources } from './admin/sources'
 
 import { AdminPage, IAdminPage } from '../app/pages/admin'
@@ -75,7 +74,6 @@ export class Admin extends ComponentWithSite<IAdminPage> {
 
             // Alle unterstützten Seiten anlegen.
             Admin.addSection(AdminDevices)
-            Admin.addSection(AdminSecurity)
             Admin.addSection(AdminDirectories)
             Admin.addSection(AdminGuide)
             Admin.addSection(AdminSources)

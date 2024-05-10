@@ -23,8 +23,8 @@ export function updateSchedule(jobId: string, scheduleId: string, data: IJobSche
     let method = 'POST'
     let url = 'edit/job'
 
-    if (jobId != null) {
-        url = 'recording/' + jobId
+    if (jobId) {
+        url = 'edit/recording/' + jobId
 
         if (scheduleId != null) {
             url += scheduleId

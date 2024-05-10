@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Services.Configuration;

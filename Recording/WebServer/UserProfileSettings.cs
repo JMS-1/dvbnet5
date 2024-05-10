@@ -61,7 +61,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Eintrag bereits vorhanden, so wird er an den Anfang der Liste verschoben.
         /// </summary>
         /// <param name="station">Der Name der Quelle.</param>
-        public static void AddRecentChannel(string station)
+        public static void AddRecentChannel(string? station)
         {
             // Not allowed
             if (string.IsNullOrEmpty(station))

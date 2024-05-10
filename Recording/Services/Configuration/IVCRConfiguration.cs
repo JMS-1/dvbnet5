@@ -62,12 +62,6 @@ public interface IVCRConfiguration
     DirectoryInfo PrimaryTargetDirectory { get; }
 
     /// <summary>
-    /// Meldet den Namen der Kontogruppe der Anwender, die Zugriff auf den
-    /// VCR.NET Recording Service haben.
-    /// </summary>
-    string UserRole { get; }
-
-    /// <summary>
     /// Meldet alle vollen Stunden, zu denen eine Sammlung stattfinden soll.
     /// </summary>
     uint[] ProgramGuideUpdateHours { get; }
@@ -81,12 +75,6 @@ public interface IVCRConfiguration
     /// Meldet die maximale Laufzeit einer Aktualisierung gemäß der Konfiguration.
     /// </summary>
     uint ProgramGuideUpdateDuration { get; }
-
-    /// <summary>
-    /// Meldet den Namen der Kontogruppe der Anwender, die administrativen Zugriff auf den
-    /// VCR.NET Recording Service haben.
-    /// </summary>
-    string AdminRole { get; }
 
     /// <summary>
     /// Meldet, ob die Programmzeitschrift der englischen FreeSat Sender eingeschlossen 

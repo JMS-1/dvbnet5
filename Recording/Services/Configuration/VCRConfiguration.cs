@@ -150,8 +150,6 @@ public class VCRConfiguration : IVCRConfiguration
         Add(SettingNames.LogLifeTime, (uint)5);
         Add(SettingNames.MergeScanResult, true);
         Add(SettingNames.Profiles);
-        Add(SettingNames.RequiredAdminRole);
-        Add(SettingNames.RequiredUserRole);
         Add(SettingNames.ScanDuration, (uint)60);
         Add(SettingNames.ScanHours);
         Add(SettingNames.ScanInterval, 0);
@@ -261,13 +259,7 @@ public class VCRConfiguration : IVCRConfiguration
     private string ReadStringSetting(SettingNames name) => ReadSetting<string>(name);
 
     /// <inheritdoc/>
-    public string UserRole => ReadStringSetting(SettingNames.RequiredUserRole);
-
-    /// <inheritdoc/>
     public bool HasRecordedSomething { get; set; }
-
-    /// <inheritdoc/>
-    public string AdminRole => ReadStringSetting(SettingNames.RequiredAdminRole);
 
     /// <inheritdoc/>
     public int? AudioBufferSize

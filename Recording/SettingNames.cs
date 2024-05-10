@@ -86,18 +86,6 @@ namespace JMS.DVB.NET.Recording
         MergeScanResult,
 
         /// <summary>
-        /// Optional der Name der Windows Gruppe der Anwender, die Zugiff auf den VCR.NET
-        /// Recording Server haben.
-        /// </summary>
-        RequiredUserRole,
-
-        /// <summary>
-        /// Optional der Name der Windows Gruppe von Anwendern, die administrativen Zugriff
-        /// auf den VCR.NET Recording Service.
-        /// </summary>
-        RequiredAdminRole,
-
-        /// <summary>
         /// Optional die Größe für das Zwischenspeichern bei Schreiben in die Datei einer 
         /// Radioaufzeichnung.
         /// </summary>

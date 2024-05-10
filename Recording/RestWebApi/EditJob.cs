@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using JMS.DVB.NET.Recording.Persistence;
+﻿using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Services.Configuration;
 
@@ -18,7 +17,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Das Aufzeichnungsverzeichnis zum Auftrag.
         /// </summary>
-        public string RecordingDirectory { get; set; } = null!;
+        public string? RecordingDirectory { get; set; }
 
         /// <summary>
         /// Das für die Auswahl der Quelle verwendete Gerät.
@@ -125,7 +124,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 new VCRJob
                 {
                     AutomaticResourceSelection = !UseProfileForRecording,
-                    Directory = RecordingDirectory,
+                    Directory = RecordingDirectory ?? "",
                     UniqueID = jobIdentifier,
                     Name = Name,
                 };

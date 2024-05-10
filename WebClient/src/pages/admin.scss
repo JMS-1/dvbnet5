@@ -1,4 +1,4 @@
-﻿@import "../lib.react/constants";
+﻿@import '../lib.react/constants';
 
 .vcrnet-admin {
     width: 90%;
@@ -45,12 +45,11 @@
     }
 }
 
-@import "admin/section";
+@import 'admin/section';
 
-@import "admin/guide";
-@import "admin/other";
-@import "admin/rules";
-@import "admin/devices";
-@import "admin/sources";
-@import "admin/security";
-@import "admin/directories";
+@import 'admin/guide';
+@import 'admin/other';
+@import 'admin/rules';
+@import 'admin/devices';
+@import 'admin/sources';
+@import 'admin/directories';

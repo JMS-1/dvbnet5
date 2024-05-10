@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using JMS.DVB.Algorithms.Scheduler;
+﻿using JMS.DVB.Algorithms.Scheduler;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {

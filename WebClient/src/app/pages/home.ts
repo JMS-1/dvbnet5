@@ -109,7 +109,7 @@ export class HomePage extends Page implements IHomePage {
 
     // Gesetzt, wenn der Verweis zur Konfiguration angezeigt werden soll.
     get showAdmin(): boolean {
-        return this.application.version.isAdmin && !this.isRecording
+        return !this.isRecording
     }
 
     // Blendet die Anzeile der Online Version ein oder aus.

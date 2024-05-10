@@ -25,11 +25,13 @@ export function browserWebCall<TResponseType, TRequestType>(
 
             // Ergebnis auswerten.
             if (xhr.status < 400)
-                if (xhr.status === 204 || !xhr.responseText)
-                    // Antwort wandeln und melden.
-                    success(undefined)
-                else if (raw) success(xhr.responseText as unknown as TResponseType)
-                else success(JSON.parse(xhr.responseText))
+                success(
+                    xhr.status === 204 || !xhr.responseText
+                        ? undefined
+                        : raw
+                          ? (xhr.responseText as unknown as TResponseType)
+                          : JSON.parse(xhr.responseText)
+                )
             else {
                 // Fehler auswerten.
                 let errorInfo

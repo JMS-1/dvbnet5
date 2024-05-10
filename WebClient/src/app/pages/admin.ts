@@ -5,7 +5,6 @@ import { OtherSection } from './admin/other'
 import { RulesSection } from './admin/rules'
 import { ScanSection } from './admin/scan'
 import { ISection, ISectionInfo, ISectionInfoFactory, Section } from './admin/section'
-import { SecuritySection } from './admin/security'
 import { IPage, Page } from './page'
 
 import { Command } from '../../lib/command/command'
@@ -53,7 +52,6 @@ export class AdminPage extends Page implements IAdminPage {
 
     // Die Liste aller Konfigurationsbereiche in der Reihenfolge, in der sie dem Anwender präsentiert werden sollen.
     private readonly _sections: IUiValue<SectionInfo>[] = [
-        uiValue(new SectionInfo(SecuritySection), 'Sicherheit'),
         uiValue(new SectionInfo(DirectoriesSection), 'Verzeichnisse'),
         uiValue(new SectionInfo(DevicesSection), 'Geräte'),
         uiValue(new SectionInfo(GuideSection), 'Programmzeitschrift'),

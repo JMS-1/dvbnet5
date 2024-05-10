@@ -3,9 +3,6 @@ using JMS.DVB.NET.Recording.Server;
 using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Logging;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System.Runtime.Serialization;
 
 namespace JMS.DVB.NET.Recording.RestWebApi;
 
@@ -22,22 +19,6 @@ public class ConfigurationController(
     IRuleUpdater updateRules
 ) : ControllerBase
 {
-    /// <summary>
-    /// Die Einstellungen der Sicherheit.
-    /// </summary>
-    public class SecuritySettings
-    {
-        /// <summary>
-        /// Die Gruppe der normalen Benutzer.
-        /// </summary>
-        public string UserRole { get; set; } = null!;
-
-        /// <summary>
-        /// Die Gruppe der Administratoren.
-        /// </summary>
-        public string AdminRole { get; set; } = null!;
-    }
-
     /// <summary>
     /// Die Einstellung der Aufzeichnungsverzeichnisse.
     /// </summary>
@@ -465,41 +446,6 @@ public class ConfigurationController(
         update[SettingNames.EPGJoinThreshold].NewValue = settings.Threshold.ToString()!;
         update[SettingNames.EPGInterval].NewValue = settings.Interval.ToString()!;
         update[SettingNames.EPGDuration].NewValue = settings.Duration.ToString();
-
-        // Process
-        return updateConfig.UpdateConfiguration(update.Values);
-    }
-
-    /// <summary>
-    /// Liest die Sicherheitseinstellungen.
-    /// </summary>
-    /// <returns>Die aktuellen Einstellungen.</returns>
-    [HttpGet("security")]
-    public SecuritySettings ReadSecurity()
-    {
-        // Report
-        return
-            new SecuritySettings
-            {
-                AdminRole = configuration.AdminRole,
-                UserRole = configuration.UserRole,
-            };
-    }
-
-    /// <summary>
-    /// Aktualisiert die Sicherheitseinstellungen.
-    /// </summary>
-    /// <param name="settings">Die neuen Einstellungen.</param>
-    /// <returns><i>null</i> bei Fehlern und ansonsten gesetzt, wenn ein Neustart des Dienstes ausgeführt wird.</returns>
-    [HttpPut("security")]
-    public bool? WriteSecurity([FromBody] SecuritySettings settings)
-    {
-        // Prepare to update
-        var update = configuration.BeginUpdate(SettingNames.RequiredUserRole, SettingNames.RequiredAdminRole);
-
-        // Change settings
-        update[SettingNames.RequiredAdminRole].NewValue = settings.AdminRole;
-        update[SettingNames.RequiredUserRole].NewValue = settings.UserRole;
 
         // Process
         return updateConfig.UpdateConfiguration(update.Values);

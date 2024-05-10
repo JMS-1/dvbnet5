@@ -11,9 +11,6 @@ export interface IInfoServiceContract {
     // Gesetzt, wenn mindestens ein Gerät eine Aufzeichnung oder Aufgabe ausführt
     isRunning: boolean
 
-    // Gesetzt, wenn der Anwender ein Administrator ist
-    isAdmin: boolean
-
     // Gesetzt, wenn die Aktualisierung der Quellen verfügbar ist
     sourceScanEnabled: boolean
 

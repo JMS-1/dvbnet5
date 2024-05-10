@@ -14,12 +14,12 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Der optionale Name der Aufzeichnung.
         /// </summary>
-        public string Name { get; set; } = null!;
+        public string? Name { get; set; }
 
         /// <summary>
         /// Der optionale Name der Quelle, von der aufgezeichnet werden soll.
         /// </summary>
-        public string Source { get; set; } = null!;
+        public string? Source { get; set; }
 
         /// <summary>
         /// Falls <see cref="Source"/> definiert ist wird diese Eigenschaft gesetzt
@@ -78,9 +78,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Falls <see cref="RepeatPattern"/> gesetzt ist der Tag der letzten Aufzeichnung.
         /// </summary>
-        public string LastDayISO
+        public string? LastDayISO
         {
-            get { return RepeatPattern.HasValue ? LastDay.Date.ToString("o") : null!; }
+            get { return RepeatPattern.HasValue ? LastDay.Date.ToString("o") : null; }
             set { LastDay = string.IsNullOrEmpty(value) ? DateTime.MinValue : DateTime.Parse(value, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind).Date; }
         }
 
@@ -197,7 +197,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                     Days = RepeatPattern,
                     Duration = Duration,
                     LastDay = LastDay,
-                    Name = Name,
+                    Name = Name ?? "",
                 };
 
             // See if we have a source
