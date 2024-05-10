@@ -167,7 +167,7 @@ namespace JMS.DVB.TS
                 throw new ArgumentOutOfRangeException("Invalid Buffer Size - only 0 to " + m_Buf1.Length.ToString() + " are allowed");
 
             // Done
-            bool bFinish = (0 == nBytes);
+            bool bFinish = 0 == nBytes;
 
             // See if this fits into the buffer
             if (!bFinish)

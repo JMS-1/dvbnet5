@@ -8,35 +8,35 @@ namespace JMS.DVB.EPG.Descriptors
     public class NetworkName : Descriptor
     {
         /// <summary>
-        /// Der tatsächlich Name.
+        /// Der tatsï¿½chlich Name.
         /// </summary>
         public readonly string Name;
 
         /// <summary>
         /// Erstellt eine Beschreibung.
         /// </summary>
-        /// <param name="container">Alle zusammenghörigen Beschreibungen.</param>
+        /// <param name="container">Alle zusammenghï¿½rigen Beschreibungen.</param>
         /// <param name="offset">Das erste Byte dieser Beschreibung in den Rohdaten.</param>
-        /// <param name="length">Die Größe dieser Beschreibung im Rohformat.</param>
-        public NetworkName( IDescriptorContainer container, int offset, int length )
-            : base( container, offset, length )
+        /// <param name="length">Die Grï¿½ï¿½e dieser Beschreibung im Rohformat.</param>
+        public NetworkName(IDescriptorContainer container, int offset, int length)
+            : base(container, offset, length)
         {
             // Load the string
-            Name = container.Section.ReadEncodedString( offset, length );
+            Name = container.Section.ReadEncodedString(offset, length);
 
             // We are valid
             m_Valid = true;
         }
 
         /// <summary>
-        /// Prüft, ob eine bestimmte Beschreibungskennung einen Netzwerknamen beschreibt.
+        /// Prï¿½ft, ob eine bestimmte Beschreibungskennung einen Netzwerknamen beschreibt.
         /// </summary>
         /// <param name="tag">Die zu untersuchende Kennung.</param>
-        /// <returns>Gesetzt, wenn die Kennung zu einem Netzwerknamen gehört.</returns>
-        public static bool IsHandlerFor( byte tag )
+        /// <returns>Gesetzt, wenn die Kennung zu einem Netzwerknamen gehï¿½rt.</returns>
+        public static bool IsHandlerFor(byte tag)
         {
             // Check it
-            return (DescriptorTags.NetworkName == (DescriptorTags) tag);
+            return DescriptorTags.NetworkName == (DescriptorTags)tag;
         }
     }
 }

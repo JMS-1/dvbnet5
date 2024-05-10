@@ -106,7 +106,7 @@
                     AllowedResources = scheduler.Resources.ToArray();
 
                 // Report
-                return (AllowedResources.Length > 0);
+                return AllowedResources.Length > 0;
             }
 
             /// <summary>

@@ -33,7 +33,7 @@ namespace JMS.DVB.EPG.Tables
         public static bool IsHandlerFor(byte tableIdentifier)
         {
             // Check all
-            return ((0x40 == tableIdentifier) || (0x41 == tableIdentifier));
+            return (0x40 == tableIdentifier) || (0x41 == tableIdentifier);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace JMS.DVB.EPG.Tables
 
             // Load special
             NetworkIdentifier = Tools.MergeBytesToWord(section[1], section[0]);
-            ForThisStream = (0x40 == section.TableIdentifier);
+            ForThisStream = 0x40 == section.TableIdentifier;
 
             // Result
             List<NetworkEntry> entries = [];

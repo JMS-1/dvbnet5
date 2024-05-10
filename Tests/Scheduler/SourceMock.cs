@@ -122,7 +122,7 @@ namespace JMS.DVB.SchedulerTests
             if (source is not SourceMock typedSource)
                 return false;
             else
-                return (SourceGroup == typedSource.SourceGroup);
+                return SourceGroup == typedSource.SourceGroup;
         }
 
         /// <summary>

@@ -346,7 +346,7 @@
                 for (int pattern = 1 << nextWidth; pattern-- > 0;)
                 {
                     // Process next level
-                    FillTransitions(from, codeIndex + pattern, transitions, bitSkip, patternMask, patternValue | (uint)((pattern << (32 - bitSkip))));
+                    FillTransitions(from, codeIndex + pattern, transitions, bitSkip, patternMask, patternValue | (uint)(pattern << (32 - bitSkip)));
                 }
             }
             else
@@ -367,7 +367,7 @@
                     int newCodeIndex = m_Table.Count;
 
                     // Process next level
-                    if (FillTransitions(from, newCodeIndex - 2, transitions, bitSkip, patternMask, patternValue | (uint)((pattern << (32 - bitSkip)))))
+                    if (FillTransitions(from, newCodeIndex - 2, transitions, bitSkip, patternMask, patternValue | (uint)(pattern << (32 - bitSkip))))
                     {
                         // Count entry
                         ++LinkedItems;

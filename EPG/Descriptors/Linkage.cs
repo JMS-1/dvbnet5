@@ -96,7 +96,7 @@ namespace JMS.DVB.EPG.Descriptors
 
 				// Decode
 				HandOverType = (byte)(temp >> 4);
-				OriginType = (0 != (temp & 1));
+				OriginType = 0 != (temp & 1);
 
 				// Special
 				if ((1 == HandOverType) || (2 == HandOverType) || (3 == HandOverType))
@@ -146,7 +146,7 @@ namespace JMS.DVB.EPG.Descriptors
 		public static bool IsHandlerFor(byte tag)
 		{
 			// Check it
-			return (DescriptorTags.Linkage == (DescriptorTags)tag);
+			return DescriptorTags.Linkage == (DescriptorTags)tag;
 		}
 	}
 }

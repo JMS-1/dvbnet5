@@ -160,7 +160,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 else if (!m_Map.CanMerge(source, Sources))
                     return false;
                 else
-                    return (Sources.Count < m_Map.TotalNumberOfSources);
+                    return Sources.Count < m_Map.TotalNumberOfSources;
             }
 
             /// <summary>
@@ -269,7 +269,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <summary>
         /// Meldet, ob überhaupt eine Entschlüsselung möglich ist.
         /// </summary>
-        public bool IsEnabled { get { return (TotalNumberOfSources > 0); } }
+        public bool IsEnabled { get { return TotalNumberOfSources > 0; } }
 
         /// <summary>
         /// Gesetzt, wenn keine Planung vorgenommen wurde.

@@ -96,7 +96,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// </summary>
         /// <param name="tag">The tag to test for.</param>
         /// <returns>Set if this class can handle the payload for the given tag.</returns>
-        public static bool IsHandlerFor(byte tag) => (DescriptorTags.AAC == (DescriptorTags)tag);
+        public static bool IsHandlerFor(byte tag) => DescriptorTags.AAC == (DescriptorTags)tag;
 
         /// <summary>
         /// 

@@ -486,7 +486,7 @@ namespace JMS.DVB
             if (ReferenceEquals(other, null))
                 return false;
             else
-                return (other is Profile<TLocationType, TGroupType, TScanType>);
+                return other is Profile<TLocationType, TGroupType, TScanType>;
         }
 
         /// <summary>

@@ -55,7 +55,7 @@ namespace JMS.DVB.SI.ProgramGuide
             get
             {
                 // Report
-                return (ContentNibbles & 0xf);
+                return ContentNibbles & 0xf;
             }
             set
             {

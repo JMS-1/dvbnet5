@@ -101,7 +101,7 @@ namespace JMS.DVB.EPG
 
             // Direct load
             Version = (section[2] >> 1) & 0x1f;
-            IsCurrent = (0 != (section[2] & 1));
+            IsCurrent = 0 != (section[2] & 1);
             SectionNumber = section[3];
             LastSectionNumber = section[4];
         }

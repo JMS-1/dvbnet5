@@ -597,9 +597,9 @@ namespace JMS.DVB.TS
                         }
 
                         // Load flags
-                        var adaption = (0x20 == (0x20 & flags));
-                        var payload = (0x10 == (0x10 & flags));
-                        var first = (0x40 == (0x40 & pidh));
+                        var adaption = 0x20 == (0x20 & flags);
+                        var payload = 0x10 == (0x10 & flags);
+                        var first = 0x40 == (0x40 & pidh);
 
                         // Get the payload
                         int start = 4, size = Manager.PacketSize;
@@ -626,10 +626,10 @@ namespace JMS.DVB.TS
                         }
 
                         // There are special situations where the counter is not incremented
-                        var noInc = (adaption && !payload && (0 == size));
+                        var noInc = adaption && !payload && (0 == size);
 
                         // Get the real size which is 0 if the payload indicator is not set
-                        var realSize = (payload ? size : 0);
+                        var realSize = payload ? size : 0;
 
                         // Check for custom handler
                         if (m_Consumers.TryGetValue(pid, out var consumer))

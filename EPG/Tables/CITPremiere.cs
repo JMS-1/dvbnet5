@@ -30,7 +30,7 @@
 		public static bool IsHandlerFor(byte tableIdentifier)
         {
             // Check all
-            return (0xa0 == tableIdentifier);
+            return 0xa0 == tableIdentifier;
         }
 
         /// <summary>

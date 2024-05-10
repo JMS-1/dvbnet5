@@ -165,7 +165,7 @@ namespace JMS.DVB.NET.Recording.Persistence
                 }
 
                 // Survive if we are not at or beyond the end of the recording
-                return (now < (start + TimeSpan.FromMinutes(duration)));
+                return now < (start + TimeSpan.FromMinutes(duration));
             }
         }
 
@@ -270,7 +270,7 @@ namespace JMS.DVB.NET.Recording.Persistence
         {
             // Remove the entry
             var date = DateTime.Now.Date.AddDays(-1);
-            Exceptions.RemoveAll(e => (e.When.Date < date) || ((e.Duration.HasValue && (e.Duration.Value < 0))));
+            Exceptions.RemoveAll(e => (e.When.Date < date) || e.Duration.HasValue && (e.Duration.Value < 0));
         }
 
         /// <summary>

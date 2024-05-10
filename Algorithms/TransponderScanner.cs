@@ -992,7 +992,7 @@ namespace JMS.DVB.Algorithms
                 Thread worker = m_Worker;
 
                 // Test
-                return ((null == worker) || !worker.IsAlive);
+                return (null == worker) || !worker.IsAlive;
             }
         }
 

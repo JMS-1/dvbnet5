@@ -243,7 +243,7 @@
                 }
 
                 // Split off parts
-                uint offsetLow = (control & 0x0f), offsetHigh = (control & 0x10);
+                uint offsetLow = control & 0x0f, offsetHigh = control & 0x10;
 
                 // Bytes to copy
                 uint copyCount;
@@ -326,7 +326,7 @@
                         else
                         {
                             // Just correct
-                            copyCount += (3 + 0x1f);
+                            copyCount += 3 + 0x1f;
                         }
                     }
                 }

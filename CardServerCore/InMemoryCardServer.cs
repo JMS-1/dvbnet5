@@ -481,7 +481,7 @@ namespace JMS.DVB.CardServer
             var info =
                 new ServerInformation
                 {
-                    HasGroupInformation = (device.GetGroupInformation(15000) != null),
+                    HasGroupInformation = device.GetGroupInformation(15000) != null,
                     ProgramGuideProgress = EPGProgress,
                     Selection = selection.SelectionKey
                 };

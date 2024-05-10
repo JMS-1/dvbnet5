@@ -253,10 +253,10 @@ namespace JMS.DVB.EPG.Descriptors
 			byte flags = section[offset++];
 
 			// Load flags
-			m_HasComponentType = (0x80 == (0x80 & flags));
-			m_HasBSID = (0x40 == (0x40 & flags));
-			m_HasMainID = (0x20 == (0x20 & flags));
-			m_HasAssociatedService = (0x10 == (0x10 & flags));
+			m_HasComponentType = 0x80 == (0x80 & flags);
+			m_HasBSID = 0x40 == (0x40 & flags);
+			m_HasMainID = 0x20 == (0x20 & flags);
+			m_HasAssociatedService = 0x10 == (0x10 & flags);
 
 			// Read all
 			if (m_HasComponentType)
@@ -307,7 +307,7 @@ namespace JMS.DVB.EPG.Descriptors
 		public static bool IsHandlerFor(byte tag)
 		{
 			// Check it
-			return (DescriptorTags.AC3 == (DescriptorTags)tag);
+			return DescriptorTags.AC3 == (DescriptorTags)tag;
 		}
 
 		/// <summary>

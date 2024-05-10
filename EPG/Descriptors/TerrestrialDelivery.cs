@@ -49,7 +49,7 @@ namespace JMS.DVB.EPG.Descriptors
         public static bool IsHandlerFor(byte tag)
         {
             // Check it
-            return (DescriptorTags.TerrestrialDeliverySystem == (DescriptorTags)tag);
+            return DescriptorTags.TerrestrialDeliverySystem == (DescriptorTags)tag;
         }
 
         /// <summary>

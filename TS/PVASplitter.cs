@@ -462,7 +462,7 @@ namespace JMS.DVB.TS
 			get
 			{
 				// Report
-				return ((1 == m_Header[0]) && PTSFlagPresent);
+				return (1 == m_Header[0]) && PTSFlagPresent;
 			}
 		}
 
@@ -474,7 +474,7 @@ namespace JMS.DVB.TS
 			get
 			{
 				// Report
-				return (0x10 == (0x10 & m_Header[3]));
+				return 0x10 == (0x10 & m_Header[3]);
 			}
 		}
 
@@ -632,7 +632,7 @@ namespace JMS.DVB.TS
 			if (packetPos >= fullPES) return;
 
 			// See if we can update the PES bit - actually we could skip the rest but then an error indicator could not be set
-			bool canUpdate = (9 == packetPos);
+			bool canUpdate = 9 == packetPos;
 
 			// How many can we eat up
 			int len = Math.Min(fullPES - packetPos, length);
@@ -684,7 +684,7 @@ namespace JMS.DVB.TS
 			get
 			{
 				// Report
-				return ((0 != m_BadAudioPES) || (0 != m_Restarted) || (0 != m_Skipped));
+				return (0 != m_BadAudioPES) || (0 != m_Restarted) || (0 != m_Skipped);
 			}
 		}
 

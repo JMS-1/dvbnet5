@@ -48,7 +48,7 @@ namespace JMS.DVB.EPG.Descriptors
             Categories = all.ToArray();
 
             // Test
-            m_Valid = (0 == length);
+            m_Valid = 0 == length;
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace JMS.DVB.EPG.Descriptors
         public static bool IsHandlerFor(byte tag)
         {
             // Check it
-            return (DescriptorTags.Content == (DescriptorTags)tag);
+            return DescriptorTags.Content == (DescriptorTags)tag;
         }
     }
 }

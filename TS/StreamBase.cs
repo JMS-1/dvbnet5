@@ -523,7 +523,7 @@ namespace JMS.DVB.TS
             NextPosition = Position + 6 + length;
 
             // Done
-            return (--ValidationCount < 1);
+            return --ValidationCount < 1;
         }
 
         /// <summary>

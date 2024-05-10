@@ -43,7 +43,7 @@ namespace JMS.DVB.EPG.Descriptors
             }
 
             // Check
-            m_Valid = (0 == length);
+            m_Valid = 0 == length;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace JMS.DVB.EPG.Descriptors
         public static bool IsHandlerFor(byte tag)
         {
             // Check it
-            return (DescriptorTags.Subtitling == (DescriptorTags)tag);
+            return DescriptorTags.Subtitling == (DescriptorTags)tag;
         }
 
         /// <summary>

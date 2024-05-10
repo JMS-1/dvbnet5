@@ -316,7 +316,7 @@ public class VCRRecordingInfo
             bool usesAC3 = false;
             switch (Streams.AC3Tracks.LanguageMode)
             {
-                case LanguageModes.Selection: usesAC3 = (Streams.AC3Tracks.Languages.Count > 0); break;
+                case LanguageModes.Selection: usesAC3 = Streams.AC3Tracks.Languages.Count > 0; break;
                 case LanguageModes.Primary: usesAC3 = true; break;
                 case LanguageModes.All: usesAC3 = true; break;
             }
@@ -329,7 +329,7 @@ public class VCRRecordingInfo
             bool usesSUB = false;
             switch (Streams.SubTitles.LanguageMode)
             {
-                case LanguageModes.Selection: usesSUB = (Streams.SubTitles.Languages.Count > 0); break;
+                case LanguageModes.Selection: usesSUB = Streams.SubTitles.Languages.Count > 0; break;
                 case LanguageModes.Primary: usesSUB = true; break;
                 case LanguageModes.All: usesSUB = true; break;
             }

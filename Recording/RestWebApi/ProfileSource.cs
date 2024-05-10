@@ -14,6 +14,6 @@
         /// Führt individuelle Initialisierungen aus.
         /// </summary>
         /// <param name="station">Die Informationen zur Quelle.</param>
-        protected override void OnCreate(Station station) => IsTVStation = (station.SourceType != SourceTypes.Radio);
+        protected override void OnCreate(Station station) => IsTVStation = station.SourceType != SourceTypes.Radio;
     }
 }

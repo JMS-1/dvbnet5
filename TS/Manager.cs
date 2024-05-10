@@ -454,7 +454,7 @@ namespace JMS.DVB.TS
         public VideoStream AddVideo(byte encoding, bool noPCR)
         {
             // Check mode
-            var isH264 = (encoding == (byte)EPG.StreamTypes.H264);
+            var isH264 = encoding == (byte)EPG.StreamTypes.H264;
             var forbidPCR = (m_NoHDTVPCR && isH264) || (m_NoSDTVPCR && !isH264);
 
             // Run
@@ -737,7 +737,7 @@ namespace JMS.DVB.TS
             long b1 = packet[7];
             long b2 = packet[8];
             long b3 = packet[9];
-            long b4 = (packet[10] >> 7);
+            long b4 = packet[10] >> 7;
 
             // Merge
             long clockTicks = b4 + 2 * (b3 + 256 * (b2 + 256 * (b1 + 256 * b0)));
@@ -819,7 +819,7 @@ namespace JMS.DVB.TS
             bool mustPad = sizeOfLast < PacketSize;
 
             // Padding mode
-            bool useSafePadding = (mustPad && !standardPadding && (sizeOfLast <= (PacketSize - 2)));
+            bool useSafePadding = mustPad && !standardPadding && (sizeOfLast <= (PacketSize - 2));
 
             // Calculate
             int end = start + (mustPad ? (packs - 1) : packs) * PacketSize + (mustPad ? sizeOfLast : 0);

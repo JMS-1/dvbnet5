@@ -59,7 +59,7 @@ namespace JMS.DVB.TS
 			start += header;
 
 			// Check for GOP start
-			return (((0 == buffer[start++]) && (0 == buffer[start++]) && (1 == buffer[start++]) && (0xb3 == buffer[start++])));
+			return (0 == buffer[start++]) && (0 == buffer[start++]) && (1 == buffer[start++]) && (0xb3 == buffer[start++]);
 		}
 
 		/// <summary>

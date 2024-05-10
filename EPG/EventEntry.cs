@@ -104,7 +104,7 @@ namespace JMS.DVB.EPG
 			m_Offset = offset;
 
 			// Direct
-			FreeCA = (0 != (flags & 0x10));
+			FreeCA = 0 != (flags & 0x10);
 			Status = (EventStatus)((flags >> 5) & 0x7);
 
 			// Number of descriptors

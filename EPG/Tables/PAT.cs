@@ -30,7 +30,7 @@ namespace JMS.DVB.EPG.Tables
         public static bool IsHandlerFor(byte tableIdentifier)
         {
             // Check all
-            return (0x00 == tableIdentifier);
+            return 0x00 == tableIdentifier;
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace JMS.DVB.EPG.Tables
             }
 
             // Usefull
-            m_IsValid = (0 == length);
+            m_IsValid = 0 == length;
         }
     }
 }

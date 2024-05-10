@@ -32,7 +32,7 @@ namespace JMS.DVB.EPG.Tables
 		public static bool IsHandlerFor(byte tableIdentifier)
 		{
 			// Check all
-			return ((0x42 == tableIdentifier) || (0x46 == tableIdentifier));
+			return (0x42 == tableIdentifier) || (0x46 == tableIdentifier);
 		}
 
 		/// <summary>
@@ -67,7 +67,7 @@ namespace JMS.DVB.EPG.Tables
 				}
 
 			// Usefull
-			m_IsValid = (0 == length);
+			m_IsValid = 0 == length;
 
 			// Convert
 			if (m_IsValid) Services = (ServiceEntry[])services.ToArray(typeof(ServiceEntry));

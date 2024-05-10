@@ -56,7 +56,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <summary>
             /// Meldet, ob es sich bei der Quelle um einen Radiosender handelt.
             /// </summary>
-            public bool IsAudioOnly { get { return (Station.SourceType == SourceTypes.Radio); } }
+            public bool IsAudioOnly { get { return Station.SourceType == SourceTypes.Radio; } }
 
             /// <summary>
             /// Meldet die vollen Informationen zur Quelle.

@@ -129,7 +129,7 @@ namespace JMS.DVB.EPG
 			}
 
 			// Should be zero
-			return (0 == uCRC);
+			return 0 == uCRC;
 		}
 
 		/// <summary>

@@ -24,7 +24,7 @@ namespace JMS.DVB.EPG.Tables
         public static bool IsHandlerFor(byte tableIdentifier)
         {
             // Check all
-            return (0x73 == tableIdentifier);
+            return 0x73 == tableIdentifier;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace JMS.DVB.EPG.Tables
             Descriptors = Descriptor.Load(this, 7, deslen);
 
             // Done
-            m_IsValid = (deslen == length);
+            m_IsValid = deslen == length;
         }
     }
 }

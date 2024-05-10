@@ -116,7 +116,7 @@ namespace JMS.DVB.TS.Tables
                 var type = m_Type[pid];
 
                 // Is teletext or audio
-                bool ttx = (StreamTypes.TeleText == type);
+                bool ttx = StreamTypes.TeleText == type;
                 bool sub = !ttx && (StreamTypes.SubTitles == type);
                 bool ac3 = !ttx && !sub && (StreamTypes.Private == type);
                 bool aud = ac3 || (!ttx && !sub && (StreamTypes.Audio == type));
@@ -288,7 +288,7 @@ namespace JMS.DVB.TS.Tables
             }
 
             // Enforce PCR on first stream
-            if (!noPCR) isPCR = (0x1fff == PCRPID);
+            if (!noPCR) isPCR = 0x1fff == PCRPID;
 
             // Load PCR
             if (isPCR) PCRPID = pid;

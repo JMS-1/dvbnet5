@@ -50,22 +50,22 @@ namespace JMS.DVB.TS.Tables
 			table[10] = 0x01;
 			table[11] = 0x08;
 			table[12] = 0x05;
-			table[13] = (byte)('D');
-			table[14] = (byte)('V');
-			table[15] = (byte)('B');
-			table[16] = (byte)('.');
-			table[17] = (byte)('N');
-			table[18] = (byte)('E');
-			table[19] = (byte)('T');
+			table[13] = (byte)'D';
+			table[14] = (byte)'V';
+			table[15] = (byte)'B';
+			table[16] = (byte)'.';
+			table[17] = (byte)'N';
+			table[18] = (byte)'E';
+			table[19] = (byte)'T';
 			table[20] = 0x08;
 			table[21] = 0x05;
-			table[22] = (byte)('D');
-			table[23] = (byte)('V');
-			table[24] = (byte)('B');
-			table[25] = (byte)('.');
-			table[26] = (byte)('N');
-			table[27] = (byte)('E');
-			table[28] = (byte)('T');
+			table[22] = (byte)'D';
+			table[23] = (byte)'V';
+			table[24] = (byte)'B';
+			table[25] = (byte)'.';
+			table[26] = (byte)'N';
+			table[27] = (byte)'E';
+			table[28] = (byte)'T';
 
 			// Report
 			return table;

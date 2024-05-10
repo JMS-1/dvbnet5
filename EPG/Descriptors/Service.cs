@@ -91,7 +91,7 @@ namespace JMS.DVB.EPG.Descriptors
         public static bool IsHandlerFor(byte tag)
         {
             // Check it
-            return (DescriptorTags.Service == (DescriptorTags)tag);
+            return DescriptorTags.Service == (DescriptorTags)tag;
         }
     }
 }

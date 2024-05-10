@@ -14,7 +14,7 @@
         public static bool IsHandlerFor(byte tableIdentifier)
         {
             // Check all
-            return ((0x9c == tableIdentifier) || (0xb5 == tableIdentifier) || (0xb6 == tableIdentifier) || (0xc4 == tableIdentifier));
+            return (0x9c == tableIdentifier) || (0xb5 == tableIdentifier) || (0xb6 == tableIdentifier) || (0xc4 == tableIdentifier);
         }
 
         /// <summary>

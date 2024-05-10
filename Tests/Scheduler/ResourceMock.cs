@@ -167,7 +167,7 @@ namespace JMS.DVB.SchedulerTests
         protected override bool TestAccess(SourceMock source)
         {
             // Check by name
-            return (Sources.FindIndex(s => string.Equals(((SourceMock)s).Name, source.Name)) >= 0);
+            return Sources.FindIndex(s => string.Equals(((SourceMock)s).Name, source.Name)) >= 0;
         }
     }
 }

@@ -141,7 +141,7 @@ namespace JMS.DVB.EPG
             get
             {
                 // Report
-                return (DefaultEncoding == m_StandardEncoding);
+                return DefaultEncoding == m_StandardEncoding;
             }
             set
             {
@@ -286,7 +286,7 @@ namespace JMS.DVB.EPG
             int lowLength = buffer[offset + 2];
 
             // Decode flags
-            bool syntax = (0 != (0x80 & flags));
+            bool syntax = 0 != (0x80 & flags);
             int highLength = flags & 0xf;
 
             // Construct the overall size

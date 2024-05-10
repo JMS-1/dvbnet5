@@ -567,7 +567,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 }
 
             // Check mode
-            var isStart = (start != null);
+            var isStart = start != null;
 
             // Notify derived class if we are not in shutdown mode
             if (!notifyOnly)

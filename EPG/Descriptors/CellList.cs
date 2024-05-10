@@ -48,7 +48,7 @@ namespace JMS.DVB.EPG.Descriptors
             }
 
             // Test
-            m_Valid = (0 == length);
+            m_Valid = 0 == length;
 
             // Load
             if (m_Valid)
@@ -63,7 +63,7 @@ namespace JMS.DVB.EPG.Descriptors
         public static bool IsHandlerFor(byte tag)
         {
             // Check it
-            return (DescriptorTags.CellList == (DescriptorTags)tag);
+            return DescriptorTags.CellList == (DescriptorTags)tag;
         }
     }
 }

@@ -463,7 +463,7 @@ namespace JMS.DVB
         /// <summary>
         /// Meldet, ob der Datenempfang aktiviert wurde.
         /// </summary>
-        public bool IsActive => (m_TransportStream != null);
+        public bool IsActive => m_TransportStream != null;
 
         /// <summary>
         /// Prüft, ob sich an der Konfiguration der Quelle etwas verändert hat.

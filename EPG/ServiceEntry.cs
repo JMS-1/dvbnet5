@@ -51,7 +51,7 @@ namespace JMS.DVB.EPG
 
             // Read statics
             ServiceIdentifier = Tools.MergeBytesToWord(section[offset + 1], section[offset + 0]);
-            Scrambled = (0 != (section[offset + 3] & 0x10));
+            Scrambled = 0 != (section[offset + 3] & 0x10);
 
             // Decode
             int highLoop = section[offset + 3] & 0xf;

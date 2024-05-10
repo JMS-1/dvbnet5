@@ -58,7 +58,7 @@ namespace JMS.DVB.EPG.Descriptors
             }
 
             // Test
-            m_Valid = (0 == length);
+            m_Valid = 0 == length;
 
             // Load
             if (m_Valid) Languages = items;
@@ -72,7 +72,7 @@ namespace JMS.DVB.EPG.Descriptors
         public static bool IsHandlerFor(byte tag)
         {
             // Check it
-            return (DescriptorTags.ISO639Language == (DescriptorTags)tag);
+            return DescriptorTags.ISO639Language == (DescriptorTags)tag;
         }
 
         /// <summary>

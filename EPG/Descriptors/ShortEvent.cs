@@ -72,7 +72,7 @@ namespace JMS.DVB.EPG.Descriptors
 		public static bool IsHandlerFor(byte tag)
 		{
 			// Check it
-			return (DescriptorTags.ShortEvent == (DescriptorTags)tag);
+			return DescriptorTags.ShortEvent == (DescriptorTags)tag;
 		}
 	}
 }

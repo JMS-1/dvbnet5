@@ -64,7 +64,7 @@ namespace JMS.DVB.EPG.Descriptors
 			Ratings = (string[])all.ToArray(typeof(string));
 
 			// We are valid
-			m_Valid = (0 == length);
+			m_Valid = 0 == length;
 		}
 
 		/// <summary>
@@ -75,7 +75,7 @@ namespace JMS.DVB.EPG.Descriptors
 		public static bool IsHandlerFor(byte tag)
 		{
 			// Check it
-			return (DescriptorTags.ParentalRating == (DescriptorTags)tag);
+			return DescriptorTags.ParentalRating == (DescriptorTags)tag;
 		}
 	}
 }

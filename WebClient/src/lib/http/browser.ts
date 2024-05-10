@@ -25,7 +25,7 @@ export function browserWebCall<TResponseType, TRequestType>(
 
             // Ergebnis auswerten.
             if (xhr.status < 400)
-                if (xhr.status === 204)
+                if (xhr.status === 204 || !xhr.responseText)
                     // Antwort wandeln und melden.
                     success(undefined)
                 else if (raw) success(xhr.responseText as unknown as TResponseType)

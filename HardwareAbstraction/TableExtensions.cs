@@ -147,15 +147,15 @@ namespace JMS.DVB
                 return null;
 
             // Check DVB-S(2)
-            if (provider is SatelliteHardware sat)
+            if (provider is Hardware<SatelliteProfile, SatelliteLocation, SatelliteGroup> sat)
                 return tables.ToLocationInformation(sat);
 
             // Check DVB-C
-            if (provider is CableHardware cab)
+            if (provider is Hardware<CableProfile, CableLocation, CableGroup> cab)
                 return tables.ToLocationInformation(cab);
 
             // Check DVB-T
-            if (provider is TerrestrialHardware ter)
+            if (provider is Hardware<TerrestrialProfile, TerrestrialLocation, TerrestrialGroup> ter)
                 return tables.ToLocationInformation(ter);
 
             // Not supported
@@ -322,7 +322,7 @@ namespace JMS.DVB
             };
 
             // DVB-S2 modulation
-            group.UsesS2Modulation = (0 != (0x04 & descriptor.Modulation));
+            group.UsesS2Modulation = 0 != (0x04 & descriptor.Modulation);
 
             // Roll-Off if using DVB-S2
             if (group.UsesS2Modulation)

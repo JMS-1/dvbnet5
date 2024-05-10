@@ -66,7 +66,7 @@ namespace JMS.DVB.EPG.Tables
 		public static bool IsHandlerFor(byte tableIdentifier)
 		{
 			// Check all
-			return ((tableIdentifier >= 0x4e) && (tableIdentifier <= 0x6f));
+			return (tableIdentifier >= 0x4e) && (tableIdentifier <= 0x6f);
 		}
 
 		/// <summary>
@@ -112,7 +112,7 @@ namespace JMS.DVB.EPG.Tables
 				}
 
 			// Usefull
-			m_IsValid = (0 == length);
+			m_IsValid = 0 == length;
 
 			// Convert
 			if (m_IsValid) Entries = entries.ToArray();

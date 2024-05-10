@@ -58,7 +58,7 @@ namespace JMS.DVB.EPG.Descriptors
             }
 
             // Store
-            m_Valid = (0 == length);
+            m_Valid = 0 == length;
 
             // Use
             if (m_Valid) Items = items;
@@ -72,7 +72,7 @@ namespace JMS.DVB.EPG.Descriptors
 		public static bool IsHandlerFor(byte tag)
         {
             // Check it
-            return (DescriptorTags.Teletext == (DescriptorTags)tag);
+            return DescriptorTags.Teletext == (DescriptorTags)tag;
         }
 
         /// <summary>

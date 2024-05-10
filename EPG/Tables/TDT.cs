@@ -19,7 +19,7 @@ namespace JMS.DVB.EPG.Tables
         public static bool IsHandlerFor(byte tableIdentifier)
         {
             // Check all
-            return (0x70 == tableIdentifier);
+            return 0x70 == tableIdentifier;
         }
 
         /// <summary>

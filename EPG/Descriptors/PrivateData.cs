@@ -54,7 +54,7 @@ namespace JMS.DVB.EPG.Descriptors
 		public static bool IsHandlerFor(byte tag)
 		{
 			// Check it
-			return (DescriptorTags.PrivateDataSpecifier == (DescriptorTags)tag);
+			return DescriptorTags.PrivateDataSpecifier == (DescriptorTags)tag;
 		}
 	}
 }
