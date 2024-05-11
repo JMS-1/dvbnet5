@@ -48,7 +48,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var profile = store.Load();
 
             // Just store body as data
-            profile.GuideSearches = "";//Request.Content.ReadAsStringAsync().Result ?? string.Empty;
+            using var reader = new StreamReader(Request.Body);
+
+            profile.GuideSearches = reader.ReadToEnd();
 
             // And update
             store.Save(profile);
