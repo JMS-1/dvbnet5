@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JMS.DVB.NET.Recording.RestWebApi
 {
@@ -7,14 +8,21 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     /// </summary>
     [ApiController]
     [Route("api/user")]
-    public class UserProfileController : ControllerBase
+    public class UserProfileController(IUserProfileStore store) : ControllerBase
     {
         /// <summary>
         /// Meldet die aktuelle Benutzerkonfiguration.
         /// </summary>
         /// <returns>Die Einstellungen des Anwenders.</returns>
         [HttpGet]
-        public UserProfile GetCurrentProfile() => UserProfile.Create();
+        public UserProfile GetCurrentProfile()
+        {
+            var profile = store.Load();
+
+            profile.RecentSources.Sort(StringComparer.InvariantCultureIgnoreCase);
+
+            return profile;
+        }
 
         /// <summary>
         /// Aktualisiert die Daten des Geräteprofils.
@@ -25,24 +33,25 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public UserProfile UpdateProfile([FromBody] UserProfile newProfile)
         {
             // Forward
-            newProfile.Update();
+            store.Save(newProfile);
 
             // Report
-            return UserProfile.Create();
+            return GetCurrentProfile();
         }
 
         /// <summary>
         /// Aktualisiert die Suchen der Programmzeitschrift.
         /// </summary>
-        /// <param name="favorites">Dient zur Unterscheidung der Methoden.</param>
         [HttpPut("favorites")]
-        public void UpdateGuideFavorites(string favorites)
+        public void UpdateGuideFavorites()
         {
+            var profile = store.Load();
+
             // Just store body as data
-            UserProfileSettings.GuideFavorites = null!;//ControllerContext.Request.Content.ReadAsStringAsync().Result ?? string.Empty;
+            profile.GuideSearches = "";//Request.Content.ReadAsStringAsync().Result ?? string.Empty;
 
             // And update
-            UserProfileSettings.Update();
+            store.Save(profile);
         }
     }
 }

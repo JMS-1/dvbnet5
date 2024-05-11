@@ -116,7 +116,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="job">Der bereits vorhandene Auftrag.</param>
         /// <param name="guide">Ein Eintrag aus der Programmzeitschrift.</param>
         /// <returns>Die gewünschte Beschreibung.</returns>
-        public static EditSchedule? Create(VCRSchedule schedule, VCRJob job, ProgramGuideEntry guide, IVCRProfiles profiles)
+        public static EditSchedule? Create(VCRSchedule schedule, VCRJob job, ProgramGuideEntry guide, IVCRProfiles profiles, UserProfile profile)
         {
             // None
             if (schedule == null)
@@ -126,8 +126,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                     return null;
 
                 // Calculate
-                var start = guide.StartTime - TimeSpan.FromMinutes(UserProfileSettings.EPGPreTime);
-                var duration = checked((int)(UserProfileSettings.EPGPreTime + (guide.Duration / 60) + UserProfileSettings.EPGPostTime));
+                var start = guide.StartTime - TimeSpan.FromMinutes(profile.GuideAheadStart);
+                var duration = checked((int)(profile.GuideAheadStart + (guide.Duration / 60) + profile.GuideBeyondEnd));
 
                 // Partial - we have a brand new job which is pre-initialized with the source
                 if (job == null)
@@ -138,10 +138,10 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                     new EditSchedule
                     {
                         Source = profiles.GetUniqueName(new SourceSelection { ProfileName = job.Source.ProfileName, Source = guide.Source }),
-                        DVBSubtitles = UserProfileSettings.UseSubTitles,
-                        DolbyDigital = UserProfileSettings.UseAC3,
-                        AllLanguages = UserProfileSettings.UseMP2,
-                        Videotext = UserProfileSettings.UseTTX,
+                        DVBSubtitles = profile.Subtitles,
+                        DolbyDigital = profile.Dolby,
+                        AllLanguages = profile.Languages,
+                        Videotext = profile.Videotext,
                         Name = guide.Name.MakeValid(),
                         Duration = duration,
                         FirstStart = start,

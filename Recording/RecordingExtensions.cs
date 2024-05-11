@@ -1,6 +1,7 @@
 using JMS.DVB.NET.Recording.Actions;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Requests;
+using JMS.DVB.NET.Recording.RestWebApi;
 using JMS.DVB.NET.Recording.Server;
 using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
@@ -37,6 +38,7 @@ public static class RecordingExtensions
         services.AddTransient<IRegistry, Registry>();
         services.AddTransient<IRuleUpdater, RuleUpdater>();
         services.AddTransient<ISourceScanProxyFactory, SourceScanProxyFactory>();
+        services.AddTransient<IUserProfileStore, UserProfileStore>();
         services.AddTransient<IZappingProxyFactory, ZappingProxyFactory>();
 
         services.AddSingleton<IExtensionManager, ExtensionManager>();

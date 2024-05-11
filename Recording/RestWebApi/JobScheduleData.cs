@@ -43,7 +43,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="guide">Ein Eintrag der Programmzeitschrift.</param>
         /// <param name="profile">Vorgabe für das Geräteprofil.</param>
         /// <returns>Die Information.</returns>
-        public static JobScheduleInfo Create(VCRJob job, VCRSchedule schedule, ProgramGuideEntry guide, string profile, IVCRProfiles profiles)
+        public static JobScheduleInfo Create(VCRJob job, VCRSchedule schedule, ProgramGuideEntry guide, string profile, IVCRProfiles profiles, UserProfile userProfile)
         {
             // Process
             return
@@ -51,8 +51,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 {
                     ScheduleIdentifier = (schedule == null) ? null! : schedule.UniqueID!.Value.ToString("N"),
                     JobIdentifier = (job == null) ? null! : job.UniqueID!.Value.ToString("N"),
-                    Schedule = EditSchedule.Create(schedule!, job!, guide, profiles)!,
-                    Job = EditJob.Create(job!, guide, profile, profiles)!,
+                    Schedule = EditSchedule.Create(schedule!, job!, guide, profiles, userProfile)!,
+                    Job = EditJob.Create(job!, guide, profile, profiles, userProfile)!,
                 };
         }
     }

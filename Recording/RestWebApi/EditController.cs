@@ -15,7 +15,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
     public class EditController(
         IVCRServer server,
         IVCRProfiles profiles,
-        IJobManager jobs
+        IJobManager jobs,
+        IUserProfileStore store
     ) : ControllerBase
     {
         /// <summary>
@@ -43,8 +44,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             server.BeginNewPlan();
 
             // Update recently used channels
-            UserProfileSettings.AddRecentChannel(data.Job.Source);
-            UserProfileSettings.AddRecentChannel(data.Schedule.Source);
+            AddRecentChannels(data);
 
             // Report
             return ServerTools.GetUniqueWebId(job, schedule);
@@ -82,7 +82,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             }
 
             // Information erzeugen
-            return JobScheduleInfo.Create(job, schedule!, epgEntry!, profile, profiles);
+            return JobScheduleInfo.Create(job, schedule!, epgEntry!, profile, profiles, store.Load());
         }
 
         /// <summary>
@@ -127,8 +127,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             server.BeginNewPlan();
 
             // Update recently used channels
-            UserProfileSettings.AddRecentChannel(data.Job.Source);
-            UserProfileSettings.AddRecentChannel(data.Schedule.Source);
+            AddRecentChannels(data);
         }
 
         /// <summary>
@@ -193,11 +192,27 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             server.BeginNewPlan();
 
             // Update recently used channels
-            UserProfileSettings.AddRecentChannel(data.Job.Source);
-            UserProfileSettings.AddRecentChannel(data.Schedule.Source);
+            AddRecentChannels(data);
 
             // Report
             return ServerTools.GetUniqueWebId(newJob, newSchedule);
+        }
+
+        private void AddRecentChannels(JobScheduleData data)
+        {
+            var profile = store.Load();
+            var recent = profile.RecentSources;
+
+            foreach (var source in new string?[] { data.Job.Source, data.Schedule.Source })
+                if (source != null)
+                    if (!recent.Contains(source))
+                        recent.Add(source);
+
+            var del = recent.Count - profile.RecentSourceLimit;
+
+            if (del > 0) recent.RemoveRange(0, del);
+
+            store.Save(profile);
         }
     }
 }

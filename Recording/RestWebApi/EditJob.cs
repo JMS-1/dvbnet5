@@ -62,7 +62,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="guide">Ein Eintrag der Programmzeitschrift.</param>
         /// <param name="profile">Vorgabe für das Geräteprofil.</param>
         /// <returns>Die zugehörige Beschreibung.</returns>
-        public static EditJob? Create(VCRJob job, ProgramGuideEntry guide, string profile, IVCRProfiles profiles)
+        public static EditJob? Create(VCRJob job, ProgramGuideEntry guide, string profile, IVCRProfiles profiles, UserProfile userProfile)
         {
             // Process
             if (job == null)
@@ -76,10 +76,10 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                     new EditJob
                     {
                         Source = profiles.GetUniqueName(new SourceSelection { ProfileName = profile, Source = guide.Source }),
-                        DVBSubtitles = UserProfileSettings.UseSubTitles,
-                        DolbyDigital = UserProfileSettings.UseAC3,
-                        AllLanguages = UserProfileSettings.UseMP2,
-                        Videotext = UserProfileSettings.UseTTX,
+                        DVBSubtitles = userProfile.Subtitles,
+                        DolbyDigital = userProfile.Dolby,
+                        AllLanguages = userProfile.Languages,
+                        Videotext = userProfile.Videotext,
                         UseProfileForRecording = false,
                         Name = guide.Name.MakeValid(),
                         Profile = profile,

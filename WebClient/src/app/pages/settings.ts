@@ -173,11 +173,8 @@ export class SettingsPage extends Page implements ISettingsPage {
     reset(sections: string[]): void {
         this.update.reset()
 
-        // Einfache Kopie.
-        const newProfile = { ...this.application.profile }
-
         // Tiefe Kopie der Liste.
-        newProfile.recentSources = newProfile.recentSources.slice()
+        const newProfile: IUserProfileContract = JSON.parse(JSON.stringify(this.application.profile))
 
         // Binden.
         this.maxFavorites.data = newProfile
