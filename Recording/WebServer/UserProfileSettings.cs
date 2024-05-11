@@ -10,7 +10,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
         public void Write<T>(string key, T value) => m_dict[key] = value!;
 
-        public void Save() => throw new NotImplementedException("ProfileBase");
+        public void Save() => Console.WriteLine("not writing profile data");
     }
 
     /// <summary>

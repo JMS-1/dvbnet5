@@ -17,7 +17,6 @@ export class ButtonCommand extends ComponentExWithSite<ICommand, IButtonCommand>
             this.props.uvm.isVisible && (
                 <a
                     className={`jmslib-command${this.props.className ? ` ${this.props.className}` : ''}${this.props.uvm.isDangerous ? ' jmslib-command-dangerous' : ''}${this.props.uvm.isEnabled ? '' : ' jmslib-command-disabled'}`}
-                    href='javascript:void(0)'
                     title={this.props.uvm.message}
                     onClick={(ev) => this.props.uvm.execute()}
                 >

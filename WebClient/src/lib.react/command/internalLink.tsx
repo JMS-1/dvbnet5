@@ -24,7 +24,7 @@ export class InternalLink extends React.Component<IInternalLink, IEmpty> {
     // Erstellt die Oberflächenelemente.
     render(): JSX.Element {
         // Konfiguration des HTML A Verweises je nach Parameter der Komponente.
-        let target = 'javascript:void(0)'
+        let target = undefined
         let click = undefined
 
         if (typeof this.props.view === 'function') click = this.props.view

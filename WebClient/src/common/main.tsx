@@ -80,7 +80,11 @@ export class Main extends React.Component<IEmpty, IEmpty> implements IApplicatio
     }
 
     // Anmeldung beim Anbinden der React.Js Komponente ins DOM.
+    private _mounted = false
+
     componentDidMount(): void {
+        this._mounted = true
+
         window.addEventListener('hashchange', this._onhashchange)
     }
 
@@ -91,7 +95,7 @@ export class Main extends React.Component<IEmpty, IEmpty> implements IApplicatio
 
     // React.Js zur Aktualisierung der Oberfläche auffordern.
     refreshUi(): void {
-        this.forceUpdate()
+        if (this._mounted) this.forceUpdate()
     }
 
     // Oberflächenelemente erstellen.
