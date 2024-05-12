@@ -15,7 +15,7 @@ const protocolEnd = serverRoot.indexOf('://')
 const deviceUrl = 'dvbnet' + serverRoot.substring(protocolEnd) + '/'
 
 // Der Präfix für alle REST Zugiffe
-setWebCallRoot(serverRoot + (debug ? '/api/' : '/vcr.net/'))
+setWebCallRoot(serverRoot + '/api/')
 
 // Führt eine Web Anfrage aus.
 export function doUrlCall<TResponseType, TRequestType>(

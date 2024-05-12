@@ -52,7 +52,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Alle bisher ermittelten Daten zur Programmzeitschrift.
         /// </summary>
-        private static readonly Dictionary<SourceIdentifier, Dictionary<DateTime, ProgramGuideItem>> m_EPGItems = [];
+        private readonly Dictionary<SourceIdentifier, Dictionary<DateTime, ProgramGuideItem>> m_EPGItems = [];
 
         /// <summary>
         /// Die Anzahl der bisher ermittelten Einträge für die Programmzeitschrift.
@@ -213,13 +213,7 @@ namespace JMS.DVB.CardServer
             {
                 // Attach to the source list
                 if (!m_EPGItems.TryGetValue(source, out var list))
-                {
-                    // Create new
-                    list = [];
-
-                    // Add it
-                    m_EPGItems[source] = list;
-                }
+                    m_EPGItems[source] = list = [];
 
                 // Old count
                 int before = list.Count;
@@ -369,7 +363,7 @@ namespace JMS.DVB.CardServer
                 Ratings = ((rating == null) ? null : rating.Ratings) ?? EmptyStringArray,
                 Duration = (int)duration.TotalSeconds,
                 ShortDescription = shortDescription,
-                Content = categories.ToArray(),
+                Content = [.. categories],
                 Description = description,
                 Identifier = identifier,
                 Language = language,
@@ -611,7 +605,7 @@ namespace JMS.DVB.CardServer
             }
 
             // Report
-            return schedules.ToArray();
+            return [.. schedules];
         }
 
         /// <summary>

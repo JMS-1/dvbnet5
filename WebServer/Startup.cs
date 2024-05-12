@@ -1,10 +1,11 @@
 using JMS.DVB.NET.Recording;
+using Microsoft.Extensions.FileProviders;
 
 namespace JMS.VCR.NET;
 
 public class Startup(IConfiguration configuration)
 {
-    public IConfiguration Configuration { get; } = configuration;
+    private readonly IConfiguration Configuration = configuration;
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -34,6 +35,12 @@ public class Startup(IConfiguration configuration)
         app.UseAuthorization();
 
         app.UseEndpoints(endpoints => endpoints.MapControllers());
+
+        var clientPath = Configuration.GetSection("ClientPath").Get<List<string>>()!;
+
+        clientPath.Insert(0, Path.GetDirectoryName(typeof(Startup).Assembly.Location)!);
+
+        app.UseStaticFiles(new StaticFileOptions() { FileProvider = new PhysicalFileProvider(Path.Combine([.. clientPath])) });
     }
 
     private static void ConfigureSwagger(IServiceCollection services)
