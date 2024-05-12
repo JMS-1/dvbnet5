@@ -1,0 +1,1 @@
+docker build . -t vcrnet5:latest && docker save vcrnet5:latest -o vcrnet5.img

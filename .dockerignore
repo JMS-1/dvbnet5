@@ -1,0 +1,16 @@
+build
+
+.vscode
+.git
+.gitignore
+
+*/.vscode
+*/.git
+*/.gitignore
+
+*/bin
+*/obj
+*/dist
+
+*/yarn.lock
+*/node_modules
