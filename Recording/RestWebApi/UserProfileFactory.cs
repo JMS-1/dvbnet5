@@ -1,5 +1,5 @@
+using System.Text.Json;
 using JMS.DVB.NET.Recording.Services.Configuration;
-using Newtonsoft.Json;
 
 namespace JMS.DVB.NET.Recording.RestWebApi;
 
@@ -13,19 +13,24 @@ public class UserProfileStore(IVCRConfigurationExePathProvider configPath) : IUs
     /// <returns>Die gewünschten Einstellungen.</returns>
     public UserProfile Load()
     {
-        return new UserProfile();
+        UserProfile? userProfile;
+
+        try
+        {
+            userProfile = File.Exists(_profilePath) ? JsonSerializer.Deserialize<UserProfile>(File.ReadAllText(_profilePath)) : null;
+        }
+        catch (Exception)
+        {
+            userProfile = null;
+        }
+
+        return userProfile ?? new UserProfile();
     }
 
     /// <summary>
     /// Aktualisiert die Einstellungen des Anwenders.
     /// </summary>
-    public void Save(UserProfile profile)
-    {
-        File.WriteAllText(_profilePath, JsonConvert.SerializeObject(profile));
+    public void Save(UserProfile profile) => File.WriteAllText(_profilePath, JsonSerializer.Serialize(profile));
 
-        var recover = JsonConvert.DeserializeObject<UserProfile>(File.ReadAllText(_profilePath));
-
-        Console.WriteLine(recover);
-    }
 }
 

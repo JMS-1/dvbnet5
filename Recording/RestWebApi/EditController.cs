@@ -204,7 +204,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var recent = profile.RecentSources;
 
             foreach (var source in new string?[] { data.Job.Source, data.Schedule.Source })
-                if (source != null)
+                if (!string.IsNullOrWhiteSpace(source))
                     if (!recent.Contains(source))
                         recent.Add(source);
 

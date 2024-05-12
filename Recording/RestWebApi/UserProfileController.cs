@@ -30,27 +30,20 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="newProfile">Das neue Geräteprofil.</param>
         /// <returns>Die aktuellen Daten.</returns>
         [HttpPut]
-        public UserProfile UpdateProfile([FromBody] UserProfile newProfile)
-        {
-            // Forward
-            store.Save(newProfile);
-
-            // Report
-            return GetCurrentProfile();
-        }
+        public void UpdateProfile([FromBody] UserProfile newProfile) => store.Save(newProfile);
 
         /// <summary>
         /// Aktualisiert die Suchen der Programmzeitschrift.
         /// </summary>
         [HttpPut("favorites")]
-        public void UpdateGuideFavorites()
+        public async Task UpdateGuideFavorites()
         {
             var profile = store.Load();
 
             // Just store body as data
             using var reader = new StreamReader(Request.Body);
 
-            profile.GuideSearches = reader.ReadToEnd();
+            profile.GuideSearches = await reader.ReadToEndAsync();
 
             // And update
             store.Save(profile);

@@ -41,13 +41,13 @@ export class Devices extends ComponentWithSite<IDevicesPage> {
                         {this.props.uvm.infos.map((i, index) => [
                             <Device key={index} page={this.props.uvm} uvm={i} />,
                             i.showGuide.value && (
-                                <DetailRow dataColumns={6} prefixColumns={1}>
-                                    <DeviceGuide key={`${index}Guide`} uvm={i} />
+                                <DetailRow key={`${index}Guide`} dataColumns={6} prefixColumns={1}>
+                                    <DeviceGuide uvm={i} />
                                 </DetailRow>
                             ),
                             i.showControl.value && (
-                                <DetailRow dataColumns={6} prefixColumns={1}>
-                                    <DeviceControl key={`${index}Control`} page={this.props.uvm} uvm={i.controller} />
+                                <DetailRow key={`${index}Control`} dataColumns={6} prefixColumns={1}>
+                                    <DeviceControl page={this.props.uvm} uvm={i.controller} />
                                 </DetailRow>
                             ),
                         ])}

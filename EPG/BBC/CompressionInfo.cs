@@ -84,7 +84,7 @@ namespace JMS.DVB.EPG.BBC
             XmlWriterSettings settings = new()
             {
                 NewLineHandling = NewLineHandling.Entitize,
-                Encoding = Encoding.Unicode,
+                Encoding = Encoding.UTF8,
                 CheckCharacters = false,
                 Indent = true
             };

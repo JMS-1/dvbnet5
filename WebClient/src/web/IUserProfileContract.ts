@@ -49,6 +49,6 @@ export function getUserProfile(): Promise<IUserProfileContract | undefined> {
     return doUrlCall('user')
 }
 
-export function setUserProfile(profile: IUserProfileContract): Promise<IUserProfileContract | undefined> {
+export function setUserProfile(profile: IUserProfileContract): Promise<void> {
     return doUrlCall('user', 'PUT', profile)
 }

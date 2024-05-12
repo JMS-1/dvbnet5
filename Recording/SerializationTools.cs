@@ -74,7 +74,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="instance">Das zu speichernde Objekt.</param>
         /// <param name="path">Der Pfad zur Datei.</param>
-        public static void Save(object instance, string path) => Save(instance, path, Encoding.Unicode);
+        public static void Save(object instance, string path) => Save(instance, path, Encoding.UTF8);
 
         /// <summary>
         /// Speichert ein Objekt im XML Format in eine Datei. Fehler werden protokolliert und
@@ -151,7 +151,7 @@ namespace JMS.DVB.NET.Recording
         /// </summary>
         /// <param name="instance">Das zu speichernde Objekt.</param>
         /// <param name="stream">Der Datenstrom, an dessen aktuelle Position das Objekt gespeichert werden soll.</param>
-        public static void Save(object instance, Stream stream) => Save(instance, stream, Encoding.Unicode);
+        public static void Save(object instance, Stream stream) => Save(instance, stream, Encoding.UTF8);
 
         /// <summary>
         /// Speichert ein Objekt im XML Format in einen Datenstrom.

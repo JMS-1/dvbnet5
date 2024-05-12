@@ -68,7 +68,7 @@ namespace JMS.DVB
             // Configure format
             XmlWriterSettings settings = new()
             {
-                Encoding = Encoding.Unicode,
+                Encoding = Encoding.UTF8,
                 Indent = true
             };
 

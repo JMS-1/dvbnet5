@@ -68,7 +68,7 @@ public static class Tools
             var temp = Path.Combine(Path.GetTempPath(), "VCR.NET Recording Service.jlg");
 
             // Open stream
-            using var writer = new StreamWriter(temp, true, Encoding.Unicode);
+            using var writer = new StreamWriter(temp, true, Encoding.UTF8);
 
             // Report
             writer.WriteLine("{0} Fatal Abort at {2}: {1}", DateTime.Now, e, context);
@@ -154,7 +154,7 @@ public static class Tools
             // Fully synchonized
             if (path != null)
                 lock (m_LoggingLock)
-                    using (var writer = new StreamWriter(path, true, Encoding.Unicode))
+                    using (var writer = new StreamWriter(path, true, Encoding.UTF8))
                         writer.WriteLine(message);
         }
         catch (Exception e)

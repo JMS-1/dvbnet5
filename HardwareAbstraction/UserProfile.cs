@@ -82,7 +82,7 @@ namespace JMS.DVB
             using (var stream = new FileStream(m_File.FullName, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 // Create configuration
-                var settings = new XmlWriterSettings { Encoding = Encoding.Unicode, Indent = true };
+                var settings = new XmlWriterSettings { Encoding = Encoding.UTF8, Indent = true };
 
                 // Create serializer
                 var serializer = new XmlSerializer(GetType(), ProfileNamespace);
