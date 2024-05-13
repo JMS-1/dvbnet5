@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export RECORDING=/m2data/Recording 
+export RECORDING=/Recordings
 export CONFIG=`pwd`/config.template 
 export PORT=9000 
 
