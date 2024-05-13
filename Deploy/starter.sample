@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export RECORDING=/m2data/Recording 
+export CONFIG=`pwd`/config.template 
+export PORT=9000 
+
+docker compose $*

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SatelliteProfile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://psimarron.net/DVBNET/Profiles">
+  <Device>JMS.DVB.Provider.Ubuntu.DeviceProvider, JMS.DVB.NET.Ubuntu</Device>
+  <Parameter name="Adapter.Server">172.17.0.1</Parameter>
+  <Parameter name="Scheduler.DecryptionLimit">0</Parameter>
+  <Provider>JMS.DVB.Provider.Legacy.DVBSLegacy, JMS.DVB.NET.DVBNETLegacy</Provider>
+  <ScanLocation>
+    <Scan>19.2°E</Scan>
+    <Location>
+      <SourceGroups />
+      <Frequency1>9750000</Frequency1>
+      <Frequency2>10600000</Frequency2>
+      <SwitchFrequency>11700000</SwitchFrequency>
+      <UsePower>true</UsePower>
+      <LNB>DiSEqC1</LNB>
+    </Location>
+  </ScanLocation>
+  <ScanLocation>
+    <Scan>28.2°E</Scan>
+    <Location>
+      <SourceGroups />
+      <Frequency1>9750000</Frequency1>
+      <Frequency2>10600000</Frequency2>
+      <SwitchFrequency>11700000</SwitchFrequency>
+      <UsePower>true</UsePower>
+      <LNB>DiSEqC2</LNB>
+    </Location>
+  </ScanLocation>
+</SatelliteProfile>
