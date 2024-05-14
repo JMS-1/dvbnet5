@@ -1,5 +1,7 @@
 #!/bin/bash
 
+docker load -i vcrnet5.img
+
 export RECORDING=/Recordings
 export CONFIG=`pwd`/config.template 
 export PORT=9000 

@@ -4,4 +4,5 @@
   <Parameter name="Adapter.Server">172.17.0.1</Parameter>
   <Parameter name="Scheduler.DecryptionLimit">0</Parameter>
   <Provider>JMS.DVB.Provider.Legacy.DVBSLegacy, JMS.DVB.NET.DVBNETLegacy</Provider>
+  <UseSourcesFrom>card1</UseSourcesFrom>
 </SatelliteProfile>

@@ -72,7 +72,11 @@ public class RegistryTests
 
         var cut2 = Services.GetRequiredService<IRegistry>();
 
-        var dt = cut2.GetTime("dummy");
+        cut2.SetTime("junk", new DateTime(2024, 5, 14, 22, 56, 29));
+
+        var cut3 = Services.GetRequiredService<IRegistry>();
+
+        var dt = cut3.GetTime("dummy");
 
         Assert.That(dt, Is.Not.Null);
 
