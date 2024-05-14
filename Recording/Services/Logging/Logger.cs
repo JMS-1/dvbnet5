@@ -6,7 +6,6 @@ namespace JMS.DVB.NET.Recording.Services.Logging;
 /// <summary>
 /// Global logging helper.
 /// </summary>
-/// <remarks>LEAF SERVICE</remarks>
 /// <param name="configuration"></param>
 /// <param name="logger"></param>
 public class Logger<T>(IVCRConfiguration configuration, Microsoft.Extensions.Logging.ILogger<T> logger) : ILogger<T>
@@ -35,6 +34,23 @@ public class Logger<T>(IVCRConfiguration configuration, Microsoft.Extensions.Log
             return;
 
         // Report
-        logger.LogInformation(string.Format(format, args));
+        switch (level)
+        {
+            case LoggingLevel.Full:
+                logger.LogDebug(string.Format(format, args));
+                break;
+            case LoggingLevel.Security:
+                logger.LogWarning(string.Format(format, args));
+                break;
+            case LoggingLevel.Schedules:
+                logger.LogInformation(string.Format(format, args));
+                break;
+            case LoggingLevel.Errors:
+                logger.LogError(string.Format(format, args));
+                break;
+            default:
+                logger.LogCritical(string.Format(format, args));
+                break;
+        }
     }
 }
