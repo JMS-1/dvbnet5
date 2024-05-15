@@ -35,7 +35,6 @@ public static class RecordingExtensions
         services.AddTransient<IRecordingInfoFactory, RecordingInfoFactory>();
         services.AddTransient<IRecordingPlannerFactory, RecordingPlannerFactory>();
         services.AddTransient<IRecordingProxyFactory, RecordingProxyFactory>();
-        services.AddTransient<IRegistry, Registry>();
         services.AddTransient<IRuleUpdater, RuleUpdater>();
         services.AddTransient<ISourceScanProxyFactory, SourceScanProxyFactory>();
         services.AddTransient<IUserProfileStore, UserProfileStore>();
@@ -44,6 +43,7 @@ public static class RecordingExtensions
         services.AddSingleton<IExtensionManager, ExtensionManager>();
         services.AddSingleton<IJobManager, JobManager>();
         services.AddSingleton<IRecordings, Recordings>();
+        services.AddSingleton<IRegistry, Registry>();
         services.AddSingleton<IVCRConfiguration, VCRConfiguration>();
         services.AddSingleton<IVCRProfiles, VCRProfiles>();
         services.AddSingleton<IVCRServer, VCRServer>();
