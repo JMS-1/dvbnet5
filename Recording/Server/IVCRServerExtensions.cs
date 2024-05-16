@@ -18,12 +18,12 @@ public static class IVCRServerExtensions
     /// <param name="withRadio">Gesetzt, wenn Radiosender zu ber?cksichtigen sind.</param>
     /// <param name="factory">Eine Methode zum Erzeugen der Zielelemente aus den Daten einer einzelnen Quelle.</param>
     /// <returns></returns>
-    public static TTarget[] GetSources<TTarget>(this IVCRServer server, string profileName, bool withTV, bool withRadio, Func<SourceSelection, IVCRProfiles, TTarget> factory, IVCRProfiles profiles)
+    public static IEnumerable<TTarget> GetSources<TTarget>(this IVCRServer server, string profileName, bool withTV, bool withRadio, Func<SourceSelection, IVCRProfiles, TTarget> factory, IVCRProfiles profiles)
     {
         // Find the profile
         var profile = server.FindProfile(profileName);
         if (profile == null)
-            return [];
+            return Enumerable.Empty<TTarget>();
 
         // Create matcher
         Func<Station, bool> matchStation;
@@ -36,14 +36,13 @@ public static class IVCRServerExtensions
             if (withRadio)
             matchStation = station => station.SourceType == SourceTypes.Radio;
         else
-            return [];
+            return Enumerable.Empty<TTarget>();
 
         // Filter all we want
         return
             profiles
                 .GetSources(profile.ProfileName, matchStation)
-                .Select(s => factory(s, profiles))
-                .ToArray();
+                .Select(s => factory(s, profiles));
     }
 
     /// <summary>

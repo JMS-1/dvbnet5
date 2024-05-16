@@ -2,6 +2,8 @@ services:
   vcrnet:
     image: vcrnet5:latest
     restart: always
+    environment:
+      - TZ=Europe/Berlin
     volumes:
       - $CONFIG:/usr/share/jmsdvbnet
       - $RECORDING:/Recordings

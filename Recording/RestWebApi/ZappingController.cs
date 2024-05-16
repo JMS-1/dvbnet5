@@ -51,7 +51,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="radio">Gesetzt, wenn Radiosender berücksichtigt werden sollen.</param>
         /// <returns>Die gewünschte Liste von Sendern.</returns>
         [HttpGet("source/{profile}")]
-        public ZappingSource[] FindSources(string profile, bool tv, bool radio)
+        public IEnumerable<ZappingSource> FindSources(string profile, bool tv, bool radio)
             => server.GetSources(profile, tv, radio, ZappingSource.Create, profiles);
 
         /// <summary>

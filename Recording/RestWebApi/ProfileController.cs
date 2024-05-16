@@ -34,7 +34,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="profile">Der Name des zu verwendenden Geräteprofils.</param>
         /// <returns>Die gewünschte Liste von Sendern.</returns>
         [HttpGet("sources/{profile}")]
-        public ProfileSource[] FindSources(string profile) => server.GetSources(profile, true, true, ProfileSource.Create, profiles);
+        public IEnumerable<ProfileSource> FindSources(string profile) =>
+            server.GetSources(profile, true, true, ProfileSource.Create, profiles);
 
         /// <summary>
         /// Verändert den Endzeitpunkt.

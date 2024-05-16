@@ -84,7 +84,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new GuideInfo
                 {
-                    SourceNames = stations.OrderBy(name => name).ToArray(),
+                    SourceNames = [.. stations.Order(StringComparer.InvariantCultureIgnoreCase)],
                     FirstStart = first,
                     LastStart = last,
                 };
