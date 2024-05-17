@@ -26,7 +26,7 @@ export function updateSchedule(jobId: string, scheduleId: string, data: IJobSche
     if (jobId) {
         url = 'edit/recording/' + jobId
 
-        if (scheduleId != null) {
+        if (scheduleId) {
             url += scheduleId
 
             method = 'PUT'
