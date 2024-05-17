@@ -104,27 +104,8 @@ export class Overview extends HelpComponent {
                         <InternalLink view={`${page.route};log`}>Aufzeichnungsprotokolle</InternalLink>?
                     </li>
                 </ul>
-                <h3>Hauppauge Nexus / TechnoTrend 2300</h3>
-                <ul>
-                    <li>
-                        Was ist an dieser DVB Hardware so{' '}
-                        <InternalLink view={`${page.route};nexus`}>besonders</InternalLink>?
-                    </li>
-                    <li>
-                        Wie kann die Aufzeichnungsplanung auf eine bestimmte Anzahl gleichzeitiger Quellen{' '}
-                        <InternalLink view={`${page.route};sourcelimit`}>beschränkt</InternalLink> werden?
-                    </li>
-                </ul>
                 <h3>Betriebsumgebung und Konfiguration</h3>
                 <ul>
-                    <li>
-                        Wie ist das mit dem{' '}
-                        <InternalLink view={`${page.route};hibernation`}>Schlafzustand</InternalLink>?
-                    </li>
-                    <li>
-                        Welche Rolle spielt das{' '}
-                        <InternalLink view={`${page.route};controlcenter`}>VCR.NET Kontrollzentrum</InternalLink>?
-                    </li>
                     <li>
                         Wie konfiguriert man die Aktualisierung der{' '}
                         <InternalLink view={`${page.route};epgconfig`}>Programmzeitschrift</InternalLink>?
@@ -142,11 +123,6 @@ export class Overview extends HelpComponent {
                     <li>
                         Welche Rolle spielen <InternalLink view={`${page.route};dvbnet`}>DVB.NET</InternalLink> und die
                         darüber definierten Geräteprofile?
-                    </li>
-                    <li>
-                        Was sind die Web Dienste und welche{' '}
-                        <InternalLink view={`${page.route};websettings`}>erweiterten Einstellungen</InternalLink> werden
-                        angeboten?
                     </li>
                 </ul>
             </div>

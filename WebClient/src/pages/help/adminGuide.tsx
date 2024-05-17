@@ -37,13 +37,12 @@ export class AdminProgramGuide extends HelpComponent {
                 <br />
                 Nun muss dem VCR.NET Recording Service nur noch mitgeteilt werden, wann die Programmzeitschrift zu
                 aktualisieren ist. Dazu können bis zu die Stunden pro Tag angegeben werden, zu dem eine entsprechende
-                Aktivität gestartet werden soll - wie bei normalen Aufzeichnung wird der Rechner dazu wenn notwendig aus
-                dem <InternalLink view={`${page.route};hibernation`}>Schlafzustand</InternalLink> aufgeweckt. Damit
-                diese Sammlung auch in der Planung der Aufzeichnungen berücksichtigt werden kann, muss auch immer eine
-                maximale Laufzeit für die Aktualisierung angegeben werden. Ist diese zu kurz eingestellt, so wird der
-                VCR.NET Recording Service die Aktualisierung vorzeitig beenden und die Programmzeitschrift ist
-                unvollständig. Der genaue Wert ist abhängig von den ausgewählten Quellen und kann nur individuell selbst
-                bestimmt werden. Ist die Aktualisierung doch vorzeitig abgeschlossen, so wird auch die Aktivität{' '}
+                Aktivität gestartet werden soll. Damit diese Sammlung auch in der Planung der Aufzeichnungen
+                berücksichtigt werden kann, muss auch immer eine maximale Laufzeit für die Aktualisierung angegeben
+                werden. Ist diese zu kurz eingestellt, so wird der VCR.NET Recording Service die Aktualisierung
+                vorzeitig beenden und die Programmzeitschrift ist unvollständig. Der genaue Wert ist abhängig von den
+                ausgewählten Quellen und kann nur individuell selbst bestimmt werden. Ist die Aktualisierung doch
+                vorzeitig abgeschlossen, so wird auch die Aktivität{' '}
                 <InternalLink pict='devices' view={page.application.devicesPage.route} /> auf dem DVB Gerät beendet. Mit
                 Hilfe der <InternalLink view={`${page.route};log`}>Protokollliste</InternalLink> lässt sich dann leicht
                 feststellen, was ein typischer Wert für die Laufzeit ist.

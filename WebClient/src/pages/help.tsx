@@ -12,6 +12,6 @@ export class Help extends Component<IHelpPage> {
         // Ermittelt die Anzeige des gewählten Aspektes.
         const element = this.props.uvm.getHelpComponent<HelpComponent>()
 
-        return <div className='vcrnet-faq'>{element && element.render(this.props.uvm)}</div>
+        return <div className='vcrnet-faq'>{element?.render(this.props.uvm)}</div>
     }
 }

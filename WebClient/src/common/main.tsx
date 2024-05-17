@@ -10,7 +10,6 @@ import { AdminProgramGuide } from '../pages/help/adminGuide'
 import { AdminSourceScan } from '../pages/help/adminScan'
 import { Archive } from '../pages/help/archive'
 import { Configuration } from '../pages/help/configuration'
-import { ControlCenter } from '../pages/help/controlCenter'
 import { CurrentStream } from '../pages/help/currentStream'
 import { CustomSchedule } from '../pages/help/customSchedule'
 import { Decryption } from '../pages/help/decryption'
@@ -18,20 +17,16 @@ import { DvbNet } from '../pages/help/dvbNet'
 import { EditCurrent } from '../pages/help/editCurrent'
 import { ProgramGuide } from '../pages/help/epg'
 import { FileContents } from '../pages/help/fileContents'
-import { Hibernation } from '../pages/help/hibernation'
 import { Overview } from '../pages/help/home'
 import { JobsAndSchedules } from '../pages/help/jobsAndSchedules'
 import { Log } from '../pages/help/log'
-import { Nexus } from '../pages/help/nexus'
 import { NumberOfFiles } from '../pages/help/numberOfFiles'
 import { ParallelRecording } from '../pages/help/parallelRecording'
 import { RepeatingSchedules } from '../pages/help/repeatingSchedules'
 import { SourceChooser } from '../pages/help/sourceChooser'
-import { SourceLimit } from '../pages/help/sourceLimit'
 import { Streaming } from '../pages/help/streaming'
 import { Tasks } from '../pages/help/tasks'
 import { TsPlayer } from '../pages/help/tsPlayer'
-import { WebSettings } from '../pages/help/webSettings'
 
 // React.Js Komponente für die Hauptseite der Anwendung - im Prinzip der gesamte sichtbare Bereich im Browser.
 export class Main extends React.Component<IEmpty, IEmpty> implements IApplicationSite {
@@ -39,7 +34,6 @@ export class Main extends React.Component<IEmpty, IEmpty> implements IApplicatio
     private readonly _topics: { [section: string]: IHelpComponent } = {
         archive: new Archive(),
         configuration: new Configuration(),
-        controlcenter: new ControlCenter(),
         currentstream: new CurrentStream(),
         customschedule: new CustomSchedule(),
         decryption: new Decryption(),
@@ -48,21 +42,17 @@ export class Main extends React.Component<IEmpty, IEmpty> implements IApplicatio
         epg: new ProgramGuide(),
         epgconfig: new AdminProgramGuide(),
         filecontents: new FileContents(),
-        hibernation: new Hibernation(),
         jobsandschedules: new JobsAndSchedules(),
         log: new Log(),
-        nexus: new Nexus(),
         numberoffiles: new NumberOfFiles(),
         overview: new Overview(),
         parallelrecording: new ParallelRecording(),
         psiconfig: new AdminSourceScan(),
         repeatingschedules: new RepeatingSchedules(),
         sourcechooser: new SourceChooser(),
-        sourcelimit: new SourceLimit(),
         streaming: new Streaming(),
         tasks: new Tasks(),
         tsplayer: new TsPlayer(),
-        websettings: new WebSettings(),
     }
 
     // Das Präsentationsmodell der Anwendung.
