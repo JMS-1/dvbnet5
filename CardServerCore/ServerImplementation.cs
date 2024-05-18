@@ -174,8 +174,7 @@
         public IAsyncResult BeginSelect(string selectionKey)
         {
             // Validate
-            if (selectionKey == null)
-                throw new ArgumentNullException(nameof(selectionKey));
+            ArgumentNullException.ThrowIfNull(selectionKey);
 
             // Reconstruct
             var selection = new SourceSelection { SelectionKey = selectionKey };
@@ -231,8 +230,7 @@
         public IAsyncResult BeginLoadExtensions(byte[] actionAssembly, byte[] symbols)
         {
             // Validate
-            if (actionAssembly == null)
-                throw new ArgumentNullException(nameof(actionAssembly));
+            ArgumentNullException.ThrowIfNull(actionAssembly);
 
             // Start action
             return Start<object>(() => { OnLoadExtensions(actionAssembly, symbols); });
@@ -254,8 +252,7 @@
         public IAsyncResult<StreamInformation[]> BeginAddSources(ReceiveInformation[] sources)
         {
             // Validate
-            if (sources == null)
-                throw new ArgumentNullException(nameof(sources));
+            ArgumentNullException.ThrowIfNull(sources);
 
             // Create helper
             var clones = new List<ReceiveInformation>();
@@ -265,17 +262,15 @@
             {
                 // Load the one
                 var source = sources[i];
-                if (null == source)
-                    throw new ArgumentNullException(string.Format("sources[{0}]", i));
+
+                ArgumentNullException.ThrowIfNull(source, string.Format("sources[{0}]", i));
 
                 // Clone it
                 source = source.Clone();
 
                 // More tests
-                if (source.SelectionKey == null)
-                    throw new ArgumentNullException(string.Format("sources[{0}].SelectionKey", i));
-                if (source.Streams == null)
-                    throw new ArgumentNullException(string.Format("sources[{0}].Streams", i));
+                ArgumentNullException.ThrowIfNull(source.SelectionKey, string.Format("sources[{0}].SelectionKey", i));
+                ArgumentNullException.ThrowIfNull(source.Streams, string.Format("sources[{0}].Streams", i));
 
                 // Check for profile match
                 if (string.IsNullOrEmpty(m_Profile) || !string.Equals(m_Profile, source.Selection.ProfileName, StringComparison.InvariantCultureIgnoreCase))
@@ -312,8 +307,7 @@
         public IAsyncResult BeginRemoveSource(SourceIdentifier source, Guid uniqueIdentifier)
         {
             // Validate
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(source);
 
             // Start action
             return Start<object>(() => { OnRemoveSource(source, uniqueIdentifier); });
@@ -426,8 +420,7 @@
         public IAsyncResult BeginSetStreamTarget(SourceIdentifier source, Guid uniqueIdentifier, string target)
         {
             // Validate
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(source);
 
             // Start action
             return Start<object>(() => { OnSetStreamTarget(new SourceIdentifier(source), uniqueIdentifier, target); });
@@ -661,7 +654,7 @@
         public static T EndRequest<T>(IAsyncResult request)
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(request, nameof(request));
+            ArgumentNullException.ThrowIfNull(request);
 
             // Change type
             if (request is not _AsyncControl)
@@ -756,10 +749,9 @@
         public static IAsyncResult BeginSelect(this ServerImplementation server, SourceSelection selection)
         {
             // Validate
-            if (server == null)
-                throw new NullReferenceException("server");
-            if (selection == null)
-                throw new ArgumentNullException(nameof(selection));
+            if (server == null) throw new NullReferenceException(nameof(server));
+
+            ArgumentNullException.ThrowIfNull(selection);
 
             // Forward
             return server.BeginSelect(selection.SelectionKey);

@@ -203,8 +203,7 @@ namespace JMS.DVB.Algorithms
         public TransponderScanner(Profile profile)
         {
             // Validate
-            if (null == profile)
-                throw new ArgumentNullException(nameof(profile));
+            ArgumentNullException.ThrowIfNull(profile);
 
             // Remember
             Profile = profile;

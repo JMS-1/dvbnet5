@@ -8,7 +8,7 @@ public class RecordingPlannerFactory(ILogger<RecordingPlanner> logger) : IRecord
     public IRecordingPlanner Create(IRecordingPlannerSite site)
     {
         // Validate
-        ArgumentNullException.ThrowIfNull(site, nameof(site));
+        ArgumentNullException.ThrowIfNull(site);
 
         // Forward
         return new RecordingPlanner(site, logger);

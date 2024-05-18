@@ -20,8 +20,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public static ProfileInfo Create(IProfileState profile)
         {
             // Validate
-            if (profile == null)
-                throw new ArgumentNullException(nameof(profile));
+            ArgumentNullException.ThrowIfNull(profile);
 
             // Create
             return new ProfileInfo { Name = profile.ProfileName };

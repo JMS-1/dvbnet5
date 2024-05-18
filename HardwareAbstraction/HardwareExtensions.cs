@@ -16,8 +16,7 @@
         public static void SelectGroup(this SourceSelection selection, Hardware hardware)
         {
             // Validate
-            if (null == selection)
-                throw new ArgumentNullException(nameof(selection));
+            ArgumentNullException.ThrowIfNull(selection);
 
             // Nothing to do
             if (null == hardware)
@@ -36,8 +35,7 @@
         public static void SelectGroup(this SourceSelection selection)
         {
             // Validate
-            if (null == selection)
-                throw new ArgumentNullException(nameof(selection));
+            ArgumentNullException.ThrowIfNull(selection);
 
             // Forward
             using (HardwareManager.Open())
@@ -53,8 +51,7 @@
         public static Hardware? GetHardware(this SourceSelection selection)
         {
             // Validate
-            if (null == selection)
-                throw new ArgumentNullException(nameof(selection));
+            ArgumentNullException.ThrowIfNull(selection);
 
             // Forward
             using (HardwareManager.Open())
@@ -89,8 +86,7 @@
         public static Profile? GetProfile(this SourceSelection selection)
         {
             // Validate
-            if (null == selection)
-                throw new ArgumentNullException(nameof(selection));
+            ArgumentNullException.ThrowIfNull(selection);
 
             // Forward
             if (string.IsNullOrEmpty(selection.ProfileName))
@@ -172,8 +168,7 @@
         public static string GetParameter(this Profile profile, string name)
         {
             // Validate
-            if (profile == null)
-                throw new ArgumentNullException(nameof(profile));
+            ArgumentNullException.ThrowIfNull(profile);
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
 
@@ -228,10 +223,8 @@
         public static SourceModifier GetFilter(this Profile profile, SourceIdentifier source)
         {
             // Validate
-            if (null == profile)
-                throw new ArgumentNullException(nameof(profile));
-            if (null == source)
-                throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(profile);
+            ArgumentNullException.ThrowIfNull(source);
 
             // Process
             if (null == profile.ScanConfiguration)
@@ -250,10 +243,8 @@
         public static SourceGroupFilter GetFilter(this Profile profile, SourceGroup group)
         {
             // Validate
-            if (null == profile)
-                throw new ArgumentNullException(nameof(profile));
-            if (null == group)
-                throw new ArgumentNullException(nameof(group));
+            ArgumentNullException.ThrowIfNull(profile);
+            ArgumentNullException.ThrowIfNull(group);
 
             // Forward to helper
             if (null == profile.ScanConfiguration)

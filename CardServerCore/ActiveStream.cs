@@ -55,8 +55,7 @@ namespace JMS.DVB.CardServer
         public ActiveStream(Guid uniqueIdentifier, SourceStreamsManager manager, StreamSelection originalSelection, string targetPath)
         {
             // Validate
-            if (manager == null)
-                throw new ArgumentNullException(nameof(manager));
+            ArgumentNullException.ThrowIfNull(manager);
 
             // Remember
             SourceKey = new SourceIdenfierWithKey(uniqueIdentifier, manager.Source);

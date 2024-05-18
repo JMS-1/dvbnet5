@@ -56,8 +56,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public static ZappingService Create(ServiceInformation service)
         {
             // Validate
-            if (service == null)
-                throw new ArgumentNullException(nameof(service));
+            ArgumentNullException.ThrowIfNull(service);
 
             // Create new
             return

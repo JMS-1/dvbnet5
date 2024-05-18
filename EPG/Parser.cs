@@ -98,7 +98,7 @@ namespace JMS.DVB.EPG
         public void Add(byte[] data, int offset, int length)
         {
             // Check parameters
-            ArgumentNullException.ThrowIfNull(data, nameof(data));
+            ArgumentNullException.ThrowIfNull(data);
 
             if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset), offset, "must not be negative");
             if (offset > data.Length) throw new ArgumentOutOfRangeException(nameof(offset), offset, "out of array");
@@ -255,13 +255,13 @@ namespace JMS.DVB.EPG
     }
 
     /// <summary>
-    /// ùberwacht SI Tabellen einer bestimmten Art.
+    /// ÔøΩberwacht SI Tabellen einer bestimmten Art.
     /// </summary>
     /// <typeparam name="T">Die Art der SI Tabelle.</typeparam>
     public class TypedSIParser<T> : Parser where T : Table
     {
         /// <summary>
-        /// Signatur einer Methode zur Information ùber eine erfolgreich empfangene SI Tabelle.
+        /// Signatur einer Methode zur Information ÔøΩber eine erfolgreich empfangene SI Tabelle.
         /// </summary>
         /// <param name="table">Die empfangene Tabelle.</param>
         public delegate void TableFoundHandler(T table);

@@ -61,7 +61,7 @@ namespace JMS.DVB.NET.Recording.Requests
         )
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(state, nameof(state));
+            ArgumentNullException.ThrowIfNull(state);
 
             // Finish setup of fields and properties
             RequestFinished = new ManualResetEvent(false);
@@ -258,8 +258,7 @@ namespace JMS.DVB.NET.Recording.Requests
         public virtual void Start(VCRRecordingInfo recording)
         {
             // Validate
-            if (recording == null)
-                throw new ArgumentNullException(nameof(recording));
+            ArgumentNullException.ThrowIfNull(recording);
 
             // Remember synchronized
             lock (m_active)

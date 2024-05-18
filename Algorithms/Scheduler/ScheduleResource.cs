@@ -55,8 +55,7 @@
         public bool CanAccess(IScheduleSource source)
         {
             // Validate
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(source);
 
             // Check type
             if (source is not SourceType typedSource)

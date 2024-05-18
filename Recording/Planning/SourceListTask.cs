@@ -52,8 +52,8 @@ namespace JMS.DVB.NET.Recording.Planning
             : base("Sendersuchlauf", Guid.NewGuid())
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(forResource, nameof(forResource));
-            ArgumentNullException.ThrowIfNull(lastUpdate, nameof(lastUpdate));
+            ArgumentNullException.ThrowIfNull(forResource);
+            ArgumentNullException.ThrowIfNull(lastUpdate);
 
             // Remember
             m_configuration = configuration;

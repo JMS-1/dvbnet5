@@ -667,8 +667,7 @@ namespace JMS.DVB
         public ushort? GetServicePMT(SourceIdentifier source, CancellationToken? cancel = null)
         {
             // Validate
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(source);
 
             // Get the current group information
             var groupInfo = GetGroupInformation(cancel: cancel);

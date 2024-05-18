@@ -137,8 +137,7 @@ namespace JMS.DVB.Provider.Legacy
         protected override void OnStart(StreamInformation stream)
         {
             // Validate
-            if (stream == null)
-                throw new ArgumentNullException(nameof(stream));
+            ArgumentNullException.ThrowIfNull(stream);
 
             // Not of interest to us
             if (stream.Consumer == null)
@@ -193,7 +192,7 @@ namespace JMS.DVB.Provider.Legacy
         protected override void OnStop(StreamInformation stream)
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(stream, nameof(stream));
+            ArgumentNullException.ThrowIfNull(stream);
 
             // Not of interest to us
             if (stream.Consumer != null)

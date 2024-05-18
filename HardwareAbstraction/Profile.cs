@@ -113,7 +113,7 @@ namespace JMS.DVB
         public void Save(FileInfo file)
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(file, nameof(file));
+            ArgumentNullException.ThrowIfNull(file);
 
             // Make sure that directory exists
             file.Directory!.Create();

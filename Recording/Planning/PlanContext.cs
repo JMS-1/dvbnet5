@@ -75,10 +75,8 @@ namespace JMS.DVB.NET.Recording.Planning
         public void RegisterSchedule(VCRSchedule schedule, VCRJob job)
         {
             // Validate
-            if (schedule == null)
-                throw new ArgumentNullException(nameof(schedule));
-            if (job == null)
-                throw new ArgumentNullException(nameof(job));
+            ArgumentNullException.ThrowIfNull(schedule);
+            ArgumentNullException.ThrowIfNull(job);
 
             // Skip on missing identifier
             var scheduleIdentifier = schedule.UniqueID;
@@ -102,8 +100,7 @@ namespace JMS.DVB.NET.Recording.Planning
         public VCRJob? TryFindJob(VCRSchedule schedule)
         {
             // Validate
-            if (schedule == null)
-                throw new ArgumentNullException(nameof(schedule));
+            ArgumentNullException.ThrowIfNull(schedule);
 
             // Skip on missing identifier
             var scheduleIdentifier = schedule.UniqueID;

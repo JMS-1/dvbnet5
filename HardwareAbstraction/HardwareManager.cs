@@ -87,8 +87,7 @@
         public static Hardware? OpenHardware(Profile profile)
         {
             // Validate
-            if (null == profile)
-                throw new ArgumentNullException(nameof(profile));
+            ArgumentNullException.ThrowIfNull(profile);
             if (string.IsNullOrEmpty(profile.Name))
                 throw new ArgumentNullException("profile.Name");
 

@@ -90,8 +90,8 @@
             // Validate
             if (manager == null)
                 throw new NullReferenceException();
-            if (schedule == null)
-                throw new ArgumentNullException(nameof(schedule));
+
+            ArgumentNullException.ThrowIfNull(schedule);
 
             // Load
             var definition = schedule.Definition;
@@ -156,8 +156,8 @@
             // Validate
             if (manager == null)
                 throw new NullReferenceException();
-            if (getSchedules == null)
-                throw new ArgumentNullException(nameof(getSchedules));
+
+            ArgumentNullException.ThrowIfNull(getSchedules);
 
             // Create schedule manager
             var scheduler = manager.CreateScheduler(false);
@@ -194,8 +194,8 @@
             // Validate
             if (manager == null)
                 throw new NullReferenceException();
-            if (getSchedules == null)
-                throw new ArgumentNullException(nameof(getSchedules));
+
+            ArgumentNullException.ThrowIfNull(getSchedules);
 
             // Create schedule manager
             var scheduler = manager.CreateScheduler(true);

@@ -197,8 +197,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public static PlanCurrent[] Create(FullInfo active, IVCRServer server, IVCRProfiles profiles, IJobManager jobs)
         {
             // Validate
-            if (active == null)
-                throw new ArgumentNullException(nameof(active));
+            ArgumentNullException.ThrowIfNull(active);
 
             // Validate
             var recording = active.Recording;

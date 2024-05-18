@@ -19,7 +19,7 @@ namespace JMS.DVB.NET.Recording.Planning
         public ScheduleInformation(IScheduleInformation original)
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(original, nameof(original));
+            ArgumentNullException.ThrowIfNull(original);
 
             // Remember
             RealTime = original.Time;

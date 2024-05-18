@@ -352,8 +352,7 @@ public class RecordingProxy(
     public void SetStreamTarget(SourceIdentifier source, Guid uniqueIdentifier, string streamingTarget)
     {
         // Validate
-        if (source == null)
-            throw new ArgumentNullException(nameof(source));
+        ArgumentNullException.ThrowIfNull(source);
 
         // Report
         Tools.ExtendedLogging("Changing Streaming for {0} [{1}] to {2}", source, uniqueIdentifier, streamingTarget);

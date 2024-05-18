@@ -321,10 +321,8 @@ namespace JMS.DVB.Algorithms
         public void Add(SourceSelection source, StreamSelection streams)
         {
             // Validate
-            if (null == source)
-                throw new ArgumentNullException(nameof(source));
-            if (null == streams)
-                throw new ArgumentNullException(nameof(streams));
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(streams);
 
             // Remember
             m_Sources.Add(new SelectionInfo { Source = source, OriginalStreams = streams.Clone() });

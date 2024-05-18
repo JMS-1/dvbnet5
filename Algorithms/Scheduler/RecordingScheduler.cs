@@ -44,12 +44,9 @@ namespace JMS.DVB.Algorithms.Scheduler
         internal RecordingScheduler(ResourceCollection resources, HashSet<Guid> forbiddenDefinitions, Func<SchedulePlan> planCreator, IComparer<SchedulePlan> comparer)
         {
             // Validate
-            if (resources == null)
-                throw new ArgumentNullException(nameof(resources));
-            if (forbiddenDefinitions == null)
-                throw new ArgumentNullException(nameof(forbiddenDefinitions));
-            if (comparer == null)
-                throw new ArgumentNullException(nameof(comparer));
+            ArgumentNullException.ThrowIfNull(resources);
+            ArgumentNullException.ThrowIfNull(forbiddenDefinitions);
+            ArgumentNullException.ThrowIfNull(comparer);
 
             // Finish
             m_PlanCreator = planCreator ?? (() => new SchedulePlan(Resources!));

@@ -802,8 +802,7 @@ namespace JMS.DVB.TS
                 throw new ArgumentOutOfRangeException(nameof(counter), counter, "only four bits allowed");
             if ((pid < 0) || (pid >= 0x1fff))
                 throw new ArgumentOutOfRangeException(nameof(pid), pid, "only 13 bits allowed");
-            if (null == buffer)
-                throw new ArgumentNullException(nameof(buffer));
+            ArgumentNullException.ThrowIfNull(buffer);
             if ((start < 0) || (start > buffer.Length))
                 throw new ArgumentOutOfRangeException(nameof(start), start, "exceeds buffer size");
             if ((packs < 0) || (packs > (buffer.Length / PacketSize + 1)))

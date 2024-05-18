@@ -18,8 +18,7 @@ public class ZappingProxyFactory(
     public ZappingProxy Create(IProfileState profile, string target)
     {
         // Validate
-        if (profile == null)
-            throw new ArgumentNullException(nameof(profile));
+        ArgumentNullException.ThrowIfNull(profile);
         if (string.IsNullOrEmpty(target))
             throw new ArgumentNullException(nameof(target));
 

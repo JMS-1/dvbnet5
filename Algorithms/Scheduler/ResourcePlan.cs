@@ -229,8 +229,7 @@
         public bool Add(IRecordingDefinition recording, SuggestedPlannedTime time, DateTime minTime)
         {
             // Validate
-            if (recording == null)
-                throw new ArgumentNullException(nameof(recording));
+            ArgumentNullException.ThrowIfNull(recording);
 
             // If the current resource can see the source we can do nothing at all
             var resource = Resource;

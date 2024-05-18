@@ -155,7 +155,7 @@ public class JobManager : IJobManager
     /// <inheritdoc/>
     public void Update(VCRJob job, Guid? scheduleIdentifier)
     {
-        ArgumentNullException.ThrowIfNull(job, nameof(job));
+        ArgumentNullException.ThrowIfNull(job);
 
         // Cleanup
         if (scheduleIdentifier.HasValue)
@@ -672,12 +672,9 @@ public class JobManager : IJobManager
     )
     {
         // Validate
-        if (scheduler == null)
-            throw new ArgumentNullException(nameof(scheduler));
-        if (job == null)
-            throw new ArgumentNullException(nameof(job));
-        if (findSource == null)
-            throw new ArgumentNullException(nameof(findSource));
+        ArgumentNullException.ThrowIfNull(scheduler);
+        ArgumentNullException.ThrowIfNull(job);
+        ArgumentNullException.ThrowIfNull(findSource);
 
         // Let VCR.NET choose a profile to do the work
         if (job.AutomaticResourceSelection)

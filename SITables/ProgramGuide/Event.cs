@@ -120,8 +120,7 @@ namespace JMS.DVB.SI.ProgramGuide
         public Event(SourceIdentifier source, uint identifier, DateTime startTime, TimeSpan duration, IEnumerable<Legacy.Descriptor> descriptors)
         {
             // Validate
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(source);
 
             // Copy over
             Identifier = identifier;

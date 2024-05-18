@@ -18,10 +18,8 @@ public class SourceScanProxyFactory(
     public SourceScanProxy Create(IProfileState state, VCRRecordingInfo recording)
     {
         // Validate
-        if (state == null)
-            throw new ArgumentNullException(nameof(state));
-        if (recording == null)
-            throw new ArgumentNullException(nameof(recording));
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(recording);
 
         // Forward
         return new SourceScanProxy(state, recording, logger, jobManager, configuration, profiles, extensionManager);

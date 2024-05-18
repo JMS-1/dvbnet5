@@ -21,10 +21,8 @@ namespace JMS.DVB
         public static Guid AddConsumer<T>(this Hardware provider, ushort stream, Action<T> consumer) where T : Table
         {
             // Validate
-            if (null == provider)
-                throw new ArgumentNullException(nameof(provider));
-            if (null == consumer)
-                throw new ArgumentNullException(nameof(consumer));
+            ArgumentNullException.ThrowIfNull(provider);
+            ArgumentNullException.ThrowIfNull(consumer);
 
             // Forward
             return provider.AddConsumer(stream, TableParser.Create(consumer), Table.GetIsExtendedTable<T>() ? StreamTypes.ExtendedTable : StreamTypes.StandardTable);
@@ -42,10 +40,8 @@ namespace JMS.DVB
         public static Guid AddConsumer<T>(this Hardware provider, Action<T> consumer) where T : WellKnownTable
         {
             // Validate
-            if (null == provider)
-                throw new ArgumentNullException(nameof(provider));
-            if (null == consumer)
-                throw new ArgumentNullException(nameof(consumer));
+            ArgumentNullException.ThrowIfNull(provider);
+            ArgumentNullException.ThrowIfNull(consumer);
 
             // Read the stream
             ushort stream = WellKnownTable.GetWellKnownStream<T>();
@@ -82,10 +78,8 @@ namespace JMS.DVB
         public static Guid AddConsumer(this Hardware provider, ushort stream, TableParser parser, StreamTypes streamType)
         {
             // Validate
-            if (null == provider)
-                throw new ArgumentNullException(nameof(provider));
-            if (null == parser)
-                throw new ArgumentNullException(nameof(parser));
+            ArgumentNullException.ThrowIfNull(provider);
+            ArgumentNullException.ThrowIfNull(parser);
 
             // Register
             return provider.AddConsumer(stream, streamType, parser.AddPayload);
@@ -140,7 +134,7 @@ namespace JMS.DVB
         public static LocationInformation? ToLocationInformation(this NIT[] tables, Hardware provider)
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(provider, nameof(provider));
+            ArgumentNullException.ThrowIfNull(provider);
 
             // None
             if (tables == null)

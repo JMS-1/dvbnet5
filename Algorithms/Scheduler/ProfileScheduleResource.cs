@@ -107,8 +107,8 @@ namespace JMS.DVB.Algorithms.Scheduler
             public _Source(SourceSelection source)
             {
                 // Validate
-                if (source == null)
-                    throw new ArgumentNullException(nameof(source));
+                ArgumentNullException.ThrowIfNull(source);
+
                 if (!(source.Source is Station))
                     throw new ArgumentNullException(nameof(source));
 

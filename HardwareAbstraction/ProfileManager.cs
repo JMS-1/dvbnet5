@@ -139,8 +139,7 @@ namespace JMS.DVB
         public static void AddVolatileProfile(Profile profile)
         {
             // Validate
-            if (profile == null)
-                throw new ArgumentNullException(nameof(profile));
+            ArgumentNullException.ThrowIfNull(profile);
 
             // Must be volatile
             if (string.IsNullOrEmpty(profile.VolatileName))

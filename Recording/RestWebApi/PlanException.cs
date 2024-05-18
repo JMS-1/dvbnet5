@@ -98,10 +98,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public static PlanException Create(VCRScheduleException exception, VCRSchedule schedule)
         {
             // Validate
-            if (exception == null)
-                throw new ArgumentNullException(nameof(exception));
-            if (schedule == null)
-                throw new ArgumentNullException(nameof(schedule));
+            ArgumentNullException.ThrowIfNull(exception);
+            ArgumentNullException.ThrowIfNull(schedule);
 
             // Forward
             return new PlanException(exception, schedule);

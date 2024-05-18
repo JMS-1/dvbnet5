@@ -299,8 +299,7 @@ namespace JMS.DVB.CardServer
         public override void LoadExtension(Type extensionType)
         {
             // Validate
-            if (extensionType == null)
-                throw new ArgumentNullException("type");
+            ArgumentNullException.ThrowIfNull(extensionType);
 
             // Already did it
             lock (m_Extensions)

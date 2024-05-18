@@ -332,7 +332,7 @@ namespace JMS.DVB.TS
         public void Inject(byte[] buffer, int index, int length)
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(buffer, nameof(buffer));
+            ArgumentNullException.ThrowIfNull(buffer);
 
             if ((index < 0) || (index > buffer.Length))
                 throw new ArgumentException(index.ToString(), nameof(index));
@@ -412,7 +412,7 @@ namespace JMS.DVB.TS
         public void AddPayload(byte[] buffer, int index, int length)
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(buffer, nameof(buffer));
+            ArgumentNullException.ThrowIfNull(buffer);
 
             if ((index < 0) || (index > buffer.Length))
                 throw new ArgumentException(index.ToString(), nameof(index));
@@ -679,7 +679,7 @@ namespace JMS.DVB.TS
         public void SetFilter(ushort pid, bool isSITable, Action<byte[]> callback)
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(callback, nameof(callback));
+            ArgumentNullException.ThrowIfNull(callback);
 
             // Create
             TSBuilder consumer;
@@ -701,8 +701,7 @@ namespace JMS.DVB.TS
         public void RegisterCustomFilter(ushort pid, TSBuilder consumer)
         {
             // Validate
-            if (consumer == null)
-                throw new ArgumentNullException(nameof(consumer));
+            ArgumentNullException.ThrowIfNull(consumer);
 
             // Remove previous
             RemoveFilter(pid);
@@ -720,8 +719,7 @@ namespace JMS.DVB.TS
         public void RegisterExtractor(ushort pid, Action<byte[]> filter)
         {
             // Validate
-            if (filter == null)
-                throw new ArgumentNullException(nameof(filter));
+            ArgumentNullException.ThrowIfNull(filter);
 
             // Remove previous
             RemoveExtractor(pid);

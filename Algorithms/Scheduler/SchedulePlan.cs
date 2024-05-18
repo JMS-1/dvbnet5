@@ -401,8 +401,7 @@
         public static SchedulePlan? FindBest(IEnumerable<SchedulePlan> plans, IComparer<SchedulePlan> comparer)
         {
             // Validate
-            if (plans == null)
-                throw new ArgumentNullException(nameof(plans));
+            ArgumentNullException.ThrowIfNull(plans);
 
             // Reset
             SchedulePlan? best = null;
@@ -462,8 +461,7 @@
         public int CompareTo(SchedulePlan other, IComparer<SchedulePlan> comparer)
         {
             // Validate
-            if (comparer == null)
-                throw new ArgumentNullException(nameof(comparer));
+            ArgumentNullException.ThrowIfNull(comparer);
 
             // Not possible
             if (other == null)

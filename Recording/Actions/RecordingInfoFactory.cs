@@ -54,8 +54,8 @@ public class RecordingInfoFactory(IVCRConfiguration configuration, IVCRProfiles 
     public VCRRecordingInfo? Create(IScheduleInformation planItem, PlanContext context)
     {
         // Validate
-        ArgumentNullException.ThrowIfNull(planItem, nameof(planItem));
-        ArgumentNullException.ThrowIfNull(context, nameof(context));
+        ArgumentNullException.ThrowIfNull(planItem);
+        ArgumentNullException.ThrowIfNull(context);
 
         // Check type
         if (planItem.Definition is not IScheduleDefinition<VCRSchedule> definition)

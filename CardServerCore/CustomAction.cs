@@ -35,8 +35,7 @@
         protected CustomAction(ServerImplementation cardServer)
         {
             // Validate
-            if (cardServer == null)
-                throw new ArgumentNullException(nameof(cardServer));
+            ArgumentNullException.ThrowIfNull(cardServer);
 
             // Remember
             m_CardServer = cardServer;

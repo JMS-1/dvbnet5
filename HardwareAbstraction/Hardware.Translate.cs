@@ -114,7 +114,7 @@ namespace JMS.DVB
         internal static Hardware? Create(Profile profile, bool migrateOnly)
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(profile, nameof(profile));
+            ArgumentNullException.ThrowIfNull(profile);
 
             // For exception translation
             try

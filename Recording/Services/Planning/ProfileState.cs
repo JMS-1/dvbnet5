@@ -104,7 +104,7 @@ public class ProfileState(
     public bool BeginRequest(CardServerProxy request, bool throwOnBusy = true)
     {
         // Validate
-        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
 
         if (!ReferenceEquals(request.ProfileState, this))
             throw new ArgumentException(request.ProfileName, "request.ProfileState");

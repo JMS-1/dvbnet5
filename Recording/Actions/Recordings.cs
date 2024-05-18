@@ -18,8 +18,7 @@ public class Recordings(IVCRServer server, IVCRProfiles profiles, IJobManager jo
     )
     {
         // Validate
-        if (fromActive == null)
-            throw new ArgumentNullException(nameof(fromActive));
+        ArgumentNullException.ThrowIfNull(fromActive);
 
         // All profile we know
         var idleProfiles = new HashSet<string>(server.InspectProfiles(profile => profile.ProfileName), ProfileManager.ProfileNameComparer);

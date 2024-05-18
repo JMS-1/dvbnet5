@@ -23,8 +23,7 @@
         public SourceIdenfierWithKey(Guid uniqueIdentifier, SourceIdentifier source)
         {
             // Validate
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(source);
 
             // Remember            
             UniqueIdentifier = uniqueIdentifier;

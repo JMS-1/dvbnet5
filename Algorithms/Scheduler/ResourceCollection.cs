@@ -58,7 +58,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         public void Add(IScheduleResource resource)
         {
             // Must be set
-            ArgumentNullException.ThrowIfNull(resource, nameof(resource));
+            ArgumentNullException.ThrowIfNull(resource);
 
             if (resource.Decryption.MaximumParallelSources < 0)
                 throw new ArgumentOutOfRangeException(nameof(resource), string.Format("Decyption Limit must not be negative but is {0}", resource.Decryption.MaximumParallelSources));

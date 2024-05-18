@@ -152,12 +152,9 @@ namespace JMS.DVB
         public SourceStreamsManager(Hardware hardware, Profile profile, SourceIdentifier source, StreamSelection selection)
         {
             // Validate
-            if (null == hardware)
-                throw new ArgumentNullException(nameof(hardware));
-            if (null == source)
-                throw new ArgumentNullException(nameof(source));
-            if (null == selection)
-                throw new ArgumentNullException(nameof(selection));
+            ArgumentNullException.ThrowIfNull(hardware);
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(selection);
 
             // Remember all
             StreamSelection = selection;

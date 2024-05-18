@@ -64,8 +64,8 @@
             public _OneOffItem(UserDataType context, string name, Guid uniqueIdentifier, IScheduleResource[] resources, IScheduleSource source, DateTime start, TimeSpan duration)
             {
                 // Validate
-                if (source == null)
-                    throw new ArgumentNullException(nameof(source));
+                ArgumentNullException.ThrowIfNull(source);
+
                 if (start.Year < 2000)
                     throw new ArgumentOutOfRangeException(nameof(start), string.Format("Recordings before 2000 can not be planned but is {0}", start));
                 if (duration.TotalSeconds <= 0)

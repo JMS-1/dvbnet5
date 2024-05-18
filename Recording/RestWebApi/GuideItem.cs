@@ -94,8 +94,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public static GuideItem Create(ProgramGuideEntry entry, string profileName, IVCRProfiles profiles)
         {
             // Validate
-            if (entry == null)
-                throw new ArgumentNullException(nameof(entry));
+            ArgumentNullException.ThrowIfNull(entry);
 
             // Default name of the station
             var source = profiles.FindSource(profileName, entry.Source);

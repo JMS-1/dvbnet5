@@ -139,8 +139,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             public void Allocate(IScheduleSource source)
             {
                 // Validate
-                if (source == null)
-                    throw new ArgumentNullException(nameof(source));
+                ArgumentNullException.ThrowIfNull(source);
 
                 // Remember
                 if (!Sources.Any(s => s.IsSameAs(source)))

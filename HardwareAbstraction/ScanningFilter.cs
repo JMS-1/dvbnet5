@@ -132,8 +132,7 @@ namespace JMS.DVB
         public void ApplyTo(Station station)
         {
             // Validate
-            if (null == station)
-                throw new ArgumentNullException(nameof(station));
+            ArgumentNullException.ThrowIfNull(station);
 
             // Blind apply - even if identifier would not match
             if (!string.IsNullOrEmpty(Name))
@@ -192,8 +191,7 @@ namespace JMS.DVB
         public void ApplyTo(SourceInformation source)
         {
             // Validate
-            if (null == source)
-                throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(source);
 
             // Blind apply - even if identifier would not match
             if (!string.IsNullOrEmpty(Name))
@@ -276,7 +274,7 @@ namespace JMS.DVB
         public SourceModifier GetFilter(SourceIdentifier source)
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            ArgumentNullException.ThrowIfNull(source);
 
             // Find it
             var filter = SourceDetails?.Find(f => f.Equals(source));
@@ -331,8 +329,7 @@ namespace JMS.DVB
         public override SourceGroupFilter GetFilter(SourceGroup group)
         {
             // Validate
-            if (null == group)
-                throw new ArgumentNullException(nameof(group));
+            ArgumentNullException.ThrowIfNull(group);
 
             // Not us - never scan
             if (group is not T typedGroup)

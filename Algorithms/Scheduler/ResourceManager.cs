@@ -258,7 +258,7 @@
             public bool Start(IScheduleResource resource, IScheduleSource? source, Guid scheduleIdentifier, string scheduleName, DateTime plannedStart, DateTime currentEnd)
             {
                 // Validate
-                ArgumentNullException.ThrowIfNull(resource, nameof(resource));
+                ArgumentNullException.ThrowIfNull(resource);
 
                 if (!m_Resources.Contains(resource))
                     throw new ArgumentException(resource.Name, nameof(resource));
@@ -332,8 +332,7 @@
         public static IResourceManager Create(IEqualityComparer<string> resourceNameComparer)
         {
             // Validate
-            if (resourceNameComparer == null)
-                throw new ArgumentNullException(nameof(resourceNameComparer));
+            ArgumentNullException.ThrowIfNull(resourceNameComparer);
 
             // Forward
             return new Implementation(null!, resourceNameComparer);
@@ -348,8 +347,8 @@
         public static IResourceManager Create(string rulePath, IEqualityComparer<string> resourceNameComparer)
         {
             // Validate
-            if (resourceNameComparer == null)
-                throw new ArgumentNullException(nameof(resourceNameComparer));
+            ArgumentNullException.ThrowIfNull(resourceNameComparer);
+
             if (string.IsNullOrEmpty(rulePath))
                 throw new ArgumentNullException(nameof(rulePath));
 

@@ -73,7 +73,7 @@ namespace JMS.DVB.CardServer
         public static void Throw(CardServerFault fault)
         {
             // Forward
-            ArgumentNullException.ThrowIfNull(fault, nameof(fault));
+            ArgumentNullException.ThrowIfNull(fault);
 
             throw new CardServerException(fault);
         }

@@ -50,8 +50,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             public InverseComparer(IComparer<TEntity> comparer)
             {
                 // Validate
-                if (comparer == null)
-                    throw new ArgumentNullException(nameof(comparer));
+                ArgumentNullException.ThrowIfNull(comparer);
 
                 // Remember
                 m_positiveComparer = comparer;
@@ -140,8 +139,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             public ByResourcePriorityComparer(bool descending, IComparer<ResourcePlan> comparer)
             {
                 // Validate
-                if (comparer == null)
-                    throw new ArgumentNullException(nameof(comparer));
+                ArgumentNullException.ThrowIfNull(comparer);
 
                 // Remember
                 m_resourceComparer = comparer;
@@ -226,8 +224,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         internal static IComparer<SchedulePlan> Create(byte[] fileContents, IEqualityComparer<string> nameComparer)
         {
             // Validate
-            if (fileContents == null)
-                throw new ArgumentNullException(nameof(fileContents));
+            ArgumentNullException.ThrowIfNull(fileContents);
 
             // Result
             var resourceComparer = default(CompoundComparer<ResourcePlan>);

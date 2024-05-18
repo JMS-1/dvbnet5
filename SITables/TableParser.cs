@@ -37,7 +37,7 @@ namespace JMS.DVB.SI
         private TableParser(Action<Table> consumer, List<Type> tableTypes)
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(consumer, nameof(consumer));
+            ArgumentNullException.ThrowIfNull(consumer);
 
             if ((null == tableTypes) || (tableTypes.Count < 1)) throw new ArgumentNullException(nameof(tableTypes));
 
@@ -135,7 +135,7 @@ namespace JMS.DVB.SI
         public static TableParser Create<T>(Action<T> consumer) where T : Table
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(consumer, nameof(consumer));
+            ArgumentNullException.ThrowIfNull(consumer);
 
             // Forward
             return Create(t => consumer((T)t), typeof(T));

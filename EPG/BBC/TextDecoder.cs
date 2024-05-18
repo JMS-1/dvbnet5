@@ -189,7 +189,7 @@ namespace JMS.DVB.EPG.BBC
         public static void LoadTable(int codepage, HuffmanPairTable table)
         {
             // Validate
-            ArgumentNullException.ThrowIfNull(table, nameof(table));
+            ArgumentNullException.ThrowIfNull(table);
 
             if ((codepage < 1) || (codepage > 2)) throw new ArgumentException(codepage.ToString(), nameof(codepage));
 

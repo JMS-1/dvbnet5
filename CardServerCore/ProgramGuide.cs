@@ -55,8 +55,7 @@ namespace JMS.DVB.CardServer
         public GroupKey(SourceSelection source)
         {
             // Validate
-            if (null == source)
-                throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(source);
 
             // Just remember
             Location = source.Location!;
