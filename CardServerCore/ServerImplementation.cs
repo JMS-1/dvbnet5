@@ -608,8 +608,8 @@
             // Remember
             if (e == null)
                 m_LastError = null;
-            else if (e is CardServerException)
-                m_LastError = (CardServerException)e;
+            else if (e is CardServerException cardServerException)
+                m_LastError = cardServerException;
             else
                 m_LastError = new CardServerException(new CardServerFault(e.Message));
 
@@ -661,8 +661,7 @@
         public static T EndRequest<T>(IAsyncResult request)
         {
             // Validate
-            if (request == null)
-                throw new ArgumentNullException(nameof(request));
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
 
             // Change type
             if (request is not _AsyncControl)

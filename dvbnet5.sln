@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JMS.DVB.NET.Recording", "Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JMS.VCR.NET", "WebServer\JMS.VCR.NET.csproj", "{DA23930E-73E9-4F53-8829-F97C52271302}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JMS.DVB.NET.CardServer", "CardServer\JMS.DVB.NET.CardServer.csproj", "{D432AFF1-3EBC-4937-9696-5D66081282DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{DA23930E-73E9-4F53-8829-F97C52271302}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA23930E-73E9-4F53-8829-F97C52271302}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA23930E-73E9-4F53-8829-F97C52271302}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D432AFF1-3EBC-4937-9696-5D66081282DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D432AFF1-3EBC-4937-9696-5D66081282DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D432AFF1-3EBC-4937-9696-5D66081282DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D432AFF1-3EBC-4937-9696-5D66081282DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

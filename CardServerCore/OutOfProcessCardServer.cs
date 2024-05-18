@@ -1,5 +1,6 @@
 ﻿using System.IO.Pipes;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace JMS.DVB.CardServer
 {
@@ -43,11 +44,12 @@ namespace JMS.DVB.CardServer
                 reader = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
 
                 // Create start information
-                ProcessStartInfo info = new()
+                var folder = Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!;
+                var info = new ProcessStartInfo
                 {
-                    Arguments = string.Format("\"{0}\" \"{1}\"", writer.GetClientHandleAsString().Replace("\"", "\"\""), reader.GetClientHandleAsString().Replace("\"", "\"\"")),
-                    FileName = "JMS.DVB.CardServer.exe",
-                    UseShellExecute = false
+                    Arguments = string.Format($"\"{writer.GetClientHandleAsString().Replace("\"", "\"\"")}\" \"{reader.GetClientHandleAsString().Replace("\"", "\"\"")}\""),
+                    FileName = Path.Combine(folder, "cardserver.sh"),
+                    WorkingDirectory = folder,
                 };
 
                 // With cleanup

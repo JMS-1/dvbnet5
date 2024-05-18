@@ -13,5 +13,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Recording\JMS.DVB.NET.Recording.csproj" />
+    <ProjectReference Include="..\CardServer\JMS.DVB.NET.CardServer.csproj" />
   </ItemGroup>
 </Project>

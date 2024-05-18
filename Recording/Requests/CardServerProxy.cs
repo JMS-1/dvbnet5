@@ -190,7 +190,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// Erzeugt einen passenden Aufzeichnungsprozess.
         /// </summary>
         /// <returns>Der gewünschte Aufzeichnungsprozess.</returns>
-        private static ServerImplementation CreateCardServerProxy() => ServerImplementation.CreateInMemory();
+        private static ServerImplementation CreateCardServerProxy() => ServerImplementation.CreateOutOfProcess();
 
         /// <summary>
         /// Startet einen separaten Thread, der die Ausführung steuert.
@@ -304,12 +304,7 @@ namespace JMS.DVB.NET.Recording.Requests
             try
             {
                 // Create raw environment
-                var coreEnvironment =
-                    new Dictionary<string, string>
-                    {
-                        { "%wakeupprofile%", "0" },
-                        { "%dvbnetprofile%", ProfileName },
-                    };
+                var coreEnvironment = new Dictionary<string, string> { { "%dvbnetprofile%", ProfileName } };
 
                 // Be fully safe
                 try

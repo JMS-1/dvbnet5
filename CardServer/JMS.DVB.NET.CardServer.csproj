@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\CardServerCore\JMS.DVB.NET.CardServerCore.csproj" />
+    <ProjectReference Include="..\DVBNETLegacy\JMS.DVB.NET.DVBNETLegacy.csproj" />
+    <ProjectReference Include="..\Ubuntu\JMS.DVB.NET.Ubuntu.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="cardserver.sh" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
