@@ -60,10 +60,8 @@ namespace JMS.DVB.SI.ProgramGuide
             set
             {
                 // Validate
-                if (value < 0)
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                if (value > 0xf)
-                    throw new ArgumentOutOfRangeException(nameof(value));
+                ArgumentOutOfRangeException.ThrowIfNegative(value);
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(value, 0xf);
 
                 // Merge
                 ContentNibbles = (ContentNibbles & 0xf0) | value;
@@ -78,10 +76,8 @@ namespace JMS.DVB.SI.ProgramGuide
         internal static ContentCategory Create(int contentNibbles)
         {
             // Validate
-            if (contentNibbles < 0)
-                throw new ArgumentOutOfRangeException(nameof(contentNibbles));
-            if (contentNibbles > 0xff)
-                throw new ArgumentOutOfRangeException(nameof(contentNibbles));
+            ArgumentOutOfRangeException.ThrowIfNegative(contentNibbles);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(contentNibbles, 0xff);
 
             // Dispatch
             switch (contentNibbles >> 4)
@@ -157,15 +153,12 @@ namespace JMS.DVB.SI.ProgramGuide
             set
             {
                 // Validate
-                if (value < 0)
-                    throw new ArgumentOutOfRangeException(nameof(value));
-                if (value > 0xf)
-                    throw new ArgumentOutOfRangeException(nameof(value));
+                ArgumentOutOfRangeException.ThrowIfNegative(value);
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(value, 0xf);
 
                 // Cross check
                 if (value > 0)
-                    if (value < 12)
-                        throw new ArgumentOutOfRangeException(nameof(value));
+                    ArgumentOutOfRangeException.ThrowIfLessThan(value, 12);
 
                 // Update
                 ContentNibbles = (ContentNibbles & 0xf) | (value << 4);

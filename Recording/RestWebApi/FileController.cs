@@ -36,8 +36,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 throw new ArgumentException(path, nameof(path));
 
             // Validate the slice
-            if (offset < 0)
-                throw new ArgumentOutOfRangeException(nameof(offset));
+            ArgumentOutOfRangeException.ThrowIfNegative(offset);
             if ((length < 0) || (length > 100000000))
                 throw new ArgumentOutOfRangeException(nameof(length));
 

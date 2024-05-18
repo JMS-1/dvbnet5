@@ -187,10 +187,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="comparer">Der ursprüngliche Vergleichsalgorithmus.</param>
         /// <returns>Der neue Algorithmus.</returns>
         internal static IComparer<TEntity> Invert<TEntity>(this IComparer<TEntity> comparer)
-        {
-            // Report
-            return new InverseComparer<TEntity>(comparer);
-        }
+            => new InverseComparer<TEntity>(comparer);
 
         /// <summary>
         /// Vergleicht zwei Pläne auf Basis einzelner Geräte.
@@ -198,10 +195,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="comparer">Die Vergleichsmethode für einzelne Geräte.</param>
         /// <param name="descending">Gesetzt, wenn Geräte mit höherer Priorität bevorzugt verwendet werden sollen.</param>
         internal static IComparer<SchedulePlan> ByPriority(this IComparer<ResourcePlan> comparer, bool descending)
-        {
-            // Forward
-            return new ByResourcePriorityComparer(descending, comparer);
-        }
+            => new ByResourcePriorityComparer(descending, comparer);
 
         /// <summary>
         /// Kombiniert eine Liste von Vergleichsmethoden.
@@ -210,10 +204,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         /// <param name="comparers">Die Liste der Algorithmen.</param>
         /// <returns>Ein kombinierter Vergleich.</returns>
         internal static IComparer<TEntity> Combine<TEntity>(params IComparer<TEntity>[] comparers)
-        {
-            // Create
-            return new CompoundComparer<TEntity>(comparers);
-        }
+            => new CompoundComparer<TEntity>(comparers);
 
         /// <summary>
         /// Erstellt einen neuen Vergleichsalgorithmus auf Basis einer Dateibeschreibung.

@@ -123,14 +123,9 @@
         /// <summary>
         /// Meldet die Größe dieser Informationsinstanz.
         /// </summary>
-        public int Length
-        {
-            get
-            {
+        public int Length =>
                 // Report static size
-                return 8;
-            }
-        }
+                8;
 
         /// <summary>
         /// Erzeugt eine neue Informationsinstanz.

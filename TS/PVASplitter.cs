@@ -457,26 +457,16 @@ namespace JMS.DVB.TS
 		/// <summary>
 		/// Meldet, ob ein Videopaket mit folgendem 32-Bit PTS vorliegt.
 		/// </summary>
-		private bool PTSPresent
-		{
-			get
-			{
+		private bool PTSPresent =>
 				// Report
-				return (1 == m_Header[0]) && PTSFlagPresent;
-			}
-		}
+				(1 == m_Header[0]) && PTSFlagPresent;
 
 		/// <summary>
 		/// Meldet, ob zu dem aktuellen Paket ein PTS vorhanden ist.
 		/// </summary>
-		private bool PTSFlagPresent
-		{
-			get
-			{
+		private bool PTSFlagPresent =>
 				// Report
-				return 0x10 == (0x10 & m_Header[3]);
-			}
-		}
+				0x10 == (0x10 & m_Header[3]);
 
 		/// <summary>
 		/// Vearbeitet Nutzdaten.
@@ -679,14 +669,9 @@ namespace JMS.DVB.TS
 		/// Meldet, ob die Auftrennung des PVA Stroms in Video und Audio erfolgreich
 		/// war.
 		/// </summary>
-		public bool Corrupted
-		{
-			get
-			{
+		public bool Corrupted =>
 				// Report
-				return (0 != m_BadAudioPES) || (0 != m_Restarted) || (0 != m_Skipped);
-			}
-		}
+				(0 != m_BadAudioPES) || (0 != m_Restarted) || (0 != m_Skipped);
 
 		/// <summary>
 		/// Passt die 32-Bit PTS Werte eines PVA Stroms an echte 33-Bit PTS Werte innerhalb

@@ -14,10 +14,6 @@
         /// Meldet eine Anzeigetext zu Testzwecken.
         /// </summary>
         /// <returns>Informationen zur Konfiguration dieser Instanz.</returns>
-        public override string ToString()
-        {
-            // Construct
-            return string.Format("CI<{0}", MaximumParallelSources + 1);
-        }
+        public override string ToString() => string.Format("CI<{0}", MaximumParallelSources + 1);
     }
 }

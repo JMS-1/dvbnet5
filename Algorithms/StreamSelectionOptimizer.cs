@@ -331,14 +331,9 @@ namespace JMS.DVB.Algorithms
         /// <summary>
         /// Meldet die Anzahl der Quellen.
         /// </summary>
-        public int Count
-        {
-            get
-            {
+        public int Count =>
                 // Report
-                return m_Sources.Count;
-            }
-        }
+                m_Sources.Count;
 
         /// <summary>
         /// Meldet eine der Quellen.

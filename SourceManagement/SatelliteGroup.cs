@@ -264,8 +264,8 @@
 
             // Test for special notation
             if ((orbital.Length >= 4) && (orbital.Length <= 6))
-                if ('.' == orbital[orbital.Length - 3])
-                    if ('°' == orbital[orbital.Length - 1])
+                if ('.' == orbital[^3])
+                    if ('°' == orbital[^1])
                         orbital = ("00" + orbital.Substring(0, orbital.Length - 3) + orbital.Substring(orbital.Length - 2, 1)).Substring(orbital.Length - 4, 4);
 
             // Read frequency

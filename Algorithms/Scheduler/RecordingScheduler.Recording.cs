@@ -181,14 +181,9 @@
             /// <summary>
             /// Der geplante Zeitpunkt.
             /// </summary>
-            public new IRecordingDefinition Definition
-            {
-                get
-                {
+            public new IRecordingDefinition Definition =>
                     // Report
-                    return (IRecordingDefinition)base.Definition;
-                }
-            }
+                    (IRecordingDefinition)base.Definition;
 
             /// <summary>
             /// Erzeugt eine neue Verwaltung.

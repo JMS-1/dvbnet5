@@ -328,13 +328,8 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Meldet die Art der Antwort.
         /// </summary>
-        protected override Type ResponseType
-        {
-            get
-            {
+        protected override Type ResponseType =>
                 // Report
-                return typeof(T);
-            }
-        }
+                typeof(T);
     }
 }

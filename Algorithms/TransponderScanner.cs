@@ -998,26 +998,16 @@ namespace JMS.DVB.Algorithms
         /// <summary>
         /// Meldet, ob der Suchlauf durch den Aufrufer beendet wurde.
         /// </summary>
-        public bool HasBeenAborted
-        {
-            get
-            {
+        public bool HasBeenAborted =>
                 // Report
-                return m_Aborted;
-            }
-        }
+                m_Aborted;
 
         /// <summary>
         /// Meldet, ob der Suchlauf durch einen Fehler beendet wurde.
         /// </summary>
-        public Exception Error
-        {
-            get
-            {
+        public Exception Error =>
                 // Report
-                return m_ThreadException;
-            }
-        }
+                m_ThreadException;
 
         #region IDisposable Members
 

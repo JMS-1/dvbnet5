@@ -51,17 +51,17 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <summary>
             /// Meldet, ob diese Quelle eine Entschlüsselung benötigt.
             /// </summary>
-            public bool IsEncrypted { get { return Station.IsEncrypted; } }
+            public bool IsEncrypted => Station.IsEncrypted;
 
             /// <summary>
             /// Meldet, ob es sich bei der Quelle um einen Radiosender handelt.
             /// </summary>
-            public bool IsAudioOnly { get { return Station.SourceType == SourceTypes.Radio; } }
+            public bool IsAudioOnly => Station.SourceType == SourceTypes.Radio;
 
             /// <summary>
             /// Meldet die vollen Informationen zur Quelle.
             /// </summary>
-            public Station Station { get { return (Station)Source.Source; } }
+            public Station Station => (Station)Source.Source;
 
             /// <summary>
             /// Prüft, ob diese Quelle mit einer anderen parallel aufgezeichnet werden kann.

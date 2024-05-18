@@ -187,12 +187,12 @@
         /// <summary>
         /// Meldet die Anzahl der Aufzeichnungen auf diesem Gerät.
         /// </summary>
-        public int RecordingCount { get { return m_Recordings.Count; } }
+        public int RecordingCount => m_Recordings.Count;
 
         /// <summary>
         /// Meldet die Anzahl der unterschiedlichen Quellen auf diesem Gerät.
         /// </summary>
-        public int NumberOfDifferentSources { get { return Allocations.NumberOfDifferentSources; } }
+        public int NumberOfDifferentSources => Allocations.NumberOfDifferentSources;
 
         /// <summary>
         /// Erzeugt eine neue Instanz unter Berücksichtigung der vorgenommenen Gerätezuordnung.
@@ -338,11 +338,11 @@
         /// <summary>
         /// Meldet, wann die aktuelle Planung endet.
         /// </summary>
-        public DateTime PlanEnd { get { return Allocations.PlanEnd; } }
+        public DateTime PlanEnd => Allocations.PlanEnd;
 
         /// <summary>
         /// Meldet, wann die aktuelle Planung beginnt.
         /// </summary>
-        public DateTime PlanStart { get { return Allocations.PlanStart; } }
+        public DateTime PlanStart => Allocations.PlanStart;
     }
 }

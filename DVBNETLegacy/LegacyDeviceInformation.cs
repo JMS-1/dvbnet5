@@ -34,16 +34,16 @@ namespace JMS.DVB.Provider.Legacy
 
         private XmlElement? FindElement(string name) => (XmlElement?)Root.SelectSingleNode(name);
 
-        public XmlNodeList Parameters { get { return FindElement("Parameters")!.ChildNodes; } }
+        public XmlNodeList Parameters => FindElement("Parameters")!.ChildNodes;
 
-        private string UniqueIdentifier { get { return (string)Root.GetAttribute("id"); } }
+        private string UniqueIdentifier => (string)Root.GetAttribute("id");
 
         public override string ToString() => UniqueIdentifier;
 
         /// <summary>
         /// Meldet den Namen der .NET Klasse zum Zugriff auf die DVB Hardware.
         /// </summary>
-        public string DriverType { get { return FindElement("Driver")!.InnerText; } }
+        public string DriverType => FindElement("Driver")!.InnerText;
 
         public string[] Names
         {

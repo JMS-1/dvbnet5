@@ -82,7 +82,7 @@ namespace JMS.DVB.TS.Tables
             set
             {
                 // Validate
-                if (value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+                ArgumentOutOfRangeException.ThrowIfNegative(value);
 
                 // Must reload on next call
                 TableData = null!;

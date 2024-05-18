@@ -114,17 +114,17 @@
             /// <summary>
             /// Meldet die aktuelle Belegung der Geräte.
             /// </summary>
-            public IResourceAllocationInformation[] CurrentAllocations { get { return m_Recordings.ToArray(); } }
+            public IResourceAllocationInformation[] CurrentAllocations => m_Recordings.ToArray();
 
             /// <summary>
             /// Meldet alle bekannten Geräte.
             /// </summary>
-            public IScheduleResource[] Resources { get { return m_Resources.ToArray(); } }
+            public IScheduleResource[] Resources => m_Resources.ToArray();
 
             /// <summary>
             /// Meldet die Vergleichsmethode für Geräte.
             /// </summary>
-            public IEqualityComparer<IScheduleResource> ResourceComparer { get { return ReferenceComparer<IScheduleResource>.Default; } }
+            public IEqualityComparer<IScheduleResource> ResourceComparer => ReferenceComparer<IScheduleResource>.Default;
 
             /// <summary>
             /// Ergänzt ein Gerät.
@@ -206,8 +206,7 @@
                 var recording = m_Recordings[index];
 
                 // Validate
-                if (newEnd <= recording.Time.Start)
-                    throw new ArgumentOutOfRangeException(nameof(newEnd));
+                ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(newEnd, recording.Time.Start);
 
                 // Remove it
                 m_Recordings[index] = new ResourceAllocationInformation(recording.Resource, recording.Source, recording.UniqueIdentifier, recording.Name, recording.Time.Start, newEnd - recording.Time.Start);
@@ -262,8 +261,7 @@
 
                 if (!m_Resources.Contains(resource))
                     throw new ArgumentException(resource.Name, nameof(resource));
-                if (plannedStart >= currentEnd)
-                    throw new ArgumentOutOfRangeException(nameof(currentEnd));
+                ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(plannedStart, currentEnd);
                 if (m_Recordings.Any(r => r.UniqueIdentifier == scheduleIdentifier))
                     throw new ArgumentException("resource");
 

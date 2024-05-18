@@ -294,8 +294,7 @@ namespace JMS.DVB.TS
             : this((Stream)null!, nextPID)
         {
             // Validate
-            if (bufferSize <= 1000)
-                throw new ArgumentOutOfRangeException(nameof(bufferSize));
+            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(bufferSize, 1000);
 
             // Remember
             m_BufferSize = bufferSize;
@@ -1358,26 +1357,16 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Get the TCP/IP client to receive the stream.
         /// </summary>
-        public string TCPClient
-        {
-            get
-            {
+        public string TCPClient =>
                 // Forward
-                return m_UDPStream.Client;
-            }
-        }
+                m_UDPStream.Client;
 
         /// <summary>
         /// Get the TCP/IP UDP port to send the stream to.
         /// </summary>
-        public int TCPPort
-        {
-            get
-            {
+        public int TCPPort =>
                 // Forward
-                return m_UDPStream.Port;
-            }
-        }
+                m_UDPStream.Port;
 
         /// <summary>
         /// 
@@ -1402,26 +1391,16 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Meldet den aktuell benutzen Versazu zwischen Bild und Ton.
         /// </summary>
-        public long ActiveVideoDelay
-        {
-            get
-            {
+        public long ActiveVideoDelay =>
                 // Report
-                return m_VideoDelay;
-            }
-        }
+                m_VideoDelay;
 
         /// <summary>
         /// Meldet die Anzahl der aktiven Datenstr�me.
         /// </summary>
-        public int StreamCount
-        {
-            get
-            {
+        public int StreamCount =>
                 // Report
-                return ProgramMap.Count;
-            }
-        }
+                ProgramMap.Count;
 
         /// <summary>
         /// Erg�nzt einen Eintrag der Programmzeitschrift.

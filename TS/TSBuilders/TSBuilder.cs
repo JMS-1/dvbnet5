@@ -25,12 +25,12 @@ namespace JMS.DVB.TS.TSBuilders
         /// <summary>
         /// Meldet die Gr��e des kleinsten an den Verbraucher gemeldeten Paketes.
         /// </summary>
-        public int MinimumPacketSize { get { return (m_MinPacket == int.MaxValue) ? 0 : m_MinPacket; } }
+        public int MinimumPacketSize => (m_MinPacket == int.MaxValue) ? 0 : m_MinPacket;
 
         /// <summary>
         /// Meldet die Gr��e des gr��ten an den Verbraucher gemeldeten Paketes.
         /// </summary>
-        public int MaximumPacketSize { get { return (m_MaxPacket == int.MinValue) ? 0 : m_MaxPacket; } }
+        public int MaximumPacketSize => (m_MaxPacket == int.MinValue) ? 0 : m_MaxPacket;
 
         /// <summary>
         /// Meldet die Anzahl der an den Verbraucher durchgereichten Pakete.

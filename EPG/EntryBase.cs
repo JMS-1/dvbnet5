@@ -26,26 +26,16 @@ namespace JMS.DVB.EPG
         /// <summary>
         /// Report the corresponding SI table.
         /// </summary>
-        public Table Container
-        {
-            get
-            {
+        public Table Container =>
                 // Report
-                return Table;
-            }
-        }
+                Table;
 
         /// <summary>
         /// Report the corresponding section.
         /// </summary>
-        public Section Section
-        {
-            get
-            {
+        public Section Section =>
                 // Use table
-                return Table.Section;
-            }
-        }
+                Table.Section;
 
         #endregion
     }

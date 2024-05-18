@@ -32,73 +32,43 @@ namespace JMS.DVB.SchedulerTests
             /// <summary>
             /// Meldet alle Geräte, die verwendet werden dürfen, um die Aufgabe zu erledigen.
             /// </summary>
-            public override IScheduleResource[] Resources
-            {
-                get
-                {
+            public override IScheduleResource[] Resources =>
                     // Report
-                    return m_Resources;
-                }
-            }
+                    m_Resources;
             /// <summary>
             /// Meldet die Zeitspanne zwischen zwei Läufen.
             /// </summary>
-            public override TimeSpan DefaultInterval
-            {
-                get
-                {
+            public override TimeSpan DefaultInterval =>
                     // Not set
-                    return new TimeSpan(1);
-                }
-            }
+                    new TimeSpan(1);
 
             /// <summary>
             /// Meldet die maximale Dauer eines Laufs.
             /// </summary>
-            public override TimeSpan Duration
-            {
-                get
-                {
+            public override TimeSpan Duration =>
                     // Report
-                    return TimeSpan.FromMinutes(20);
-                }
-            }
+                    TimeSpan.FromMinutes(20);
 
             /// <summary>
             /// Meldet, ob eine Bearbeitung erwünscht ist.
             /// </summary>
-            public override bool IsEnabled
-            {
-                get
-                {
+            public override bool IsEnabled =>
                     // Make no sense if not
-                    return true;
-                }
-            }
+                    true;
 
             /// <summary>
             /// Meldet, ob eine vorzeigtig Aktualisierung unterstützt wird.
             /// </summary>
-            public override TimeSpan? JoinThreshold
-            {
-                get
-                {
+            public override TimeSpan? JoinThreshold =>
                     // Nope
-                    return null;
-                }
-            }
+                    null;
 
             /// <summary>
             /// Meldet den Zeitpunkt der letzten Ausführung.
             /// </summary>
-            public override DateTime? LastRun
-            {
-                get
-                {
+            public override DateTime? LastRun =>
                     // Not needed
-                    return null;
-                }
-            }
+                    null;
 
             /// <summary>
             /// Meldet die Stunden, an denen eine Aktualisierung erlaubt ist. Die Angabe bezieht

@@ -62,14 +62,9 @@
         /// <summary>
         /// Ermittelt den nächsten Zeitpunkt für die Ausführung.
         /// </summary>
-        public DateTime? NextSchedule
-        {
-            get
-            {
+        public DateTime? NextSchedule =>
                 // Forward
-                return GetNextSchedule(LastRun, GetNow());
-            }
-        }
+                GetNextSchedule(LastRun, GetNow());
 
         /// <summary>
         /// Ermittelt den nächsten Zeitpunkt für die Ausführung.

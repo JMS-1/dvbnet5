@@ -347,13 +347,8 @@ namespace JMS.DVB
         /// Meldet alle Quellgruppen (Transponder), die von dem Suchlauf ausgeschlossen werden sollen
         /// </summary>
         [XmlIgnore]
-        public override IList ExcludedSourceGroups
-        {
-            get
-            {
+        public override IList ExcludedSourceGroups =>
                 // Report
-                return ExcludedGroups;
-            }
-        }
+                ExcludedGroups;
     }
 }

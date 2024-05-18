@@ -30,17 +30,13 @@
         /// </summary>
         /// <returns>Der gewünschte Anzeigetext.</returns>
         public override string ToString()
-        {
-            // Merge
-            return
-                string.Format
-                    (
-                        "CI({0}*{1})<{2}",
-                        (DecryptionGroups == null) ? null : string.Join(",", DecryptionGroups.Select(g => g.ToString()).ToArray()),
-                        (ScheduleResources == null) ? null : string.Join(",", ScheduleResources.Select(r => (r == null) ? null : r.Name).ToArray()),
-                        MaximumParallelSources + 1
-                    );
-        }
+            => string.Format
+                (
+                    "CI({0}*{1})<{2}",
+                    (DecryptionGroups == null) ? null : string.Join(",", DecryptionGroups.Select(g => g.ToString()).ToArray()),
+                    (ScheduleResources == null) ? null : string.Join(",", ScheduleResources.Select(r => (r == null) ? null : r.Name).ToArray()),
+                    MaximumParallelSources + 1
+                );
 
         /// <summary>
         /// Prüft eine Entschlüsselungsregel.

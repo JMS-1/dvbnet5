@@ -442,14 +442,9 @@
         /// <summary>
         /// Meldet die Anzahl der Geräte, die in Benutzung sind.
         /// </summary>
-        public int ResourcesInUseCount
-        {
-            get
-            {
+        public int ResourcesInUseCount =>
                 // Report
-                return Resources.Count(r => r.RecordingCount > 0);
-            }
-        }
+                Resources.Count(r => r.RecordingCount > 0);
 
         /// <summary>
         /// Vergleicht zwei Pläne. Ein Plan ist umso besser, je mehr Aufzeichnung auf einem hoch priorisierten

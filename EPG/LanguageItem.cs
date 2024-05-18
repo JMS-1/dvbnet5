@@ -47,7 +47,7 @@ namespace JMS.DVB.EPG
         /// <summary>
         /// Meldet die Gr��e der Rohbeschreibung in Bytes.
         /// </summary>
-        public int Length { get { return 4; } }
+        public int Length => 4;
 
         /// <summary>
         /// Erstellt eine neue Sprache.

@@ -491,7 +491,7 @@ public class VCRConfiguration : IVCRConfiguration
                         continue;
 
                     // Extend it
-                    if (path[path.Length - 1] != Path.DirectorySeparatorChar)
+                    if (path[^1] != Path.DirectorySeparatorChar)
                         path += Path.DirectorySeparatorChar;
 
                     // Be safe

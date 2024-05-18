@@ -252,7 +252,7 @@ namespace JMS.DVB
         /// Meldet die Zugriffsdaten zu allen Quellen dieses Geräteprofils.
         /// </summary>
         [XmlIgnore]
-        public IEnumerable<SourceSelection> AllSources { get { return InternalFindSource(null!); } }
+        public IEnumerable<SourceSelection> AllSources => InternalFindSource(null!);
 
         /// <summary>
         /// Ermittelt alle Quellen sortiert nach dem Anzeigenamen <see cref="SourceSelection.DisplayName"/>
@@ -540,19 +540,19 @@ namespace JMS.DVB
         /// Meldet die Sonderkonfiguration für den Sendersuchlauf.
         /// </summary>
         [XmlIgnore]
-        public override ScanningFilter ScanConfiguration { get { return ScanningFilter; } }
+        public override ScanningFilter ScanConfiguration => ScanningFilter;
 
         /// <summary>
         /// Erlaubt den Zugriff auf die Liste der Ursprünge für den Sendersuchlauf.
         /// </summary>
         [XmlIgnore]
-        public override IList ScanLocations { get { return TypedScanLocations; } }
+        public override IList ScanLocations => TypedScanLocations;
 
         /// <summary>
         /// Meldet alle Ursprünge zu diesem Profil.
         /// </summary>
         [XmlIgnore]
-        public override IList Locations { get { return GroupLocations; } }
+        public override IList Locations => GroupLocations;
 
         /// <summary>
         /// Prüft, ob das zugehörige Gerät eine bestimmte Quellgruppe überhaupt unterstützt.

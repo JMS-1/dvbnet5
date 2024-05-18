@@ -367,11 +367,11 @@ namespace JMS.DVB.TS
         /// <summary>
         /// Meldet den aktuellen Empf�nger des Datenstroms.
         /// </summary>
-        public string Client { get { return m_currentConnection.ClientName; } }
+        public string Client => m_currentConnection.ClientName;
 
         /// <summary>
         /// Meldet den TCP/IP UDP Port des aktuellen Empf�ngers des Datenstroms.
         /// </summary>
-        public int Port { get { return m_currentConnection.TCPPort; } }
+        public int Port => m_currentConnection.TCPPort;
     }
 }

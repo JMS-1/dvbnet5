@@ -174,7 +174,7 @@ public class ProfileState(
     }
 
     /// <inheritdoc/>
-    public bool IsActive { get { return !ReferenceEquals(m_CurrentRequest, null); } }
+    public bool IsActive => !ReferenceEquals(m_CurrentRequest, null);
 
     /// <inheritdoc/>
     public FullInfo? CurrentRecording

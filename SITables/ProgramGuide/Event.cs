@@ -136,14 +136,9 @@ namespace JMS.DVB.SI.ProgramGuide
         /// Der Zeitpunkt, an dem die Sendung endet (in GMT / UTC).
         /// </summary>
         [XmlIgnore]
-        public DateTime EndTime
-        {
-            get
-            {
+        public DateTime EndTime =>
                 // Caluclate
-                return StartTime + Duration;
-            }
-        }
+                StartTime + Duration;
 
         /// <summary>
         /// Meldet den Namen dieser Sendung.

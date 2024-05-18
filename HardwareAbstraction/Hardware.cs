@@ -271,7 +271,7 @@ namespace JMS.DVB
             /// <summary>
             /// Meldet die Anzahl der Verbraucher dieses Datenstroms, die gerade Daten empfangen.
             /// </summary>
-            public int ActiveConsumerCount { get { return m_Consumers.Count(consumer => consumer.IsActive); } }
+            public int ActiveConsumerCount => m_Consumers.Count(consumer => consumer.IsActive);
 
             /// <summary>
             /// Verteilt den Datenblock an alle angeschlossenen Verbraucher.
@@ -339,7 +339,7 @@ namespace JMS.DVB
         /// <summary>
         /// Die Hintergrundaufgabe zum Auslesen der Netzwerkinformationen.
         /// </summary>
-        public Task<NIT[]> LocationInformationReader { get { return m_networkInformationReader; } }
+        public Task<NIT[]> LocationInformationReader => m_networkInformationReader;
 
         /// <summary>
         /// Ermittelt die aktuelle <i>Program Association Table</i>.
@@ -349,7 +349,7 @@ namespace JMS.DVB
         /// <summary>
         /// Die Hintergrundaufgabe zum Auslesen der Dienstbelegung.
         /// </summary>
-        public Task<PAT[]> AssociationTableReader { get { return m_associationReader; } }
+        public Task<PAT[]> AssociationTableReader => m_associationReader;
 
         /// <summary>
         /// Ermittelt die aktuelle <i>Service Description Table</i>.
@@ -359,7 +359,7 @@ namespace JMS.DVB
         /// <summary>
         /// Die Hintergrundaufgabe zum Auslesen der Dienstabelle.
         /// </summary>
-        public Task<SDT[]> ServiceTableReader { get { return m_serviceReader; } }
+        public Task<SDT[]> ServiceTableReader => m_serviceReader;
 
         /// <summary>
         /// Die zuletzt ermittelten Daten zur aktuellen Quellgruppe (Transponder).
@@ -369,7 +369,7 @@ namespace JMS.DVB
         /// <summary>
         /// Die Hintergrundaufgabe zum Auslesen der Informationen zur Quellgruppe.
         /// </summary>
-        public Task<GroupInformation> GroupReader { get { return m_groupReader; } }
+        public Task<GroupInformation> GroupReader => m_groupReader;
 
         /// <summary>
         /// Der Zeitpunkt der letzten Auswahl einer Quellgruppe (Transponder).
@@ -889,12 +889,12 @@ namespace JMS.DVB
         /// Meldet, ob die Anzahl gleichzeitiger Verbraucher beschränkt ist. Für die meiste Hardware 
         /// besteht eine solche Begrenzung nicht.
         /// </summary>
-        public bool HasConsumerRestriction { get { return Restrictions.ConsumerLimit.HasValue && (Restrictions.ConsumerLimit.Value < 200); } }
+        public bool HasConsumerRestriction => Restrictions.ConsumerLimit.HasValue && (Restrictions.ConsumerLimit.Value < 200);
 
         /// <summary>
         /// Meldet, ob der Pipelinemechanismus von DVB.NET 3.9 verwendet werden soll.
         /// </summary>
-        protected virtual bool UsesLegacyPipeline { get { return true; } }
+        protected virtual bool UsesLegacyPipeline => true;
 
         /// <summary>
         /// Initialisiert eine Hintergrundaufgabe.
@@ -923,12 +923,12 @@ namespace JMS.DVB
         /// <summary>
         /// Meldet, ob die Ressourcen dieser Instanz bereits freigegeben wurden.
         /// </summary>
-        protected bool IsDisposed { get { return m_disposed; } }
+        protected bool IsDisposed => m_disposed;
 
         /// <summary>
         /// Meldet, ob gerade die <see cref="Dispose"/> Methode ausgeführt wird.
         /// </summary>
-        protected bool IsDisposing { get { return m_disposing; } }
+        protected bool IsDisposing => m_disposing;
 
         /// <summary>
         /// Gibt alle mit dieser Instanz verbundenen Ressourcen frei.
@@ -991,17 +991,17 @@ namespace JMS.DVB
         /// <summary>
         /// Meldet das zugeordnete Geräteprofil.
         /// </summary>
-        public new TProfileType Profile { get { return (TProfileType)base.Profile; } }
+        public new TProfileType Profile => (TProfileType)base.Profile;
 
         /// <summary>
         /// Meldet den aktuell verwendeten Ursprung.
         /// </summary>
-        public new TLocationType CurrentLocation { get { return (TLocationType)base.CurrentLocation; } }
+        public new TLocationType CurrentLocation => (TLocationType)base.CurrentLocation;
 
         /// <summary>
         /// Meldet die aktuelle Quellgruppe.
         /// </summary>
-        public new TGroupType CurrentGroup { get { return (TGroupType)base.CurrentGroup; } }
+        public new TGroupType CurrentGroup => (TGroupType)base.CurrentGroup;
 
         /// <summary>
         /// Stellt den Empfang auf eine bestimmte Quellgruppe eines Ursprungs ein.

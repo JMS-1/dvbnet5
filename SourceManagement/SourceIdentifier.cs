@@ -168,7 +168,7 @@ namespace JMS.DVB
         /// Meldet, ob alle DVB Parameter der Kennung <i>0</i> sind.
         /// </summary>
         [XmlIgnore]
-        public bool IsEmpty { get { return (Service == 0) && (TransportStream == 0) && (Network == 0); } }
+        public bool IsEmpty => (Service == 0) && (TransportStream == 0) && (Network == 0);
 
         /// <summary>
         /// Rekonstruiert einen eindeutigen Namen aus den Teilen der DVB Kennung.

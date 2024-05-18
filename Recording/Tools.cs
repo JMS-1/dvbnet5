@@ -34,7 +34,7 @@ public static class Tools
     /// VCR.NET Recording Service zu finden. Er kann in Testprogrammen
     /// Verändert werden.
     /// </remarks>
-    public static string ExecutablePath { get { return RunTimeLoader.GetDirectory("Recording").FullName; } }
+    public static string ExecutablePath => RunTimeLoader.GetDirectory("Recording").FullName;
 
     /// <summary>
     /// Synchronisiert Einträge in das spezielle Protokoll.

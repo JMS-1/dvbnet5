@@ -12,6 +12,6 @@ namespace JMS.DVB.Provider.Legacy
         /// <summary>
         /// Meldet die Art des DVB Empfangs.
         /// </summary>
-        protected override DVBSystemType SystemType { get { return DVBSystemType.Satellite; } }
+        protected override DVBSystemType SystemType => DVBSystemType.Satellite;
     }
 }

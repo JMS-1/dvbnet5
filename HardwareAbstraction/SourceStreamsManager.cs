@@ -781,7 +781,7 @@ namespace JMS.DVB
                 return false;
 
             // Load previous
-            var last = m_AllFiles[m_AllFiles.Count - 1];
+            var last = m_AllFiles[^1];
 
             // Safe split
             try

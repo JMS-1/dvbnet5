@@ -68,8 +68,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             public static Range Create(DateTime start, DateTime end, TItemType data)
             {
                 // Must not be empty
-                if (end <= start)
-                    throw new ArgumentOutOfRangeException(nameof(end));
+                ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(end, start);
 
                 // Create
                 return new Range(start, end, data);
