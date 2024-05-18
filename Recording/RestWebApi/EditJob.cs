@@ -27,7 +27,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Die Quelle, von der aufgezeichnet werden soll.
         /// </summary>
-        public string Source { get; set; } = null!;
+        public string? Source { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn die Aufzeichnung auf jeden Fall auf dem für die Auswahl der Quelle
