@@ -151,7 +151,7 @@ namespace JMS.DVB.Algorithms
         /// </para>
         /// </remarks>
         public static readonly StreamDisableSelector[] DefaultDisableOrder =
-            {
+            [
                 StreamDisableSelector.SubTitlesLower,
                 StreamDisableSelector.SubTitlesSelf,
                 StreamDisableSelector.SubTitlesHigher,
@@ -170,7 +170,7 @@ namespace JMS.DVB.Algorithms
                 StreamDisableSelector.VideoTextLower,
                 StreamDisableSelector.VideoTextSelf,
                 StreamDisableSelector.VideoTextHigher,
-            };
+            ];
 
         /// <summary>
         /// Beschreibt eine einzelne Aufzeichnung.

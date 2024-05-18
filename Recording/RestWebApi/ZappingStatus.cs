@@ -10,7 +10,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Eine leere Liste von Diensten.
         /// </summary>
-        private static readonly ZappingService[] s_NoServices = { };
+        private static readonly ZappingService[] s_NoServices = [];
 
         /// <summary>
         /// Das aktuelle Ziel der Nutzdaten.

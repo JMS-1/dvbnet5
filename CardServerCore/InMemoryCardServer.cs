@@ -686,7 +686,7 @@ namespace JMS.DVB.CardServer
                         CardServerException.Throw(new NoSuchActionFault(actionType));
 
                     // Create the instance of the type
-                    var customAction = Activator.CreateInstance(type!, new object[] { this }) as CustomAction<TInput, TOutput>;
+                    var customAction = Activator.CreateInstance(type!, [this]) as CustomAction<TInput, TOutput>;
                     if (customAction == null)
                         CardServerException.Throw(new NoSuchActionFault(actionType));
 

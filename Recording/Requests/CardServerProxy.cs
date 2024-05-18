@@ -582,7 +582,7 @@ namespace JMS.DVB.NET.Recording.Requests
         /// <summary>
         /// Eine leere Liste von Aktionen.
         /// </summary>
-        private static readonly Action[] s_NoActions = { };
+        private static readonly Action[] s_NoActions = [];
 
         /// <summary>
         /// Eine Liste von Arbeitsaufträgen, die abgearbeitet werden sollen.
@@ -733,7 +733,7 @@ namespace JMS.DVB.NET.Recording.Requests
                 m_wakeUp.Set();
 
                 // Create wait handle array
-                WaitHandle[] wait = { done, RequestFinished };
+                WaitHandle[] wait = [done, RequestFinished];
                 if (WaitHandle.WaitAny(wait) == 0)
                     if (error != null)
                         throw error;

@@ -83,7 +83,7 @@ public class VCRConfiguration : IVCRConfiguration
                 if (resultType.IsEnum)
                     return (TValueType)Enum.Parse(resultType, setting);
                 else
-                    return (TValueType)resultType.InvokeMember("Parse", BindingFlags.Public | BindingFlags.Static | BindingFlags.InvokeMethod, null, null, new object[] { setting })!;
+                    return (TValueType)resultType.InvokeMember("Parse", BindingFlags.Public | BindingFlags.Static | BindingFlags.InvokeMethod, null, null, [setting])!;
             }
             catch
             {

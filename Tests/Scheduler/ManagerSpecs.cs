@@ -33,7 +33,7 @@ namespace JMS.DVB.SchedulerTests
             {
                 // Create component under test
                 using (var cut = ResourceManager.Create(StringComparer.InvariantCultureIgnoreCase))
-                    cut.Add(new DecryptionGroup { DecryptionGroups = new[] { new DecryptionGroup { ScheduleResources = new IScheduleResource[1] } } });
+                    cut.Add(new DecryptionGroup { DecryptionGroups = [new DecryptionGroup { ScheduleResources = new IScheduleResource[1] }] });
             });
         }
 
@@ -646,7 +646,7 @@ namespace JMS.DVB.SchedulerTests
                 var now = DateTime.UtcNow;
 
                 // Create the recording
-                var play1 = RecordingDefinition.Create(this, "test", Guid.NewGuid(), new[] { ResourceMock.Device1 }, SourceMock.Source1Group1Free, now.AddMinutes(10), TimeSpan.FromMinutes(100));
+                var play1 = RecordingDefinition.Create(this, "test", Guid.NewGuid(), [ResourceMock.Device1], SourceMock.Source1Group1Free, now.AddMinutes(10), TimeSpan.FromMinutes(100));
 
                 // Create initializer
                 Func<RecordingScheduler, DateTime, IEnumerable<IScheduleInformation>> callback =
@@ -728,7 +728,7 @@ namespace JMS.DVB.SchedulerTests
                 var now = DateTime.UtcNow;
 
                 // Create the recording
-                var play1 = RecordingDefinition.Create(this, "test", Guid.NewGuid(), new[] { ResourceMock.Device1 }, SourceMock.Source1Group1Free, now.AddMinutes(10), TimeSpan.FromMinutes(100), new DateTime(2100, 12, 31), DayOfWeek.Monday);
+                var play1 = RecordingDefinition.Create(this, "test", Guid.NewGuid(), [ResourceMock.Device1], SourceMock.Source1Group1Free, now.AddMinutes(10), TimeSpan.FromMinutes(100), new DateTime(2100, 12, 31), DayOfWeek.Monday);
 
                 // Get the schedule
                 var scheduler = cut.CreateScheduler();
@@ -775,7 +775,7 @@ namespace JMS.DVB.SchedulerTests
                 var now = DateTime.UtcNow;
 
                 // Create the recording
-                var play1 = RecordingDefinition.Create(this, "test", Guid.NewGuid(), new[] { ResourceMock.Device1 }, SourceMock.Source1Group1Free, now.AddMinutes(10), TimeSpan.FromMinutes(100), new DateTime(2100, 12, 31), DayOfWeek.Monday);
+                var play1 = RecordingDefinition.Create(this, "test", Guid.NewGuid(), [ResourceMock.Device1], SourceMock.Source1Group1Free, now.AddMinutes(10), TimeSpan.FromMinutes(100), new DateTime(2100, 12, 31), DayOfWeek.Monday);
 
                 // Loading helper
                 Func<RecordingScheduler, DateTime, IEnumerable<IScheduleInformation>> loader =
@@ -818,7 +818,7 @@ namespace JMS.DVB.SchedulerTests
                 var now = DateTime.UtcNow;
 
                 // Create the recording
-                var play1 = RecordingDefinition.Create(this, "test", Guid.NewGuid(), new[] { ResourceMock.Device1 }, SourceMock.Source1Group1Free, now.AddMinutes(10), TimeSpan.FromMinutes(100), new DateTime(2100, 12, 31), DayOfWeek.Monday);
+                var play1 = RecordingDefinition.Create(this, "test", Guid.NewGuid(), [ResourceMock.Device1], SourceMock.Source1Group1Free, now.AddMinutes(10), TimeSpan.FromMinutes(100), new DateTime(2100, 12, 31), DayOfWeek.Monday);
 
                 // Loading helper
                 Func<RecordingScheduler, DateTime, IEnumerable<IScheduleInformation>> loader =
@@ -864,7 +864,7 @@ namespace JMS.DVB.SchedulerTests
                 var now = DateTime.UtcNow;
 
                 // Create the recording
-                var play1 = RecordingDefinition.Create(this, "test", Guid.NewGuid(), new[] { ResourceMock.Device1 }, SourceMock.Source1Group1Free, now.AddMinutes(10), TimeSpan.FromMinutes(100), new DateTime(2100, 12, 31), DayOfWeek.Monday);
+                var play1 = RecordingDefinition.Create(this, "test", Guid.NewGuid(), [ResourceMock.Device1], SourceMock.Source1Group1Free, now.AddMinutes(10), TimeSpan.FromMinutes(100), new DateTime(2100, 12, 31), DayOfWeek.Monday);
 
                 // Loading helper
                 Func<RecordingScheduler, DateTime, IEnumerable<IScheduleInformation>> loader =

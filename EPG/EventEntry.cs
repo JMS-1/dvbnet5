@@ -150,7 +150,7 @@ namespace JMS.DVB.EPG
 		/// Please refer to the original documentation to find out which descriptor
 		/// type is allowed in a <see cref="Tables.EIT"/> table.
 		/// </remarks>
-		public Descriptor[] Descriptors => (null == m_Loader) ? new Descriptor[0] : m_Loader.Descriptors;
+		public Descriptor[] Descriptors => (null == m_Loader) ? [] : m_Loader.Descriptors;
 
 		/// <summary>
 		/// The start time of the event in GMT/UTC notation.

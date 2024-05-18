@@ -17,11 +17,6 @@ public class ProgramGuideEntries : ICloneable
     private Dictionary<SourceIdentifier, OrderedEntries> m_Events = [];
 
     /// <summary>
-    /// Eine leere Liste von Sendungen.
-    /// </summary>
-    private static readonly ProgramGuideEntry[] s_NoEntries = { };
-
-    /// <summary>
     /// Create a new event package.
     /// </summary>
     public ProgramGuideEntries()

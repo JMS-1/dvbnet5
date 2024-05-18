@@ -11,7 +11,7 @@ public static class Program
         using (var server = ServerImplementation.CreateInMemory())
         {
             await Task.Factory.FromAsync(server.BeginSetProfile(profile.Name, false, false, false), (result) => Console.WriteLine("Profile set"));
-            await Task.Factory.FromAsync(server.BeginStartEPGCollection(new[] { station.Source }, EPGExtensions.FreeSatUK), (result) => Console.WriteLine("EPG scan started"));
+            await Task.Factory.FromAsync(server.BeginStartEPGCollection([station.Source], EPGExtensions.FreeSatUK), (result) => Console.WriteLine("EPG scan started"));
 
             for (var n = 60; n-- > 0;)
             {

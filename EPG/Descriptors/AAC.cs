@@ -18,7 +18,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Additional information.
         /// </summary>
-		private byte[] m_AdditionalInformation = { };
+		private byte[] m_AdditionalInformation = [];
 
         /// <summary>
         /// 
@@ -33,7 +33,7 @@ namespace JMS.DVB.EPG.Descriptors
             set
             {
                 // Never null it
-                m_AdditionalInformation = value ?? new byte[0];
+                m_AdditionalInformation = value ?? [];
             }
         }
 

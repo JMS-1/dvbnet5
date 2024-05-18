@@ -36,7 +36,7 @@ namespace JMS.DVB.EPG
         /// has to report <i>true</i> for any descriptor tag it is responsible for.
         /// </remarks>
         private static readonly Type[] m_Handlers =
-        {
+        [
             typeof(Descriptors.ShortEvent),
             typeof(Descriptors.Content),
             typeof(Descriptors.Component),
@@ -66,7 +66,7 @@ namespace JMS.DVB.EPG
             typeof(Descriptors.ApplicationSignalling),
             typeof(Descriptors.DataBroadastId),
             typeof(Descriptors.CarouselIdentifier)
-        };
+        ];
 
         /// <summary>
         /// Populate the descriptor tag lookup map.

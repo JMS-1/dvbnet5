@@ -43,7 +43,7 @@ namespace JMS.DVB.EPG
                 providers[ii] = defaultProvider;
 
                 // Parameter to test for
-                object[] iiArray = new object[] { (byte)ii };
+                object[] iiArray = [(byte)ii];
 
                 // Find it
                 for (int ih = handlers.Length; ih-- > 0;)

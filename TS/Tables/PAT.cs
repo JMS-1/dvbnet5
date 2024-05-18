@@ -59,7 +59,7 @@ namespace JMS.DVB.TS.Tables
             stream &= 0xffff;
 
             // Construct
-            return new byte[] { (byte)(prog / 256), (byte)(prog & 0xff), (byte)(0xe0 | (stream / 256)), (byte)(stream & 0xff) };
+            return [(byte)(prog / 256), (byte)(prog & 0xff), (byte)(0xe0 | (stream / 256)), (byte)(stream & 0xff)];
         }
 
         /// <summary>

@@ -200,7 +200,7 @@ namespace JMS.DVB.EPG.Descriptors
 		/// <summary>
 		/// Additional information.
 		/// </summary>
-		private byte[] m_AdditionalInformation = { };
+		private byte[] m_AdditionalInformation = [];
 
 		/// <summary>
 		/// 
@@ -215,7 +215,7 @@ namespace JMS.DVB.EPG.Descriptors
 			set
 			{
 				// Never null it
-				if (null == value) value = new byte[0];
+				if (null == value) value = [];
 
 				// Update
 				m_AdditionalInformation = value;

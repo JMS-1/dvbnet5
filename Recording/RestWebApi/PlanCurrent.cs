@@ -103,7 +103,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Eine leere Liste von Dateien.
         /// </summary>
-        private static readonly string[] _NoFiles = { };
+        private static readonly string[] _NoFiles = [];
 
         /// <summary>
         /// Die eindeutige Kennung der Aufzeichnung.

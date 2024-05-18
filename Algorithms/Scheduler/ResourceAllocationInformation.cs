@@ -65,7 +65,7 @@
 
             // Remember all
             Time = new PlannedTime { Start = start, Duration = duration };
-            Resources = new[] { resource };
+            Resources = [resource];
             UniqueIdentifier = identifier;
             Source = source;
             Name = name;

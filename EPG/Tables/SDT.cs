@@ -21,7 +21,7 @@ namespace JMS.DVB.EPG.Tables
 		/// <summary>
 		/// Services included in thie <see cref="Table"/>.
 		/// </summary>
-		public readonly ServiceEntry[] Services = { };
+		public readonly ServiceEntry[] Services = [];
 
 		/// <summary>
 		/// Set for table identifiers <i>0x42</i> and <i>0x46</i>.

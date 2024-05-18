@@ -26,7 +26,7 @@ namespace JMS.DVB.SchedulerTests
                 : base("task", Guid.NewGuid())
             {
                 // Remember
-                m_Resources = new[] { resource };
+                m_Resources = [resource];
             }
 
             /// <summary>
@@ -104,14 +104,7 @@ namespace JMS.DVB.SchedulerTests
             /// Meldet die Stunden, an denen eine Aktualisierung erlaubt ist. Die Angabe bezieht
             /// sich auf Zeiten in der lokalen Zeitzone.
             /// </summary>
-            public override uint[] PreferredHours
-            {
-                get
-                {
-                    // Report
-                    return new uint[] { 10, 20 };
-                }
-            }
+            public override uint[] PreferredHours => [10, 20];
         }
 
         /// <summary>

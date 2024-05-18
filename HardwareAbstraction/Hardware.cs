@@ -140,7 +140,7 @@ namespace JMS.DVB
             public StreamInformation(ushort stream, StreamTypes type, Action<byte[], int, int> callback, out Guid primaryIdentifier)
             {
                 // Register consumer
-                m_Consumers = new[] { new StreamRegistration(callback) };
+                m_Consumers = [new StreamRegistration(callback)];
 
                 // Report generated identifier
                 primaryIdentifier = m_Consumers[0].UniqueIdentifier;

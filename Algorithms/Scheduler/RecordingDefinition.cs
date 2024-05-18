@@ -14,7 +14,7 @@
             /// <summary>
             /// Eine leere Liste von Zeitpunkten.
             /// </summary>
-            protected static readonly SuggestedPlannedTime[] NoTimes = { };
+            protected static readonly SuggestedPlannedTime[] NoTimes = [];
 
             /// <summary>
             /// Eine eindeutige Identifikation der Aktion.
@@ -78,7 +78,7 @@
                 m_Plan = new PlannedTime { Start = start, Duration = duration };
 
                 // Remember simple information
-                Resources = resources ?? new IScheduleResource[0];
+                Resources = resources ?? [];
                 UniqueIdentifier = uniqueIdentifier;
                 Context = context;
                 Source = source;

@@ -128,7 +128,7 @@ namespace JMS.DVB.SchedulerTests
             var group =
                 new DecryptionGroup
                 {
-                    ScheduleResources = new[] { PayTVDevice1, PayTVDevice2 },
+                    ScheduleResources = [PayTVDevice1, PayTVDevice2],
                     MaximumParallelSources = 1,
                 };
 
@@ -181,7 +181,7 @@ namespace JMS.DVB.SchedulerTests
             var group =
                 new DecryptionGroup
                 {
-                    ScheduleResources = new[] { PayTVDevice1, PayTVDevice2 },
+                    ScheduleResources = [PayTVDevice1, PayTVDevice2],
                     MaximumParallelSources = 2,
                 };
 

@@ -29,7 +29,7 @@ namespace JMS.DVB.EPG
         /// has to report <i>true</i> for any table identifier it is responsible for.
         /// </remarks>
         private static readonly Type[] m_Handlers =
-        {
+        [
             typeof(Tables.EIT),
             typeof(Tables.SDT),
             typeof(Tables.PAT),
@@ -39,7 +39,7 @@ namespace JMS.DVB.EPG
             typeof(Tables.OpenTV),
             typeof(Tables.TOT),
             typeof(Tables.TDT),
-        };
+        ];
 
         /// <summary>
         /// The <see cref="Section"/> instance where this table is located.
@@ -120,7 +120,7 @@ namespace JMS.DVB.EPG
             Type pHandler = (Type)m_HandlerForIdentifier[section.TableIdentifier];
 
             // Create
-            return (Table)Activator.CreateInstance(pHandler, new object[] { section })!;
+            return (Table)Activator.CreateInstance(pHandler, [section])!;
         }
 
         /// <summary>

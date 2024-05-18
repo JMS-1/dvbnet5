@@ -16,17 +16,17 @@ namespace JMS.DVB.Provider.Legacy
         /// <summary>
         /// Eine Maske für die Tabellenfilterung der DVB Hardware.
         /// </summary>
-        private static readonly byte[] m_TableMask = { 0x80 };
+        private static readonly byte[] m_TableMask = [0x80];
 
         /// <summary>
         /// Der Filter für die Standardtabellenkennungen (0x00 bis 0x7f).
         /// </summary>
-        private static readonly byte[] m_StandardTables = { 0x00 };
+        private static readonly byte[] m_StandardTables = [0x00];
 
         /// <summary>
         /// Der Filter für die Tabellenkennungen des Erweiterungsbereichs (0x80 bis 0xff).
         /// </summary>
-        private static readonly byte[] m_CustomTables = { 0x80 };
+        private static readonly byte[] m_CustomTables = [0x80];
 
         /// <summary>
         /// Das zugeordnete DVB.NET 3.5 (oder früher) Geräteprofil.

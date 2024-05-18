@@ -13,7 +13,7 @@ namespace JMS.DVB.NET.Recording.Status
         /// <summary>
         /// Eine leere Liste von Dateinamen.
         /// </summary>
-        private static readonly string[] _NoFiles = { };
+        private static readonly string[] _NoFiles = [];
 
         /// <summary>
         /// Die eindeutige Kennung der zugehörigen Aufzeichnungsdefinition oder <i>null</i>.
