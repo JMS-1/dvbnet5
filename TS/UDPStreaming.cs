@@ -263,7 +263,7 @@ namespace JMS.DVB.TS
         public void SetStreamTarget(string client, int port)
         {
             // May need to split off multi-cast part
-            var isMulti = client.StartsWith("*");
+            var isMulti = client.StartsWith('*');
 
             // Find the first IP4 address
             var host = Dns.GetHostEntry(isMulti ? Dns.GetHostName() : client);

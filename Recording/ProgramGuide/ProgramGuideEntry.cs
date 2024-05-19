@@ -140,7 +140,7 @@ public class ProgramGuideEntry : IComparable
                 disallow.Add(ch);
 
         // Use
-        m_Disallowed = disallow.ToArray();
+        m_Disallowed = [.. disallow];
     }
 
     /// <summary>

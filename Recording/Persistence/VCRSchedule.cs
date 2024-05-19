@@ -290,10 +290,7 @@ namespace JMS.DVB.NET.Recording.Persistence
                     repeatPattern.Add((DayOfWeek)((i + 1) % 7));
 
             // Report
-            if (repeatPattern.Count < 1)
-                return null;
-            else
-                return repeatPattern.ToArray();
+            return (repeatPattern.Count < 1) ? null : [.. repeatPattern];
         }
 
     }

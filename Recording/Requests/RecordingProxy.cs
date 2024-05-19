@@ -229,7 +229,7 @@ public class RecordingProxy(
 
         // Process all guide extracts
         lock (m_recordings)
-            RecordingPostProcessing(m_recordings.ToArray());
+            RecordingPostProcessing([.. m_recordings]);
     }
 
     /// <summary>

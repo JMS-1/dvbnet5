@@ -62,14 +62,9 @@ public class InfoController(
     /// <returns>Die Liste aller Aufträge.</returns>
     [HttpGet("jobs")]
     public InfoJob[] GetJobs()
-    {
-        // Report
-        return
-            jobs
-                .GetJobs(InfoJob.Create, profiles)
-                .OrderBy(job => job.Name ?? string.Empty, StringComparer.InvariantCulture)
-                .ToArray();
-    }
+        => [.. jobs
+            .GetJobs(InfoJob.Create, profiles)
+            .OrderBy(job => job.Name ?? string.Empty, StringComparer.InvariantCulture)];
 
     /// <summary>
     /// Meldet den Namen eines Verzeichnisses und rekursiv alle Unterverzeichnisse.

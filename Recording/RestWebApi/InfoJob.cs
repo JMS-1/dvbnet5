@@ -50,7 +50,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             return
                 new InfoJob
                 {
-                    Schedules = job.Schedules.Select(schedule => InfoSchedule.Create(schedule, job, profiles)).OrderBy(schedule => schedule.Name ?? string.Empty, StringComparer.InvariantCultureIgnoreCase).ToArray(),
+                    Schedules = [.. job.Schedules.Select(schedule => InfoSchedule.Create(schedule, job, profiles)).OrderBy(schedule => schedule.Name ?? string.Empty, StringComparer.InvariantCultureIgnoreCase)],
                     WebId = ServerTools.GetUniqueWebId(job, null!),
                     ProfileName = job.Source.ProfileName,
                     SourceName = job.Source.DisplayName,

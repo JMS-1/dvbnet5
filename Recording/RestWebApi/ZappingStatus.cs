@@ -52,11 +52,10 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var services = server.Services;
             if (services != null)
                 status.Services =
-                    services
+                    [.. services
                         .Where(service => service != null)
                         .Select(ZappingService.Create)
-                        .OrderBy(service => service.Index)
-                        .ToArray();
+                        .OrderBy(service => service.Index)];
 
             // Report
             return status;

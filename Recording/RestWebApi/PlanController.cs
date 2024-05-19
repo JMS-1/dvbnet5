@@ -43,10 +43,9 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// Meldet den aktuellen Aufzeichnungsplan der nächsten 4 Wochen für mobile Geräte, wobei Aufgaben ausgeschlossen sind.
         /// </summary>
         /// <param name="limit">Die maximale Anzahl von Einträgen im Ergebnis.</param>
-        /// <param name="mobile">Schalter zum Umschalten auf die Liste für mobile Geräte.</param>
         /// <returns>Alle Einträge des Aufzeichnungsplans.</returns>
         [HttpGet("mobile")]
-        public PlanActivityMobile[] GetPlanMobile(string limit, string mobile)
+        public PlanActivityMobile[] GetPlanMobile(string limit)
         {
             // Get the limit
             if (!int.TryParse(limit, out int maximum) || (maximum <= 0))
@@ -67,15 +66,10 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <returns>Die gewünschte Liste.</returns>
         [HttpGet("current")]
         public PlanCurrent[] GetCurrent()
-        {
-            // Forward
-            return
-                recordings
-                    .GetCurrent(PlanCurrent.Create, PlanCurrent.Create, PlanCurrent.Create)
-                    .OrderBy(current => current.StartTime)
-                    .ThenBy(current => current.Duration)
-                    .ToArray();
-        }
+            => [.. recordings
+                .GetCurrent(PlanCurrent.Create, PlanCurrent.Create, PlanCurrent.Create)
+                .OrderBy(current => current.StartTime)
+                .ThenBy(current => current.Duration)];
 
         /// <summary>
         /// Ermittelt Informationen zu allen Geräteprofilen.
@@ -83,17 +77,12 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <returns>Die gewünschte Liste.</returns>
         [HttpGet("current/mobile")]
         public PlanCurrentMobile[] GetCurrentMobile()
-        {
-            // Forward
-            return
-                recordings
-                    .GetCurrent(PlanCurrent.Create)
-                    .Where(current => !string.IsNullOrEmpty(current.SourceName))
-                    .Select(PlanCurrentMobile.Create)
-                    .OrderBy(current => current.StartTime)
-                    .ThenBy(current => current.Duration)
-                    .ToArray();
-        }
+            => [.. recordings
+                .GetCurrent(PlanCurrent.Create)
+                .Where(current => !string.IsNullOrEmpty(current.SourceName))
+                .Select(PlanCurrentMobile.Create)
+                .OrderBy(current => current.StartTime)
+                .ThenBy(current => current.Duration)];
 
         /// <summary>
         /// Fordert die Aktualisierung der Quellen an.
