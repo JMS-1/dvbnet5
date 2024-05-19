@@ -513,13 +513,12 @@ namespace JMS.DVB.EPG.BBC
         public static void ValidateSequence(string sequence)
         {
             // Validate all
-            if (string.IsNullOrEmpty(sequence))
-                throw new ArgumentException(sequence, "sequence");
+            ArgumentException.ThrowIfNullOrEmpty(sequence);
 
             // Validate bits
             foreach (char test in sequence)
                 if ((test != '0') && (test != '1'))
-                    throw new ArgumentException(sequence, "sequence");
+                    throw new ArgumentException(sequence, nameof(sequence));
         }
     }
 

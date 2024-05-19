@@ -145,8 +145,7 @@ namespace JMS.DVB.SchedulerTests
         public static ResourceMock Create(string name, params SourceMock[] sources)
         {
             // Forward
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException("name");
+            ArgumentException.ThrowIfNullOrEmpty(name);
 
             // Create
             var resource = new ResourceMock(name);

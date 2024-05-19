@@ -46,7 +46,7 @@
             public _Schedule(IScheduleDefinition definition, IEnumerable<PlanException> exceptions = null!)
             {
                 // Validate
-                ArgumentNullException.ThrowIfNull(definition, "plan");
+                ArgumentNullException.ThrowIfNull(definition);
 
                 // Remember
                 Definition = definition;

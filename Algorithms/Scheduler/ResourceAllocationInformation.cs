@@ -60,8 +60,7 @@
         public ResourceAllocationInformation(IScheduleResource resource, IScheduleSource source, Guid identifier, string name, DateTime start, TimeSpan duration)
         {
             // Validate
-            if (duration.TotalSeconds <= 0)
-                throw new ArgumentOutOfRangeException(nameof(duration));
+            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(duration.TotalSeconds, 0, nameof(duration));
 
             // Remember all
             Time = new PlannedTime { Start = start, Duration = duration };

@@ -120,10 +120,9 @@
         public static SourceStreamsManager Open(this SourceSelection selection, StreamSelection streams)
         {
             // Validate
-            if (selection == null)
-                throw new ArgumentNullException(nameof(selection));
-            else
-                return selection.Source.Open(selection.GetHardware()!, selection.GetLeafProfile()!, streams);
+            if (selection == null) throw new NullReferenceException();
+
+            return selection.Source.Open(selection.GetHardware()!, selection.GetLeafProfile()!, streams);
         }
 
         /// <summary>
@@ -136,10 +135,9 @@
         public static string GetDeviceAspect(this Profile profile, string name)
         {
             // Validate
-            if (profile == null)
-                throw new ArgumentNullException(nameof(profile));
-            else
-                return profile.DeviceAspects.GetDeviceAspect(name);
+            if (profile == null) throw new NullReferenceException();
+
+            return profile.DeviceAspects.GetDeviceAspect(name);
         }
 
         /// <summary>
@@ -169,8 +167,7 @@
         {
             // Validate
             ArgumentNullException.ThrowIfNull(profile);
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException(nameof(name));
+            ArgumentException.ThrowIfNullOrEmpty(name);
 
             // Find
             return profile.Parameters.GetParameter(name);
@@ -186,8 +183,7 @@
         public static string GetParameter(this IEnumerable<ProfileParameter> parameters, string name)
         {
             // Validate
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException(nameof(name));
+            ArgumentException.ThrowIfNullOrEmpty(name);
 
             // Find
             if (parameters == null)
@@ -207,10 +203,9 @@
         public static string GetParameter(this IEnumerable<ProfileParameter> parameters, PipelineTypes type, string name)
         {
             // Forward
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException(nameof(name));
-            else
-                return parameters.GetParameter(string.Format("{0}{1}", ProfileParameter.GetPrefixForExtensionParameter(type), name));
+            ArgumentException.ThrowIfNullOrEmpty(name);
+
+            return parameters.GetParameter(string.Format("{0}{1}", ProfileParameter.GetPrefixForExtensionParameter(type), name));
         }
 
         /// <summary>

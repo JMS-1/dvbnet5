@@ -140,9 +140,7 @@ public class ZappingProxy : CardServerProxy
         Stamp();
 
         // Remap to real source
-        var selection = Profiles.FindSource(ProfileName, source);
-        if (selection == null)
-            throw new ArgumentNullException(nameof(source));
+        var selection = Profiles.FindSource(ProfileName, source) ?? throw new ArgumentException(null, nameof(source));
 
         // Report
         Tools.ExtendedLogging("Will now zap to Source {0}", selection.Source);

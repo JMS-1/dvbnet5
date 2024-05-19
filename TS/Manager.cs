@@ -336,8 +336,7 @@ namespace JMS.DVB.TS
         public void SplitFile(string newFilePath)
         {
             // Validate
-            if (string.IsNullOrEmpty(newFilePath))
-                throw new ArgumentNullException(nameof(newFilePath));
+            ArgumentException.ThrowIfNullOrEmpty(newFilePath);
 
             // Check mode of operation
             if (!CanSplitFile)
@@ -679,10 +678,10 @@ namespace JMS.DVB.TS
             SendPAT();
 
             // Validate
-            if ((counter < 0) || (counter > 0xf))
-                throw new ArgumentOutOfRangeException(nameof(counter), counter, "only four bits allowed");
-            if ((pid < 0) || (pid >= 0x1fff))
-                throw new ArgumentOutOfRangeException(nameof(pid), pid, "only 13 bits allowed");
+            ArgumentOutOfRangeException.ThrowIfNegative(counter);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(counter, 0xf);
+            ArgumentOutOfRangeException.ThrowIfNegative(pid);
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(pid, 0x1fff);
 
             // Correct a bit (90kHz)
             long pcr = pts - m_PCRDelay;
@@ -797,17 +796,17 @@ namespace JMS.DVB.TS
             SendPAT();
 
             // Validate
-            if ((counter < 0) || (counter > 0xf))
-                throw new ArgumentOutOfRangeException(nameof(counter), counter, "only four bits allowed");
-            if ((pid < 0) || (pid >= 0x1fff))
-                throw new ArgumentOutOfRangeException(nameof(pid), pid, "only 13 bits allowed");
+            ArgumentOutOfRangeException.ThrowIfNegative(counter);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(counter, 0xf);
+            ArgumentOutOfRangeException.ThrowIfNegative(pid);
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(pid, 0x1fff);
             ArgumentNullException.ThrowIfNull(buffer);
-            if ((start < 0) || (start > buffer.Length))
-                throw new ArgumentOutOfRangeException(nameof(start), start, "exceeds buffer size");
-            if ((packs < 0) || (packs > (buffer.Length / PacketSize + 1)))
-                throw new ArgumentOutOfRangeException(nameof(packs), packs, "exceeds buffer size");
-            if ((sizeOfLast < 0) || (sizeOfLast > PacketSize))
-                throw new ArgumentOutOfRangeException(nameof(sizeOfLast), sizeOfLast, "exceeds packet size");
+            ArgumentOutOfRangeException.ThrowIfNegative(start);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(start, buffer.Length);
+            ArgumentOutOfRangeException.ThrowIfNegative(packs);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(packs, buffer.Length / PacketSize + 1);
+            ArgumentOutOfRangeException.ThrowIfNegative(sizeOfLast);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(sizeOfLast, PacketSize);
 
             // Done
             if (0 == packs)
@@ -823,8 +822,7 @@ namespace JMS.DVB.TS
             int end = start + (mustPad ? (packs - 1) : packs) * PacketSize + (mustPad ? sizeOfLast : 0);
 
             // Validate
-            if (end > buffer.Length)
-                throw new ArgumentOutOfRangeException(nameof(packs), packs, "exceeds buffer size");
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(end, buffer.Length, nameof(packs));
 
             // Allocate data
             byte[] ts = new byte[packs * FullSize];

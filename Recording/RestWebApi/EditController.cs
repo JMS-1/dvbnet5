@@ -33,7 +33,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
             // See if we can use it
             if (!schedule.IsActive)
-                throw new ArgumentException("Die Aufzeichnung liegt in der Vergangenheit");
+                throw new ArgumentException("Die Aufzeichnung liegt in der Vergangenheit", nameof(data));
 
             // Connect
             job.Schedules.Add(schedule);
@@ -94,11 +94,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public void UpdateRecording(string detail, [FromBody] JobScheduleData data)
         {
             // Parameter analysieren
-            var schedule = jobs.ParseUniqueWebId(detail, out VCRJob job);
-
-            // Validate
-            if (schedule == null)
-                throw new ArgumentException("Job or Schedule not found");
+            var schedule = jobs.ParseUniqueWebId(detail, out VCRJob job) ?? throw new ArgumentException("Job or Schedule not found", nameof(detail));
 
             // Take the new job data
             var newJob = data.Job.CreateJob(job.UniqueID!.Value, profiles);
@@ -113,7 +109,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
             // See if we can use it
             if (!newSchedule.IsActive)
-                throw new ArgumentException("Die Aufzeichnung liegt in der Vergangenheit");
+                throw new ArgumentException("Die Aufzeichnung liegt in der Vergangenheit", nameof(data));
 
             // Copy all schedules expect the one wie founr
             newJob.Schedules.AddRange(job.Schedules.Where(oldSchedule => !ReferenceEquals(oldSchedule, schedule)));
@@ -138,11 +134,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public void DeleteRecording(string detail)
         {
             // Parameter analysieren
-            var schedule = jobs.ParseUniqueWebId(detail, out VCRJob job);
-
-            // Validate
-            if (schedule == null)
-                throw new ArgumentException("Job or Schedule not found");
+            var schedule = jobs.ParseUniqueWebId(detail, out VCRJob job) ?? throw new ArgumentException("Job or Schedule not found", nameof(detail));
 
             // Remove schedule from job - since we are living in a separate application domain we only have a copy of it
             job.Schedules.Remove(schedule);
@@ -169,16 +161,14 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             jobs.ParseUniqueWebId(detail + Guid.NewGuid().ToString("N"), out VCRJob job);
 
             // Validate
-            if (job == null)
-                throw new ArgumentException("Job not found");
+            if (job == null) throw new ArgumentException("Job not found", nameof(detail));
 
             // Take the new job data
             var newJob = data.Job.CreateJob(job.UniqueID!.Value, profiles);
             var newSchedule = data.Schedule.CreateSchedule(newJob, profiles);
 
             // See if we can use it
-            if (!newSchedule.IsActive)
-                throw new ArgumentException("Die Aufzeichnung liegt in der Vergangenheit");
+            if (!newSchedule.IsActive) throw new ArgumentException("Die Aufzeichnung liegt in der Vergangenheit", nameof(data));
 
             // Add all existing
             newJob.Schedules.AddRange(job.Schedules);

@@ -109,8 +109,7 @@ namespace JMS.DVB.Algorithms.Scheduler
                 // Validate
                 ArgumentNullException.ThrowIfNull(source);
 
-                if (!(source.Source is Station))
-                    throw new ArgumentNullException(nameof(source));
+                if (source.Source is not DVB.Station) throw new ArgumentException(null, nameof(source));
 
                 // Remember
                 Source = source;
@@ -120,11 +119,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// Erstellt einen Anzeigetext zu Testzwecken.
             /// </summary>
             /// <returns>Der gewünschte Anzeigetext.</returns>
-            public override string ToString()
-            {
-                // Just ask our source - we required it to be a full station so there is quite a bit of information in the string representation
-                return Source.Source.ToString()!;
-            }
+            public override string? ToString() => Source.Source.ToString();
         }
 
         /// <summary>
@@ -145,19 +140,7 @@ namespace JMS.DVB.Algorithms.Scheduler
             /// <summary>
             /// Das zu verwendende Geräteprofil.
             /// </summary>
-            public Profile Profile
-            {
-                get
-                {
-                    // Load from manager
-                    var profile = ProfileManager.FindProfile(Name);
-                    if (profile == null)
-                        throw new ArgumentException(Name, "profileName");
-
-                    // Report
-                    return profile;
-                }
-            }
+            public Profile Profile => ProfileManager.FindProfile(Name) ?? throw new ArgumentException(Name, "profileName");
 
             /// <summary>
             /// Erzeugt eine neue Verwaltung für ein Geräteprofil.
@@ -232,13 +215,10 @@ namespace JMS.DVB.Algorithms.Scheduler
         public static IScheduleResource Create(string profileName)
         {
             // Validate
-            if (string.IsNullOrEmpty(profileName))
-                throw new ArgumentNullException(nameof(profileName));
+            ArgumentException.ThrowIfNullOrEmpty(profileName);
 
             // Look it up
-            var profile = ProfileManager.FindProfile(profileName);
-            if (profile == null)
-                throw new ArgumentException(string.Format("There is no Device Profile '{0}'", profileName), nameof(profileName));
+            var profile = ProfileManager.FindProfile(profileName) ?? throw new ArgumentException(null, nameof(profileName));
 
             // Forward
             return new _Implementation(profile.Name);

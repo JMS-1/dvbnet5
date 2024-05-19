@@ -27,10 +27,8 @@ namespace JMS.DVB
         public static CancellableTask<SourceInformation> GetSourceInformationAsync(this Hardware device, SourceIdentifier source, Profile? profile = null)
         {
             // Validate
-            if (device == null)
-                throw new ArgumentNullException("no hardware to use", nameof(device));
-            if (source == null)
-                throw new ArgumentException("no source to get information for", nameof(source));
+            if (device == null) throw new NullReferenceException();
+            ArgumentNullException.ThrowIfNull(source);
 
             // Attach to tasks
             var patReader = device.AssociationTableReader;

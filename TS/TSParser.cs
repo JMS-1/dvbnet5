@@ -333,17 +333,15 @@ namespace JMS.DVB.TS
         {
             // Validate
             ArgumentNullException.ThrowIfNull(buffer);
-
-            if ((index < 0) || (index > buffer.Length))
-                throw new ArgumentException(index.ToString(), nameof(index));
-            if ((length < 0) || (length > buffer.Length))
-                throw new ArgumentException(length.ToString(), nameof(length));
-            if ((index + length) > buffer.Length)
-                throw new ArgumentException(length.ToString(), nameof(length));
+            ArgumentOutOfRangeException.ThrowIfNegative(index);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(index, buffer.Length);
+            ArgumentOutOfRangeException.ThrowIfNegative(length);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(length, buffer.Length);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(index + length, buffer.Length, nameof(length));
 
             // We may only inject full packages
             if ((length % m_Packet.Length) != 0)
-                throw new ArgumentException(length.ToString(), nameof(length));
+                throw new ArgumentOutOfRangeException(nameof(length), length.ToString());
 
             // Full protect and serialize processing - normally only a single thread will call on us
             lock (m_Consumers)
@@ -414,12 +412,11 @@ namespace JMS.DVB.TS
             // Validate
             ArgumentNullException.ThrowIfNull(buffer);
 
-            if ((index < 0) || (index > buffer.Length))
-                throw new ArgumentException(index.ToString(), nameof(index));
-            if ((length < 0) || (length > buffer.Length))
-                throw new ArgumentException(length.ToString(), nameof(length));
-            if ((index + length) > buffer.Length)
-                throw new ArgumentException(length.ToString(), nameof(length));
+            ArgumentOutOfRangeException.ThrowIfNegative(index);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(index, buffer.Length);
+            ArgumentOutOfRangeException.ThrowIfNegative(length);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(length, buffer.Length);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(index + length, buffer.Length, nameof(length));
 
             // Full protect and serialize processing - normally only a single thread will call on us
             lock (m_Consumers)

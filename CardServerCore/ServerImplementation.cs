@@ -22,28 +22,22 @@
         /// <summary>
         /// Steuert die Ausführung einer Operation.
         /// </summary>
-        private class _AsyncControl : IAsyncResult
+        /// <remarks>
+        /// Erzeugt eine neue Steuerung.
+        /// </remarks>
+        /// <param name="server">Die zu steuernde Einheit.</param>
+        /// <exception cref="ArgumentNullException">Es wurde keine Steuerinstanz angegeben.</exception>
+        private class _AsyncControl(ServerImplementation server) : IAsyncResult
         {
             /// <summary>
             /// Die zu steuernde Einheit.
             /// </summary>
-            private readonly ServerImplementation m_Server;
+            private readonly ServerImplementation m_Server = server ?? throw new ArgumentNullException(nameof(server));
 
             /// <summary>
             /// Wird gesetzt, sobald die Operation als abgeschlossen bekannt ist.
             /// </summary>
             private bool m_IsCompleted;
-
-            /// <summary>
-            /// Erzeugt eine neue Steuerung.
-            /// </summary>
-            /// <param name="server">Die zu steuernde Einheit.</param>
-            /// <exception cref="ArgumentNullException">Es wurde keine Steuerinstanz angegeben.</exception>
-            public _AsyncControl(ServerImplementation server)
-            {
-                // Remember
-                m_Server = server ?? throw new ArgumentNullException(nameof(server));
-            }
 
             /// <summary>
             /// Erzeugt eine neue Steuerinstanz.
@@ -206,8 +200,7 @@
         public IAsyncResult<TOutput> BeginCustomAction<TInput, TOutput>(string actionType, TInput parameters)
         {
             // Validate
-            if (string.IsNullOrEmpty(actionType))
-                throw new ArgumentNullException(nameof(actionType));
+            ArgumentException.ThrowIfNullOrEmpty(actionType);
 
             // Start action
             return (IAsyncResult<TOutput>)Start<TOutput>(() => { OnCustomAction<TInput, TOutput>(actionType, parameters); });
@@ -330,10 +323,8 @@
         public IAsyncResult<ServerInformation> BeginSetZappingSource(string selectionKey, string target)
         {
             // Validate
-            if (string.IsNullOrEmpty(selectionKey))
-                throw new ArgumentNullException(nameof(selectionKey));
-            if (string.IsNullOrEmpty(target))
-                throw new ArgumentNullException(nameof(target));
+            ArgumentException.ThrowIfNullOrEmpty(selectionKey);
+            ArgumentException.ThrowIfNullOrEmpty(target);
 
             // Create the selection
             var source = new SourceSelection { SelectionKey = selectionKey };
@@ -465,8 +456,7 @@
         public IAsyncResult BeginSetProfile(string profileName, bool reset, bool disablePCRFromH264, bool disablePCRFromMPEG2)
         {
             // Validate
-            if (string.IsNullOrEmpty(profileName))
-                throw new ArgumentNullException("value");
+            ArgumentException.ThrowIfNullOrEmpty(profileName);
 
             // We are in use
             if (!string.IsNullOrEmpty(m_Profile))
@@ -749,8 +739,7 @@
         public static IAsyncResult BeginSelect(this ServerImplementation server, SourceSelection selection)
         {
             // Validate
-            if (server == null) throw new NullReferenceException(nameof(server));
-
+            if (server == null) throw new NullReferenceException();
             ArgumentNullException.ThrowIfNull(selection);
 
             // Forward

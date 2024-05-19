@@ -38,8 +38,9 @@ namespace JMS.DVB.SI
         {
             // Validate
             ArgumentNullException.ThrowIfNull(consumer);
+            ArgumentNullException.ThrowIfNull(tableTypes);
 
-            if ((null == tableTypes) || (tableTypes.Count < 1)) throw new ArgumentNullException(nameof(tableTypes));
+            if (tableTypes.Count < 1) throw new ArgumentException(null, nameof(tableTypes));
 
             // Remember
             m_Consumer = consumer;
@@ -48,7 +49,8 @@ namespace JMS.DVB.SI
             foreach (Type tableType in tableTypes)
             {
                 // Validate
-                if (null == tableType) throw new ArgumentNullException(nameof(tableTypes));
+                ArgumentNullException.ThrowIfNull(tableTypes);
+
                 if (!typeof(Table).IsAssignableFrom(tableType)) throw new ArgumentException(tableType.FullName, nameof(tableTypes));
 
                 // Process each type

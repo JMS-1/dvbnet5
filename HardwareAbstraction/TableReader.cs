@@ -27,8 +27,7 @@ namespace JMS.DVB
         public static CancellableTask<TTableType[]> GetTableAsync<TTableType>(this Hardware device, ushort stream) where TTableType : Table
         {
             // Validate
-            if (device == null)
-                throw new ArgumentException("no hardware to use", nameof(device));
+            if (device == null) throw new NullReferenceException(nameof(device));
 
             // Create the task
             return

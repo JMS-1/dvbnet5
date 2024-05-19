@@ -65,14 +65,12 @@
             {
                 // Validate
                 ArgumentNullException.ThrowIfNull(source);
+                ArgumentOutOfRangeException.ThrowIfLessThan(start.Year, 2000, nameof(start));
+                ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(duration.TotalSeconds, 0, nameof(duration));
 
-                if (start.Year < 2000)
-                    throw new ArgumentOutOfRangeException(nameof(start), string.Format("Recordings before 2000 can not be planned but is {0}", start));
-                if (duration.TotalSeconds <= 0)
-                    throw new ArgumentOutOfRangeException(nameof(duration), string.Format("Each Recording must have a positive Recording Duration but is {0}", duration));
                 if (resources != null)
                     if (resources.Any(r => r == null))
-                        throw new ArgumentNullException(nameof(resources));
+                        throw new ArgumentException(null, nameof(resources));
 
                 // Create compound information
                 m_Plan = new PlannedTime { Start = start, Duration = duration };

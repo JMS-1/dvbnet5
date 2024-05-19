@@ -300,13 +300,11 @@ namespace JMS.DVB
                         throw new ArgumentException(value, nameof(value));
 
                     // Get port
-                    ushort port;
-                    if (!ushort.TryParse(parts[1], out port))
+                    if (!ushort.TryParse(parts[1], out ushort port))
                         throw new ArgumentException(value, nameof(value));
 
                     // Update
-                    if (null != m_TransportStream)
-                        m_TransportStream.SetStreamTarget(parts[0], port);
+                    m_TransportStream?.SetStreamTarget(parts[0], port);
                 }
 
                 // Remember
@@ -488,8 +486,8 @@ namespace JMS.DVB
             }
 
             // Validate
-            if (information.Source == null)
-                throw new ArgumentNullException("information.Source");
+            ArgumentNullException.ThrowIfNull(information.Source, "information.Source");
+
             if (!information.Source.Equals(Source))
                 throw new ArgumentException(information.Source.ToString(), "information.Source");
 

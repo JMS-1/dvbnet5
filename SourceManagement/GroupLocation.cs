@@ -123,8 +123,8 @@ namespace JMS.DVB
                 return new TerrestrialScanLocation();
             else if (typeof(SatelliteGroup) == typeof(T))
                 return new SatelliteScanLocation();
-            else
-                throw new ArgumentException(typeof(T).FullName, "T");
+
+            throw new ArgumentException(typeof(T).FullName, nameof(T));
         }
 
         /// <summary>

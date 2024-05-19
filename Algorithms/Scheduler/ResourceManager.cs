@@ -260,10 +260,12 @@
                 ArgumentNullException.ThrowIfNull(resource);
 
                 if (!m_Resources.Contains(resource))
-                    throw new ArgumentException(resource.Name, nameof(resource));
+                    throw new ArgumentException(null, nameof(resource));
+
                 ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(plannedStart, currentEnd);
+
                 if (m_Recordings.Any(r => r.UniqueIdentifier == scheduleIdentifier))
-                    throw new ArgumentException("resource");
+                    throw new ArgumentException(null, nameof(scheduleIdentifier));
 
                 // Create helper entry
                 m_Recordings.Add(new ResourceAllocationInformation(resource, source!, scheduleIdentifier, scheduleName, plannedStart, currentEnd - plannedStart));
@@ -346,9 +348,7 @@
         {
             // Validate
             ArgumentNullException.ThrowIfNull(resourceNameComparer);
-
-            if (string.IsNullOrEmpty(rulePath))
-                throw new ArgumentNullException(nameof(rulePath));
+            ArgumentException.ThrowIfNullOrEmpty(rulePath);
 
             // Forward
             if (File.Exists(rulePath))

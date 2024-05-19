@@ -142,8 +142,7 @@ namespace JMS.DVB
             ArgumentNullException.ThrowIfNull(profile);
 
             // Must be volatile
-            if (string.IsNullOrEmpty(profile.VolatileName))
-                throw new ArgumentException(profile.Name, nameof(profile));
+            ArgumentException.ThrowIfNullOrEmpty(profile.VolatileName, nameof(profile));
 
             // Synchronize
             lock (ProfileTypes)
@@ -221,8 +220,8 @@ namespace JMS.DVB
         public static T CreateProfile<T>(string name) where T : Profile, new()
         {
             // Validate
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException(nameof(name));
+            ArgumentException.ThrowIfNullOrEmpty(name);
+
             if (name.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
                 throw new ArgumentException(name, nameof(name));
 
@@ -232,8 +231,8 @@ namespace JMS.DVB
             // Validate
             if (profile.ProfilePath.Exists)
                 throw new ArgumentException(profile.ProfilePath.FullName, nameof(name));
-            else
-                return profile;
+
+            return profile;
         }
 
         /// <summary>
@@ -245,10 +244,9 @@ namespace JMS.DVB
         public static SourceSelection[] FindSource(SourceIdentifier source)
         {
             // Validate
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-            else
-                return AllProfiles.SelectMany(profile => profile.FindSource(source)).ToArray();
+            ArgumentNullException.ThrowIfNull(source);
+
+            return AllProfiles.SelectMany(profile => profile.FindSource(source)).ToArray();
         }
     }
 }

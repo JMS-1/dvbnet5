@@ -135,7 +135,8 @@ namespace JMS.DVB.TS
         public void EndWrite(int nBytes)
         {
             // Invalid
-            if ((nBytes < 0) || ((m_Buf1Pos + nBytes) > m_Buf1.Length)) throw new ArgumentOutOfRangeException("Not enough Space in Buffer");
+            ArgumentOutOfRangeException.ThrowIfNegative(nBytes);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(m_Buf1Pos + nBytes, m_Buf1.Length, nameof(nBytes));
 
             // Update index
             m_Buf1Pos += nBytes;
@@ -163,8 +164,8 @@ namespace JMS.DVB.TS
         public byte[] StartWrite(int nBytes, out int nIndex)
         {
             // Invalid
-            if ((nBytes < 0) || (nBytes > m_Buf1.Length))
-                throw new ArgumentOutOfRangeException("Invalid Buffer Size - only 0 to " + m_Buf1.Length.ToString() + " are allowed");
+            ArgumentOutOfRangeException.ThrowIfNegative(nBytes);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(nBytes, m_Buf1.Length);
 
             // Done
             bool bFinish = 0 == nBytes;

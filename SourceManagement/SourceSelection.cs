@@ -120,8 +120,7 @@ namespace JMS.DVB
             set
             {
                 // Not set
-                if (string.IsNullOrEmpty(value))
-                    throw new ArgumentNullException("value");
+                ArgumentException.ThrowIfNullOrEmpty(value);
 
                 // Split
                 string[] parts = value.Split('@');

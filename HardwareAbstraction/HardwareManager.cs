@@ -65,13 +65,10 @@
         public static Hardware? OpenHardware(string profileName)
         {
             // Validate
-            if (string.IsNullOrEmpty(profileName))
-                throw new ArgumentException(profileName, nameof(profileName));
+            ArgumentException.ThrowIfNullOrEmpty(profileName);
 
             // Load the profile
-            var profile = ProfileManager.FindProfile(profileName);
-            if (null == profile)
-                throw new ArgumentException(profileName, nameof(profileName));
+            var profile = ProfileManager.FindProfile(profileName) ?? throw new ArgumentException(null, nameof(profileName));
 
             // Forward
             return OpenHardware(profile);
@@ -88,8 +85,7 @@
         {
             // Validate
             ArgumentNullException.ThrowIfNull(profile);
-            if (string.IsNullOrEmpty(profile.Name))
-                throw new ArgumentNullException("profile.Name");
+            ArgumentException.ThrowIfNullOrEmpty(profile.Name, "Profile.Name");
 
             // Be safe
             lock (m_ActiveHardware)

@@ -145,8 +145,7 @@ public class ProfileState(
     public void EndRequest(CardServerProxy request)
     {
         // Validate
-        if (ReferenceEquals(request, null))
-            throw new ArgumentNullException(nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
 
         // Synchronize
         lock (m_RequestLock)

@@ -316,8 +316,7 @@
             nextWidth -= bitSkip;
 
             // Absolute limit
-            if (nextWidth > 24)
-                throw new ArgumentException(nextWidth.ToString(), "nextWidth");
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(nextWidth, 24);
 
             // Report the number of bits in this level
             m_Table.Add((ushort)nextWidth);

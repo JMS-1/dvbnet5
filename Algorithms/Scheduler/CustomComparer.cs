@@ -88,10 +88,11 @@ namespace JMS.DVB.Algorithms.Scheduler
 
                 // Fill in 
                 foreach (var comparer in comparers)
-                    if (comparer == null)
-                        throw new ArgumentNullException(nameof(comparers));
-                    else
-                        Comparers.Add(comparer);
+                {
+                    ArgumentNullException.ThrowIfNull(comparer, nameof(comparers));
+
+                    Comparers.Add(comparer);
+                }
             }
 
             /// <summary>

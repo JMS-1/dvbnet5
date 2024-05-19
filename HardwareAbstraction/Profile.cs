@@ -242,10 +242,9 @@ namespace JMS.DVB
         public SourceSelection[] FindSource(SourceIdentifier source)
         {
             // Validate
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-            else
-                return InternalFindSource(source).ToArray();
+            ArgumentNullException.ThrowIfNull(source);
+
+            return InternalFindSource(source).ToArray();
         }
 
         /// <summary>
@@ -337,10 +336,9 @@ namespace JMS.DVB
         public SourceSelection[] FindSource(string name, SourceNameMatchingModes matching)
         {
             // Validate
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException(nameof(name));
-            else
-                return InternalFindSource(name, matching).ToArray();
+            ArgumentException.ThrowIfNullOrEmpty(name);
+
+            return InternalFindSource(name, matching).ToArray();
         }
 
         /// <summary>

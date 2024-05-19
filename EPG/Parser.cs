@@ -99,12 +99,11 @@ namespace JMS.DVB.EPG
         {
             // Check parameters
             ArgumentNullException.ThrowIfNull(data);
-
-            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset), offset, "must not be negative");
-            if (offset > data.Length) throw new ArgumentOutOfRangeException(nameof(offset), offset, "out of array");
-            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length), length, "must not be negative");
-            if (length > data.Length) throw new ArgumentOutOfRangeException(nameof(length), length, "out of array");
-            if ((offset + length) > data.Length) throw new ArgumentOutOfRangeException(nameof(length), length, "not enough space in source");
+            ArgumentOutOfRangeException.ThrowIfLessThan(offset, 0);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(offset, data.Length);
+            ArgumentOutOfRangeException.ThrowIfLessThan(length, 0);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(length, data.Length);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(offset + length, data.Length, nameof(length));
 
             // Validate
             if (0 == length) return;

@@ -157,8 +157,7 @@ namespace JMS.DVB.SI.ProgramGuide
                 ArgumentOutOfRangeException.ThrowIfGreaterThan(value, 0xf);
 
                 // Cross check
-                if (value > 0)
-                    ArgumentOutOfRangeException.ThrowIfLessThan(value, 12);
+                if (value > 0) ArgumentOutOfRangeException.ThrowIfLessThan(value, 12);
 
                 // Update
                 ContentNibbles = (ContentNibbles & 0xf) | (value << 4);

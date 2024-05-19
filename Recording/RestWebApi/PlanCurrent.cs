@@ -200,9 +200,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             ArgumentNullException.ThrowIfNull(active);
 
             // Validate
-            var recording = active.Recording;
-            if (recording == null)
-                throw new ArgumentNullException("recording");
+            var recording = active.Recording ?? throw new ArgumentException(null, "active.Recording");
 
             // Multiple recordings
             var streams = active.Streams;

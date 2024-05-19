@@ -110,8 +110,7 @@ namespace JMS.DVB.Algorithms.Scheduler
         public void Add(Range range)
         {
             // Validate
-            if (range.End <= range.Start)
-                throw new ArgumentOutOfRangeException(nameof(range));
+            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(range.End, range.Start, nameof(range));
 
             // Find a place to add it
             for (var index = 0; index < m_ranges.Count; index++)

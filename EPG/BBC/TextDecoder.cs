@@ -173,7 +173,8 @@ namespace JMS.DVB.EPG.BBC
         public static HuffmanPairTable GetTable(int codepage)
         {
             // Validate
-            if ((codepage < 1) || (codepage > 2)) throw new ArgumentException(codepage.ToString(), nameof(codepage));
+            ArgumentOutOfRangeException.ThrowIfLessThan(codepage, 1);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(codepage, 2);
 
             // Report
             return CodePages[codepage - 1];
@@ -191,7 +192,8 @@ namespace JMS.DVB.EPG.BBC
             // Validate
             ArgumentNullException.ThrowIfNull(table);
 
-            if ((codepage < 1) || (codepage > 2)) throw new ArgumentException(codepage.ToString(), nameof(codepage));
+            ArgumentOutOfRangeException.ThrowIfLessThan(codepage, 1);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(codepage, 2);
 
             // Try to compile the table
             var compiled = table.CreateBinary().GetTable();

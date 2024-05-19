@@ -219,9 +219,7 @@ namespace JMS.DVB.Provider.Legacy
             else
             {
                 // Attach to the source
-                var source = sources[0];
-                if (source == null)
-                    throw new ArgumentNullException("sources[0]");
+                var source = sources[0] ?? throw new ArgumentNullException("sources[0]");
 
                 // Process
                 LegacyDevice.Decrypt(source.Service);

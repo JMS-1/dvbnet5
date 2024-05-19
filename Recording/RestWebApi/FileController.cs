@@ -26,8 +26,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public long SendPartOfFile(string path, long offset, int length, string target, ushort port)
         {
             // Validate path
-            if (string.IsNullOrEmpty(path))
-                throw new ArgumentNullException(nameof(path));
+            ArgumentException.ThrowIfNullOrEmpty(path);
+
             if (!path.ToLower().EndsWith(".ts"))
                 throw new ArgumentException(path, nameof(path));
 
@@ -37,16 +37,14 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
             // Validate the slice
             ArgumentOutOfRangeException.ThrowIfNegative(offset);
-            if ((length < 0) || (length > 100000000))
-                throw new ArgumentOutOfRangeException(nameof(length));
+            ArgumentOutOfRangeException.ThrowIfLessThan(length, 0);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(length, 100000000);
 
             // Validate the IP
-            if (string.IsNullOrEmpty(target))
-                throw new ArgumentException("target");
+            ArgumentException.ThrowIfNullOrEmpty(target);
 
             // We do not support multi-cast
-            if (target.StartsWith("*"))
-                throw new ArgumentException("target");
+            if (target.StartsWith('*')) throw new ArgumentException(target, nameof(target));
 
             // Find the first IP4 address
             var host = Dns.GetHostEntry(target);
@@ -71,8 +69,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
 
                         // And the maximum number of bytes left
                         var rest = streamSize - offset;
-                        if (rest < 0)
-                            throw new ArgumentOutOfRangeException(nameof(offset));
+
+                        ArgumentOutOfRangeException.ThrowIfNegative(rest, nameof(offset));
 
                         // None left
                         if (rest == 0)

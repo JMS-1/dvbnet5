@@ -77,20 +77,19 @@ namespace JMS.DVB.SchedulerTests
         public void RecordingTimeMustBePositive()
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-         {
-             // Create component under test
-             using (var cut = ResourceManager.Create(StringComparer.InvariantCultureIgnoreCase))
-             {
-                 // Register device
-                 cut.Add(ResourceMock.Device1);
+            {
+                // Create component under test
+                using var cut = ResourceManager.Create(StringComparer.InvariantCultureIgnoreCase);
 
-                 // Get some time
-                 var time = DateTime.UtcNow;
+                // Register device
+                cut.Add(ResourceMock.Device1);
 
-                 // Try it
-                 cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, Guid.NewGuid(), "test", time, time);
-             }
-         });
+                // Get some time
+                var time = DateTime.UtcNow;
+
+                // Try it
+                cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, Guid.NewGuid(), "test", time, time);
+            });
         }
 
         /// <summary>
@@ -563,23 +562,22 @@ namespace JMS.DVB.SchedulerTests
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
                 // Create component under test
-                using (var cut = ResourceManager.Create(StringComparer.InvariantCultureIgnoreCase))
-                {
-                    // Register device
-                    cut.Add(ResourceMock.Device1);
-                    cut.Add(ResourceMock.Device2);
+                using var cut = ResourceManager.Create(StringComparer.InvariantCultureIgnoreCase);
 
-                    // Time
-                    var start = DateTime.UtcNow;
-                    var end = start.AddMinutes(23);
-                    var id = Guid.NewGuid();
+                // Register device
+                cut.Add(ResourceMock.Device1);
+                cut.Add(ResourceMock.Device2);
 
-                    // Try it
-                    Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id, "test1", start, end), Is.True);
+                // Time
+                var start = DateTime.UtcNow;
+                var end = start.AddMinutes(23);
+                var id = Guid.NewGuid();
 
-                    // Will fail
-                    cut.Modify(id, start);
-                }
+                // Try it
+                Assert.That(cut.Start(ResourceMock.Device1, SourceMock.Source1Group1Free, id, "test1", start, end), Is.True);
+
+                // Will fail
+                cut.Modify(id, start);
             });
         }
 

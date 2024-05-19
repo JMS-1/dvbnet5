@@ -258,7 +258,8 @@ namespace JMS.DVB.TS.Tables
         public bool Add(StreamTypes type, byte encoding, short pid, bool noPCR, SubtitleInfo[] info, ushort? aac)
         {
             // Validate
-            if ((pid < 0) || (pid >= 0x1fff)) throw new ArgumentOutOfRangeException(nameof(pid), pid, "only 13 bits allowed");
+            ArgumentOutOfRangeException.ThrowIfNegative(pid);
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(pid, 0x1fff);
 
             // Must be unique
             if (m_Streams.Contains(pid)) throw new ArgumentException("Duplicate PID " + pid.ToString(), nameof(pid));

@@ -35,10 +35,9 @@ namespace JMS.DVB.NET.Recording.Persistence
         public static FileInformation Create(FileStreamInformation file, Guid scheduleIdentifier)
         {
             // Validate
-            if (file == null)
-                throw new ArgumentNullException(nameof(file));
-            else
-                return new FileInformation { VideoType = file.VideoType, Path = file.FilePath, ScheduleIdentifier = scheduleIdentifier.ToString("N").ToLower() };
+            ArgumentNullException.ThrowIfNull(file);
+
+            return new FileInformation { VideoType = file.VideoType, Path = file.FilePath, ScheduleIdentifier = scheduleIdentifier.ToString("N").ToLower() };
         }
 
         /// <summary>

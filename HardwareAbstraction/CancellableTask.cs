@@ -65,8 +65,7 @@
         public static CancellableTask<TResultType> Run(Func<CancellationToken, TResultType> worker)
         {
             // Validate
-            if (worker == null)
-                throw new ArgumentException("no task worker provided", nameof(worker));
+            ArgumentNullException.ThrowIfNull(worker);
 
             // Allow self reference to new instance
             CancellableTask<TResultType> task = null!;
@@ -128,8 +127,7 @@
         public static bool CancellableWait<TResultType>(this Task<TResultType> task, CancellationToken cancel, int timeout = Timeout.Infinite)
         {
             // Validate
-            if (task == null)
-                throw new ArgumentException("no task to wait on", nameof(task));
+            ArgumentNullException.ThrowIfNull(task);
 
             // Pre-check to avoid exception if possible
             if (cancel.IsCancellationRequested)

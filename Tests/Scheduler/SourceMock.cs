@@ -177,10 +177,9 @@ namespace JMS.DVB.SchedulerTests
         public static SourceMock Create(string name, Guid sourceGroup, bool isEncrypted = false)
         {
             // Forward
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException("name");
-            else
-                return new SourceMock(name, isEncrypted, sourceGroup);
+            ArgumentException.ThrowIfNullOrEmpty(name);
+
+            return new SourceMock(name, isEncrypted, sourceGroup);
         }
     }
 }

@@ -19,8 +19,7 @@ public class ZappingProxyFactory(
     {
         // Validate
         ArgumentNullException.ThrowIfNull(profile);
-        if (string.IsNullOrEmpty(target))
-            throw new ArgumentNullException(nameof(target));
+        ArgumentException.ThrowIfNullOrEmpty(target);
 
         // Create controlling information
         var now = DateTime.UtcNow;

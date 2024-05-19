@@ -1,4 +1,3 @@
-using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording;
 
 namespace JMS.VCR.NET;

@@ -172,10 +172,9 @@ namespace JMS.DVB
         protected string GetParameter(string name)
         {
             // Validate
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException(nameof(name));
-            else
-                return EffectiveProfileParameters.GetParameter(name);
+            ArgumentException.ThrowIfNullOrEmpty(name);
+
+            return EffectiveProfileParameters.GetParameter(name);
         }
     }
 }

@@ -88,9 +88,7 @@
         public static bool Start(this IResourceManager manager, IScheduleInformation schedule)
         {
             // Validate
-            if (manager == null)
-                throw new NullReferenceException();
-
+            if (manager == null) throw new NullReferenceException();
             ArgumentNullException.ThrowIfNull(schedule);
 
             // Load
@@ -108,8 +106,7 @@
         public static DateTime? GetEndOfAllocation(this IResourceManager manager)
         {
             // Validate
-            if (manager == null)
-                throw new NullReferenceException();
+            if (manager == null) throw new NullReferenceException();
 
             // Load and forward
             var recordings = manager.CurrentAllocations;
@@ -130,8 +127,7 @@
         public static int FindIndex(this IResourceManager manager, Guid uniqueIdentifier)
         {
             // Validate
-            if (manager == null)
-                throw new NullReferenceException();
+            if (manager == null) throw new NullReferenceException();
 
             // Locate
             var allocations = manager.CurrentAllocations;
@@ -154,9 +150,7 @@
         public static IEnumerable<IScheduleInformation> GetSchedules(this IResourceManager manager, DateTime now, Func<RecordingScheduler, DateTime, IEnumerable<IScheduleInformation>> getSchedules)
         {
             // Validate
-            if (manager == null)
-                throw new NullReferenceException();
-
+            if (manager == null) throw new NullReferenceException();
             ArgumentNullException.ThrowIfNull(getSchedules);
 
             // Create schedule manager
@@ -192,9 +186,7 @@
         public static ResourceActivity? GetNextActivity(this IResourceManager manager, DateTime now, Func<RecordingScheduler, DateTime, IEnumerable<IScheduleInformation>> getSchedules)
         {
             // Validate
-            if (manager == null)
-                throw new NullReferenceException();
-
+            if (manager == null) throw new NullReferenceException();
             ArgumentNullException.ThrowIfNull(getSchedules);
 
             // Create schedule manager

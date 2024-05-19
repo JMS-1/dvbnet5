@@ -117,8 +117,7 @@ namespace JMS.DVB
                 public StreamRegistration(Action<byte[], int, int> consumer)
                 {
                     // Validate
-                    if (consumer == null)
-                        throw new ArgumentException("data sink missing", nameof(consumer));
+                    ArgumentNullException.ThrowIfNull(consumer);
 
                     // Remember
                     Sink = consumer;
@@ -399,8 +398,7 @@ namespace JMS.DVB
         internal Hardware(Profile profile)
         {
             // Validate
-            if (profile == null)
-                throw new ArgumentException("profile missing", nameof(profile));
+            ArgumentNullException.ThrowIfNull(profile);
 
             // Remember
             Profile = profile;
@@ -424,10 +422,9 @@ namespace JMS.DVB
         public void AddProgramGuideConsumer(Action<EIT> callback)
         {
             // Validate
-            if (callback == null)
-                throw new ArgumentException("no program guide sink", nameof(callback));
-            else
-                m_programGuideConsumers += callback;
+            ArgumentNullException.ThrowIfNull(callback);
+
+            m_programGuideConsumers += callback;
 
             // Get the state of the overall receiption
             var epgState = GetConsumerState(m_programGuideIdentifier);
@@ -449,10 +446,9 @@ namespace JMS.DVB
         public void RemoveProgramGuideConsumer(Action<EIT> callback)
         {
             // Validate
-            if (callback == null)
-                throw new ArgumentNullException("program guide sink missing", "callback");
-            else
-                m_programGuideConsumers -= callback;
+            ArgumentNullException.ThrowIfNull(callback);
+
+            m_programGuideConsumers -= callback;
         }
 
         /// <summary>
