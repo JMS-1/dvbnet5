@@ -6,6 +6,7 @@ import { IConnectable, IView } from '../../../lib/site'
 import { ITimeBar, TimeBar } from '../../../lib/timebar'
 import { getGuideItem, IGuideItemContract } from '../../../web/IGuideItemContract'
 import { IPlanCurrentContract } from '../../../web/IPlanCurrentContract'
+import { getDeviceRoot } from '../../../web/VCRServer'
 import { GuideInfo, IGuideInfo } from '../guide/entry'
 
 // Ansicht einer Aktivität.
@@ -29,7 +30,7 @@ export interface IDeviceInfo extends IConnectable {
     readonly size: string
 
     // Status der Aktivität - unterscheidet etwa zwischen laufenden und geplanten Aufzeichnungen.
-    readonly mode?: string
+    readonly mode?: 'running' | 'late' | 'intime' | 'null'
 
     // Optional die eindeutige Kennung der Aufzeichnung.
     readonly id?: string
@@ -48,6 +49,9 @@ export interface IDeviceInfo extends IConnectable {
 
     // Optional die Steuereinheit für laufende Aufzeichnung.
     readonly controller: IDeviceController
+
+    // Die URL zum Starten des LIVE Betrachtens.
+    readonly liveUri?: string
 }
 
 // Präsentationsmodell zur Anzeige einer Aktivität.
@@ -99,8 +103,13 @@ export class Info implements IDeviceInfo {
     // Gesetzt um eine laufende Aufzeichnung anzusehen und zu manipulieren.
     readonly showControl: IFlag
 
+    // Die URL zum Starten des LIVE Betrachtens.
+    get liveUri() {
+        return this._model.isIdle ? `${getDeviceRoot()}${encodeURIComponent(this.device)}/0/Live` : undefined
+    }
+
     // Status der Aktivität - unterscheidet etwa zwischen laufenden und geplanten Aufzeichnungen.
-    get mode(): string | undefined {
+    get mode() {
         // Gerät wird nicht verwendet.
         if (this._model.isIdle) return undefined
 

@@ -16,20 +16,23 @@ interface IDevice extends IComponent<IDeviceInfo> {
 export class Device extends ComponentEx<IDeviceInfo, IDevice> {
     // Erstellt die Oberflächenelemente.
     render(): JSX.Element {
-        const showGuide = this.props.uvm.showGuide
-        const showControl = this.props.uvm.showControl
+        const { showGuide, showControl, mode, liveUri } = this.props.uvm
 
         return (
             <tr className='vcrnet-device'>
                 <td>
-                    {this.props.uvm.mode ? (
+                    {mode ? (
                         showControl.isReadonly ? (
-                            <Pictogram name={this.props.uvm.mode} />
+                            <Pictogram name={mode} />
                         ) : (
                             <InternalLink view={() => (showControl.value = !showControl.value)}>
-                                <Pictogram name={this.props.uvm.mode} />
+                                <Pictogram name={mode} />
                             </InternalLink>
                         )
+                    ) : liveUri ? (
+                        <a href={liveUri}>
+                            <Pictogram name='running' />
+                        </a>
                     ) : (
                         <span>&nbsp;</span>
                     )}
