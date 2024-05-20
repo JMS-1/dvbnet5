@@ -12,7 +12,7 @@ if (debug) serverRoot = 'http://localhost:5093'
 
 // Der Präfix für den Zugriff auf Geräte und Dateien
 const protocolEnd = serverRoot.indexOf('://')
-const deviceUrl = 'dvbnet' + serverRoot.substring(protocolEnd) + '/'
+const deviceUrl = 'dvbnet5' + serverRoot.substring(protocolEnd) + '/'
 
 // Der Präfix für alle REST Zugiffe
 setWebCallRoot(serverRoot + '/api/')
