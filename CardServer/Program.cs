@@ -45,6 +45,9 @@ namespace JMS.DVB.CardServer
                     // Send the response
                     response.SendResponse(writer);
                 }
+
+                // Allow outgoing data to be processed - esp. program guide.
+                Thread.Sleep(2000);
             }
             catch (Exception e)
             {

@@ -228,11 +228,13 @@ namespace JMS.DVB.CardServer
                 int block = Math.Min(BlockSize, data.Length - n);
 
                 // Load chunk
-                if (pipe.Read(data, n, block) != block)
+                int bytes = pipe.Read(data, n, block);
+
+                if (bytes < 1)
                     return null;
 
                 // Advance
-                n += block;
+                n += bytes;
             }
 
             // Create settings
