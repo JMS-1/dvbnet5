@@ -105,7 +105,7 @@ export class Info implements IDeviceInfo {
 
     // Die URL zum Starten des LIVE Betrachtens.
     get liveUri() {
-        return this._model.isIdle ? `${getDeviceRoot()}${encodeURIComponent(this.device)}/0/Live` : undefined
+        return `${getDeviceRoot()}${encodeURIComponent(this.device)}/0/Live`
     }
 
     // Status der Aktivität - unterscheidet etwa zwischen laufenden und geplanten Aufzeichnungen.
