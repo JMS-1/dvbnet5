@@ -1,2 +1,12 @@
-﻿.vcrnet-device {
+﻿tr.vcrnet-device > td > .device-name {
+    display: grid;
+    grid-auto-flow: column;
+    align-items: center;
+    justify-content: flex-start;
+    column-gap: 0.5em;
+
+    > a.inactive {
+        pointer-events: none;
+        opacity: 0.1;
+    }
 }

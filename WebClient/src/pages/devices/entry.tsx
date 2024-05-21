@@ -29,10 +29,6 @@ export class Device extends ComponentEx<IDeviceInfo, IDevice> {
                                 <Pictogram name={mode} />
                             </InternalLink>
                         )
-                    ) : liveUri ? (
-                        <a href={liveUri}>
-                            <Pictogram name='running' />
-                        </a>
                     ) : (
                         <span>&nbsp;</span>
                     )}
@@ -57,7 +53,14 @@ export class Device extends ComponentEx<IDeviceInfo, IDevice> {
                         <span>{this.props.uvm.name}</span>
                     )}
                 </td>
-                <td>{this.props.uvm.device}</td>
+                <td>
+                    <div className='device-name'>
+                        <a className={mode === 'running' ? 'inactive' : ''} href={liveUri}>
+                            <Pictogram name='running' />
+                        </a>
+                        <span>{this.props.uvm.device}</span>
+                    </div>
+                </td>
                 <td>{this.props.uvm.size}</td>
             </tr>
         )
