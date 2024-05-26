@@ -7,7 +7,6 @@ namespace JMS.DVB.NET.Recording.Services.Planning;
 /// <summary>
 /// Verwaltung aller Aufträge für alle DVB.NET Geräteprofile.
 /// </summary>
-/// <remarks>LEAF SERVICE</remarks>
 public interface IJobManager
 {
     /// <summary>
@@ -66,6 +65,13 @@ public interface IJobManager
     /// <param name="profile">Profile, dessen Protokolle ausgelesen werden sollen.</param>
     /// <returns>Liste aller Protokolleinträge für den gewünschten Zeitraum.</returns>
     List<VCRRecordingInfo> FindLogEntries(DateTime firstDate, DateTime lastDate, IProfileState profile);
+
+    /// <summary>
+    /// Alle Protokolleinträge ermitteln, die mindestens eine Aufzeichnungsdatei
+    /// erstellt haben.
+    /// </summary>
+    /// <returns>Die gewünschte Liste.</returns>
+    List<VCRRecordingInfo> FindLogEntriesWithFiles();
 
     /// <summary>
     /// Bereinigt alle veralteten Protokolleinträge.

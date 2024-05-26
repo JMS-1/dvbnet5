@@ -9,7 +9,6 @@ namespace JMS.DVB.NET.Recording.Services.Planning;
 /// <summary>
 /// Verwaltung aller Aufträge für alle DVB.NET Geräteprofile.
 /// </summary>
-/// <remarks>LEAF SERVICE</remarks>
 public class JobManager : IJobManager
 {
     /// <summary>
@@ -395,6 +394,38 @@ public class JobManager : IJobManager
 
             // Check
             if (profile?.IsResponsibleFor(logEntry.Source) == false)
+                continue;
+
+            // Attach the name
+            logEntry.LogIdentifier = file.Name.ToLower();
+
+            // Remember
+            logs.Add(logEntry);
+        }
+
+        // Sort by start time
+        logs.Sort(VCRRecordingInfo.ComparerByStarted);
+
+        // Report
+        return logs;
+    }
+
+    /// <inheritdoc/>
+    public List<VCRRecordingInfo> FindLogEntriesWithFiles()
+    {
+        // Create list
+        var logs = new List<VCRRecordingInfo>();
+
+        // Load all jobs
+        foreach (var file in LogDirectory.GetFiles("*" + VCRRecordingInfo.FileSuffix))
+        {
+            // Load item
+            var logEntry = SerializationTools.Load<VCRRecordingInfo>(file);
+            if (logEntry == null)
+                continue;
+
+            // Check
+            if (logEntry.RecordingFiles.Count < 1)
                 continue;
 
             // Attach the name

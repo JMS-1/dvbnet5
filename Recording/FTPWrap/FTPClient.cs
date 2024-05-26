@@ -2,9 +2,9 @@ using System.Net;
 using System.Text;
 using System.Diagnostics;
 using System.Net.Sockets;
+using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.FTPWrap;
-
 /// <summary>
 /// Beschreibt eine einzelne FTP Sitzung.
 /// </summary>
@@ -25,17 +25,17 @@ public class FTPClient : IDisposable
 	/// <summary>
 	/// Alle behandelten FTP Befehle.
 	/// </summary>
-	private Dictionary<string, Processor> m_Processors = new Dictionary<string, Processor>();
+	private readonly Dictionary<string, Processor> m_Processors = [];
 
 	/// <summary>
 	/// Sperre zur internen Synchronisation des Datenkanals.
 	/// </summary>
-	private object m_DataLock = new object();
+	private readonly object m_DataLock = new object();
 
 	/// <summary>
 	/// Speicher für den FTP Befehl.
 	/// </summary>
-	private byte[] m_Buffer = new byte[1000];
+	private readonly byte[] m_Buffer = new byte[1000];
 
 	/// <summary>
 	/// Methode zur Benachrichtigung über das Beenden der Verbindung.
@@ -70,7 +70,7 @@ public class FTPClient : IDisposable
 	/// <summary>
 	/// Die zugeordnete Datei.
 	/// </summary>
-	private FileInfo m_File;
+	private FileInfo? m_File;
 
 	/// <summary>
 	/// Gesetzt, wenn eine leere Datei erkannt wurde.
@@ -78,17 +78,24 @@ public class FTPClient : IDisposable
 	private bool m_EmptyFile = false;
 
 	/// <summary>
+	/// Die Verwaltung aller Aufträge.
+	/// </summary>
+	private readonly IJobManager m_jobs;
+
+	/// <summary>
 	/// Erzeugt eine neue Client Verbindung.
 	/// </summary>
 	/// <param name="socket">Netzwerkverbindung zum Client.</param>
 	/// <param name="file">Die Datei, die diesem Client zugeordnet ist.</param>
 	/// <param name="onFinished">Methode zum Rückrufe nach Beenden der Verbindung.</param>
-	public FTPClient(Socket socket, FileInfo file, FinishedHandler onFinished)
+	/// <param name="jobs">Verwaltung der Aufträge.</param>
+	public FTPClient(Socket socket, FinishedHandler onFinished, IJobManager jobs)
 	{
+		m_jobs = jobs;
+
 		// Remember
 		m_OnFinished = onFinished;
 		m_Socket = socket;
-		m_File = file;
 
 		// Asnychronous
 		m_Socket.Blocking = false;
@@ -150,7 +157,7 @@ public class FTPClient : IDisposable
 	private void OnAcceptPassive(IAsyncResult result)
 	{
 		// We are terminating
-		if (null == m_Passive) return;
+		if (m_Passive == null) return;
 
 		// What to do
 		Processor? processor;
@@ -182,14 +189,13 @@ public class FTPClient : IDisposable
 		Send(226, "Transfer Complete");
 
 		// Terminate on empty file
-		if (!data.GotData)
-		{
-			// Remember
-			m_EmptyFile = true;
+		if (data.GotData) return;
 
-			// Terminate
-			Close();
-		}
+		// Remember
+		m_EmptyFile = true;
+
+		// Terminate
+		Close();
 	}
 
 	/// <summary>
@@ -200,7 +206,7 @@ public class FTPClient : IDisposable
 	{
 		// Schedule for delayed processing
 		lock (m_DataLock)
-			if (null == m_Data)
+			if (m_Data == null)
 			{
 				// Wait for connection
 				m_DelayedProcessor = ProcessLIST;
@@ -211,19 +217,25 @@ public class FTPClient : IDisposable
 			}
 
 		// Report
-		IAsyncResult wait = Send(125, "Data connection open, Transfer starting.");
+		var wait = Send(125, "Data connection open, Transfer starting.");
 
 		// Wait until client ist ready
-		if (null != wait) wait.AsyncWaitHandle.WaitOne();
+		wait?.AsyncWaitHandle.WaitOne();
 
 		// Create list
-		string response = string.Format("---------- 1 owner group 999999999999 Sep 29 10:18 {0}\r\n", m_File.Name);
+		var response = new StringBuilder();
+		var index = 0;
+
+		foreach (var rec in m_jobs.FindLogEntriesWithFiles())
+			foreach (var file in rec.RecordingFiles)
+				if (file.FileSize.GetValueOrDefault(0) != 0)
+					response.Append($"---------- {++index} owner group {file.FileSize} Sep 29 10:18 {file.ScheduleIdentifier}.ts\r\n");
 
 		// Send data
 		try
 		{
 			// Process
-			if (null != m_Data) m_Data.Send(response);
+			m_Data?.Send(response.ToString());
 		}
 		catch
 		{
@@ -239,7 +251,7 @@ public class FTPClient : IDisposable
 	{
 		// Schedule for delayed processing
 		lock (m_DataLock)
-			if (null == m_Data)
+			if (m_Data == null)
 			{
 				// Wait for connection
 				m_DelayedProcessor = ProcessRETR;
@@ -250,16 +262,16 @@ public class FTPClient : IDisposable
 			}
 
 		// Report
-		IAsyncResult wait = Send(125, "Data connection open, Transfer starting.");
+		var wait = Send(125, "Data connection open, Transfer starting.");
 
 		// Wait until client ist ready
-		if (null != wait) wait.AsyncWaitHandle.WaitOne();
+		wait?.AsyncWaitHandle.WaitOne();
 
 		// Send data
 		try
 		{
 			// Process
-			m_Data?.Send(new FileStream(m_File.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 1000000));
+			m_Data?.Send(new FileStream(m_File!.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 1000000));
 		}
 		catch
 		{
@@ -284,7 +296,7 @@ public class FTPClient : IDisposable
 	/// Meldet das Betriebssystem.
 	/// </summary>
 	/// <param name="command">Wird ignoriert.</param>
-	private void ProcessSYST(string command) => Send(215, "Windows_NT");
+	private void ProcessSYST(string command) => Send(215, "LINUX");
 
 	/// <summary>
 	/// Beendet diese Sitzung.
@@ -398,7 +410,7 @@ public class FTPClient : IDisposable
 		try
 		{
 			// Get data
-			int bytes = m_Socket.EndReceive(result);
+			var bytes = m_Socket.EndReceive(result);
 
 			// Finished
 			if (bytes < 1)
@@ -426,7 +438,7 @@ public class FTPClient : IDisposable
 		Debug.Write(string.Format("{1}:{2} {0}", command, Thread.CurrentThread.ManagedThreadId, DateTime.Now.Ticks));
 
 		// Dispatch
-		string key = command.Split(' ', '\r', '\n')[0];
+		var key = command.Split(' ', '\r', '\n')[0];
 
 		// Process
 		if (m_Processors.TryGetValue(key, out var processor)) processor(command[4..^2].Trim());

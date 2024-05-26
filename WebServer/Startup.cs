@@ -22,7 +22,7 @@ public class Startup(IConfiguration configuration)
                     .AllowCredentials()
                 ));
 
-        services.UseRecording();
+        services.UseRecording(Configuration);
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

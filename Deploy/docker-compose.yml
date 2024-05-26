@@ -9,3 +9,4 @@ services:
       - $RECORDING:/Recordings
     ports:
       - $PORT:8080
+      - $FTPPORT:8081

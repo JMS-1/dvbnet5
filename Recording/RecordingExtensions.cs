@@ -1,4 +1,5 @@
 using JMS.DVB.NET.Recording.Actions;
+using JMS.DVB.NET.Recording.FTPWrap;
 using JMS.DVB.NET.Recording.Planning;
 using JMS.DVB.NET.Recording.Requests;
 using JMS.DVB.NET.Recording.RestWebApi;
@@ -8,6 +9,7 @@ using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Logging;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Services.ProgramGuide;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JMS.DVB.NET.Recording;
@@ -21,7 +23,7 @@ public static class RecordingExtensions
         string IVCRConfigurationExePathProvider.Path => m_Path;
     }
 
-    public static void UseRecording(this IServiceCollection services)
+    public static void UseRecording(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient(typeof(ILogger<>), typeof(Logger<>));
 
@@ -49,6 +51,10 @@ public static class RecordingExtensions
         services.AddSingleton<IVCRServer, VCRServer>();
 
         services.AddSingleton<IVCRConfigurationExePathProvider>((ctx) => new ConfigurationPathProvider());
+
+        var ftpPort = configuration.GetSection("FTPPort").Get<ushort>();
+
+        services.AddSingleton<IFTPWrap>(di => new FTPWrap.FTPWrap(ftpPort, di.GetRequiredService<IJobManager>()));
     }
 
     public static void StartRecording(this IServiceProvider services, CancellationTokenSource restart)
@@ -56,5 +62,6 @@ public static class RecordingExtensions
         Environment.CurrentDirectory = Tools.ApplicationDirectory.FullName;
 
         services.GetRequiredService<IVCRServer>().Startup(() => restart.Cancel());
+        services.GetRequiredService<IFTPWrap>();
     }
 }
