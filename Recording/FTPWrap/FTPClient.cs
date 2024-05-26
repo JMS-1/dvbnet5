@@ -519,11 +519,7 @@ public class FTPClient : IDisposable
 	/// <summary>
 	/// Beendet die Nutzung dieser FTP Verbindung endgültig.
 	/// </summary>
-	public void Dispose()
-	{
-		// Forward
-		Close();
-	}
+	public void Dispose() => Close();
 
 	#endregion
 }
