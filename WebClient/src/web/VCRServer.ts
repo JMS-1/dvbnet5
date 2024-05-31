@@ -12,7 +12,11 @@ if (debug) serverRoot = 'http://localhost:5093'
 
 // Der Präfix für den Zugriff auf Geräte und Dateien
 const protocolEnd = serverRoot.indexOf('://')
-const deviceUrl = 'dvbnet5' + serverRoot.substring(protocolEnd) + '/'
+const host = serverRoot.substring(protocolEnd + 3)
+const hostSplit = host.split(':')
+
+const deviceUrl = 'dvbnet5://' + host + '/'
+const demuxUrl = 'demux://' + hostSplit[0] + ':' + (parseInt(hostSplit[1] || '80') + 1) + '/'
 
 // Der Präfix für alle REST Zugiffe
 setWebCallRoot(serverRoot + '/api/')
@@ -29,6 +33,10 @@ export function doUrlCall<TResponseType, TRequestType>(
 // Meldet den Verweis zum Aufruf des DVB.NET / VCR.NET Viewers.
 export function getDeviceRoot(): string {
     return deviceUrl
+}
+
+export function getDemuxRoot(): string {
+    return demuxUrl
 }
 
 // Meldet den Pfad zum Abspielen einer abgeschlossenen Aufzeichnung (DVB.NET / VCR.NET Viewer muss installiert sein).

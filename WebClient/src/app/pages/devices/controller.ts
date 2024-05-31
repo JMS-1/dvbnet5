@@ -3,7 +3,7 @@ import { DateTimeUtils } from '../../../lib/dateTimeUtils'
 import { INumberWithSlider, NumberWithSlider } from '../../../lib/edit/number/slider'
 import { IConnectable, IView } from '../../../lib/site'
 import { IPlanCurrentContract, updateEndTime } from '../../../web/IPlanCurrentContract'
-import { getDeviceRoot } from '../../../web/VCRServer'
+import { getDemuxRoot, getDeviceRoot } from '../../../web/VCRServer'
 
 // Schnittstelle zur Anzeige und Manipulation einer Aktivität.
 export interface IDeviceController extends IConnectable {
@@ -58,7 +58,7 @@ export class Controller implements IDeviceController {
 
     // Verweis zum Demux.
     get demux(): string[] {
-        return this._model.fileHashes?.map((h) => `${getDeviceRoot().replace(/^dvbnet5:/, 'demux:')}${h}`) || []
+        return this._model.fileHashes?.map((h) => `${getDemuxRoot()}${h}`) || []
     }
 
     constructor(

@@ -33,7 +33,7 @@ public class FTPWrap : IFTPWrap, IDisposable
         m_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp) { Blocking = false };
 
         // Make us an FTP server
-        m_Socket.Bind(new IPEndPoint(IPAddress.Any, port));
+        m_Socket.Bind(new IPEndPoint(IPAddress.Parse("0.0.0.0"), port));
 
         // Start listening
         m_Socket.Listen(5);

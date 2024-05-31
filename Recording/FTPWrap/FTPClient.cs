@@ -135,13 +135,13 @@ public class FTPClient : IDisposable
 		m_Passive = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp) { Blocking = false };
 
 		// Bind to some port
-		m_Passive.Bind(new IPEndPoint(((IPEndPoint)m_Socket!.LocalEndPoint!).Address, 0));
+		m_Passive.Bind(new IPEndPoint(((IPEndPoint)m_Socket!.LocalEndPoint!).Address, Random.Shared.Next(29300, 29305)));
 
 		// Read the new endpoint
 		var endPoint = (IPEndPoint)m_Passive.LocalEndPoint!;
 
 		// As bytes
-		byte[] net = endPoint.Address.GetAddressBytes();
+		byte[] net = IPAddress.Parse(Environment.GetEnvironmentVariable("OUTERIP")!).GetAddressBytes();
 
 		// Read the port
 		int port = endPoint.Port;
