@@ -411,35 +411,23 @@ public class JobManager : IJobManager
     }
 
     /// <inheritdoc/>
-    public List<VCRRecordingInfo> FindLogEntriesWithFiles()
+    public IEnumerable<RecordingFileInfo> FindLogEntriesWithFiles()
     {
-        // Create list
-        var logs = new List<VCRRecordingInfo>();
-
         // Load all jobs
-        foreach (var file in LogDirectory.GetFiles("*" + VCRRecordingInfo.FileSuffix))
+        foreach (var log in LogDirectory.GetFiles("*" + VCRRecordingInfo.FileSuffix))
         {
             // Load item
-            var logEntry = SerializationTools.Load<VCRRecordingInfo>(file);
-            if (logEntry == null)
-                continue;
+            var logEntry = SerializationTools.Load<VCRRecordingInfo>(log);
+            if (logEntry == null) continue;
+
+            // Must know job.
+            if (logEntry.JobUniqueID == null || logEntry.ScheduleUniqueID == null) continue;
 
             // Check
-            if (logEntry.RecordingFiles.Count < 1)
-                continue;
-
-            // Attach the name
-            logEntry.LogIdentifier = file.Name.ToLower();
-
-            // Remember
-            logs.Add(logEntry);
+            foreach (var file in logEntry.RecordingFiles)
+                if (file.FileSize != null)
+                    yield return new() { Path = file.Path, Size = file.FileSize.Value };
         }
-
-        // Sort by start time
-        logs.Sort(VCRRecordingInfo.ComparerByStarted);
-
-        // Report
-        return logs;
     }
 
     /// <summary>

@@ -3,6 +3,8 @@ using System.Text;
 using System.Diagnostics;
 using System.Net.Sockets;
 using JMS.DVB.NET.Recording.Services.Planning;
+using JMS.DVB.NET.Recording.RestWebApi;
+using JMS.DVB.NET.Recording.Actions;
 
 namespace JMS.DVB.NET.Recording.FTPWrap;
 /// <summary>
@@ -68,11 +70,6 @@ public class FTPClient : IDisposable
 	private Socket? m_Socket;
 
 	/// <summary>
-	/// Die zugeordnete Datei.
-	/// </summary>
-	private FileInfo? m_File;
-
-	/// <summary>
 	/// Gesetzt, wenn eine leere Datei erkannt wurde.
 	/// </summary>
 	private bool m_EmptyFile = false;
@@ -80,7 +77,12 @@ public class FTPClient : IDisposable
 	/// <summary>
 	/// Die Verwaltung aller Aufträge.
 	/// </summary>
-	private readonly IJobManager m_jobs;
+	private readonly IJobManager m_Jobs;
+
+	/// <summary>
+	/// Ermittelt aktive Aufzeichnungen.
+	/// </summary>
+	private readonly IRecordings m_Recodings;
 
 	/// <summary>
 	/// Erzeugt eine neue Client Verbindung.
@@ -89,9 +91,11 @@ public class FTPClient : IDisposable
 	/// <param name="file">Die Datei, die diesem Client zugeordnet ist.</param>
 	/// <param name="onFinished">Methode zum Rückrufe nach Beenden der Verbindung.</param>
 	/// <param name="jobs">Verwaltung der Aufträge.</param>
-	public FTPClient(Socket socket, FinishedHandler onFinished, IJobManager jobs)
+	/// <param name="recodings">Ermittelt aktive Aufzeichungen..</param>
+	public FTPClient(Socket socket, FinishedHandler onFinished, IJobManager jobs, IRecordings recodings)
 	{
-		m_jobs = jobs;
+		m_Jobs = jobs;
+		m_Recodings = recodings;
 
 		// Remember
 		m_OnFinished = onFinished;
@@ -105,15 +109,17 @@ public class FTPClient : IDisposable
 
 		// Register
 		m_Processors["ABOR"] = ProcessABOR;
-		m_Processors["RETR"] = ProcessRETR;
-		m_Processors["LIST"] = ProcessLIST;
-		m_Processors["PASV"] = ProcessPASV;
-		m_Processors["TYPE"] = ProcessTYPE;
-		m_Processors["QUIT"] = ProcessQUIT;
-		m_Processors["USER"] = ProcessUSER;
-		m_Processors["PASS"] = ProcessPASS;
-		m_Processors["SYST"] = ProcessSYST;
 		m_Processors["CWD"] = ProcessCWD;
+		m_Processors["FEAT"] = ProcessFEAT;
+		m_Processors["LIST"] = ProcessLIST;
+		m_Processors["PASS"] = ProcessPASS;
+		m_Processors["PASV"] = ProcessPASV;
+		m_Processors["PWD"] = ProcessPWD;
+		m_Processors["QUIT"] = ProcessQUIT;
+		m_Processors["RETR"] = ProcessRETR;
+		m_Processors["SYST"] = ProcessSYST;
+		m_Processors["TYPE"] = ProcessTYPE;
+		m_Processors["USER"] = ProcessUSER;
 	}
 
 	/// <summary>
@@ -224,14 +230,19 @@ public class FTPClient : IDisposable
 
 		// Create list
 		var response = new StringBuilder();
-		var index = 0;
 
-		foreach (var rec in m_jobs.FindLogEntriesWithFiles())
-			foreach (var file in rec.RecordingFiles)
-				if (file.FileSize.GetValueOrDefault(0) != 0)
-					response.Append($"---------- {++index} owner group {file.FileSize} Sep 29 10:18 {file.ScheduleIdentifier}.ts\r\n");
+		foreach (var file in GetAllFiles().OrderBy(f => f.ScheduleId))
+			try
+			{
+				// Process
+				response.Append($"---------- 1 owner group {file.Size ?? 999999999999L} Sep 29 10:18 {file.ScheduleId}.ts\r\n");
+			}
+			catch
+			{
+				// Ignore any error
+			}
 
-		// Send data
+		// Send list
 		try
 		{
 			// Process
@@ -242,6 +253,18 @@ public class FTPClient : IDisposable
 			// Ignore any error
 		}
 	}
+
+	/// <summary>
+	/// Ermittelt alle Aufzeichnungsdateien, auch die von laufenden Aufzeichnungen.
+	/// </summary>
+	private IEnumerable<RecordingFileInfo> GetAllFiles()
+		=> m_Jobs
+			.FindLogEntriesWithFiles()
+			.Concat(m_Recodings
+				.GetCurrent(PlanCurrent.Create, PlanCurrent.Create, PlanCurrent.Create)
+				.Where(r => !string.IsNullOrEmpty(r.Identifier))
+				.SelectMany(r => r.Files.Select(path
+					=> new RecordingFileInfo { Path = path })));
 
 	/// <summary>
 	/// Beginnt mit der Übertragung einer Datei.
@@ -261,6 +284,23 @@ public class FTPClient : IDisposable
 				return;
 			}
 
+		// Lookup file.
+		RecordingFileInfo? file = null;
+
+		if (command.EndsWith(".ts"))
+		{
+			var id = command[..^3];
+
+			file = GetAllFiles().FirstOrDefault(f => f.ScheduleId == id);
+		}
+
+		if (file == null || !File.Exists(file.Path))
+		{
+			Send(404, "File not found.");
+
+			return;
+		}
+
 		// Report
 		var wait = Send(125, "Data connection open, Transfer starting.");
 
@@ -271,7 +311,7 @@ public class FTPClient : IDisposable
 		try
 		{
 			// Process
-			m_Data?.Send(new FileStream(m_File!.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 1000000));
+			m_Data?.Send(new FileStream(file.Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 1000000), file.Size.HasValue);
 		}
 		catch
 		{
@@ -299,6 +339,12 @@ public class FTPClient : IDisposable
 	private void ProcessSYST(string command) => Send(215, "LINUX");
 
 	/// <summary>
+	/// Melded optionale Befehler..
+	/// </summary>
+	/// <param name="command">Wird ignoriert.</param>
+	private void ProcessFEAT(string command) => Send(221, "");
+
+	/// <summary>
 	/// Beendet diese Sitzung.
 	/// </summary>
 	/// <param name="command">Wird ignoriert.</param>
@@ -321,6 +367,12 @@ public class FTPClient : IDisposable
 	/// </summary>
 	/// <param name="command">Wird ignoriert.</param>
 	private void ProcessCWD(string command) => Send(250, "OK");
+
+	/// <summary>
+	/// Meldet das Arbeitsverzeichnis.
+	/// </summary>
+	/// <param name="command">Wird ignoriert.</param>
+	private void ProcessPWD(string command) => Send(257, "/");
 
 	/// <summary>
 	/// Setzt das Kennwort.
@@ -441,7 +493,7 @@ public class FTPClient : IDisposable
 		var key = command.Split(' ', '\r', '\n')[0];
 
 		// Process
-		if (m_Processors.TryGetValue(key, out var processor)) processor(command[4..^2].Trim());
+		if (m_Processors.TryGetValue(key, out var processor)) processor(command[key.Length..^2].Trim());
 	}
 
 	/// <summary>

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
+using JMS.DVB.NET.Recording.Actions;
 using JMS.DVB.NET.Recording.Services.Planning;
 
 namespace JMS.DVB.NET.Recording.FTPWrap;
@@ -21,9 +22,12 @@ public class FTPWrap : IFTPWrap, IDisposable
     /// </summary>
     private readonly IJobManager m_Jobs;
 
-    public FTPWrap(ushort port, IJobManager jobs)
+    private readonly IRecordings m_Recordings;
+
+    public FTPWrap(ushort port, IJobManager jobs, IRecordings recordings)
     {
         m_Jobs = jobs;
+        m_Recordings = recordings;
 
         // Create socket
         m_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp) { Blocking = false };
@@ -52,7 +56,7 @@ public class FTPWrap : IFTPWrap, IDisposable
         {
             // Add a new client
             lock (m_Clients)
-                m_Clients.Add(new FTPClient(m_Socket.EndAccept(result), OnClientFinished, m_Jobs));
+                m_Clients.Add(new FTPClient(m_Socket.EndAccept(result), OnClientFinished, m_Jobs, m_Recordings));
 
             // Await next connection
             m_Socket.BeginAccept(OnAccept, null);

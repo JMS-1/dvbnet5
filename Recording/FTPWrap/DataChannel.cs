@@ -34,6 +34,8 @@ public class DataChannel : IDisposable
 	/// </summary>
 	private Stream? m_File;
 
+	private bool m_Archived = false;
+
 	/// <summary>
 	/// Wird gesetzt, wenn mindestens ein Byte aus der Datei ausgelesen wurde.
 	/// </summary>
@@ -88,7 +90,8 @@ public class DataChannel : IDisposable
 	/// erfolgreich verschickt, dann wird der nächste Teil abgerufen.
 	/// </summary>
 	/// <param name="file">Zu versendende Datei.</param>
-	public void Send(Stream? file)
+	/// <param name="archived">Gesetzt, wenn es sich um eine vollständige Datei handelt.</param>
+	public void Send(Stream? file, bool archived)
 	{
 		// At least we tried
 		if (!m_GotData.HasValue) m_GotData = false;
@@ -97,7 +100,9 @@ public class DataChannel : IDisposable
 		if (null == m_Buffer) m_Buffer = new byte[100000];
 
 		// May retry - give us 30 seconds to detect end of live recording
-		for (int retry = 30; retry-- > 0;)
+		var retries = archived ? 1 : 30;
+
+		for (var retry = retries; retry-- > 0;)
 		{
 			// Read bytes
 			int bytes = file!.Read(m_Buffer, 0, m_Buffer.Length);
@@ -106,7 +111,7 @@ public class DataChannel : IDisposable
 			if (bytes < 1)
 			{
 				// Delay
-				if (m_Abort.WaitOne(1000, true)) break;
+				if (archived || m_Abort.WaitOne(1000, true)) break;
 
 				// Next
 				continue;
@@ -116,12 +121,13 @@ public class DataChannel : IDisposable
 			m_GotData = true;
 
 			// Restart retry counter
-			retry = 30;
+			retry = retries;
 
 			// Try to send this chunk
 			try
 			{
 				// Remember file for next chunk
+				m_Archived = archived;
 				m_File = file;
 
 				// Try to send
@@ -170,7 +176,7 @@ public class DataChannel : IDisposable
 			else
 			{
 				// Continue with next chunk
-				Send(m_File);
+				Send(m_File, m_Archived);
 			}
 		}
 		catch

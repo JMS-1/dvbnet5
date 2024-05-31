@@ -54,7 +54,7 @@ public static class RecordingExtensions
 
         var ftpPort = configuration.GetSection("FTPPort").Get<ushort>();
 
-        services.AddSingleton<IFTPWrap>(di => new FTPWrap.FTPWrap(ftpPort, di.GetRequiredService<IJobManager>()));
+        services.AddSingleton<IFTPWrap>(di => new FTPWrap.FTPWrap(ftpPort, di.GetRequiredService<IJobManager>(), di.GetRequiredService<IRecordings>()));
     }
 
     public static void StartRecording(this IServiceProvider services, CancellationTokenSource restart)

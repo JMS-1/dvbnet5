@@ -71,7 +71,7 @@ public interface IJobManager
     /// erstellt haben.
     /// </summary>
     /// <returns>Die gewünschte Liste.</returns>
-    List<VCRRecordingInfo> FindLogEntriesWithFiles();
+    IEnumerable<RecordingFileInfo> FindLogEntriesWithFiles();
 
     /// <summary>
     /// Bereinigt alle veralteten Protokolleinträge.
