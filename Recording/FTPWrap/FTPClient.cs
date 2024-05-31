@@ -85,17 +85,23 @@ public class FTPClient : IDisposable
 	private readonly IRecordings m_Recodings;
 
 	/// <summary>
+	/// Für die passive verbindung zu nutzender Port.
+	/// </summary>
+	private readonly int m_PassivePort;
+
+	/// <summary>
 	/// Erzeugt eine neue Client Verbindung.
 	/// </summary>
 	/// <param name="socket">Netzwerkverbindung zum Client.</param>
-	/// <param name="file">Die Datei, die diesem Client zugeordnet ist.</param>
+	/// <param name="passivePort">Für die passive verbindung zu nutzender Port.</param>
 	/// <param name="onFinished">Methode zum Rückrufe nach Beenden der Verbindung.</param>
 	/// <param name="jobs">Verwaltung der Aufträge.</param>
 	/// <param name="recodings">Ermittelt aktive Aufzeichungen..</param>
-	public FTPClient(Socket socket, FinishedHandler onFinished, IJobManager jobs, IRecordings recodings)
+	public FTPClient(Socket socket, int passivePort, FinishedHandler onFinished, IJobManager jobs, IRecordings recodings)
 	{
 		m_Jobs = jobs;
 		m_Recodings = recodings;
+		m_PassivePort = passivePort;
 
 		// Remember
 		m_OnFinished = onFinished;
@@ -135,16 +141,16 @@ public class FTPClient : IDisposable
 		m_Passive = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp) { Blocking = false };
 
 		// Bind to some port
-		m_Passive.Bind(new IPEndPoint(((IPEndPoint)m_Socket!.LocalEndPoint!).Address, Random.Shared.Next(29300, 29305)));
+		m_Passive.Bind(new IPEndPoint(((IPEndPoint)m_Socket!.LocalEndPoint!).Address, m_PassivePort));
 
 		// Read the new endpoint
 		var endPoint = (IPEndPoint)m_Passive.LocalEndPoint!;
 
 		// As bytes
-		byte[] net = IPAddress.Parse(Environment.GetEnvironmentVariable("OUTERIP")!).GetAddressBytes();
+		var net = IPAddress.Parse(Environment.GetEnvironmentVariable("OUTERIP")!).GetAddressBytes();
 
 		// Read the port
-		int port = endPoint.Port;
+		var port = endPoint.Port;
 
 		// Configure for listening
 		m_Passive.Listen(4);
@@ -330,7 +336,7 @@ public class FTPClient : IDisposable
 	/// Meldet das Betriebssystem.
 	/// </summary>
 	/// <param name="command">Wird ignoriert.</param>
-	private void ProcessSYST(string command) => Send(215, "LINUX");
+	private void ProcessSYST(string command) => Send(215, "UNIX");
 
 	/// <summary>
 	/// Melded optionale Befehler..

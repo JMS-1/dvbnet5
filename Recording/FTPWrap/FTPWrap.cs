@@ -24,6 +24,8 @@ public class FTPWrap : IFTPWrap, IDisposable
 
     private readonly IRecordings m_Recordings;
 
+    private int m_PassivePort = 0;
+
     public FTPWrap(ushort port, IJobManager jobs, IRecordings recordings)
     {
         m_Jobs = jobs;
@@ -56,7 +58,7 @@ public class FTPWrap : IFTPWrap, IDisposable
         {
             // Add a new client
             lock (m_Clients)
-                m_Clients.Add(new FTPClient(m_Socket.EndAccept(result), OnClientFinished, m_Jobs, m_Recordings));
+                m_Clients.Add(new FTPClient(m_Socket.EndAccept(result), 29300 + (m_PassivePort++ % 5), OnClientFinished, m_Jobs, m_Recordings));
 
             // Await next connection
             m_Socket.BeginAccept(OnAccept, null);
