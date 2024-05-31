@@ -16,6 +16,9 @@ export interface IDeviceController extends IConnectable {
     // Verweis zur LIVE Betrachtung.
     readonly live: string
 
+    // Verweis zum Demux.
+    readonly demux: string[]
+
     // Verweis zur Zeitversetzen Betrachtung.
     readonly timeshift: string
 
@@ -52,6 +55,11 @@ export class Controller implements IDeviceController {
 
     // Verweis zur Zeitversetzen Betrachtung.
     readonly timeshift: string
+
+    // Verweis zum Demux.
+    get demux(): string[] {
+        return this._model.fileHashes?.map((h) => `${getDeviceRoot().replace(/^dvbnet5:/, 'demux:')}${h}`) || []
+    }
 
     constructor(
         private readonly _model: IPlanCurrentContract,

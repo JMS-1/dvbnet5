@@ -17,6 +17,9 @@ export interface IProtocolEntryContract {
     // Die Liste der erzeugten Dateien
     files: string[]
 
+    // Die Liste der erzeugten Dateien als Hashes für den FTP Zugriff
+    fileHashes: string[]
+
     // Ein Hinweis zur Anzeige der Größe
     sizeHint: string
 }

@@ -26,7 +26,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var endTime = DateTime.Parse(end, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
             // Forward
-            return logs.Query(profile, startTime.Date, endTime.Date, ProtocolEntry.Create);
+            return logs.Query(profile, startTime.Date, endTime.Date);
         }
     }
 }

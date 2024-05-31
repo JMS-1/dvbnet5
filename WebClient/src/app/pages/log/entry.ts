@@ -1,7 +1,7 @@
 ﻿import { DateTimeUtils } from '../../../lib/dateTimeUtils'
 import { BooleanProperty, IFlag } from '../../../lib/edit/boolean/flag'
 import { IProtocolEntryContract } from '../../../web/IProtocolEntryContract'
-import { getFilePlayUrl } from '../../../web/VCRServer'
+import { getDeviceRoot, getFilePlayUrl } from '../../../web/VCRServer'
 
 // Schnittstelle zur Anzeige eines einzelnen Protokolleintrags.
 export interface ILogEntry {
@@ -28,6 +28,12 @@ export interface ILogEntry {
 
     // Verweise zur Anzeige der Aufzeichnungsdateien.
     readonly files: string[]
+
+    // Gesetzt wenn Aufzeichnungsdateien existieren.
+    readonly hasHashes: boolean
+
+    // Verweise zur Anzeige der Aufzeichnungsdateien.
+    readonly fileHashes: string[]
 
     // Umschaltung für die Detailansicht.
     readonly showDetail: IFlag
@@ -61,12 +67,20 @@ export class LogEntry implements ILogEntry {
 
     // Gesetzt wenn Aufzeichnungsdateien existieren.
     get hasFiles(): boolean {
-        return this._model.files && this._model.files.length > 0
+        return !!this._model.files?.length
+    }
+
+    get hasHashes(): boolean {
+        return !!this._model.fileHashes?.length
     }
 
     // Verweise zur Anzeige der Aufzeichnungsdateien.
     get files(): string[] {
         return (this._model.files || []).map(getFilePlayUrl)
+    }
+
+    get fileHashes(): string[] {
+        return (this._model.fileHashes || []).map((h) => `${getDeviceRoot().replace(/^dvbnet5:/, 'demux:')}${h}`)
     }
 
     // Verwendete Quelle.

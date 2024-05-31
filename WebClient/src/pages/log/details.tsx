@@ -47,6 +47,18 @@ export class LogDetails extends Component<ILogEntry> {
                                     </td>
                                 </tr>
                             )}
+                            {this.props.uvm.hasHashes && (
+                                <tr>
+                                    <td>Demux starten:</td>
+                                    <td>
+                                        {this.props.uvm.fileHashes.map((f, index) => (
+                                            <ExternalLink key={index} sameWindow={true} url={f}>
+                                                <Pictogram name='recording' />
+                                            </ExternalLink>
+                                        ))}
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </fieldset>

@@ -158,7 +158,12 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <summary>
         /// Alle zu dieser Aktivität erstellten Dateien.
         /// </summary>
-        public string[] Files { get; set; } = null!;
+        public required string[] Files { get; set; }
+
+        /// <summary>
+        /// Alle zu dieser Aktivität erstellten Dateien als Hashwerte für den FTP Zugriff.
+        /// </summary>
+        public string[] FileHashes => [.. Files.Select(Tools.GetPathHash)];
 
         /// <summary>
         /// Rundet einen Datumswert auf die volle Sekunde.
@@ -372,6 +377,6 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// </summary>
         /// <param name="profileName">Der Name des Geräteprofils.</param>
         /// <returns>Die zugehörige Beschreibung.</returns>
-        public static PlanCurrent Create(string profileName) => new() { ProfileName = profileName, IsIdle = true };
+        public static PlanCurrent Create(string profileName) => new() { ProfileName = profileName, IsIdle = true, Files = [] };
     }
 }

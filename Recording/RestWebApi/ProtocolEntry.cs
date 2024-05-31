@@ -50,6 +50,11 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         public string[] Files { get; set; } = null!;
 
         /// <summary>
+        /// Die Liste aller Aufzeichnungsdateien als Hashes zum Zugriff über FTP.
+        /// </summary>
+        public string[] FileHashes => [.. Files.Select(Tools.GetPathHash)];
+
+        /// <summary>
         /// Ein Hinweis auf die Größe der Aufzeichnungen.
         /// </summary>
         public string SizeHint { get; set; } = null!;
@@ -75,7 +80,7 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                 new ProtocolEntry
                 {
                     PrimaryFile = string.IsNullOrEmpty(entry.FileName) ? null! : Path.GetFileName(entry.FileName),
-                    Files = entry.RecordingFiles.Select(file => file.Path).Where(File.Exists).ToArray(),
+                    Files = [.. entry.RecordingFiles.Select(file => file.Path).Where(File.Exists)],
                     Source = entry.Source.DisplayName,
                     StartTime = entry.PhysicalStart,
                     EndTime = entry.EndsAt,

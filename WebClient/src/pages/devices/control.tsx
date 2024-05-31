@@ -29,6 +29,11 @@ export class DeviceControl extends ComponentExWithSite<IDeviceController, IDevic
                         <a href={this.props.uvm.timeshift}>Aufzeichnung zeitversetzt anschauen</a>
                     </div>
                 )}
+                {this.props.uvm.demux.map((d) => (
+                    <div key={d}>
+                        <a href={d}>Demux der aktuelle Aufzeichnung</a>
+                    </div>
+                ))}
                 {this.props.uvm.target && (
                     <div className='vcrnet-device-target'>
                         Aufzeichnung wird aktuell versendet, Empfänger ist {this.props.uvm.target}

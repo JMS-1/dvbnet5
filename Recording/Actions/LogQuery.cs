@@ -1,4 +1,4 @@
-using JMS.DVB.NET.Recording.Persistence;
+using JMS.DVB.NET.Recording.RestWebApi;
 using JMS.DVB.NET.Recording.Server;
 using JMS.DVB.NET.Recording.Services.Planning;
 
@@ -8,7 +8,7 @@ public class LogQuery(IVCRServer server, IJobManager jobs) : ILogQuery
 {
 
     /// <inheritdoc/>
-    public TEntry[] Query<TEntry>(string profileName, DateTime start, DateTime end, Func<VCRRecordingInfo, TEntry> factory)
+    public ProtocolEntry[] Query(string profileName, DateTime start, DateTime end)
     {
         // Locate profile and forward call
         if (string.IsNullOrEmpty(profileName))
@@ -18,6 +18,6 @@ public class LogQuery(IVCRServer server, IJobManager jobs) : ILogQuery
 
         return (profile == null)
             ? []
-            : jobs.FindLogEntries(start, end, profile).Select(factory).ToArray();
+            : jobs.FindLogEntries(start, end, profile).Select(ProtocolEntry.Create).ToArray();
     }
 }

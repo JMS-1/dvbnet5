@@ -426,7 +426,7 @@ public class JobManager : IJobManager
             // Check
             foreach (var file in logEntry.RecordingFiles)
                 if (file.FileSize != null)
-                    yield return new() { Path = file.Path, Size = file.FileSize.Value };
+                    yield return new() { Path = file.Path, Size = file.FileSize.Value, PathHash = Tools.GetPathHash(file.Path) };
         }
     }
 

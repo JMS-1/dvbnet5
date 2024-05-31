@@ -1,19 +1,10 @@
-using System.Security.Cryptography;
-using System.Text;
-
 namespace JMS.DVB.NET.Recording.Services.Planning;
 
 public class RecordingFileInfo
 {
-    private string _path = null!;
+    public required string PathHash { get; set; }
 
-    public string ScheduleId { get; private set; } = null!;
-
-    public required string Path
-    {
-        get { return _path; }
-        set { ScheduleId = BitConverter.ToString(MD5.HashData(Encoding.UTF8.GetBytes(_path = value))).Replace("-", "").ToLower(); }
-    }
+    public required string Path { get; set; }
 
     public long? Size { get; set; }
 }

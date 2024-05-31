@@ -231,11 +231,11 @@ public class FTPClient : IDisposable
 		// Create list
 		var response = new StringBuilder();
 
-		foreach (var file in GetAllFiles().OrderBy(f => f.ScheduleId))
+		foreach (var file in GetAllFiles().OrderBy(f => f.PathHash))
 			try
 			{
 				// Process
-				response.Append($"---------- 1 owner group {file.Size ?? 999999999999L} Sep 29 10:18 {file.ScheduleId}.ts\r\n");
+				response.Append($"-r--r--r-- 1 owner group {file.Size ?? 999999999999L} Sep 29 10:18 {file.PathHash}\r\n");
 			}
 			catch
 			{
@@ -263,8 +263,9 @@ public class FTPClient : IDisposable
 			.Concat(m_Recodings
 				.GetCurrent(PlanCurrent.Create, PlanCurrent.Create, PlanCurrent.Create)
 				.Where(r => !string.IsNullOrEmpty(r.Identifier))
-				.SelectMany(r => r.Files.Select(path
-					=> new RecordingFileInfo { Path = path })));
+				.SelectMany(r => r
+					.FileHashes
+					.Select((h, i) => new RecordingFileInfo { Path = r.Files[i], PathHash = h })));
 
 	/// <summary>
 	/// Beginnt mit der Übertragung einer Datei.
@@ -285,14 +286,7 @@ public class FTPClient : IDisposable
 			}
 
 		// Lookup file.
-		RecordingFileInfo? file = null;
-
-		if (command.EndsWith(".ts"))
-		{
-			var id = command[..^3];
-
-			file = GetAllFiles().FirstOrDefault(f => f.ScheduleId == id);
-		}
+		var file = GetAllFiles().FirstOrDefault(f => f.PathHash == command);
 
 		if (file == null || !File.Exists(file.Path))
 		{

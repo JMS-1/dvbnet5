@@ -1,6 +1,7 @@
 #pragma warning disable CA1416 // Validate platform compatibility
 
 using System.Diagnostics;
+using System.Security.Cryptography;
 using System.Text;
 using JMS.DVB.NET.Recording.Services.Logging;
 
@@ -355,5 +356,13 @@ public static class Tools
             yield return running;
         }
     }
+
+    /// <summary>
+    /// Ermittelt einen Hashwert für einen Pfad.
+    /// </summary>
+    /// <param name="path">Der Pfad zu einer Aufzeichnungsdatei.</param>
+    /// <returns>Ein Hashwert mit der selben Dateiendung.</returns>
+    public static string GetPathHash(string path)
+        => $"{BitConverter.ToString(MD5.HashData(Encoding.UTF8.GetBytes(path ?? ""))).Replace("-", "").ToLower()}{Path.GetExtension(path)}";
 }
 

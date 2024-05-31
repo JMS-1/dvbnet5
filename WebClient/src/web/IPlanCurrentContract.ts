@@ -45,6 +45,9 @@ export interface IPlanCurrentContract {
 
     // Die verbleibende Anzahl von Minuten einer aktiven Aufzeichnung oder Aufgabe
     remainingTimeInMinutes: number
+
+    // Die zugehörigen Dateien.
+    fileHashes: string[]
 }
 
 export function getPlanCurrent(): Promise<IPlanCurrentContract[] | undefined> {
