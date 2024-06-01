@@ -1,4 +1,5 @@
-﻿using JMS.DVB.NET.Recording.Server;
+﻿using JMS.DVB.NET.Recording.FTPWrap;
+using JMS.DVB.NET.Recording.Server;
 using JMS.DVB.NET.Recording.Services;
 using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
@@ -16,13 +17,14 @@ public class InfoController(
     IVCRServer server,
     IVCRProfiles profiles,
     IJobManager jobs,
-    IExtensionManager extensions
+    IExtensionManager extensions,
+    IFTPWrap ftpServer
 ) : ControllerBase
 {
     /// <summary>
     /// Wird beim Bauen automatisch eingemischt.
     /// </summary>
-    private const string CURRENTDATE = "2024/05/31";
+    private const string CURRENTDATE = "2024/06/01";
 
     /// <summary>
     /// Aktuelle Version des VCR.NET Recording Service.
@@ -34,20 +36,17 @@ public class InfoController(
     /// </summary>
     [HttpGet]
     public InfoService VersionInformation()
-    {
-        // Report
-        return
-            new InfoService
-            {
-                GuideUpdateEnabled = configuration.ProgramGuideUpdateEnabled,
-                HasPendingExtensions = extensions.HasActiveProcesses,
-                InstalledVersion = "5.0.0",
-                IsRunning = server.IsActive,
-                ProfilesNames = server.ProfileNames.ToArray(),
-                SourceScanEnabled = configuration.SourceListUpdateInterval != 0,
-                Version = CurrentVersion,
-            };
-    }
+        => new()
+        {
+            FTPPort = ftpServer.Port,
+            GuideUpdateEnabled = configuration.ProgramGuideUpdateEnabled,
+            HasPendingExtensions = extensions.HasActiveProcesses,
+            InstalledVersion = "5.0.0",
+            IsRunning = server.IsActive,
+            ProfilesNames = [.. server.ProfileNames],
+            SourceScanEnabled = configuration.SourceListUpdateInterval != 0,
+            Version = CurrentVersion,
+        };
 
     /// <summary>
     /// Meldet alle möglichen Aufzeichnungsverzeichnisse.

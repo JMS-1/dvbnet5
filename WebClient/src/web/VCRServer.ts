@@ -13,10 +13,10 @@ if (debug) serverRoot = 'http://localhost:5093'
 // Der Präfix für den Zugriff auf Geräte und Dateien
 const protocolEnd = serverRoot.indexOf('://')
 const host = serverRoot.substring(protocolEnd + 3)
-const hostSplit = host.split(':')
 
 const deviceUrl = 'dvbnet5://' + host + '/'
-const demuxUrl = 'demux://' + hostSplit[0] + ':' + (parseInt(hostSplit[1] || '80') + 1) + '/'
+
+let demuxUrl = 'demux://'
 
 // Der Präfix für alle REST Zugiffe
 setWebCallRoot(serverRoot + '/api/')
@@ -37,6 +37,10 @@ export function getDeviceRoot(): string {
 
 export function getDemuxRoot(): string {
     return demuxUrl
+}
+
+export function setFtpPort(port: number): void {
+    demuxUrl = 'demux://' + host.split(':')[0] + ':' + port + '/'
 }
 
 // Meldet den Pfad zum Abspielen einer abgeschlossenen Aufzeichnung (DVB.NET / VCR.NET Viewer muss installiert sein).

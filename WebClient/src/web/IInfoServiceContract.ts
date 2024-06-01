@@ -1,4 +1,4 @@
-﻿import { doUrlCall } from './VCRServer'
+﻿import { doUrlCall, setFtpPort } from './VCRServer'
 
 // Repräsentiert die Klasse InfoService
 export interface IInfoServiceContract {
@@ -16,8 +16,15 @@ export interface IInfoServiceContract {
 
     // Gesetzt, wenn die Aktualisierung der Programmzeitschrift verfügbar ist
     guideUpdateEnabled: boolean
+
+    // FTP port für das Demux.
+    ftpPort: number
 }
 
 export function getServerVersion(): Promise<IInfoServiceContract | undefined> {
-    return doUrlCall('info')
+    return doUrlCall<IInfoServiceContract | undefined, never>('info').then((i) => {
+        if (i) setFtpPort(i.ftpPort)
+
+        return i
+    })
 }

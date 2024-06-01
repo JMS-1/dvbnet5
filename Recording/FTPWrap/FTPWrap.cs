@@ -26,8 +26,12 @@ public class FTPWrap : IFTPWrap, IDisposable
 
     private int m_PassivePort = 0;
 
+    public ushort Port { get; private set; }
+
     public FTPWrap(ushort port, IJobManager jobs, IRecordings recordings)
     {
+        Port = port;
+
         m_Jobs = jobs;
         m_Recordings = recordings;
 

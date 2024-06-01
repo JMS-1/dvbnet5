@@ -15,4 +15,4 @@ services:
       - 29303:29303
       - 29304:29304
       - $PORT:8080
-      - $FTPPORT:8081
+      - $VCRNET_FTPPort:8081

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-docker load -i vcrnet5.img
+docker load -i vcrnet5.docker
 
 export RECORDING=/Recordings
 export CONFIG=`pwd`/config.template 
 export PORT=9000 
-export FTPPORT=9001
+export VCRNET_FTPPort=9001
 export MYIP=`ip -4 addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -vE "^(127|172)"`
 
 docker compose $*
