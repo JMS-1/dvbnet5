@@ -5,5 +5,5 @@ public interface IFTPWrap
     /// <summary>
     /// Meldet the FTP Port des Servers.
     /// </summary>
-    public ushort Port { get; }
+    public ushort OuterPort { get; }
 }

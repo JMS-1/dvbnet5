@@ -1,5 +1,6 @@
 using JMS.DVB.NET.Recording;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.OpenApi.Models;
 
 namespace JMS.VCR.NET;
 
@@ -28,7 +29,7 @@ public class Startup(IConfiguration configuration)
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         app.UseSwagger();
-        app.UseSwaggerUI();
+        app.UseSwaggerUI(config => config.SwaggerEndpoint("/swagger/API/swagger.json", "VCR.NET"));
 
         app.UseRouting();
         app.UseCors("AllowAny");
@@ -46,6 +47,14 @@ public class Startup(IConfiguration configuration)
     private static void ConfigureSwagger(IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+
+        services.AddSwaggerGen(config =>
+            config.SwaggerDoc("API", new OpenApiInfo
+            {
+                Description = "VCR.NET Recording Server",
+                Title = "VCR.NET",
+                Version = "5.0"
+            })
+        );
     }
 }

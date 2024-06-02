@@ -26,11 +26,11 @@ public class FTPWrap : IFTPWrap, IDisposable
 
     private int m_PassivePort = 0;
 
-    public ushort Port { get; private set; }
+    public ushort OuterPort { get; private set; }
 
     public FTPWrap(ushort port, IJobManager jobs, IRecordings recordings)
     {
-        Port = port;
+        OuterPort = ushort.Parse(Environment.GetEnvironmentVariable("OUTERFTP") ?? $"{port}");
 
         m_Jobs = jobs;
         m_Recordings = recordings;
@@ -62,7 +62,7 @@ public class FTPWrap : IFTPWrap, IDisposable
         {
             // Add a new client
             lock (m_Clients)
-                m_Clients.Add(new FTPClient(m_Socket.EndAccept(result), 29300 + (m_PassivePort++ % 5), OnClientFinished, m_Jobs, m_Recordings));
+                m_Clients.Add(new FTPClient(m_Socket.EndAccept(result), () => 29300 + (Interlocked.Increment(ref m_PassivePort) % 5), OnClientFinished, m_Jobs, m_Recordings));
 
             // Await next connection
             m_Socket.BeginAccept(OnAccept, null);

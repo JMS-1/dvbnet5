@@ -93,11 +93,12 @@ public class DataChannel : IDisposable
 	/// <param name="archived">Gesetzt, wenn es sich um eine vollständige Datei handelt.</param>
 	public void Send(Stream? file, bool archived)
 	{
+
 		// At least we tried
-		if (!m_GotData.HasValue) m_GotData = false;
+		m_GotData ??= false;
 
 		// Create buffer
-		if (null == m_Buffer) m_Buffer = new byte[100000];
+		m_Buffer ??= new byte[100000];
 
 		// May retry - give us 30 seconds to detect end of live recording
 		var retries = archived ? 1 : 30;
@@ -105,13 +106,23 @@ public class DataChannel : IDisposable
 		for (var retry = retries; retry-- > 0;)
 		{
 			// Read bytes
-			int bytes = file!.Read(m_Buffer, 0, m_Buffer.Length);
+			int bytes;
+			try
+			{
+				bytes = file!.Read(m_Buffer, 0, m_Buffer.Length);
+			}
+			catch (Exception)
+			{
+				break;
+			}
 
 			// Wait a bit
 			if (bytes < 1)
 			{
 				// Delay
 				if (archived || m_Abort.WaitOne(1000, true)) break;
+
+				Thread.Sleep(100);
 
 				// Next
 				continue;
@@ -131,7 +142,7 @@ public class DataChannel : IDisposable
 				m_File = file;
 
 				// Try to send
-				m_Socket!.BeginSend(m_Buffer, 0, bytes, SocketFlags.None, FinishChunk, m_Socket);
+				m_Socket?.BeginSend(m_Buffer, 0, bytes, SocketFlags.None, FinishChunk, m_Socket);
 
 				// Wait for next chunk
 				return;

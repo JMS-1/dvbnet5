@@ -87,7 +87,7 @@ public class FTPClient : IDisposable
 	/// <summary>
 	/// Für die passive verbindung zu nutzender Port.
 	/// </summary>
-	private readonly int m_PassivePort;
+	private readonly Func<int> m_PassivePort;
 
 	/// <summary>
 	/// Erzeugt eine neue Client Verbindung.
@@ -97,7 +97,7 @@ public class FTPClient : IDisposable
 	/// <param name="onFinished">Methode zum Rückrufe nach Beenden der Verbindung.</param>
 	/// <param name="jobs">Verwaltung der Aufträge.</param>
 	/// <param name="recodings">Ermittelt aktive Aufzeichungen..</param>
-	public FTPClient(Socket socket, int passivePort, FinishedHandler onFinished, IJobManager jobs, IRecordings recodings)
+	public FTPClient(Socket socket, Func<int> passivePort, FinishedHandler onFinished, IJobManager jobs, IRecordings recodings)
 	{
 		m_Jobs = jobs;
 		m_Recodings = recodings;
@@ -141,7 +141,7 @@ public class FTPClient : IDisposable
 		m_Passive = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp) { Blocking = false };
 
 		// Bind to some port
-		m_Passive.Bind(new IPEndPoint(((IPEndPoint)m_Socket!.LocalEndPoint!).Address, m_PassivePort));
+		m_Passive.Bind(new IPEndPoint(((IPEndPoint)m_Socket!.LocalEndPoint!).Address, m_PassivePort()));
 
 		// Read the new endpoint
 		var endPoint = (IPEndPoint)m_Passive.LocalEndPoint!;
@@ -387,7 +387,7 @@ public class FTPClient : IDisposable
 	/// <param name="format">Format für den Aufbau der Nachricht.</param>
 	/// <param name="args">Parameter für den Aufbau der Nachricht.</param>
 	/// <returns>Informationen zum gestarteten Netzwerkvorgang.</returns>
-	private IAsyncResult Send(int code, string format, params object[] args) => Send(code, string.Format(format, args));
+	private IAsyncResult? Send(int code, string format, params object[] args) => Send(code, string.Format(format, args));
 
 	/// <summary>
 	/// Meldet das Ergebnis einer Operation.
@@ -395,32 +395,32 @@ public class FTPClient : IDisposable
 	/// <param name="code">FTP Ergebniscode.</param>
 	/// <param name="message">Die zu übermittelnde Nachricht.</param>
 	/// <returns>Informationen zum gestarteten Netzwerkvorgang.</returns>
-	private IAsyncResult Send(int code, string message) => Send(string.Format("{0:000} {1}", code, message));
+	private IAsyncResult? Send(int code, string message) => Send(string.Format("{0:000} {1}", code, message));
 
 	/// <summary>
 	/// Meldet das Ergebnis einer Operation.
 	/// </summary>
 	/// <param name="message">Die zu übermittelnde Nachricht.</param>
 	/// <returns>Informationen zum gestarteten Netzwerkvorgang.</returns>
-	private IAsyncResult Send(string message) => Send(Encoding.ASCII.GetBytes(message + "\r\n"));
+	private IAsyncResult? Send(string message) => Send(Encoding.ASCII.GetBytes(message + "\r\n"));
 
 	/// <summary>
 	/// Meldet das Ergebnis einer Operation.
 	/// </summary>
 	/// <param name="toSend">Die zu übermittelnden Daten.</param>
 	/// <returns>Informationen zum gestarteten Netzwerkvorgang.</returns>
-	private IAsyncResult Send(byte[] toSend)
+	private IAsyncResult? Send(byte[] toSend)
 	{
 		// Be safe
 		try
 		{
 			// Start
-			return m_Socket!.BeginSend(toSend, 0, toSend.Length, SocketFlags.None, OnSendCompleteControl, null);
+			return m_Socket?.BeginSend(toSend, 0, toSend.Length, SocketFlags.None, OnSendCompleteControl, null);
 		}
 		catch
 		{
 			// In error
-			return null!;
+			return null;
 		}
 	}
 
@@ -487,13 +487,22 @@ public class FTPClient : IDisposable
 		}
 
 		// Report
-		Debug.Write(string.Format("{1}:{2} {0}", command, Thread.CurrentThread.ManagedThreadId, DateTime.Now.Ticks));
+		Debug.Write(string.Format("{1}:{2} {0}", command, Environment.CurrentManagedThreadId, DateTime.Now.Ticks));
 
 		// Dispatch
 		var key = command.Split(' ', '\r', '\n')[0];
 
 		// Process
-		if (m_Processors.TryGetValue(key, out var processor)) processor(command[key.Length..^2].Trim());
+		if (m_Processors.TryGetValue(key, out var processor))
+			try
+			{
+				processor(command[key.Length..^2].Trim());
+			}
+			catch
+			{
+				// Terminate
+				Close();
+			}
 	}
 
 	/// <summary>
