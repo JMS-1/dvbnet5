@@ -62,7 +62,7 @@ public class FTPWrap : IFTPWrap, IDisposable
         {
             // Add a new client
             lock (m_Clients)
-                m_Clients.Add(new FTPClient(m_Socket.EndAccept(result), () => 29300 + (Interlocked.Increment(ref m_PassivePort) % 5), OnClientFinished, m_Jobs, m_Recordings));
+                m_Clients.Add(new FTPClient(m_Socket.EndAccept(result), () => 29300 + (Interlocked.Increment(ref m_PassivePort) % 100), OnClientFinished, m_Jobs, m_Recordings));
 
             // Await next connection
             m_Socket.BeginAccept(OnAccept, null);
