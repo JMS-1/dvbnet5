@@ -24,7 +24,7 @@ public class InfoController(
     /// <summary>
     /// Wird beim Bauen automatisch eingemischt.
     /// </summary>
-    private const string CURRENTDATE = "2024/06/02";
+    private const string CURRENTDATE = "2024/06/15";
 
     /// <summary>
     /// Aktuelle Version des VCR.NET Recording Service.

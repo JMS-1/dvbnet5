@@ -1,3 +1,5 @@
 Deploy/vcrnet5.docker
 Deploy/starter
 Deploy/config
+Deploy/passwd
+Deploy/host.*
