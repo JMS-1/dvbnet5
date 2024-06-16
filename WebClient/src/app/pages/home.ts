@@ -42,7 +42,7 @@ export interface IHomePage extends IPage {
 // Die Anwendungslogik für die Startseite.
 export class HomePage extends Page implements IHomePage {
     // Ausdruck zur Extraktion der Online Version aus der Verzeichnisliste des Downloadsbereichs.
-    private static _versionExtract = />VCRNET\.MSI<\/a>[^<]*\s([^\s]+)\s*</i
+    private static _versionExtract = />vcrnet5\.docker<\/a>.*\s([^/s]+)$/im
 
     // Befehl zum Starten der Aktualisierung der Programmzeichschrift.
     readonly startGuide = new Command(
