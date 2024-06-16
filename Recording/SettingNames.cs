@@ -128,5 +128,25 @@ namespace JMS.DVB.NET.Recording
         /// Verbietet es, aus einem MPEG2 Bildsignal die Zeitbasis (PCR) abzuleiten.
         /// </summary>
         DisablePCRFromMPEG2Generation,
+
+        /// <summary>
+        /// Optional der SMTP Server über den Nachrichten versendet werden.
+        /// </summary>
+        SmtpRelay,
+
+        /// <summary>
+        /// Der Benutzername zur Autorisierung beim SMTP Server.
+        /// </summary>
+        SmtpUsername,
+
+        /// <summary>
+        /// Das Kennwort zum SMTP Benutzernamen.
+        /// </summary>
+        SmtpPassword,
+
+        /// <summary>
+        /// Der Empfänger von Nachrichten.
+        /// </summary>
+        SmtpRecipient,
     }
 }

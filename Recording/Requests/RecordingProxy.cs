@@ -1,4 +1,6 @@
-﻿using JMS.DVB.CardServer;
+﻿using System.Net;
+using System.Net.Mail;
+using JMS.DVB.CardServer;
 using JMS.DVB.NET.Recording.Persistence;
 using JMS.DVB.NET.Recording.ProgramGuide;
 using JMS.DVB.NET.Recording.Services;
@@ -205,8 +207,11 @@ public class RecordingProxy(
                 // Update end time
                 CalculateNewEndOfRecording();
 
+                // Send E-Mail if enabled
+                SendEMail(recording);
+
                 // Done
-                return;
+                break;
             }
     }
 
@@ -461,6 +466,40 @@ public class RecordingProxy(
 
         // Process extensions
         FireRecordingFinishedExtensions(environment);
+    }
+
+    /// <summary>
+    /// Sendet eine Benachrichtiung über den Abschluss der Aufzeichnung.
+    /// </summary>
+    /// <param name="recording">Die gerade beendete Aufzeichnung.
+    private void SendEMail(VCRRecordingInfo recording)
+    {
+        // See if sending an E-Mail is enabled
+        if (string.IsNullOrEmpty(Configuration.SmtpRelay) || string.IsNullOrEmpty(Configuration.SmtpRecipient)) return;
+
+        try
+        {
+            // Configure client
+            using var smtp = new SmtpClient(Configuration.SmtpRelay);
+
+            smtp.EnableSsl = true;
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new NetworkCredential(Configuration.SmtpUsername, Configuration.SmtpPassword);
+
+            // Send the E-Mail
+            smtp.Send(new()
+            {
+                Body = $"Aufzeichnung von {recording.PhysicalStart:dd.MM.yyyy HH:mm:ss} abgeschlossen",
+                From = new(Configuration.SmtpUsername, "VCR.NET Recording Service"),
+                Subject = recording.Name,
+                To = { Configuration.SmtpRecipient }
+            });
+        }
+        catch (Exception e)
+        {
+            // Just report
+            Logger.LogError("Es konnte keine E-Mail versendet werden: {0}", e.Message);
+        }
     }
 
     /// <summary>

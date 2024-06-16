@@ -154,6 +154,10 @@ public class VCRConfiguration : IVCRConfiguration
         Add(SettingNames.ScanHours);
         Add(SettingNames.ScanInterval, 0);
         Add(SettingNames.ScanJoinThreshold, (uint?)null);
+        Add(SettingNames.SmtpPassword);
+        Add(SettingNames.SmtpRecipient);
+        Add(SettingNames.SmtpRelay);
+        Add(SettingNames.SmtpUsername);
         Add(SettingNames.TSAudioBufferSize, 0);
         Add(SettingNames.TSHDTVBufferSize, 0);
         Add(SettingNames.TSSDTVBufferSize, 0);
@@ -302,6 +306,18 @@ public class VCRConfiguration : IVCRConfiguration
 
     /// <inheritdoc/>
     public bool DisablePCRFromMPEG2Generation => ReadSetting<bool>(SettingNames.DisablePCRFromMPEG2Generation);
+
+    /// <inheritdoc/>
+    public string SmtpRelay => ReadSetting<string>(SettingNames.SmtpRelay);
+
+    /// <inheritdoc/>
+    public string SmtpUsername => ReadSetting<string>(SettingNames.SmtpUsername);
+
+    /// <inheritdoc/>
+    public string SmtpPassword => ReadSetting<string>(SettingNames.SmtpPassword);
+
+    /// <inheritdoc/>
+    public string SmtpRecipient => ReadSetting<string>(SettingNames.SmtpRecipient);
 
     /// <inheritdoc/>
     public bool EnableFreeSat => ReadSetting<bool>(SettingNames.EPGIncludeFreeSat);

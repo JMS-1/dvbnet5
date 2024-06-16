@@ -121,6 +121,32 @@ public class ConfigurationController(
     /// <summary>
     /// Alle sonstigen Einstellungen.
     /// </summary>
+    public class SmtpSettings
+    {
+        /// <summary>
+        /// Optional der SMTP Server über den Nachrichten versendet werden.
+        /// </summary>
+        public string Relay { get; set; } = null!;
+
+        /// <summary>
+        /// Der Benutzername zur Autorisierung beim SMTP Server.
+        /// </summary>
+        public string Username { get; set; } = null!;
+
+        /// <summary>
+        /// Das Kennwort zum SMTP Benutzernamen.
+        /// </summary>
+        public string Password { get; set; } = null!;
+
+        /// <summary>
+        /// Der Empfänger von Nachrichten.
+        /// </summary>
+        public string Recipient { get; set; } = null!;
+    }
+
+    /// <summary>
+    /// Alle sonstigen Einstellungen.
+    /// </summary>
     public class OtherSettings
     {
         /// <summary>
@@ -495,6 +521,52 @@ public class ConfigurationController(
         update[SettingNames.ArchiveLifeTime].NewValue = settings.ArchiveTime.ToString();
         update[SettingNames.LogLifeTime].NewValue = settings.ProtocolTime.ToString();
         update[SettingNames.LoggingLevel].NewValue = settings.Logging.ToString();
+
+        // Process
+        return updateConfig.UpdateConfiguration(update.Values);
+    }
+
+    /// <summary>
+    /// Meldet die Parameter für das Versenden von Nachrichten.
+    /// </summary>
+    /// <returns>Die aktuellen Einstellungen.</returns>
+    [HttpGet("smtp")]
+    public SmtpSettings ReadSmtpSettings()
+    {
+        // Create response
+        return
+            new SmtpSettings
+            {
+                Password = configuration.SmtpPassword,
+                Recipient = configuration.SmtpRecipient,
+                Relay = configuration.SmtpRelay,
+                Username = configuration.SmtpUsername,
+            };
+    }
+
+    /// <summary>
+    /// Aktualisiert die Einstellungen zum Nachrichtenversand.
+    /// </summary>
+    /// <param name="settings">Die neuen Einstellungen.</param>
+    /// <returns>Das Ergebnis der Änderung.</returns>
+    [HttpPut("smtp")]
+    public bool? WriteSmtp([FromBody] SmtpSettings settings)
+    {
+        // Prepare to update
+        var update =
+            configuration.BeginUpdate
+               (
+                    SettingNames.SmtpPassword,
+                    SettingNames.SmtpRecipient,
+                    SettingNames.SmtpRelay,
+                    SettingNames.SmtpUsername
+                );
+
+        // Change
+        update[SettingNames.SmtpPassword].NewValue = settings.Password;
+        update[SettingNames.SmtpRecipient].NewValue = settings.Recipient;
+        update[SettingNames.SmtpRelay].NewValue = settings.Relay;
+        update[SettingNames.SmtpUsername].NewValue = settings.Username;
 
         // Process
         return updateConfig.UpdateConfiguration(update.Values);

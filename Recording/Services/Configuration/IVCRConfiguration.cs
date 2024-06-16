@@ -172,5 +172,25 @@ public interface IVCRConfiguration
     /// Meldet oder legt fest, ob bereits einmal eine Aufzeichnung ausgeführt wurde.
     /// </summary>
     bool HasRecordedSomething { get; set; }
+
+    /// <summary>
+    /// Optional der SMTP Server über den Nachrichten versendet werden.
+    /// </summary>
+    string SmtpRelay { get; }
+
+    /// <summary>
+    /// Der Benutzername zur Autorisierung beim SMTP Server.
+    /// </summary>
+    string SmtpUsername { get; }
+
+    /// <summary>
+    /// Das Kennwort zum SMTP Benutzernamen.
+    /// </summary>
+    string SmtpPassword { get; }
+
+    /// <summary>
+    /// Der Empfänger von Nachrichten.
+    /// </summary>
+    string SmtpRecipient { get; }
 }
 
