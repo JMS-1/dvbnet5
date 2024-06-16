@@ -6,6 +6,7 @@ import { AdminGuide } from './admin/guide'
 import { AdminOther } from './admin/other'
 import { AdminRules } from './admin/rules'
 import { AdminSection } from './admin/section'
+import { AdminSmtp } from './admin/smtp'
 import { AdminSources } from './admin/sources'
 
 import { AdminPage, IAdminPage } from '../app/pages/admin'
@@ -78,6 +79,7 @@ export class Admin extends ComponentWithSite<IAdminPage> {
             Admin.addSection(AdminGuide)
             Admin.addSection(AdminSources)
             Admin.addSection(AdminRules)
+            Admin.addSection(AdminSmtp)
             Admin.addSection(AdminOther)
         }
 

@@ -19,7 +19,7 @@ export enum hibernationMode {
 
 // Schnittstelle zur Pflege sonstiger Konfigurationswerte.
 export interface IAdminOtherPage extends ISection {
-    // Die Verweildauer eines Protokolleintrags vor der automatischen Löscung (in Wochen).
+    // Die Verweildauer eines Protokolleintrags vor der automatischen Löschung (in Wochen).
     readonly logKeep: INumber
 
     // Die Verweildauer eines Auftrags im Archiv vor der automatischen Löschung (in Wochen).

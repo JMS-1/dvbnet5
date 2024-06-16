@@ -51,34 +51,6 @@ export class AdminOther extends AdminSection<IAdminOtherPage> {
         )
     }
 
-    // Hilfe zur Konfiguration des Web Servers.
-    private getWebHelp(): JSX.Element {
-        return (
-            <InlineHelp title='Erläuterungen zur Bedienung'>
-                Der VCR.NET Recording Service ist ein Web Server
-                <HelpLink page={this.props.uvm.page} topic='websettings' /> auf Basis der Microsoft ASP.NET / .NET
-                Technologie. Als solcher ist es mindestens notwendig, einen TCP/IP Port für die Kommunikation mit den
-                Clients und auch dieser Web Anwendung festzulegen. Weitere Einstellungen erlauben das Verschlüsseln der
-                Kommunikation mit dem Web Server oder alternative Autorisierungsprotokolle.
-            </InlineHelp>
-        )
-    }
-
-    // Hilfe zum Schlafzustand.
-    private getSleepHelp(): JSX.Element {
-        return (
-            <InlineHelp title='Erläuterungen zur Bedienung'>
-                Es kann dem VCR.NET Recording Service gestattet werden, den Rechner nach erfolgten Aufzeichnungen in den
-                Schlafzustand zu versetzen.
-                <HelpLink page={this.props.uvm.page} topic='hibernation' /> Unabhängig davon wird der VCR.NET Dienst
-                versuchen, den Rechner für Aufzeichnungen aus dem Schlafzustand zu wecken, falls dieser nicht erst kurz
-                vorher ausgelöst wurde - dieser Grenzwert kann hier eingestellt werden. Da nicht jedes System gleich
-                schnell aus dem Schlafzustand in den Betriebszsutand wecheln kann, ist es ferner möglich, eine
-                Vorlaufzeit für das Aufwecken festzulegen.
-            </InlineHelp>
-        )
-    }
-
     // Hilfe zur Protokollierung.
     private getLogHelp(): JSX.Element {
         return (

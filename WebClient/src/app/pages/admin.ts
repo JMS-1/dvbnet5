@@ -5,6 +5,7 @@ import { OtherSection } from './admin/other'
 import { RulesSection } from './admin/rules'
 import { ScanSection } from './admin/scan'
 import { ISection, ISectionInfo, ISectionInfoFactory, Section } from './admin/section'
+import { SmtpSection } from './admin/smtp'
 import { IPage, Page } from './page'
 
 import { Command } from '../../lib/command/command'
@@ -57,6 +58,7 @@ export class AdminPage extends Page implements IAdminPage {
         uiValue(new SectionInfo(GuideSection), 'Programmzeitschrift'),
         uiValue(new SectionInfo(ScanSection), 'Quellen'),
         uiValue(new SectionInfo(RulesSection), 'Planungsregeln'),
+        uiValue(new SectionInfo(SmtpSection), 'Nachrichten'),
         uiValue(new SectionInfo(OtherSection), 'Sonstiges'),
     ]
 

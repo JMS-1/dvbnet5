@@ -10,6 +10,9 @@ interface IEditText extends IComponent<IString> {
 
     // Optional ein Platzhaltertext.
     hint?: string
+
+    // Gesetzt, wenn es sich um die Eingabe eines Kennworts handelt.
+    password?: boolean
 }
 
 // Texteingabe für React.Js - die NoUi Schicht stellt den Wert und das Prüfergebnis zur Verfügung.
@@ -22,7 +25,7 @@ export class EditText extends ComponentExWithSite<IString, IEditText> {
                 placeholder={this.props.hint}
                 size={this.props.chars}
                 title={this.props.uvm.message}
-                type='TEXT'
+                type={this.props.password ? 'PASSWORD' : 'TEXT'}
                 value={this.props.uvm.value ?? ''}
                 onChange={(ev) => (this.props.uvm.value = (ev.target as HTMLInputElement).value)}
             />
