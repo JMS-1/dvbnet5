@@ -119,7 +119,7 @@ export class HomePage extends Page implements IHomePage {
             this._onlineVersion = undefined
 
             // Downloadverzeichnis abrufen.
-            doUrlCall('http://downloads.psimarron.net').then((html: string) => {
+            doUrlCall('https://downloads.psimarron.net').then((html: string) => {
                 // Versionsnummer extrahieren.
                 const match = HomePage._versionExtract.exec(html)
                 if (match == null) return
