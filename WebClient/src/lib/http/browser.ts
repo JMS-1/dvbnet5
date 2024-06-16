@@ -13,7 +13,7 @@ export function browserWebCall<TResponseType, TRequestType>(
     // Aynchronen Aufruf aufsetzen.
     return new Promise<TResponseType | undefined>((success, failure) => {
         // Aufruf an eine absolute URL erkennen.
-        const raw = url.substring(0, 7) === 'http://'
+        const raw = url.match(/^https?:\/\//)
 
         // HTTP Aufruf anlegen.
         const xhr = new XMLHttpRequest()
