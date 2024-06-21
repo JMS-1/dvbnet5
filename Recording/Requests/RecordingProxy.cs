@@ -489,7 +489,7 @@ public class RecordingProxy(
             // Send the E-Mail
             smtp.Send(new()
             {
-                Body = $"Aufzeichnung von {recording.PhysicalStart:dd.MM.yyyy HH:mm:ss} abgeschlossen",
+                Body = $"Aufzeichnung von {recording.PhysicalStart?.ToLocalTime():dd.MM.yyyy HH:mm:ss} abgeschlossen",
                 From = new(Configuration.SmtpUsername, "VCR.NET Recording Service"),
                 Subject = recording.Name,
                 To = { Configuration.SmtpRecipient }
