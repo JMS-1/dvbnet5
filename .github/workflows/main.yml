@@ -10,4 +10,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Verify
-        run: echo ${{secrets.TEST}}
+        run: |
+          echo ${{secrets.TEST}} >> tmp
+          cat tmp
