@@ -14,4 +14,10 @@ jobs:
           TEST: ${{ secrets.TEST }}
           TEST2: ${{ secrets.TEST2 }}
         run: |
-          env
+          env > theStuff
+      - name: Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Stuff
+          path: theStuff
+          retention-days: 1
