@@ -11,5 +11,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Verify
         run: |
+          echo 1 > tmp
           echo ${{secrets.TEST}} >> tmp
+          echo 2 >> tmp
           cat tmp
