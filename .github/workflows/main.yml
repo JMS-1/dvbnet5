@@ -12,5 +12,6 @@ jobs:
       - name: Verify
         env:        
           TEST: ${{ secrets.TEST }}
+          TEST2: ${{ secrets.TEST2 }}
         run: |
           env
