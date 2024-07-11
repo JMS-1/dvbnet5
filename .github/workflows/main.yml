@@ -10,8 +10,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Verify
+        env:        
+          TEST: ${{ secrets.TEST }}
         run: |
-          echo 1 > tmp
-          echo ${{secrets.TEST}} >> tmp
-          echo 2 >> tmp
-          cat tmp
+          env
