@@ -23,4 +23,7 @@ jobs:
         run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
       - name: Build
         run: dotnet build --configuration Release /p:Version=${VERSION}
-    
+      - name: Pack
+        run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output .
+      - name: Push
+        run: dotnet nuget push JMS.DVB.NET.Common.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${{ secrets.GITHUB_TOKEN }}   
