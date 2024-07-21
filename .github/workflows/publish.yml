@@ -31,7 +31,7 @@ jobs:
           dotnet nuget push Packed/JMS.DVB.NET.Common.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
           dotnet nuget push Packed/JMS.DVB.NET.DVBNETLegacy.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
           dotnet nuget push Packed/JMS.DVB.NET.EPG.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
-          dotnet nuget push Packed/JMS.DVB.NET.HardwareAbstration.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
+          dotnet nuget push Packed/JMS.DVB.NET.HardwareAbstraction.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
           dotnet nuget push Packed/JMS.DVB.NET.Recording.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
           dotnet nuget push Packed/JMS.DVB.NET.SITables.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
           dotnet nuget push Packed/JMS.DVB.NET.SourceManagement.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
