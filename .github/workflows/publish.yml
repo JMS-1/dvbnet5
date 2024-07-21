@@ -37,5 +37,6 @@ jobs:
           dotnet nuget push Packed/JMS.DVB.NET.SourceManagement.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
           dotnet nuget push Packed/JMS.DVB.NET.TS.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
           dotnet nuget push Packed/JMS.DVB.NET.Ubuntu.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
+          dotnet nuget push Packed/JMS.DVB.NET.WebServer.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

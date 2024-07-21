@@ -16,6 +16,7 @@
     <ProjectReference Include="..\CardServer\JMS.DVB.NET.CardServer.csproj" />
   </ItemGroup>
   <PropertyGroup>
+    <IsPackable>true</IsPackable>
     <PackageId>JMS.DVB.NET.WebServer</PackageId>
     <Authors>Dr. Jochen Manns</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
