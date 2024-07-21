@@ -26,6 +26,7 @@ jobs:
       - name: Push
         run: |
           dotnet nuget push Packed/JMS.DVB.NET.Algorithms.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
+          dotnet nuget push Packed/JMS.DVB.NET.CardServer.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
           dotnet nuget push Packed/JMS.DVB.NET.CardServerCore.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
           dotnet nuget push Packed/JMS.DVB.NET.Common.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
           dotnet nuget push Packed/JMS.DVB.NET.DVBNETLegacy.${VERSION}.nupkg --source https://nuget.pkg.github.com/JMS-1/index.json --api-key ${GITHUB_TOKEN}
