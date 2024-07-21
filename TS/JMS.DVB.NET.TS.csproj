@@ -2,10 +2,19 @@
   <ItemGroup>
     <ProjectReference Include="..\SITables\JMS.DVB.NET.SITables.csproj" />
   </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>JMS.DVB.NET.TS</PackageId>
+    <Authors>Dr. Jochen Manns</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/JMS-1/dvbnet5.git</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
   </PropertyGroup>
 </Project>

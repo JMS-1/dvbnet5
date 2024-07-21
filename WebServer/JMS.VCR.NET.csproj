@@ -15,4 +15,11 @@
     <ProjectReference Include="..\Recording\JMS.DVB.NET.Recording.csproj" />
     <ProjectReference Include="..\CardServer\JMS.DVB.NET.CardServer.csproj" />
   </ItemGroup>
+  <PropertyGroup>
+    <PackageId>JMS.DVB.NET.WebServer</PackageId>
+    <Authors>Dr. Jochen Manns</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/JMS-1/dvbnet5.git</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
+  </PropertyGroup>
 </Project>

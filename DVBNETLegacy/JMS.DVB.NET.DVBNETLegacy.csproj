@@ -14,4 +14,12 @@
   <ItemGroup>
     <EmbeddedResource Include="DVBNETProviders.xml" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <PackageId>JMS.DVB.NET.DVBNETLegacy</PackageId>
+    <Authors>Dr. Jochen Manns</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/JMS-1/dvbnet5.git</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
+  </PropertyGroup>
 </Project>
