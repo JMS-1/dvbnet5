@@ -12,7 +12,7 @@ namespace JMS.DVB.CardServer
         /// Die eindeutige Kennung dieser Quelle. Dies Identifikation erlaubt es, eine Quelle mehrfach zu
         /// nutzen.
         /// </summary>
-        public SourceIdenfierWithKey SourceKey { get; private set; }
+        public SourceIdentifierWithKey SourceKey { get; private set; }
 
         /// <summary>
         /// Die Verwaltung des Empfangs.
@@ -58,7 +58,7 @@ namespace JMS.DVB.CardServer
             ArgumentNullException.ThrowIfNull(manager);
 
             // Remember
-            SourceKey = new SourceIdenfierWithKey(uniqueIdentifier, manager.Source);
+            SourceKey = new SourceIdentifierWithKey(uniqueIdentifier, manager.Source);
             RequestedStreams = originalSelection.Clone();
             TargetPath = targetPath;
             Manager = manager;

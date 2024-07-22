@@ -59,7 +59,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Verwaltet alle aktiven Quellen.
         /// </summary>
-        public Dictionary<SourceIdenfierWithKey, ActiveStream> Streams { get; private set; }
+        public Dictionary<SourceIdentifierWithKey, ActiveStream> Streams { get; private set; }
 
         /// <summary>
         /// Wird gesetzt, wenn <see cref="m_IdleThread"/> beendet werden soll.
@@ -595,7 +595,7 @@ namespace JMS.DVB.CardServer
         /// <param name="source">Die eindeutige Kennung der Quelle.</param>
         /// <returns>Der 0-basierte laufende Index der Quelle oder <i>-1</i>, 
         /// wenn diese nicht in Benutzung ist.</returns>
-        public ActiveStream? FindSource(SourceIdenfierWithKey source) => Streams.TryGetValue(source, out var stream) ? stream : null;
+        public ActiveStream? FindSource(SourceIdentifierWithKey source) => Streams.TryGetValue(source, out var stream) ? stream : null;
 
         /// <summary>
         /// Stellt den Empfang für eine Quelle ein.
@@ -606,7 +606,7 @@ namespace JMS.DVB.CardServer
             Start(() =>
                 {
                     // Find the source
-                    var stream = FindSource(new SourceIdenfierWithKey(uniqueIdentifier, source));
+                    var stream = FindSource(new SourceIdentifierWithKey(uniqueIdentifier, source));
                     if (stream == null)
                         CardServerException.Throw(new NoSourceFault(source));
 
@@ -626,7 +626,7 @@ namespace JMS.DVB.CardServer
             Start(() =>
             {
                 // Find the source
-                var stream = FindSource(new SourceIdenfierWithKey(uniqueIdentifier, source));
+                var stream = FindSource(new SourceIdentifierWithKey(uniqueIdentifier, source));
                 if (stream == null)
                     CardServerException.Throw(new NoSourceFault(source));
 
@@ -714,13 +714,13 @@ namespace JMS.DVB.CardServer
                     var optimizer = new StreamSelectionOptimizer();
 
                     // Source backmap
-                    var infos = new Dictionary<SourceIdenfierWithKey, ReceiveInformation>();
+                    var infos = new Dictionary<SourceIdentifierWithKey, ReceiveInformation>();
 
                     // Pre-Test
                     foreach (var info in sources)
                     {
                         // It's not allowed to activate a source twice
-                        var key = new SourceIdenfierWithKey(info.UniqueIdentifier, info.Selection.Source);
+                        var key = new SourceIdentifierWithKey(info.UniqueIdentifier, info.Selection.Source);
                         if (FindSource(key) != null)
                             CardServerException.Throw(new SourceInUseFault(info.Selection.Source));
 
@@ -744,7 +744,7 @@ namespace JMS.DVB.CardServer
                             // Attach to the source
                             var current = sources[i];
                             var source = current.Selection;
-                            var key = new SourceIdenfierWithKey(current.UniqueIdentifier, source.Source);
+                            var key = new SourceIdentifierWithKey(current.UniqueIdentifier, source.Source);
 
                             // Create the stream manager
                             var manager = source.Open(optimizer.GetStreams(i));
