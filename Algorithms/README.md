@@ -1,6 +1,6 @@
 # JMS.DVB.NET.Algorithms
 
-Hier sind zwei Algorithmen implemntiert, die das Arbeiten mit DVB Geräten erleichtern:
+Two algorithms are implemented here that make working with DVB devices easier:
 
-- Der **Sendersuchlauf** esp. mit der Unterstützung der Netzwerksuche. Dieser Algorithmus ist speziell für den Einsatz von DVB.NET entwickelt worden.
-- Ein **Aufgabenplaner** für Aufzeichnungen für einzelne Aufzeichnungen und sich wiederholende Aufzeichnungen aber auch Wartungsaufgaben wie den Sendersuchlauf oder die Aktualisierung der Programmzeitschrift. Der Algorithmus ist sehr allgemeine gehalten und durch besondere Abstraktionen mehr oder weniger von DVB.NET unabhägig.
+- The **channel updater** esp. with the support of network search. This algorithm was developed specifically for the use with DVB.NET.
+- A **scheduling planner** for recordings for individual recordings and recurring recordings but also maintenance tasks such as updating the channel list or the program guide. The algorithm is very general and is more or less independent of DVB.NET due to special abstractions.
