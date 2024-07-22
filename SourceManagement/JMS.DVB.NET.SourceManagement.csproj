@@ -18,4 +18,8 @@
     <RepositoryUrl>https://github.com/JMS-1/dvbnet5.git</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ScanLocations\BuiltIn.dss" />
+  </ItemGroup>
 </Project>
