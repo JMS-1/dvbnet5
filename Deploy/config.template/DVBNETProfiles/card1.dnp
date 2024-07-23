@@ -15,15 +15,4 @@
       <LNB>DiSEqC1</LNB>
     </Location>
   </ScanLocation>
-  <ScanLocation>
-    <Scan>28.2°E</Scan>
-    <Location>
-      <SourceGroups />
-      <Frequency1>9750000</Frequency1>
-      <Frequency2>10600000</Frequency2>
-      <SwitchFrequency>11700000</SwitchFrequency>
-      <UsePower>true</UsePower>
-      <LNB>DiSEqC2</LNB>
-    </Location>
-  </ScanLocation>
 </SatelliteProfile>
