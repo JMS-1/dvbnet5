@@ -1,6 +1,6 @@
 # VCR.NET Recording Service 5
 
-Actually this project is kind of a successor of the [VCR.NET / DVB.NET Project](https://github.com/JMS-1/DVB.NET---VCR.NET) _just_ proted to .NET Core. The orginial project was created to use under Microsoft Windows only and after the port the target operating system is primary linux. Most access to Windows DVB devices had to be removed and only a special access using a dedicated TCP API remains to access Linux DVB devices.
+Actually this project is kind of a successor of the [VCR.NET / DVB.NET Project](https://github.com/JMS-1/DVB.NET---VCR.NET) _just_ ported to .NET Core. The orginial project was created to use under Microsoft Windows only and after the port the target operating system is primary linux. Most access to Windows DVB devices had to be removed and only a special access using a dedicated TCP API remains to access Linux DVB devices.
 
 As before the project splits into the [VCR.NET Recording Service](Recording/README.md) which heavily depends on the implementation of the DVB.NET library:
 
