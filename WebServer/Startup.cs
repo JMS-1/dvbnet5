@@ -1,3 +1,4 @@
+using System.Reflection;
 using JMS.DVB.NET.Recording;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
@@ -49,12 +50,16 @@ public class Startup(IConfiguration configuration)
         services.AddEndpointsApiExplorer();
 
         services.AddSwaggerGen(config =>
+        {
             config.SwaggerDoc("API", new OpenApiInfo
             {
                 Description = "VCR.NET Recording Server",
                 Title = "VCR.NET",
                 Version = "5.0"
-            })
-        );
+            });
+
+            foreach (var doc in Directory.GetFiles(AppContext.BaseDirectory, "JMS.DVB.NET.*.xml"))
+                config.IncludeXmlComments(doc, true);
+        });
     }
 }

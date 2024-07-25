@@ -471,7 +471,7 @@ public class RecordingProxy(
     /// <summary>
     /// Sendet eine Benachrichtiung über den Abschluss der Aufzeichnung.
     /// </summary>
-    /// <param name="recording">Die gerade beendete Aufzeichnung.
+    /// <param name="recording">Die gerade beendete Aufzeichnung.</param>
     private void SendEMail(VCRRecordingInfo recording)
     {
         // See if sending an E-Mail is enabled
