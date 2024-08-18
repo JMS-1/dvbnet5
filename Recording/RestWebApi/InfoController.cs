@@ -41,7 +41,7 @@ public class InfoController(
             FTPPort = ftpServer.OuterPort,
             GuideUpdateEnabled = configuration.ProgramGuideUpdateEnabled,
             HasPendingExtensions = extensions.HasActiveProcesses,
-            InstalledVersion = "5.0.4",
+            InstalledVersion = "5.0.5",
             IsRunning = server.IsActive,
             ProfilesNames = [.. server.ProfileNames],
             SourceScanEnabled = configuration.SourceListUpdateInterval != 0,
