@@ -11,38 +11,29 @@ namespace JMS.DVB.NET.Recording.Requests;
 /// <summary>
 /// Diese Klasse beschreibt die Ausführung des <i>Zapping Modes</i>.
 /// </summary>
-public class ZappingProxy : CardServerProxy
+/// <param name="profile">Das zu verwendende Geräteprofil.</param>
+/// <param name="primary">Informationen zur Aufzeichnung als Ganzes.</param>
+/// <param name="target">Die aktuelle Zieladresse für die Nutzdaten.</param>
+public class ZappingProxy(
+    IProfileState profile,
+    VCRRecordingInfo primary,
+    string target,
+    ILogger<ZappingProxy> logger,
+    IJobManager jobManager,
+    IVCRConfiguration configuration,
+    IVCRProfiles profiles,
+    IExtensionManager extensionManager
+    ) : CardServerProxy(profile, logger, jobManager, configuration, profiles, extensionManager, primary)
 {
     /// <summary>
     /// Die Zieladresse für diesen Zugriff.
     /// </summary>
-    private readonly string m_target;
+    private readonly string m_target = target;
 
     /// <summary>
     /// Die letzen Zustandsinformationen.
     /// </summary>
     private volatile ServerInformation m_lastState = null!;
-
-    /// <summary>
-    /// Erstellt einen neuen Zugriff.
-    /// </summary>
-    /// <param name="profile">Das zu verwendende Geräteprofil.</param>
-    /// <param name="primary">Informationen zur Aufzeichnung als Ganzes.</param>
-    /// <param name="target">Die aktuelle Zieladresse für die Nutzdaten.</param>
-    public ZappingProxy(
-        IProfileState profile,
-        VCRRecordingInfo primary,
-        string target,
-        ILogger<ZappingProxy> logger,
-        IJobManager jobManager,
-        IVCRConfiguration configuration,
-        IVCRProfiles profiles,
-        IExtensionManager extensionManager
-    ) : base(profile, logger, jobManager, configuration, profiles, extensionManager, primary)
-    {
-        // Remember
-        m_target = target;
-    }
 
     /// <summary>
     /// Ändert den Endzeitpunkt der Benutzung.

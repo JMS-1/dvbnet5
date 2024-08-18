@@ -11,7 +11,17 @@ namespace JMS.DVB.NET.Recording.Requests;
 /// <summary>
 /// Beschreibt die Ausführung der Aktualisierung der Quellen eines Geräteprofils.
 /// </summary>
-public class SourceScanProxy : CardServerProxy
+/// <param name="state">Das zugehörige Geräteprofil.</param>
+/// <param name="recording">Die Beschreibung der Aufgabe.</param>
+public class SourceScanProxy(
+    IProfileState state,
+    VCRRecordingInfo recording,
+    ILogger<SourceScanProxy> logger,
+    IJobManager jobManager,
+    IVCRConfiguration configuration,
+    IVCRProfiles profiles,
+    IExtensionManager extensionManager
+    ) : CardServerProxy(state, logger, jobManager, configuration, profiles, extensionManager, recording)
 {
     /// <summary>
     /// Beschreibt den Zugriff zum Starten der Aktualisierung.
@@ -21,26 +31,7 @@ public class SourceScanProxy : CardServerProxy
     /// <summary>
     /// Gesetzt, um die Listen nach Abschluss des Suchlaufs zu kombinieren.
     /// </summary>
-    private readonly bool m_mergeSources;
-
-    /// <summary>
-    /// Erstellt eine neue Sammlung.
-    /// </summary>
-    /// <param name="state">Das zugehörige Geräteprofil.</param>
-    /// <param name="recording">Die Beschreibung der Aufgabe.</param>
-    public SourceScanProxy(
-        IProfileState state,
-        VCRRecordingInfo recording,
-        ILogger<SourceScanProxy> logger,
-        IJobManager jobManager,
-        IVCRConfiguration configuration,
-        IVCRProfiles profiles,
-        IExtensionManager extensionManager
-    ) : base(state, logger, jobManager, configuration, profiles, extensionManager, recording)
-    {
-        // Finish
-        m_mergeSources = Configuration.MergeSourceListUpdateResult;
-    }
+    private readonly bool m_mergeSources = configuration.MergeSourceListUpdateResult;
 
     /// <summary>
     /// Die Art dieser Aufzeichnung.
