@@ -231,7 +231,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
                                 m_source = finished.Source,
                                 Files = [finished.FileName],
                                 Name = finished.Name,
-                                PlanIdentifier = ""
+                                PlanIdentifier = "",
+                                SizeHint = "-"
                             });
                         }
 

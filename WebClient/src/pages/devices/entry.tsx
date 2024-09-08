@@ -66,7 +66,7 @@ export class Device extends ComponentEx<IDeviceInfo, IDevice> {
                         <span>{this.props.uvm.device}</span>
                     </div>
                 </td>
-                <td>{this.props.uvm.size}</td>
+                <td>{done ? '' : this.props.uvm.size}</td>
             </tr>
         )
     }
