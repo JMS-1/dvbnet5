@@ -5,7 +5,7 @@
         "@insynergie/prettier-config": "^2.0.0",
         "@insynergie/stylelint-config": "^3.2.0",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.15",
-        "@types/react": "^18.3.3",
+        "@types/react": "^18.3.5",
         "@types/react-dom": "^18.3.0",
         "babel-loader": "^9.1.3",
         "clsx": "^2.1.1",
@@ -13,7 +13,7 @@
         "cross-env": "^7.0.3",
         "css-loader": "^7.1.2",
         "eslint": "^8.57.0",
-        "mini-css-extract-plugin": "^2.9.0",
+        "mini-css-extract-plugin": "^2.9.1",
         "moment": "^2.30.1",
         "ncp": "^2.0.0",
         "prettier": "^3.3.3",
@@ -22,15 +22,15 @@
         "react-refresh": "^0.14.2",
         "react-refresh-typescript": "^2.0.9",
         "rimraf": "^6.0.1",
-        "sass": "^1.77.8",
-        "sass-loader": "^16.0.0",
-        "stylelint": "^16.8.2",
+        "sass": "^1.78.0",
+        "sass-loader": "^16.0.1",
+        "stylelint": "^16.9.0",
         "svg-inline-loader": "^0.8.2",
         "ts-loader": "^9.5.1",
         "typescript": "^5.5.4",
-        "webpack": "^5.93.0",
+        "webpack": "^5.94.0",
         "webpack-cli": "^5.1.4",
-        "webpack-dev-server": "^5.0.4"
+        "webpack-dev-server": "^5.1.0"
     },
     "eslintConfig": {
         "extends": "@insynergie"
