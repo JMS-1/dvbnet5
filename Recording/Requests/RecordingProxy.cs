@@ -55,6 +55,11 @@ public class RecordingProxy(
     private readonly List<VCRRecordingInfo> m_recordings = [];
 
     /// <summary>
+    /// Alle bereis abgeschlossenen Aufzeichnungen.
+    /// </summary>
+    private readonly List<VCRRecordingInfo> m_done = [];
+
+    /// <summary>
     /// Alle bisher angemeldeten Aufzeichnungen - die vollständige Liste wird ausschließlich
     /// für Protokolleinträge verwendet.
     /// </summary>
@@ -195,6 +200,9 @@ public class RecordingProxy(
                 if (!scheduleIdentifier.Equals(recording.ScheduleUniqueID!.Value))
                     continue;
 
+                // Remember
+                m_done.Add(recording);
+
                 // Remove
                 m_recordings.RemoveAt(i);
 
@@ -256,6 +264,8 @@ public class RecordingProxy(
             // Load all files we've seen so far
             info.Recording.RecordingFiles.Clear();
             info.Recording.RecordingFiles.AddRange(m_files);
+
+            info.Finished.AddRange(m_done);
 
             // Create the file mapping
             var files =

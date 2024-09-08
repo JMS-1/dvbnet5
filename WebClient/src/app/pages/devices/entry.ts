@@ -6,7 +6,7 @@ import { IConnectable, IView } from '../../../lib/site'
 import { ITimeBar, TimeBar } from '../../../lib/timebar'
 import { getGuideItem, IGuideItemContract } from '../../../web/IGuideItemContract'
 import { IPlanCurrentContract } from '../../../web/IPlanCurrentContract'
-import { getDeviceRoot } from '../../../web/VCRServer'
+import { getDemuxRoot, getDeviceRoot } from '../../../web/VCRServer'
 import { GuideInfo, IGuideInfo } from '../guide/entry'
 
 // Ansicht einer Aktivität.
@@ -30,7 +30,7 @@ export interface IDeviceInfo extends IConnectable {
     readonly size: string
 
     // Status der Aktivität - unterscheidet etwa zwischen laufenden und geplanten Aufzeichnungen.
-    readonly mode?: 'running' | 'late' | 'intime' | 'null'
+    readonly mode?: 'running' | 'late' | 'intime' | 'null' | 'done'
 
     // Optional die eindeutige Kennung der Aufzeichnung.
     readonly id?: string
@@ -52,6 +52,9 @@ export interface IDeviceInfo extends IConnectable {
 
     // Die URL zum Starten des LIVE Betrachtens.
     readonly liveUri?: string
+
+    // URL zum Demux abgeschlossener Teilaufzeichungen.
+    readonly demux?: string
 }
 
 // Präsentationsmodell zur Anzeige einer Aktivität.
@@ -113,6 +116,9 @@ export class Info implements IDeviceInfo {
         // Gerät wird nicht verwendet.
         if (this._model.isIdle) return undefined
 
+        // Alread done - duration is zero.
+        if (this._model.durationInSeconds <= 0) return 'done'
+
         // Aktivität wurde bereits beendet.
         if (this._end <= new Date()) return 'null'
 
@@ -125,6 +131,11 @@ export class Info implements IDeviceInfo {
 
         // Geplanten Zustand melden.
         return this._model.isLate ? 'late' : 'intime'
+    }
+
+    // Verweis zum Demux.
+    get demux(): string {
+        return `${getDemuxRoot()}${this._model.fileHashes[0]}`
     }
 
     // Optional die Steuereinheit für laufende Aufzeichnung.

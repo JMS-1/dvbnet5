@@ -7,6 +7,7 @@ using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Server;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 namespace JMS.DVB.NET.Recording.RestWebApi
@@ -211,7 +212,31 @@ namespace JMS.DVB.NET.Recording.RestWebApi
             var streams = active.Streams;
             if (streams != null)
                 if (streams.Count > 0)
-                    return streams.SelectMany((stream, index) => Create(active, stream, index, server, profiles, jobs)).ToArray();
+                {
+                    var regular = streams.SelectMany((stream, index) => Create(active, stream, index, server, profiles, jobs)).ToList();
+
+                    // Append finished recordings on still active cards
+                    foreach (var finished in active.Finished)
+                        if (finished.PhysicalStart != null)
+                        {
+                            // Try to locate the context
+                            var job = finished.JobUniqueID == null ? null : jobs[finished.JobUniqueID.Value];
+                            var schedule = ((job == null) || finished.ScheduleUniqueID == null) ? null : job[finished.ScheduleUniqueID.Value];
+
+                            regular.Add(new()
+                            {
+                                Identifier = (schedule == null) ? null! : ServerTools.GetUniqueWebId(job!, schedule),
+                                ProfileName = finished.Source.ProfileName,
+                                StartTime = finished.PhysicalStart.Value,
+                                m_source = finished.Source,
+                                Files = [finished.FileName],
+                                Name = finished.Name,
+                                PlanIdentifier = ""
+                            });
+                        }
+
+                    return [.. regular];
+                }
 
             // Single recording - typically a task
             var start = RoundToSecond(active.Recording.PhysicalStart.GetValueOrDefault(DateTime.UtcNow));

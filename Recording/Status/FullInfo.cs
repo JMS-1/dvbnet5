@@ -10,24 +10,30 @@ namespace JMS.DVB.NET.Recording.Status
     public class FullInfo
     {
         /// <summary>
-        /// Alle Quellen zu dieser Aufzeichnung
+        /// Alle Quellen zu dieser Aufzeichnung.
         /// </summary>
         [XmlElement("Stream")]
         public readonly List<StreamInfo> Streams = [];
 
         /// <summary>
-        /// Die Daten der prim�ren Aufzeichnung.
+        /// Alle abgeschlossenen Aufzeichnungsdateien.
+        /// </summary>
+        [XmlElement("Finished")]
+        public readonly List<VCRRecordingInfo> Finished = [];
+
+        /// <summary>
+        /// Die Daten der primären Aufzeichnung.
         /// </summary>
         public VCRRecordingInfo Recording { get; set; } = null!;
 
         /// <summary>
-        /// Meldet oder legt fest, on ein Netzwerkversand unterst�tzt wird.
+        /// Meldet oder legt fest, on ein Netzwerkversand unterstützt wird.
         /// </summary>
         public bool CanStream { get; set; }
 
         /// <summary>
         /// Gesetzt, wenn es sich um einen Auftrag handelt, bei dem Aufzeichnungen dynamisch
-        /// erg�nzt und entfernt werden k�nnen.
+        /// ergänzt und entfernt werden können.
         /// </summary>
         public bool IsDynamic { get; set; }
 

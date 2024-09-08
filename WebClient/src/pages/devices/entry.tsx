@@ -16,12 +16,17 @@ interface IDevice extends IComponent<IDeviceInfo> {
 export class Device extends ComponentEx<IDeviceInfo, IDevice> {
     // Erstellt die Oberflächenelemente.
     render(): JSX.Element {
-        const { showGuide, showControl, mode, liveUri } = this.props.uvm
+        const { showGuide, showControl, mode, liveUri, demux } = this.props.uvm
+        const done = mode === 'done'
 
         return (
             <tr className='vcrnet-device'>
                 <td>
-                    {mode ? (
+                    {done ? (
+                        <a href={demux}>
+                            <Pictogram name={mode} />
+                        </a>
+                    ) : mode ? (
                         showControl.isReadonly ? (
                             <Pictogram name={mode} />
                         ) : (
@@ -42,8 +47,8 @@ export class Device extends ComponentEx<IDeviceInfo, IDevice> {
                         </InternalLink>
                     )}
                 </td>
-                <td>{this.props.uvm.displayEnd}</td>
-                <td>{this.props.uvm.source}</td>
+                <td>{done ? '' : this.props.uvm.displayEnd}</td>
+                <td>{done ? '' : this.props.uvm.source}</td>
                 <td>
                     {this.props.uvm.id ? (
                         <InternalLink view={`${this.props.page.application.editPage.route};id=${this.props.uvm.id}`}>
@@ -55,7 +60,7 @@ export class Device extends ComponentEx<IDeviceInfo, IDevice> {
                 </td>
                 <td>
                     <div className='device-name'>
-                        <a className={mode === 'running' ? 'inactive' : ''} href={liveUri}>
+                        <a className={mode === 'running' || mode === 'done' ? 'inactive' : ''} href={liveUri}>
                             <Pictogram name='running' />
                         </a>
                         <span>{this.props.uvm.device}</span>
