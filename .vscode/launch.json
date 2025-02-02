@@ -10,7 +10,7 @@
       "cwd": "${workspaceFolder}",
       "name": "Tests",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/TestApp/bin/Debug/net8.0/TestApp.dll",
+      "program": "${workspaceFolder}/TestApp/bin/Debug/net9.0/TestApp.dll",
       "request": "launch",
       "stopAtEntry": false,
       "type": "coreclr"
@@ -29,7 +29,7 @@
       },
       "name": "Startup",
       "preLaunchTask": "build-server",
-      "program": "${workspaceFolder}/WebServer/bin/Debug/net8.0/JMS.VCR.NET.dll",
+      "program": "${workspaceFolder}/WebServer/bin/Debug/net9.0/JMS.VCR.NET.dll",
       "request": "launch",
       "serverReadyAction": {
         "action": "openExternally",
