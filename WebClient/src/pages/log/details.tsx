@@ -8,7 +8,7 @@ import { Component } from '../../lib.react/reactUi'
 // React.Js Komponente zur Anzeige der Details eines Protokolleintrags.
 export class LogDetails extends Component<ILogEntry> {
     // Oberflächenelemente erstellen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <form className='vcrnet-logentrydetails'>
                 <fieldset>

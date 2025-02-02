@@ -9,7 +9,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class Decryption extends HelpComponent {
     readonly title = 'Entschlüsselung'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Der VCR.NET Recording Service kann die Fähigkeiten von{' '}

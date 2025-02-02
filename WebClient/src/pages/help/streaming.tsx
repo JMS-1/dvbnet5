@@ -10,7 +10,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class Streaming extends HelpComponent {
     readonly title = 'Netzwerkversand'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Laufen Aufzeichnungen

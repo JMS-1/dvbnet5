@@ -9,7 +9,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class DvbNet extends HelpComponent {
     readonly title = 'DVB.NET'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Der VCR.NET Recording Service ist ausschließlich der Koordinator von Aufzeichnungen. Die eigentlichen

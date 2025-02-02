@@ -16,7 +16,7 @@ interface IPlanExceptionStatic extends IComponent<IPlanException> {
 // React.Js Komponente zur Pflege einer einzelnen Ausnahmeregel.
 export class PlanException extends ComponentExWithSite<IPlanException, IPlanExceptionStatic> {
     // Erstellt die Oberflächenelemente zur Pflege.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <fieldset className='vcrnet-planexception'>
                 <legend>

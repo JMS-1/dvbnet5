@@ -15,7 +15,7 @@ interface ISingleSelectButton extends IComponent<IValueFromList<unknown>> {
 // React.Js Komponente zur Anzeige einer Liste von Schaltflächen.
 export class SingleSelectButton extends ComponentExWithSite<IValueFromList<unknown>, ISingleSelectButton> {
     // Erstellt die Anzeige für die Komponente.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         const value = this.props.uvm.value
 
         return (

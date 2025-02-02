@@ -17,7 +17,7 @@ interface IDetailRow {
 // React.Js Komponente zur Anzeige einer Detailzeile.
 export class DetailRow extends React.Component<IDetailRow, IEmpty> {
     // Oberflächenelemente anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <tr className='jmslib-details'>
                 {this.props.prefixColumns && <td colSpan={this.props.prefixColumns}>&nbsp;</td>}

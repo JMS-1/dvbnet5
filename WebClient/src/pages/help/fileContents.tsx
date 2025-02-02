@@ -9,7 +9,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class FileContents extends HelpComponent {
     readonly title = 'Inhalt einer Aufzeichnungsdatei'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Für jede programmierte Aufzeichnung erstellt der VCR.NET Recording Service eine Datei mit der Endung TS

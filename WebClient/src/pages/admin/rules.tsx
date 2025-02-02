@@ -19,7 +19,7 @@ export class AdminRules extends AdminSection<IAdminRulesPage> {
     protected readonly title = 'Regeln für die Planung von Aufzeichnungen'
 
     // Oberflächenelement anlegen.
-    protected renderSection(): JSX.Element {
+    protected renderSection(): React.JSX.Element {
         return (
             <div className='vcrnet-admin-rules'>
                 Der VCR.NET Recording Service verwendet nach der Installation ein festes Regelwerk zur Planung von
@@ -34,7 +34,7 @@ export class AdminRules extends AdminSection<IAdminRulesPage> {
     }
 
     // Hilfe zu den Planungsregeln.
-    private getHelp(): JSX.Element {
+    private getHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Für eine Aktualisierung des Regelwerks muss die entsprechende Schaltfläche explizit betätigt werden.

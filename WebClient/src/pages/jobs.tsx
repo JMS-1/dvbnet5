@@ -10,7 +10,7 @@ import { ComponentWithSite } from '../lib.react/reactUi'
 // React.Js Komponente zur Anzeige aller Aufträge.
 export class Jobs extends ComponentWithSite<IJobPage> {
     // Oberflächenelemente anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <div className='vcrnet-jobs'>
                 Diese Ansicht zeigt alle im VCR.NET Recording Service gespeicherten Aufträge.
@@ -38,7 +38,7 @@ export class Jobs extends ComponentWithSite<IJobPage> {
     }
 
     // Hilfe erstellen.
-    private getHelp(): JSX.Element {
+    private getHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 <div>

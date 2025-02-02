@@ -19,7 +19,7 @@ import { ComponentWithSite } from '../lib.react/reactUi'
 // React.Js Komponente zur Anzeige der Programmzeitschrift.
 export class Guide extends ComponentWithSite<IGuidePage> {
     // Oberflächenelemente anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <div className='vcrnet-guide'>
                 Die Programmzeitschrift
@@ -89,7 +89,7 @@ export class Guide extends ComponentWithSite<IGuidePage> {
     }
 
     // Hilfe zur Bedienung erstellen.
-    private getHelp(): JSX.Element {
+    private getHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Sollten mehrere Geräte eingesetzt werden, so kann für jedes Gerät die Programmzeitschrift separat

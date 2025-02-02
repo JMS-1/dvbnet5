@@ -15,7 +15,7 @@ interface IMultiSelectButton extends IComponent<IMultiValueFromList<unknown>> {
 // React.Js Komponente für eine Mehrfachauswahl über einzelne Schaltflächen.
 export class MultiSelectButton extends ComponentExWithSite<IMultiValueFromList<unknown>, IMultiSelectButton> {
     // Oberflächenelemente erstellen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <div className={`jmslib-editmultibuttonlist${this.props.merge ? ' jmslib-command-mergelist' : ''}`}>
                 {this.props.uvm.allowedValues.map((v) => (

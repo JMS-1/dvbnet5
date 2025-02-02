@@ -10,7 +10,7 @@ import { Pictogram } from '../../lib.react/command/pictogram'
 export class Log extends HelpComponent {
     readonly title = 'Protokolle'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Der VCR.NET Recording Service erstellt für jede ausgeführte Aktivität

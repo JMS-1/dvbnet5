@@ -8,7 +8,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class EditCurrent extends HelpComponent {
     readonly title = 'Laufende Aufzeichnungen verändern'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Sobald eine Aufzeichnung gestartet wird kennt der VCR.NET Recording Service diese in zweierlei Weise: da

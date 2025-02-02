@@ -49,7 +49,7 @@ export class Admin extends ComponentWithSite<IAdminPage> {
     }
 
     // Oberflächenelemente erstellen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         const section = this.props.uvm.sections.value
 
         return (

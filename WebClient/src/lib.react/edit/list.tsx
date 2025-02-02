@@ -6,7 +6,7 @@ import { ComponentWithSite } from '../reactUi'
 // Verwaltete eine Zeichenkette, die über eine einfache Auswahlliste festgelegt wird.
 export class SingleSelect extends ComponentWithSite<IValueFromList<unknown>> {
     // Erstellt die Anzeige für die Komponente.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <select
                 className='jmslib-editlist jmslib-validatable'

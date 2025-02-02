@@ -23,7 +23,7 @@ export class AdminSources extends AdminSection<IAdminScanPage> {
     protected readonly title = 'Aktualisierung der Quellen konfigurieren'
 
     // Oberflächenelemente erstellen.
-    protected renderSection(): JSX.Element {
+    protected renderSection(): React.JSX.Element {
         return (
             <div className='vcrnet-admin-sources'>
                 <div>
@@ -64,7 +64,7 @@ export class AdminSources extends AdminSection<IAdminScanPage> {
     }
 
     // Erläuterungen zu den Zeitparametern.
-    private getDurationHelp(): JSX.Element {
+    private getDurationHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Wenn die Aktualisierung der Quellen (auch als Sendersuchlauf bekannt) nicht gänzlich deaktiviert ist, so
@@ -81,7 +81,7 @@ export class AdminSources extends AdminSection<IAdminScanPage> {
     }
 
     // Erläuterung zur Stundenauswahl.
-    private getHourHelp(): JSX.Element {
+    private getHourHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Für eine automatische Aktualisierung muss immer angegeben werden, wieviel Zeit zwischen zwei Läufen
@@ -94,7 +94,7 @@ export class AdminSources extends AdminSection<IAdminScanPage> {
     }
 
     // Erläuterungen zum Speichern der Konfiguration.
-    private getSaveHelp(): JSX.Element {
+    private getSaveHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Für eine Übernahme der hier vorgenommenen Änderungen muss die entsprechende Schaltfläche explizit

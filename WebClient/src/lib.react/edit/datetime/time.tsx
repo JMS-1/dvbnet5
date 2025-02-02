@@ -6,7 +6,7 @@ import { ComponentWithSite } from '../../reactUi'
 // React.Js Komponente zur Eingabe einer Uhrzeit.
 export class EditTime extends ComponentWithSite<ITime> {
     // Erstellt die Oberflächenelemente.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <input
                 className='jmslib-edittime jmslib-validatable'

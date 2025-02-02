@@ -16,7 +16,7 @@ import { ComponentWithSite } from '../lib.react/reactUi'
 // React.Js Komponente zur Anzeige des Protokolls.
 export class Log extends ComponentWithSite<ILogPage> {
     // Oberflächenelemente anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <div className='vcrnet-log'>
                 Für jede Nutzung eines Gerätes erstellt der VCR.NET Recording Service einen Protokolleintrag
@@ -64,7 +64,7 @@ export class Log extends ComponentWithSite<ILogPage> {
     }
 
     // Hilfe erstellen.
-    private getHelp(): JSX.Element {
+    private getHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Die Anzeige auf dieser Seite erfolgt immer pro Gerät und Woche, wobei sowohl das Gerät als auch die

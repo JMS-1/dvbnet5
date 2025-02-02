@@ -9,7 +9,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class Tasks extends HelpComponent {
     readonly title = 'Sonderaufgaben'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Neben der Ausführung der vom Anwender programmierten Aufzeichnungen kann der VCR.NET Recording Service

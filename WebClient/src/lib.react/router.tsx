@@ -26,7 +26,7 @@ export abstract class Router<TPageType extends IRoutablePage> extends Component<
     protected abstract getPages(page: TPageType): IPageFactory<TPageType>
 
     // Erstellt die Oberflächenelemente.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         // Die Navigationszeiele werden einmalig und vor allem nicht statisch zur Laufzeit geladen - das vermeidet unnötige Abhängigkeiten.
         if (!Router._pages) if (this.props.uvm) Router._pages = this.getPages(this.props.uvm)
 

@@ -9,7 +9,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class TsPlayer extends HelpComponent {
     readonly title = 'Aufzeichnungsdateien verarbeiten'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Der VCR.NET Recording Service erstellt{' '}

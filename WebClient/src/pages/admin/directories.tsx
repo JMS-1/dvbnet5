@@ -23,7 +23,7 @@ export class AdminDirectories extends AdminSection<IAdminDirectoriesPage> {
     protected readonly title = 'Aufzeichnungsverzeichnisse und Dateinamen'
 
     // Oberflächenelemente erzeugen.
-    protected renderSection(): JSX.Element {
+    protected renderSection(): React.JSX.Element {
         return (
             <div className='vcrnet-admin-directories'>
                 Da Aufzeichnungsdateien von erheblicher Größe sein können erlaubt es der VCR.NET Recording Service für
@@ -67,7 +67,7 @@ export class AdminDirectories extends AdminSection<IAdminDirectoriesPage> {
     }
 
     // Hilfe für die Auswahl der Verzeichnisse.
-    private getFolderHelp(): JSX.Element {
+    private getFolderHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Im oberen Teil wird die Liste der Verzeichnisse angezeigt, die zurzeit als Aufzeichnunsverzeichnisse
@@ -81,7 +81,7 @@ export class AdminDirectories extends AdminSection<IAdminDirectoriesPage> {
     }
 
     // Hilfe zum Hinzufügen neuer Verzeichnisse.
-    private getAddHelp(): JSX.Element {
+    private getAddHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Die Liste der Aufzeichnungsverzeichnisse kann durch Auswahl eines Verzeichnisses oder durch direkte
@@ -109,7 +109,7 @@ export class AdminDirectories extends AdminSection<IAdminDirectoriesPage> {
     }
 
     // Hilfe zum Dateinamenmuster,
-    private getPatternHelp(): JSX.Element {
+    private getPatternHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Mögliche Platzhalter in den Dateinamen'>
                 Für jede Aufzeichnung wird im Allgemeinen genau eine Aufzeichnungsdatei erstellt.

@@ -9,7 +9,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class AdminProgramGuide extends HelpComponent {
     readonly title = 'Konfiguration der Programmzeitschrift'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Damit der VCR.NET Recording Service eine{' '}

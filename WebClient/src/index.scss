@@ -1,8 +1,8 @@
-@use 'lib.react/styles';
+@use 'lib.react/styles' as lib-styles;
 
 @use 'vcrnet';
-@use 'common/styles' as common;
-@use 'pages/styles' as pages;
+@use 'common/styles' as common-styles;
+@use 'pages/styles' as pages-styles;
 
 @use 'mixins';
 

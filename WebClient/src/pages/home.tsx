@@ -13,7 +13,7 @@ import { ComponentWithSite } from '../lib.react/reactUi'
 // Die React.Js Komponente zur Anzeige der Startseite.
 export class Home extends ComponentWithSite<IHomePage> {
     // Oberflächenelemente anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         const { uvm } = this.props
         const { checkVersion, showStartGuide, showStartScan, application } = uvm
 

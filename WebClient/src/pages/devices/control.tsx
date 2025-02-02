@@ -16,7 +16,7 @@ interface IDeviceControl extends IComponent<IDeviceController> {
 // React.Js Komponente zur Steuerung einer laufenden Aufzeichnung.
 export class DeviceControl extends ComponentExWithSite<IDeviceController, IDeviceControl> {
     // Oberflächenelemente anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <fieldset className='vcrnet-device-control'>
                 {this.props.uvm.live && (

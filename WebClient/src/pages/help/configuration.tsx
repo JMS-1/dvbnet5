@@ -8,7 +8,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class Configuration extends HelpComponent {
     readonly title = 'Sonstige Konfiguration'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Der VCR.NET Recording Service bietet auch zusätzliche Konfigurationsmöglichkeiten an

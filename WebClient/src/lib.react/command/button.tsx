@@ -12,7 +12,7 @@ interface IButtonCommand extends IComponent<ICommand> {
 // React.Js Komponente zur Anzeige einer Aktion über eine Schaltfläche.
 export class ButtonCommand extends ComponentExWithSite<ICommand, IButtonCommand> {
     // Oberflächenelemente erzeugen.
-    render(): JSX.Element | false {
+    render(): React.JSX.Element | false {
         return (
             this.props.uvm.isVisible && (
                 <a

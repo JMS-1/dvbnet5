@@ -15,7 +15,7 @@ import { ComponentWithSite } from '../lib.react/reactUi'
 // React.Js Komponente zur Pflege einer Aufzeichnung.
 export class Edit extends ComponentWithSite<IEditPage> {
     // Oberflächenelemente erstellen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         const schedule = this.props.uvm.schedule
 
         return (
@@ -69,7 +69,7 @@ export class Edit extends ComponentWithSite<IEditPage> {
     }
 
     // Hilfe zu Aufzeichnungsdaten.
-    private renderScheduleHelp(): JSX.Element {
+    private renderScheduleHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zu den Daten einer Aufzeichnung'>
                 <div>
@@ -140,7 +140,7 @@ export class Edit extends ComponentWithSite<IEditPage> {
     }
 
     // Hilfe zu den Auftragsdaten.
-    private renderJobHelp(): JSX.Element {
+    private renderJobHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zu den Daten eines Auftrags'>
                 <div>
@@ -236,7 +236,7 @@ export class Edit extends ComponentWithSite<IEditPage> {
     }
 
     // Hilfe zu Ausnahmeregeln.
-    private renderExceptionHelp(): JSX.Element {
+    private renderExceptionHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zu den Ausnahmeregelungen'>
                 <div>
@@ -250,7 +250,7 @@ export class Edit extends ComponentWithSite<IEditPage> {
     }
 
     // Hilfe zur Übernahme von Änderungen.
-    private renderButtonHelp(): JSX.Element {
+    private renderButtonHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 <div>

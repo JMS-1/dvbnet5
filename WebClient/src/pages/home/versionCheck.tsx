@@ -6,7 +6,7 @@ import { Component } from '../../lib.react/reactUi'
 // React.Js Komponente zur Anzeige der Version (lokal installiert und Online verfügbar) des VCR.NET Recording Service.
 export class VersionCheck extends Component<IHomePage> {
     // Oberflächenelemente anzeigen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <li className='vcrnet-home-version'>
                 <fieldset>

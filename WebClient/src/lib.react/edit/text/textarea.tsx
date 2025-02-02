@@ -15,7 +15,7 @@ interface IEditTextArea extends IComponent<IString> {
 // React.Js Komponente zur Eingabe eines langen Textes.
 export class EditTextArea extends ComponentExWithSite<IString, IEditTextArea> {
     // Oberflächenelemente erstellen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <textarea
                 className='jmslib-edittextarea'

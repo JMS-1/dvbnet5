@@ -8,7 +8,7 @@ import { GuideEntryInfo } from '../guide/info'
 // React.Js Komponente zur Anzeige des Auszugs der Programmzeitschrift für eine Aktivität.
 export class DeviceGuide extends ComponentWithSite<IDeviceInfo> {
     // Oberflächenelemente erstellen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <fieldset className='vcrnet-device-epg'>
                 {this.props.uvm.guideTime && <TimeBar uvm={this.props.uvm.guideTime} />}

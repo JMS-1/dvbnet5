@@ -12,7 +12,7 @@ interface IEditNumber extends IComponent<INumber> {
 // React.Js Komponente zur Eingabe einer Zahl über ein Textfeld.
 export class EditNumber extends ComponentExWithSite<INumber, IEditNumber> {
     // Oberflächenelemente erzeugen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <input
                 className='jmslib-editnumber jmslib-validatable'

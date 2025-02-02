@@ -12,7 +12,7 @@ export interface ISelectMultipleFromList extends IComponent<IMultiValueFromList<
 // React.Js Komponente zur Auswahl von mehreren Elementen aus eine Liste von Elementen.
 export class MultiSelect extends ComponentExWithSite<IMultiValueFromList<unknown>, ISelectMultipleFromList> {
     // Erstellt die Oberflächenelemente.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <select
                 className='jmslib-editmultilist'

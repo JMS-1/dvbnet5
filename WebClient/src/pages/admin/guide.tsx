@@ -27,7 +27,7 @@ export class AdminGuide extends AdminSection<IAdminGuidePage> {
     protected readonly title = 'Einstellungen zum Aufbau der Programmzeitschrift'
 
     // Oberflächenelemente erzeugen
-    protected renderSection(): JSX.Element {
+    protected renderSection(): React.JSX.Element {
         return (
             <div className='vcrnet-admin-guide'>
                 <div>
@@ -73,7 +73,7 @@ export class AdminGuide extends AdminSection<IAdminGuidePage> {
     }
 
     // Hilfe zum Speichern der Konfiguration.
-    private getUpdateHelp(): JSX.Element {
+    private getUpdateHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Alle Änderungen müssen durch das explizite Betätigen der entsprechenden Schaltfläche bestätigt werden
@@ -84,7 +84,7 @@ export class AdminGuide extends AdminSection<IAdminGuidePage> {
     }
 
     // Hilfe zur Auswahl der Quellen.
-    private getSourceHelp(): JSX.Element {
+    private getSourceHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Der VCR.NET Recording Service verwaltet eine geräteübergreifende Liste von Quellen, die in der
@@ -106,7 +106,7 @@ export class AdminGuide extends AdminSection<IAdminGuidePage> {
     }
 
     // Hilfe zur Konfiguration der automatischen Aktualisierung.
-    private getDurationHelp(): JSX.Element {
+    private getDurationHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Zur Planung der Aktualisierungen zwischen regulären Aufzeichnungen benötigt der VCR.NET Recording

@@ -13,7 +13,7 @@ import { Component } from '../../lib.react/reactUi'
 // React.Js Komponente zur Pflege der Daten eines Auftrags.
 export class JobData extends Component<IJobEditor> {
     // Oberflächenelement anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <fieldset className='vcrnet-jobdata'>
                 <legend>Daten zum Auftrag</legend>

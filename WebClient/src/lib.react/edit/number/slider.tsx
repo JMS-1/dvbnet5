@@ -6,7 +6,7 @@ import { ComponentWithSite } from '../../reactUi'
 // React.Js Komponente zur Auswahl einer Zahl über einen Schieberegler.
 export class EditNumberSlider extends ComponentWithSite<INumberWithSlider> {
     // Erstellt die Oberflächenelement - hier gibt es eine ganze Menge Kleinigkeiten im CSS zu beachten, esp. die Positionierung.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <div className='jmslib-slider'>
                 <div></div>

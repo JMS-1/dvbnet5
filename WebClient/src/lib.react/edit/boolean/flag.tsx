@@ -6,7 +6,7 @@ import { ComponentWithSite } from '../../reactUi'
 // React.Js Komponente zur visuellen Pflege eines Wahrheitswertes.
 export class EditBoolean extends ComponentWithSite<IFlag> {
     // Erstellt die Anzeige der Komponente.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <label className='jmslib-editflag jmslib-validatable' title={this.props.uvm.message}>
                 <input

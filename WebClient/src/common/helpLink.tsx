@@ -16,7 +16,7 @@ interface IHelpLinkStatic {
 // React.Js Komponente zur Anzeige eines Verweis auf eine Hilfeseite.
 export class HelpLink extends React.Component<IHelpLinkStatic, IEmpty> {
     // Oberflächenelemente anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <span className='vcrnet-helpLink'>
                 <InternalLink pict='info' view={`${this.props.page.application.helpPage.route};${this.props.topic}`} />

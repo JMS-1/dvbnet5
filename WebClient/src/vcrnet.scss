@@ -1,7 +1,7 @@
 ﻿@use 'sass:color';
 
-@use 'lib.react/constants' as constants;
-@use 'constants';
+@use 'lib.react/constants' as lib-constants;
+@use 'constants' as constants;
 
 // Grundeinstellungen fixieren.
 :root {
@@ -46,7 +46,7 @@ fieldset {
 // Zeigt eine deutliche Warnung an.
 .vcrnet-warningtext {
     font-weight: bold;
-    color: constants.$textErrorColor;
+    color: lib-constants.$textErrorColor;
 }
 
 // Eine horizontale Liste von Verweisen, Befehlen, Filtern etc.

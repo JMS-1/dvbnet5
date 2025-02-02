@@ -11,7 +11,7 @@ import { ComponentWithSite } from '../lib.react/reactUi'
 // React.Js Komponente zur Anzeige der gespeicherten Suchen.
 export class Favorites extends ComponentWithSite<IFavoritesPage> {
     // Oberflächenelemente anzeigen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <div className='vcrnet-favorites'>
                 {this.getHelp()}
@@ -34,7 +34,7 @@ export class Favorites extends ComponentWithSite<IFavoritesPage> {
     }
 
     // Erlaäuterungen anzeigen.
-    private getHelp(): JSX.Element {
+    private getHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Die Auswertung der passenden Sendungen erfolgt pro Favorit einmalig und wird verzögert im Hintergrund

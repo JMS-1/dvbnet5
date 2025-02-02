@@ -9,7 +9,7 @@ import { Pictogram } from '../../lib.react/command/pictogram'
 export class Overview extends HelpComponent {
     readonly title = 'Fragen und Antworten'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Wie jede andere Anwendung auch arbeitet der VCR.NET Recording Service nach gewissen Prinzipien, die man

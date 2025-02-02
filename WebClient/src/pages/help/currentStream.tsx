@@ -9,7 +9,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class CurrentStream extends HelpComponent {
     readonly title = 'Laufende Aufzeichnungen verändern'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Die Aktivitäten

@@ -8,7 +8,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class Archive extends HelpComponent {
     readonly title = 'Lebenszyklus von Aufträgen'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Jede Aufzeichnung hat einen Zeitpunkt, an dem ihre letzte Ausführung abgeschlossen ist. Für einzelne

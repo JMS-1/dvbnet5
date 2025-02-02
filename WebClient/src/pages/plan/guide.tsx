@@ -16,7 +16,7 @@ interface IPlanGuide extends IComponent<IPlanEntry> {
 // React.Js Komponente zur Anzeige der Details einer Aufzeichnung.
 export class PlanGuide extends ComponentExWithSite<IPlanEntry, IPlanGuide> {
     // Oberflächenelemente erstellen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         const guide = this.props.uvm.guideItem
 
         return (

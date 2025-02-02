@@ -18,7 +18,7 @@ interface IGuideDetails extends IComponent<IGuideEntry> {
 // React.Js Komponente zur Anzeige der Details einer Sendung der Programmzeitschrift.
 export class GuideDetails extends ComponentEx<IGuideEntry, IGuideDetails> {
     // Oberflächenelemente anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <form className='vcrnet-guideentrydetails'>
                 <fieldset>

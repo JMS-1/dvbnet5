@@ -17,7 +17,7 @@ import { ComponentWithSite } from '../lib.react/reactUi'
 // React.Js Komponente zur Anzeige des Aufzeichnungsplans.
 export class Plan extends ComponentWithSite<IPlanPage> {
     // Oberflächenelemente anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         const jobs = this.props.uvm.jobs
 
         return (
@@ -64,7 +64,7 @@ export class Plan extends ComponentWithSite<IPlanPage> {
     }
 
     // Hilfe erstellen.
-    private getHelp(): JSX.Element {
+    private getHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Über die Datumsauswahl im linken Bereich kann der zeitliche Anfang des angezeigten Ausschnitts

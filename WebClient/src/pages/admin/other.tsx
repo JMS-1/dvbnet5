@@ -22,7 +22,7 @@ export class AdminOther extends AdminSection<IAdminOtherPage> {
     protected readonly title = 'Sonstige Betriebsparameter'
 
     // Erstellt die Oberflächenelemente.
-    protected renderSection(): JSX.Element {
+    protected renderSection(): React.JSX.Element {
         return (
             <div className='vcrnet-admin-other'>
                 Hier handelt es sich um grundsätzliche Betriebsparameter des VCR.NET Dienstes. Änderungen hier erfordern
@@ -52,7 +52,7 @@ export class AdminOther extends AdminSection<IAdminOtherPage> {
     }
 
     // Hilfe zur Protokollierung.
-    private getLogHelp(): JSX.Element {
+    private getLogHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Nach erfolgter Aufzeichnung erstellt der VCR.NET Recording Service automatisch einen Protokolleintrag
@@ -69,7 +69,7 @@ export class AdminOther extends AdminSection<IAdminOtherPage> {
     }
 
     // Hilfe zum Speichern der Konfiguration.
-    private getSaveHelp(): JSX.Element {
+    private getSaveHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Alle Änderungen werden erst durch explizites Betätigen der Schaltfläche übernommen. Einige Änderungen

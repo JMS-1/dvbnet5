@@ -9,7 +9,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class RepeatingSchedules extends HelpComponent {
     readonly title = 'Serienaufzeichnungen und Ausnahmeregelungen'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Für eine Aufzeichnung kann angegeben werden, ob diese periodisch wiederholt werden soll. Der VCR.NET

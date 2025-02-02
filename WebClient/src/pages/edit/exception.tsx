@@ -7,7 +7,7 @@ import { Component } from '../../lib.react/reactUi'
 // React.Js Komponente zur Deaktivierung einer einzelnen Ausnahmeregel.
 export class EditException extends Component<IScheduleException> {
     // Erstellt die Oberflächenelemente zur Pflege.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <tr className='vcrnet-editexception'>
                 <td>

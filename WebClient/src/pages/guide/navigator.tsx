@@ -7,7 +7,7 @@ import { Component } from '../../lib.react/reactUi'
 // React.Ks Komponente zur Navigation durch die Programmzeitschrift.
 export class GuideNavigation extends Component<IGuidePageNavigation> {
     // Oberflächenelemente anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <div className='vcrnet-epgnavigation'>
                 <ButtonCommand uvm={this.props.uvm.firstPage} />

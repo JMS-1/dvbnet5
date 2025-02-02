@@ -14,7 +14,7 @@ import { ComponentWithSite } from '../lib.react/reactUi'
 // React.Js Komponente zur Pflege der Benutzereinstellungen.
 export class Settings extends ComponentWithSite<ISettingsPage> {
     // Oberflächenelemente erzeugen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <div className='vcrnet-settings'>
                 Hier werden im Wesentlichen Voreinstellungen für einzelne Teil der Web Anwendung des VCR.NET Recording
@@ -62,7 +62,7 @@ export class Settings extends ComponentWithSite<ISettingsPage> {
     }
 
     // Hilfe zum Aufzeichnungsplan.
-    private getPlanHelp(): JSX.Element {
+    private getPlanHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen'>
                 Im Aufzeichnungsplan
@@ -75,7 +75,7 @@ export class Settings extends ComponentWithSite<ISettingsPage> {
     }
 
     // Hilfe zur Auswahl der Quellen.
-    private getSourceHelp(): JSX.Element {
+    private getSourceHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen'>
                 Bei der Programmierung neuer Aufzeichnungen können eine ganze Reihe von Einstellungen verwendet werden,
@@ -87,7 +87,7 @@ export class Settings extends ComponentWithSite<ISettingsPage> {
     }
 
     // Hilfe zur Programmzeitschrift.
-    private getGuideHelp(): JSX.Element {
+    private getGuideHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen'>
                 Wird eine neue Aufzeichnung aus der Programmzeitschrift

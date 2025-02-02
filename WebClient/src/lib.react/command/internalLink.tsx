@@ -22,7 +22,7 @@ interface IInternalLink {
 // React.Js Komponente zur Anzeige eines internen Verweises.
 export class InternalLink extends React.Component<IInternalLink, IEmpty> {
     // Erstellt die Oberflächenelemente.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         // Konfiguration des HTML A Verweises je nach Parameter der Komponente.
         let target = undefined
         let click = undefined

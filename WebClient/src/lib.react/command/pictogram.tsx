@@ -20,7 +20,7 @@ export class Pictogram extends React.Component<IPictogram, IEmpty> {
     static imageRoot: string
 
     // Erstellt die Oberflächenelemente.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <img
                 alt={this.props.description}

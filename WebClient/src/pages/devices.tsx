@@ -16,7 +16,7 @@ import { ComponentWithSite } from '../lib.react/reactUi'
 // React.Ks Komponente zur Anzeige der Geräteübersicht.
 export class Devices extends ComponentWithSite<IDevicesPage> {
     // Oberflächenelemente erstellen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <div className='vcrnet-devices'>
                 Hier werden alle Aufzeichnungen und Aufgaben aufgelistet, die zum aktuellen Zeitpunkt auf irgendeinem
@@ -58,7 +58,7 @@ export class Devices extends ComponentWithSite<IDevicesPage> {
     }
 
     // Beschreibung zur Funktionalität.
-    private getHelp(): JSX.Element {
+    private getHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Zur Anzeige werden die Aktivitäten aller Geräte ermittelt, die der VCR.NET Recording Service verwenden

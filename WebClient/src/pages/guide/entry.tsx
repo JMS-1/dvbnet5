@@ -7,7 +7,7 @@ import { Component } from '../../lib.react/reactUi'
 // React.Js Komponente zur Anzeige einer Sendung aus der Programmzeitschrift.
 export class GuideEntry extends Component<IGuideEntry> {
     // Oberflächenelemente anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <tr className='vcrnet-guideentry'>
                 <td>{this.props.uvm.startDisplay}</td>

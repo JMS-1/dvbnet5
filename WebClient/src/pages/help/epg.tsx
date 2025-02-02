@@ -8,7 +8,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class ProgramGuide extends HelpComponent {
     readonly title = 'Die Programmzeitschrift'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Die elektronische Programmzeitschrift (EPG) ist ein optionales Leistungsmerkmal, dass von vielen

@@ -23,7 +23,7 @@ interface IFieldStatic {
 // Beschreibt ein Eingabefeld.
 export class Field extends React.Component<IFieldStatic, IEmpty> {
     // Erzeugt die Anzeige eines Eingabefeldes.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <div className='vcrnet-editfield'>
                 <div>

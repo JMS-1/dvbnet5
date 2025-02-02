@@ -7,7 +7,7 @@ import { ITimeBar } from '../lib/timebar'
 // Eine React.Js Komponente zur Anzeige einer Zeitschiene.
 export class TimeBar extends Component<ITimeBar> {
     // Erstellt die Oberflächenelemente zur Anzeige der Zeitschiene.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <div className='jmslib-timebar'>
                 <div>

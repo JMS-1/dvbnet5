@@ -18,7 +18,7 @@ export class AdminSmtp extends AdminSection<IAdminSmtpPage> {
     protected readonly title = 'Benachrichtigungen'
 
     // Erstellt die Oberflächenelemente.
-    protected renderSection(): JSX.Element {
+    protected renderSection(): React.JSX.Element {
         return (
             <div className='vcrnet-admin-smtp'>
                 Mit diesen Einstellungen kann der VCR.NET Recording Service dazu aufgefordert werden, im Abschluss an

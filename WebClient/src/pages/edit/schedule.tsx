@@ -14,7 +14,7 @@ import { Component } from '../../lib.react/reactUi'
 // React.Js Komponente zur Pflege der Daten einer Aufzeichnung.
 export class ScheduleData extends Component<IScheduleEditor> {
     // Oberflächenelement anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <fieldset className='vcrnet-scheduledata'>
                 <legend>Daten zur Aufzeichnung</legend>

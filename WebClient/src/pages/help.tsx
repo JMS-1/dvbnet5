@@ -8,7 +8,7 @@ import { Component } from '../lib.react/reactUi'
 // React.Js Komponente zur Anzeige der Hilfeseite.
 export class Help extends Component<IHelpPage> {
     // Erstellt die Anzeigeelemente der Oberfläche.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         // Ermittelt die Anzeige des gewählten Aspektes.
         const element = this.props.uvm.getHelpComponent<HelpComponent>()
 

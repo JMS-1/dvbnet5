@@ -8,7 +8,7 @@ import { ComponentWithSite } from '../../reactUi'
 // React.JS Komponente zur Auswahl eines Datums.
 export class EditDay extends ComponentWithSite<IDaySelector> {
     // Anzeige erstellen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <div className='jmslib-editday jmslib-validatable' title={this.props.uvm.message}>
                 <div>
@@ -56,7 +56,7 @@ export class EditDay extends ComponentWithSite<IDaySelector> {
     }
 
     // Ermittelt eine Woche mit auswählbaren Tagen.
-    private getRow(days: ISelectableDay[], rowKey: number): JSX.Element | null {
+    private getRow(days: ISelectableDay[], rowKey: number): React.JSX.Element | null {
         // Prüfen ob genug Tage zur Verfügung stehen.
         if (days.length !== 7) return null
 
@@ -83,8 +83,8 @@ export class EditDay extends ComponentWithSite<IDaySelector> {
     }
 
     // Teilt die zur Auswahl anzubietende Tage in Häppchen zu je einer Woche.
-    private getRows(days: ISelectableDay[]): (JSX.Element | null)[] {
-        const rows: (JSX.Element | null)[] = []
+    private getRows(days: ISelectableDay[]): (React.JSX.Element | null)[] {
+        const rows: (React.JSX.Element | null)[] = []
 
         // Tage in Schritten einer Woche zerlegen.
         for (let ix = 0; ix < days.length; ix += 7) rows.push(this.getRow(days.slice(ix, ix + 7), ix))

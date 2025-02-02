@@ -9,7 +9,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class NumberOfFiles extends HelpComponent {
     readonly title = 'Anzahl der Aufzeichnungsdateien pro Aufzeichnung'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Im Allgemeinen erzeugt der VCR.NET Recording Service pro Aufzeichnung eine einzige{' '}

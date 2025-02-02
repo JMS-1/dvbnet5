@@ -9,7 +9,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class AdminSourceScan extends HelpComponent {
     readonly title = 'Quellen aktualisieren (Sendersuchlauf)'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Zur Programmierung von Aufzeichnungen bietet der VCR.NET Recording Service für jedes DVB Gerät die{' '}

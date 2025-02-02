@@ -15,7 +15,7 @@ interface IDevice extends IComponent<IDeviceInfo> {
 // React.Js Komponente zur Anzeige einer Aktivität.
 export class Device extends ComponentEx<IDeviceInfo, IDevice> {
     // Erstellt die Oberflächenelemente.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         const { showGuide, showControl, mode, liveUri, demux } = this.props.uvm
         const done = mode === 'done'
 

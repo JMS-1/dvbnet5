@@ -7,7 +7,7 @@ import { ComponentWithSite } from '../../lib.react/reactUi'
 // Hilfskomponente zum Erstellen von Ract.JS Konfigurationskomponenten.
 export abstract class AdminSection<TSectionType extends ISection> extends ComponentWithSite<TSectionType> {
     // Oberflächenelemente erstellen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <div className='vcrnet-admin-section'>
                 <h2>{this.title}</h2>
@@ -23,5 +23,5 @@ export abstract class AdminSection<TSectionType extends ISection> extends Compon
     protected abstract readonly title: string
 
     // Oberflächenelemente erstellen.
-    protected abstract renderSection(): JSX.Element
+    protected abstract renderSection(): React.JSX.Element
 }

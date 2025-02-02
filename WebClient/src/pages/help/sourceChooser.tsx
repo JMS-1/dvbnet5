@@ -9,7 +9,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class SourceChooser extends HelpComponent {
     readonly title = 'Quellen (Sender)'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Jedes DVB Gerät kann bestimmte Quellen (Radio- und Fernsehsender) empfangen. Die Anzahl dieser Quellen

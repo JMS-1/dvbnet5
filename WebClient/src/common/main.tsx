@@ -89,7 +89,7 @@ export class Main extends React.Component<IEmpty, IEmpty> implements IApplicatio
     }
 
     // Oberflächenelemente erstellen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         // Überschrift ermitteln.
         const title = this._application.title
         const page = this._application.page

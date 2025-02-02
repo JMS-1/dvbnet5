@@ -7,7 +7,7 @@ import { Component } from '../../lib.react/reactUi'
 // React.Js Komponente zur visuellen Darstellung der Aufzeichnungsoptionen.
 export class EditChannelFlags extends Component<ISourceFlagsEditor> {
     // Erzeugt die visuelle Darstellung.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <div className='vcrnet-editchannelflags'>
                 <EditBoolean uvm={this.props.uvm.includeDolby} />

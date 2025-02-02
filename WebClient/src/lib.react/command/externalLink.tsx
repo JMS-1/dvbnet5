@@ -17,7 +17,7 @@ interface IExternalLink {
 // React.Js Komponente zur Anzeige eines externen Verweises.
 export class ExternalLink extends React.Component<IExternalLink, IEmpty> {
     // Erstellt die Oberflächenelemente.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <a
                 className='jmslib-externalLink'

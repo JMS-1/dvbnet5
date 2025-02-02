@@ -8,7 +8,7 @@ import { Component } from '../../lib.react/reactUi'
 // React.Js Komponente zur Anzeige einer Aufzeichnung im Aufzeichnungsplan.
 export class PlanRow extends Component<IPlanEntry> {
     // Oberflächenelemente erstellen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <tr className='vcrnet-planrow'>
                 <td>{this.props.uvm.mode ? <Pictogram name={this.props.uvm.mode} /> : <span>&nbsp;</span>}</td>

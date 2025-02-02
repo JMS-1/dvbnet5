@@ -8,7 +8,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class ParallelRecording extends HelpComponent {
     readonly title = 'Planung von Aufzeichnungen'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Selbstverständlich ist es keine Problem unabhängig Aufzeichnungen auf mehreren DVB Karten zu

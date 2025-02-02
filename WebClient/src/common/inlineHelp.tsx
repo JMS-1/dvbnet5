@@ -18,7 +18,7 @@ interface IInlineHelpDynamic {
 // React.Js Komponente zur Anzeige einer eingebetteten Beschreibung.
 export class InlineHelp extends React.Component<IInlineHelpStatic, IInlineHelpDynamic> {
     // Erstellt die Oberflächenelement.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         const isOpen = this.state && this.state.open
 
         return (

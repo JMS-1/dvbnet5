@@ -7,7 +7,7 @@ import { ICommand } from '../../lib/command/command'
 // React.Js Komponente zum manuellen Starten einer Sonderaufgabe.
 export class Task extends ComponentWithSite<ICommand> {
     // Oberflächenelemente anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <li className='vcrnet-home-task'>
                 <fieldset>

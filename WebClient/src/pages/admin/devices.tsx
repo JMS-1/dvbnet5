@@ -23,7 +23,7 @@ export class AdminDevices extends AdminSection<IAdminDevicesPage> {
     protected readonly title = 'Aktivierung von DVB.NET Geräteprofilen'
 
     // Oberflächenelemente anlegen.
-    protected renderSection(): JSX.Element {
+    protected renderSection(): React.JSX.Element {
         return (
             <div className='vcrnet-admin-devices'>
                 Für den VCR.NET Recording Service kann festgelegt werden, welche der auf dem zugehörigen Rechner
@@ -71,7 +71,7 @@ export class AdminDevices extends AdminSection<IAdminDevicesPage> {
     }
 
     // Allgemeine Erläuterungen.
-    private getHelp(): JSX.Element {
+    private getHelp(): React.JSX.Element {
         return (
             <InlineHelp title='Erläuterungen zur Bedienung'>
                 Die Tabelle zeigt alle DVB.NET Geräte des Rechners, auf dem der VCR.NET Dienst läuft. Über die erste

@@ -8,7 +8,7 @@ import { ComponentWithSite } from '../../lib.react/reactUi'
 // React.Js Komponente zur Anzeige und Pflege einer gespeicherten Suche.
 export class Favorite extends ComponentWithSite<IFavorite> {
     // Oberflächenelemente anlegen.
-    render(): JSX.Element {
+    render(): React.JSX.Element {
         return (
             <tr className='vcrnet-favorite'>
                 <td>

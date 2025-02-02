@@ -8,7 +8,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class CustomSchedule extends HelpComponent {
     readonly title = 'Regeln für die Planung von Aufzeichnungen'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Der VCR.NET Recording Service verwendet nach der Installation ein festes Regelwerk zur Planung von

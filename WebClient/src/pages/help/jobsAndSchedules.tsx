@@ -9,7 +9,7 @@ import { InternalLink } from '../../lib.react/command/internalLink'
 export class JobsAndSchedules extends HelpComponent {
     readonly title = 'Aufträge und Aufzeichnungen'
 
-    render(page: IPage): JSX.Element {
+    render(page: IPage): React.JSX.Element {
         return (
             <div>
                 Schaut man sich die Programmierung von Aufzeichnungen etwas genauer an, dann sieht man, dass der VCR.NET
