@@ -1,10 +1,10 @@
-﻿@import "../mixins";
-@import "../constants";
+﻿@use "../mixins";
+@use "../constants";
 
 .jmslib-command {
-    @include no-select();
-    border: 1px solid $commandBorderColor;
-    background: $commandBackgroundColor;
+    @include mixins.no-select();
+    border: 1px solid constants.$commandBorderColor;
+    background: constants.$commandBackgroundColor;
     padding: 0.3rem 0.6rem;
     display: inline-block;
     border-radius: 3px;
@@ -22,7 +22,7 @@
     }
 
     &.jmslib-command-checked {
-        background: $commandActiveBackgroundColor;
+        background: constants.$commandActiveBackgroundColor;
     }
 
     &:not(.jmslib-command-disabled) {
@@ -30,25 +30,25 @@
             cursor: default;
 
             &:not(.jmslib-command-checked) {
-                background: $commandHoverBackgroundColor;
+                background: constants.$commandHoverBackgroundColor;
                 cursor: pointer;
 
                 &[title=""] {
-                    border-color: $commandHoverBorderColor;
+                    border-color: constants.$commandHoverBorderColor;
                 }
             }
         }
 
         &:active {
-            background: $commandHoverBorderColor;
+            background: constants.$commandHoverBorderColor;
         }
     }
 
     &.jmslib-command-dangerous {
-        color: $textErrorColor;
+        color: constants.$textErrorColor;
     }
 
     &:not([title=""]) {
-        border-color: $textErrorColor;
+        border-color: constants.$textErrorColor;
     }
 }

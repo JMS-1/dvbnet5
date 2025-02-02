@@ -1,4 +1,5 @@
-﻿@import '../lib.react/constants';
+﻿@use "sass:meta";
+@use '../lib.react/constants';
 
 .vcrnet-admin {
     width: 90%;
@@ -16,11 +17,11 @@
                 box-shadow: gray 2px 1px;
 
                 &:hover {
-                    background: $commandHoverBackgroundColor;
+                    background: constants.$commandHoverBackgroundColor;
                 }
 
                 &.jmslib-command-checked {
-                    background: $commandActiveBackgroundColor;
+                    background: constants.$commandActiveBackgroundColor;
 
                     a {
                         cursor: default;
@@ -45,12 +46,12 @@
     }
 }
 
-@import 'admin/section';
+@include meta.load-css('admin/section');
 
-@import 'admin/guide';
-@import 'admin/other';
-@import 'admin/rules';
-@import 'admin/devices';
-@import 'admin/sources';
-@import 'admin/directories';
-@import 'admin/smtp';
+@include meta.load-css('admin/guide');
+@include meta.load-css('admin/other');
+@include meta.load-css('admin/rules');
+@include meta.load-css('admin/devices');
+@include meta.load-css('admin/sources');
+@include meta.load-css('admin/directories');
+@include meta.load-css('admin/smtp');

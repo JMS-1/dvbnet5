@@ -1,8 +1,8 @@
-﻿@import "../../lib.react/constants";
-@import "../../lib.react/mixins";
+﻿@use "../../lib.react/constants";
+@use "../../lib.react/mixins";
 
 .vcrnet-planexception {
-    @include no-select();
+    @include mixins.no-select();
     padding: 10px;
 
     > table {
@@ -29,7 +29,7 @@
         margin-top: 6px;
 
         > .jmslib-command:not(:first-child) {
-            margin-left: $buttonSpacing;
+            margin-left: constants.$buttonSpacing;
         }
     }
 }

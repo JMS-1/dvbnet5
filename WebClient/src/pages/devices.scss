@@ -1,3 +1,4 @@
+@use "sass:meta";
 ﻿.vcrnet-devices {
     > table {
         min-width: 1050px;
@@ -12,6 +13,6 @@
     }
 }
 
-@import "devices/entry";
-@import "devices/guide";
-@import "devices/control";
+@include meta.load-css("devices/entry");
+@include meta.load-css("devices/guide");
+@include meta.load-css("devices/control");

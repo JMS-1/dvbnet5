@@ -1,8 +1,8 @@
-﻿@import "../../constants";
+﻿@use "../../constants";
 
 .vcrnet-admin-sources {
     > form .vcrnet-editfield {
-        margin-bottom: $editLineSpacing;
+        margin-bottom: constants.$editLineSpacing;
         
         > div:first-child {
             margin-right: 4px;
@@ -10,6 +10,6 @@
     }
 
     > div:first-of-type {
-        margin-bottom: $editLineSpacing;
+        margin-bottom: constants.$editLineSpacing;
     }
 }

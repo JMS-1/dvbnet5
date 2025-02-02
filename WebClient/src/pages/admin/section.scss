@@ -1,4 +1,4 @@
-﻿@import "../../constants";
+﻿@use "../../constants";
 
 .vcrnet-admin-section {
     > h2 {
@@ -6,6 +6,6 @@
     }
 
     > div:last-child {
-        margin-top: $editLineSpacing;
+        margin-top: constants.$editLineSpacing;
     }
 }

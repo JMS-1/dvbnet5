@@ -1,3 +1,4 @@
+@use "sass:meta";
 ﻿.vcrnet-log {
     > form {
         font-size: small;
@@ -19,4 +20,4 @@
     }
 }
 
-@import "log/details";
+@include meta.load-css("log/details");

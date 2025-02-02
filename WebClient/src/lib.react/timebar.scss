@@ -1,6 +1,8 @@
-﻿@import "constants.scss";
+﻿@use 'sass:color';
 
-$darkBorder: darken($commandHoverBorderColor, 10%);
+@use 'constants.scss';
+
+$darkBorder: color.adjust(constants.$commandHoverBorderColor, $lightness: -10%);
 $innerHeigth: 17px;
 $radius: 4px;
 
@@ -17,7 +19,7 @@ $radius: 4px;
         left: 0;
 
         > div {
-            border: 1px solid $commandHoverBorderColor;
+            border: 1px solid constants.$commandHoverBorderColor;
             box-shadow: $darkBorder 1px 1px;
             display: inline-block;
             position: absolute;

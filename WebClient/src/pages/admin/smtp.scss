@@ -1,9 +1,9 @@
-﻿@import '../../constants';
+﻿@use '../../constants';
 
 .vcrnet-admin-smtp {
     > form {
         > .vcrnet-editfield {
-            margin-top: $editLineSpacing;
+            margin-top: constants.$editLineSpacing;
 
             > div:first-child {
                 margin-right: 4px;

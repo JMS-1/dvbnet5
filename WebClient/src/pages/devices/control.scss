@@ -1,18 +1,18 @@
-﻿@import "../../constants";
+﻿@use "../../constants";
 
 .vcrnet-device-control {
     padding-top: 10px;
 
     > .jmslib-slider {
-        margin: $editLineSpacing 0;
+        margin: constants.$editLineSpacing 0;
     }
 
     > .vcrnet-device-target:not(:first-child) {
-        margin-top: $editLineSpacing;
+        margin-top: constants.$editLineSpacing;
     }
 
     > table {
-        margin: $editLineSpacing 0;
+        margin: constants.$editLineSpacing 0;
     }
 
     .jmslib-command {

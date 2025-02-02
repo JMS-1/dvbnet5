@@ -1,16 +1,16 @@
-﻿@import "../lib.react/mixins";
-@import "../lib.react/constants";
+﻿@use "../lib.react/mixins";
+@use "../lib.react/constants";
 
 .vcrnet-inline-help {
-    @include no-select();
+    @include mixins.no-select();
     width: 80%;
     cursor: default;
     margin: 0.5rem 1rem;
 
     > h1 {
         padding: 0.25rem 0.25rem 0.25rem 0.5rem;
-        border: 1px solid $commandBorderColor;
-        background: $commandBackgroundColor;
+        border: 1px solid constants.$commandBorderColor;
+        background: constants.$commandBackgroundColor;
         font-weight: normal;
         white-space: nowrap;
         border-radius: 2px;
@@ -20,8 +20,8 @@
         margin: 0;
 
         &:hover {
-            border-color: $commandHoverBorderColor;
-            background: $commandHoverBackgroundColor;
+            border-color: constants.$commandHoverBorderColor;
+            background: constants.$commandHoverBackgroundColor;
         }
     }
 
@@ -32,6 +32,6 @@
         background: white;
         border-top-left-radius: 0;
         border-top-right-radius: 0;
-        border: 1px solid $commandBorderColor;
+        border: 1px solid constants.$commandBorderColor;
     }
 }

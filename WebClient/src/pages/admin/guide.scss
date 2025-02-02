@@ -1,4 +1,4 @@
-﻿@import "../../constants";
+﻿@use "../../constants";
 
 $spacing: 4px;
 
@@ -8,7 +8,7 @@ $spacing: 4px;
             width: 30rem;
             margin-right: 10px;
             display: inline-block;
-            margin-bottom: $editLineSpacing;
+            margin-bottom: constants.$editLineSpacing;
 
             + .jmslib-command {
                 vertical-align: top;
@@ -17,11 +17,11 @@ $spacing: 4px;
 
         .jmslib-editflag {
             display: block;
-            margin-bottom: $editLineSpacing;
+            margin-bottom: constants.$editLineSpacing;
         }
 
         .vcrnet-editfield {
-            margin-bottom: $editLineSpacing;
+            margin-bottom: constants.$editLineSpacing;
 
             > div:first-child {
                 margin-right: $spacing;
@@ -38,6 +38,6 @@ $spacing: 4px;
     }
 
     > div:first-of-type {
-        margin-bottom: $editLineSpacing;
+        margin-bottom: constants.$editLineSpacing;
     }
 }

@@ -1,11 +1,13 @@
-﻿@import 'lib.react/constants';
-@import 'constants';
+﻿@use 'sass:color';
+
+@use 'lib.react/constants' as constants;
+@use 'constants';
 
 // Grundeinstellungen fixieren.
 :root {
     font-size: 18px;
-    font-family: $appFont;
-    background: $mainBackground;
+    font-family: constants.$appFont;
+    background: constants.$mainBackground;
 }
 
 body {
@@ -37,19 +39,19 @@ fieldset {
     > legend {
         font-size: 0.75rem;
         font-weight: bold;
-        font-family: $appFont;
+        font-family: constants.$appFont;
     }
 }
 
 // Zeigt eine deutliche Warnung an.
 .vcrnet-warningtext {
     font-weight: bold;
-    color: $textErrorColor;
+    color: constants.$textErrorColor;
 }
 
 // Eine horizontale Liste von Verweisen, Befehlen, Filtern etc.
 .vcrnet-bar {
-    background: darken($mainBackground, 10%);
+    background: color.adjust(constants.$mainBackground, $lightness: -10%);
     white-space: nowrap;
     overflow-x: hidden;
     border-radius: 4px;
@@ -59,18 +61,18 @@ fieldset {
 
 // Grundsäzlich sollen erst einmal alle Tabellen sich gleich anfühlen.
 .vcrnet-table {
-    background: darken($mainBackground, 5%);
+    background: color.adjust(constants.$mainBackground, $lightness: -5%);
     border-collapse: collapse;
 
     > thead {
-        background-color: darken($mainBackground, 15%);
+        background-color: color.adjust(constants.$mainBackground, $lightness: -15%);
         font-weight: bold;
     }
     // Wenn nicht anders gewünscht vermeiden wir einen Zeilenumbruch in den Zellen und für einige bekannten Spalten gibt es feste Größen.
     > thead,
     > tbody {
         > tr > td {
-            border: 2px solid $mainBackground;
+            border: 2px solid constants.$mainBackground;
             font-family: 'Courier New';
             white-space: nowrap;
             padding: 2px 4px;
@@ -103,7 +105,7 @@ table.vcrnet-tableIsForm > tbody {
 
 // Alle Schaltflächen (auch wenn wir hier keine BUTTONs einsetzen) verwenden immer den primären Zeichensatz.
 .jmslib-command {
-    font-family: $appFont;
+    font-family: constants.$appFont;
 }
 
 // In der Hilfe werden Schnappschüsse der Anwendung leicht hervorgehoben.
@@ -115,7 +117,7 @@ table.vcrnet-tableIsForm > tbody {
         padding: 10px;
         border-radius: 4px;
         display: inline-block;
-        border: 1px dashed darken($mainBackground, 30%);
-        box-shadow: darken($mainBackground, 40%) 2px 2px;
+        border: 1px dashed color.adjust(constants.$mainBackground, $lightness: -30%);
+        box-shadow: color.adjust(constants.$mainBackground, $lightness: -40%) 2px 2px;
     }
 }

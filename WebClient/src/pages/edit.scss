@@ -1,3 +1,4 @@
+@use "sass:meta";
 ﻿.vcrnet-edit {
     .vcrnet-inline-help table {
         margin: 10px;
@@ -28,9 +29,9 @@
     }
 }
 
-@import "edit/job";
-@import "edit/channel";
-@import "edit/duration";
-@import "edit/schedule";
-@import "edit/exception";
-@import "edit/channelFlags";
+@include meta.load-css("edit/job");
+@include meta.load-css("edit/channel");
+@include meta.load-css("edit/duration");
+@include meta.load-css("edit/schedule");
+@include meta.load-css("edit/exception");
+@include meta.load-css("edit/channelFlags");

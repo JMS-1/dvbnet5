@@ -1,4 +1,4 @@
-﻿@import"../../constants";
+﻿@use "../../constants";
 
 .vcrnet-scheduledata {
     // Wir wollen die erste Auswahl mit den anderen Eingabefeldern synchronisieren.
@@ -7,7 +7,7 @@
     }
 
     > .vcrnet-editfield:not(:last-child) {
-        margin-bottom: $formSpacing;
+        margin-bottom: constants.$formSpacing;
     }
 
     div.vcrnet-editfield:nth-of-type(4) {

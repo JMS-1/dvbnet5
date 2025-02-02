@@ -1,30 +1,30 @@
-﻿@import "constants";
+﻿@use "constants";
 
-@import "router";
-@import "timebar";
-@import "detailRow";
+@use "router";
+@use "timebar";
+@use "detailRow";
 
-@import "command/button";
-@import "command/toggle";
-@import "command/pictogram";
-@import "command/externalLink";
-@import "command/internalLink";
+@use "command/button";
+@use "command/toggle";
+@use "command/pictogram";
+@use "command/externalLink";
+@use "command/internalLink";
 
-@import "edit/list";
-@import "edit/multiList";
-@import "edit/buttonList";
-@import "edit/multiButtonList";
+@use "edit/list";
+@use "edit/multiList";
+@use "edit/buttonList";
+@use "edit/multiButtonList";
 
-@import "edit/text/text";
-@import "edit/text/textarea";
+@use "edit/text/text";
+@use "edit/text/textarea";
 
-@import "edit/boolean/flag";
+@use "edit/boolean/flag";
 
-@import "edit/number/slider";
-@import "edit/number/number";
+@use "edit/number/slider";
+@use "edit/number/number";
 
-@import "edit/datetime/day";
-@import "edit/datetime/time";
+@use "edit/datetime/day";
+@use "edit/datetime/time";
 
 // Wird eine Liste von Schaltflächen angezeigt, so kann diese Klasse verwendet werden, um die einzelnen Schaltflächen zusammen zu kleben.
 .jmslib-command-mergelist > .jmslib-command {
@@ -43,6 +43,6 @@
 
 // Der Titel (Tooltip) wird für die Anzeige von Fehlersituationen verwendet, das verstärken wird noch durch einen roten Rahmen.
 .jmslib-validatable:not([title=""]) {
-    border: 2px solid $textErrorColor;
+    border: 2px solid constants.$textErrorColor;
     outline: none;
 }

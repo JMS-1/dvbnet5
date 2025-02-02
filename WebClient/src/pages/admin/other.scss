@@ -1,9 +1,9 @@
-﻿@import '../../constants';
+﻿@use '../../constants';
 
 .vcrnet-admin-other {
     > form {
         > .vcrnet-editfield {
-            margin-bottom: $editLineSpacing;
+            margin-bottom: constants.$editLineSpacing;
 
             > div:first-child {
                 margin-right: 4px;
@@ -12,7 +12,7 @@
 
         .jmslib-editflag {
             display: block;
-            margin-bottom: $editLineSpacing;
+            margin-bottom: constants.$editLineSpacing;
 
             > input {
                 margin-left: 0;

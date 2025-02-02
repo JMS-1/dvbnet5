@@ -1,8 +1,8 @@
-﻿@import "../../constants";
+﻿@use "../../constants";
 
 .vcrnet-admin-devices {
     > form > table {
-        margin-top: $editLineSpacing;
+        margin-top: constants.$editLineSpacing;
 
         > tbody > tr > td:not(:nth-child(2)) {
             text-align: center;

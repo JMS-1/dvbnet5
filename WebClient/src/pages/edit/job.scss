@@ -1,7 +1,7 @@
-﻿@import "../../constants";
+﻿@use "../../constants";
 
 .vcrnet-jobdata {
     > .vcrnet-editfield:not(:last-child) {
-        margin-bottom: $formSpacing;
+        margin-bottom: constants.$formSpacing;
     }
 }

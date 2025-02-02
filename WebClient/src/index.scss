@@ -1,10 +1,10 @@
-@import 'lib.react/styles';
+@use 'lib.react/styles';
 
-@import 'vcrnet';
-@import 'common/styles';
-@import 'pages/styles';
+@use 'vcrnet';
+@use 'common/styles' as common;
+@use 'pages/styles' as pages;
 
-@import 'mixins';
+@use 'mixins';
 
 html {
     width: 100%;

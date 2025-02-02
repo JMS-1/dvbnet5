@@ -1,3 +1,4 @@
+@use "sass:meta";
 ﻿.vcrnet-home {
     padding: 0 10px;
 
@@ -24,5 +25,5 @@
     }
 }
 
-@import "home/task";
-@import "home/versionCheck";
+@include meta.load-css("home/task");
+@include meta.load-css("home/versionCheck");

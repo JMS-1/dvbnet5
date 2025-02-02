@@ -1,4 +1,4 @@
-﻿@import "../constants";
+﻿@use "../constants";
 
 $indent: 1.5rem;
 $labelIndent: 4px;
@@ -13,13 +13,13 @@ $labelIndent: 4px;
             }
 
             &:not(:first-of-type) {
-                margin-top: $editLineSpacing;
+                margin-top: constants.$editLineSpacing;
             }
         }
 
         .vcrnet-settings-field {
             margin-left: $indent;
-            margin-top: $editLineSpacing;
+            margin-top: constants.$editLineSpacing;
 
             > .jmslib-editflag:not(:last-child) {
                 margin-right: $labelIndent;
@@ -31,7 +31,7 @@ $labelIndent: 4px;
         }
 
         > div:last-child {
-            margin-top: $editLineSpacing;
+            margin-top: constants.$editLineSpacing;
         }
     }
 }
