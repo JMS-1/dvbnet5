@@ -65,4 +65,24 @@ public class EPGParserTests
         Assert.That(parser.Tables, Has.Count.EqualTo(61169));
         Assert.That(((ShortEvent)parser.Tables[49].Entries[1].Descriptors[2]).Text, Is.EqualTo("Latest news from the world of entertainment. [HD]"));
     }
+
+    [Test]
+    public void Can_Parse_UK_EPG_2()
+    {
+        using var parser = new ParseFromTestData("epg-uk-2");
+
+        parser.Process();
+
+        Assert.That(parser.Tables, Has.Count.EqualTo(38856));
+
+        var shortEvent = (ShortEvent)parser.Tables[356].Entries[3].Descriptors[1];
+
+        Assert.That(shortEvent.Name, Is.EqualTo("Crùnluath"));
+
+        foreach (var row in parser.Tables)
+            foreach (var ent in row.Entries)
+                foreach (var descr in ent.Descriptors)
+                    if (descr is ShortEvent se)
+                        Console.WriteLine(se.Name);
+    }
 }

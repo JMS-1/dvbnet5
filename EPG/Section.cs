@@ -101,7 +101,7 @@ namespace JMS.DVB.EPG
         /// <summary>
         /// Spezielle Emulation des ISO-6937 Zeichensatzes.
         /// </summary>
-        private static readonly StandardProgramGuideEncoding m_StandardEncoding = new();
+        private static readonly Encoding m_StandardEncoding = new StandardProgramGuideEncoding();
 
         /// <summary>
         /// Initialize the static lookup tables.
@@ -321,19 +321,7 @@ namespace JMS.DVB.EPG
         /// </summary>
         /// <param name="index">A zero-based index into our private data. The
         /// maximum value allowed is <see cref="Length"/> <i>- 4</i>.</param>
-        public byte this[int index]
-        {
-            get
-            {
-                // Report
-                return m_RawData[index];
-            }
-            set
-            {
-                // Change
-                m_RawData[index] = value;
-            }
-        }
+        public byte this[int index] { get => m_RawData[index]; set => m_RawData[index] = value; }
 
         /// <summary>
         /// Directly access a number of bytes in our raw data.
@@ -345,7 +333,7 @@ namespace JMS.DVB.EPG
         public byte[] ReadBytes(int offset, int bytes)
         {
             // Create
-            byte[] ret = new byte[bytes];
+            var ret = new byte[bytes];
 
             // Fill
             Array.Copy(m_RawData, offset, ret, 0, bytes);
@@ -361,11 +349,7 @@ namespace JMS.DVB.EPG
         /// <param name="target">Das Zielfeld, das bef�llt werden soll.</param>
         /// <param name="targetOffset">Das erste Byte im Zielfeld, das beschrieben werden soll.</param>
         /// <param name="bytes">Die Anzahl der zu kopierenden Bytes.</param>
-        public void CopyBytes(int offset, byte[] target, int targetOffset, int bytes)
-        {
-            // Fill
-            Array.Copy(m_RawData, offset, target, targetOffset, bytes);
-        }
+        public void CopyBytes(int offset, byte[] target, int targetOffset, int bytes) => Array.Copy(m_RawData, offset, target, targetOffset, bytes);
 
         /// <summary>
         /// Use the <see cref="Encoding.ASCII"/> <see cref="Encoding"/> to
@@ -376,11 +360,7 @@ namespace JMS.DVB.EPG
         /// maximum value allowed is <see cref="Length"/> <i>- 4</i>.</param>
         /// <param name="bytes">Number of characters to read.</param>
         /// <returns>The corresponding <see cref="string"/>.</returns>
-        public string ReadString(int offset, int bytes)
-        {
-            // The fast way
-            return ReadEncodedString(Encoding.ASCII, offset, bytes, false);
-        }
+        public string ReadString(int offset, int bytes) => ReadEncodedString(Encoding.ASCII, offset, bytes, false);
 
         /// <summary>
         /// Read an encoded string from the raw data. The first <see cref="byte"/>
@@ -395,11 +375,7 @@ namespace JMS.DVB.EPG
         /// maximum value allowed is <see cref="Length"/> <i>- 4</i>.</param>
         /// <param name="bytes">Number of characters to read.</param>
         /// <returns>The corresponding <see cref="string"/>.</returns>
-        public string ReadEncodedString(int offset, int bytes)
-        {
-            // Forward
-            return ReadEncodedString(offset, bytes, false);
-        }
+        public string ReadEncodedString(int offset, int bytes) => ReadEncodedString(offset, bytes, false);
 
         /// <summary>
         /// Read an encoded string from the raw data.
@@ -413,12 +389,9 @@ namespace JMS.DVB.EPG
         /// <returns>The corresponding <see cref="string"/>.</returns>
         public string ReadEncodedString(Encoding encoding, int offset, int bytes, bool removeSpecial)
         {
-            // Check for custom encoder
+            // Forward as is - encoder must do it all
             if (encoding is ICustomEncoder)
-            {
-                // Forward as is - encoder must do it all
                 return encoding.GetString(m_RawData, offset, bytes);
-            }
 
             // Allocate buffer
             List<byte> scratch = new(bytes);
