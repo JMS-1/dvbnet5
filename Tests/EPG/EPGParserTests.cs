@@ -53,6 +53,8 @@ public class EPGParserTests
 
         Assert.That(parser.Tables, Has.Count.EqualTo(336));
         Assert.That(((ShortEvent)parser.Tables[0].Entries[0].Descriptors[0]).Text, Is.EqualTo("Jingle Bells - Eine Familie zum Fest Komödie, USA 2004 Altersfreigabe: Ohne Altersbeschränkung (WH vom Dienstag, 26.12.2023, 22:15 Uhr)"));
+
+        DumpNames(parser);
     }
 
     [Test]
@@ -64,6 +66,24 @@ public class EPGParserTests
 
         Assert.That(parser.Tables, Has.Count.EqualTo(61169));
         Assert.That(((ShortEvent)parser.Tables[49].Entries[1].Descriptors[2]).Text, Is.EqualTo("Latest news from the world of entertainment. [HD]"));
+
+        DumpNames(parser);
+    }
+
+    private void DumpNames(ParseFromTestData parser)
+    {
+        var names =
+               parser
+                   .Tables
+                   .SelectMany(t => t.Entries)
+                   .SelectMany(e => e.Descriptors)
+                   .OfType<ShortEvent>()
+                   .Select(s => s.Name)
+                   .Distinct()
+                   .Order();
+
+        foreach (var name in names)
+            Console.WriteLine(name);
     }
 
     [Test]
@@ -79,10 +99,6 @@ public class EPGParserTests
 
         Assert.That(shortEvent.Name, Is.EqualTo("Crùnluath"));
 
-        foreach (var row in parser.Tables)
-            foreach (var ent in row.Entries)
-                foreach (var descr in ent.Descriptors)
-                    if (descr is ShortEvent se)
-                        Console.WriteLine(se.Name);
+        DumpNames(parser);
     }
 }

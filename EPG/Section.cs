@@ -409,7 +409,7 @@ namespace JMS.DVB.EPG
                     scratch.Add(0x0a);
                     scratch.Add(0x0d);
                 }
-                else if (((ch >= 0x00) && (ch <= 0x1f)) || ((ch >= 0x80) && (ch <= 0x9f)))
+                else if ((ch >= 0x00) && (ch <= 0x1f))
                 {
                     // Control
                     if (!removeSpecial) scratch.Add(0x20);
@@ -457,8 +457,8 @@ namespace JMS.DVB.EPG
             var enc = (cpid < m_Encodings.Length) ? m_Encodings[cpid] : null;
 
             // Load default
-            if (null == enc)
-                enc = DefaultEncoding;
+            if (enc == null)
+                enc = cpid == 21 ? Encoding.UTF8 : DefaultEncoding;
 
             // Check mode
             int delta = (cpid < m_Encodings.Length) ? 1 : 0;
