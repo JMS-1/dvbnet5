@@ -1,4 +1,3 @@
-using System.Reflection;
 using JMS.DVB.NET.Recording;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;

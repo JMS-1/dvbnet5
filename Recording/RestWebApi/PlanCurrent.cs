@@ -7,7 +7,6 @@ using JMS.DVB.NET.Recording.Services.Configuration;
 using JMS.DVB.NET.Recording.Services.Planning;
 using JMS.DVB.NET.Recording.Server;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 namespace JMS.DVB.NET.Recording.RestWebApi

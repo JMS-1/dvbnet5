@@ -8,12 +8,12 @@ namespace JMS.DVB.TS.TSBuilders
     public abstract class TSBuilder(TSParser parser, Action<byte[]> callback) : IDisposable
     {
         /// <summary>
-        /// Vermerkt die Gr��e des kleinsten an den Verbraucher weitergereichten Paketes.
+        /// Vermerkt die Größe des kleinsten an den Verbraucher weitergereichten Paketes.
         /// </summary>
         private int m_MinPacket = int.MaxValue;
 
         /// <summary>
-        /// Vermerkt die Gr��e des gr��ten an den Verbraucher weitergereichten Paketes.
+        /// Vermerkt die Größe des größten an den Verbraucher weitergereichten Paketes.
         /// </summary>
         private int m_MaxPacket = int.MinValue;
 
@@ -23,12 +23,12 @@ namespace JMS.DVB.TS.TSBuilders
         private readonly Action<byte[]> m_Callback = callback;
 
         /// <summary>
-        /// Meldet die Gr��e des kleinsten an den Verbraucher gemeldeten Paketes.
+        /// Meldet die Größe des kleinsten an den Verbraucher gemeldeten Paketes.
         /// </summary>
         public int MinimumPacketSize => (m_MinPacket == int.MaxValue) ? 0 : m_MinPacket;
 
         /// <summary>
-        /// Meldet die Gr��e des gr��ten an den Verbraucher gemeldeten Paketes.
+        /// Meldet die Größe des größten an den Verbraucher gemeldeten Paketes.
         /// </summary>
         public int MaximumPacketSize => (m_MaxPacket == int.MinValue) ? 0 : m_MaxPacket;
 
