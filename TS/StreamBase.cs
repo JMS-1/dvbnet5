@@ -9,7 +9,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// �bermittelt Nutzdaten.
         /// </summary>
-        /// <param name="counter">Paketz�hler für den zugeordneten Datenstrom im <i>Transport Stream</i>.</param>
+        /// <param name="counter">PaketZähler für den zugeordneten Datenstrom im <i>Transport Stream</i>.</param>
         /// <param name="pid">Nummer des Datenstroms.</param>
         /// <param name="buffer">Puffer mit Daten.</param>
         /// <param name="start">Das erste im Puffer zu verwendende Byte.</param>
@@ -22,7 +22,7 @@ namespace JMS.DVB.TS
         /// <summary>
         /// �bermittelt die Systemzeit.
         /// </summary>
-        /// <param name="counter">Paketz�hler für den zugeordneten Datenstrom im <i>Transport Stream</i>.</param>
+        /// <param name="counter">PaketZähler für den zugeordneten Datenstrom im <i>Transport Stream</i>.</param>
         /// <param name="pid">Nummer des Datenstroms.</param>
         /// <param name="pts">Zeitstempel, aus dem die Systemzeit abgeleitet wird.</param>
         void SendPCR(int counter, int pid, long pts);
@@ -34,7 +34,7 @@ namespace JMS.DVB.TS
     }
 
     /// <summary>
-    /// Erweiterte Schnittstelle für Verbraucher von voranalysierten PES Paketstr�men.
+    /// Erweiterte Schnittstelle für Verbraucher von voranalysierten PES Paketströmen.
     /// </summary>
     public interface IStreamConsumer2 : IStreamConsumer
     {

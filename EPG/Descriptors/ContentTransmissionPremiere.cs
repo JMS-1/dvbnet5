@@ -6,7 +6,7 @@ namespace JMS.DVB.EPG.Descriptors
     public class ContentTransmissionPremiere : Descriptor
     {
         /// <summary>
-        /// Die Kennung des zugeh�rigen <i>Transport Streams</i>.
+        /// Die Kennung des zugehörigen <i>Transport Streams</i>.
         /// </summary>
         public ushort TransportStreamIdentifier;
 
@@ -16,7 +16,7 @@ namespace JMS.DVB.EPG.Descriptors
         public ushort OriginalNetworkIdentifier;
 
         /// <summary>
-        /// Der zugeh�rige Sender.
+        /// Der zugehörige Sender.
         /// </summary>
         public ushort ServiceIdentifier;
 
@@ -28,7 +28,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Erzeugt eine neue Beschreibung.
         /// </summary>
-        /// <param name="container">Die zugeh�rige Liste von Beschreibungen.</param>
+        /// <param name="container">Die zugehörige Liste von Beschreibungen.</param>
         /// <param name="offset">Erstes Byte dieser Beschreibung.</param>
         /// <param name="length">Anzahl der Bytes für diese Beschreibung.</param>
         public ContentTransmissionPremiere(IDescriptorContainer container, int offset, int length)

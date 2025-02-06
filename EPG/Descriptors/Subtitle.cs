@@ -21,7 +21,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// <summary>
         /// Erzeugt eine neue Beschreibung.
         /// </summary>
-        /// <param name="container">Die zugeh�rige Liste zusammengeh�riger Beschreibungen.</param>
+        /// <param name="container">Die zugehörige Liste zusammengehöriger Beschreibungen.</param>
         /// <param name="offset">Erstes Byte für diese einzelne Beschreibung.</param>
         /// <param name="length">Die L�nge dieser Beschreibung in Bytes.</param>
         public Subtitle(IDescriptorContainer container, int offset, int length)

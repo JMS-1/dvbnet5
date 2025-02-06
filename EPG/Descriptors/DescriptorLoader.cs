@@ -7,7 +7,7 @@ namespace JMS.DVB.EPG.Descriptors
 	public class DescriptorLoader
 	{
 		/// <summary>
-		/// Die zugeh�rige SI Struktur.
+		/// Die zugehörige SI Struktur.
 		/// </summary>
 		private IDescriptorContainer m_Container;
 
@@ -29,7 +29,7 @@ namespace JMS.DVB.EPG.Descriptors
 		/// <summary>
 		/// Erzeugt eine neue Ladeinstanz.
 		/// </summary>
-		/// <param name="table">Die zugeh�rige SI Struktur.</param>
+		/// <param name="table">Die zugehörige SI Struktur.</param>
 		/// <param name="offset">Erstes Byte für Descriptoren.</param>
 		/// <param name="length">Anzahl der Bytes für Descriptoren.</param>
 		public DescriptorLoader(IDescriptorContainer table, int offset, int length)
@@ -41,7 +41,7 @@ namespace JMS.DVB.EPG.Descriptors
 		}
 
 		/// <summary>
-		/// Meldet die zugeh�rigen Descriptoren.
+		/// Meldet die zugehörigen Descriptoren.
 		/// </summary>
 		public Descriptor[] Descriptors
 		{

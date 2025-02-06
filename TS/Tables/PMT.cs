@@ -330,7 +330,7 @@ namespace JMS.DVB.TS.Tables
         }
 
         /// <summary>
-        /// Meldet die Anzahl der zugeordneten Datenstr�me.
+        /// Meldet die Anzahl der zugeordneten Datenströme.
         /// </summary>
         public int Count => m_Streams.Count;
     }

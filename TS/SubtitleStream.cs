@@ -3,7 +3,7 @@ namespace JMS.DVB.TS
     /// <summary>
     /// Repr�sentiert einen Rohdatenstrom mit echten DVB Untertiteln.
     /// </summary>
-    /// <param name="consumer">Der zugeh�rige Gesamtdatenstrom, im Allgemeinen ein
+    /// <param name="consumer">Der zugehörige Gesamtdatenstrom, im Allgemeinen ein
     /// <i>Transport Stream</i> <see cref="Manager"/>.</param>
     /// <param name="pid">Die Datenstromkennung im Gesamtstrom.</param>
     /// <param name="isPCR">Gesetzt, wenn dieser Datenstrom die Zeitbasis für den Gesamtstrom
@@ -12,7 +12,7 @@ namespace JMS.DVB.TS
     {
 
         /// <summary>
-        /// Pr�ft, ob ein Zeichen ein legaler MPEG-2 Startcode für DVB Untertitelstr�me
+        /// Pr�ft, ob ein Zeichen ein legaler MPEG-2 Startcode für DVB Untertitelströme
         /// ist.
         /// </summary>
         /// <param name="code">Der zu pr�fende Code.</param>

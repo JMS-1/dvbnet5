@@ -677,15 +677,8 @@ public class TSParser : IDisposable
         // Validate
         ArgumentNullException.ThrowIfNull(callback);
 
-        // Create
-        TSBuilder consumer;
-        if (isSITable)
-            consumer = new SIBuilder(this, callback);
-        else
-            consumer = new PESBuilder(this, callback);
-
         // Remember
-        RegisterCustomFilter(pid, consumer);
+        RegisterCustomFilter(pid, isSITable ? new SIBuilder(this, callback) : new PESBuilder(this, callback));
     }
 
     /// <summary>

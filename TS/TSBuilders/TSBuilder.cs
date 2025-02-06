@@ -3,7 +3,7 @@ namespace JMS.DVB.TS.TSBuilders
     /// <summary>
     /// Basisklasse für Rekonstruktionsalgorithmen auf einem <i>Transport Stream</i>.
     /// </summary>
-    /// <param name="parser">Die zugeh�rige Analyseeinheit.</param>
+    /// <param name="parser">Die zugehörige Analyseeinheit.</param>
     /// <param name="callback">Optional ein Verbraucher für rekonstruierte Pakete.</param>
     public abstract class TSBuilder(TSParser parser, Action<byte[]> callback) : IDisposable
     {
@@ -43,23 +43,23 @@ namespace JMS.DVB.TS.TSBuilders
         public long TotalBytes { get; private set; }
 
         /// <summary>
-        /// Meldet die zugeh�rige Analyseeinheit.
+        /// Meldet die zugehörige Analyseeinheit.
         /// </summary>
         protected TSParser Parser { get; private set; } = parser;
 
         /// <summary>
-        /// �bertr�gt ein elementares Paket von der Analyseeinheit zur Rekonstruktion.
+        /// Überträgt ein elementares Paket von der Analyseeinheit zur Rekonstruktion.
         /// </summary>
         /// <param name="packet">Ein Zwischenspeicher mit den Paketdaten.</param>
         /// <param name="offset">Die Position des ersten relevanten Bytes im Zwischenspeicher.</param>
         /// <param name="length">Die Anzahl der relevanten Bytes im Zwischenspeicher.</param>
-        /// <param name="noincrement">Gesetzt, wenn der Paketz�hler nicht erh�ht werden darf.</param>
+        /// <param name="noincrement">Gesetzt, wenn der PaketZähler nicht erhöht werden darf.</param>
         /// <param name="first">Gesetzt, wenn das elementare Paket als Start einer Sequenz von Paketen gekennzeichnet ist.</param>
-        /// <param name="counter">Der aktuelle Paketz�hler.</param>
+        /// <param name="counter">Der aktuelle PaketZähler.</param>
         public abstract void AddPacket(byte[] packet, int offset, int length, bool noincrement, bool first, byte counter);
 
         /// <summary>
-        /// Fordert zum Zur�cksetzen aller Zwischenergebnisse auf.
+        /// Fordert zum Zurücksetzen aller Zwischenergebnisse auf.
         /// </summary>
         public abstract void Reset();
 

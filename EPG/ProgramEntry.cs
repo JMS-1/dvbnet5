@@ -183,7 +183,7 @@ namespace JMS.DVB.EPG
         }
 
         /// <summary>
-        /// Ermittelt zu einer ISO Kurzbezeichnung einer Sprache die zugeh�rige 
+        /// Ermittelt zu einer ISO Kurzbezeichnung einer Sprache die zugehörige 
         /// Sprache.
         /// </summary>
         /// <param name="language">Eine ISO Kurzbezeichnung.</param>

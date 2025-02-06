@@ -207,7 +207,7 @@ namespace JMS.DVB.TS
         }
 
         /// <summary>
-        /// �bertr�gt einen beliebigen Speicherbereich in die angeschlossene Datei.
+        /// �berträgt einen beliebigen Speicherbereich in die angeschlossene Datei.
         /// </summary>
         /// <param name="buffer">Der Speicherbereich.</param>
         /// <param name="offset">Der Index des ersten zu ber�cksichtigenden Bytes im Speicherbereich.</param>

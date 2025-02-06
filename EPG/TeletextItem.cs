@@ -60,7 +60,7 @@ namespace JMS.DVB.EPG
         }
 
         /// <summary>
-        /// Die Gr��e der zugeh�rigen Rohdaten in Bytes.
+        /// Die Gr��e der zugehörigen Rohdaten in Bytes.
         /// </summary>
         public int Length => 5;
 

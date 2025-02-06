@@ -3,7 +3,7 @@ namespace JMS.DVB.TS.TSBuilders
     /// <summary>
     /// Hilfsklasse zur Rekonstruktion von SI Tabellen aus dem Rohdatenstrom.
     /// </summary>
-    /// <param name="parser">Die zugeh�rige Analyseeinheit.</param>
+    /// <param name="parser">Die zugehörige Analyseeinheit.</param>
     /// <param name="callback">Eine Methode, an die alle vollst�ndig rekonstruierten Pakete gemeldet werden.</param>
     public class SIBuilder(TSParser parser, Action<byte[]> callback) : TSBuilder(parser, callback)
     {
@@ -13,17 +13,17 @@ namespace JMS.DVB.TS.TSBuilders
         private byte[] m_Collector = null!;
 
         /// <summary>
-        /// Aktueller F�llstand des Zwischenspeichers.
+        /// Aktueller Füllstand des Zwischenspeichers.
         /// </summary>
         private int m_CollectorPos = 0;
 
         /// <summary>
-        /// Aktueller Paketz�hler.
+        /// Aktueller PaketZähler.
         /// </summary>
         private byte m_Counter = 0;
 
         /// <summary>
-        /// Setzt alle Zwischenspeicher auf den Anfangsstand zur�ck.
+        /// Setzt alle Zwischenspeicher auf den Anfangsstand zurück.
         /// </summary>
         public override void Reset()
         {
@@ -37,9 +37,9 @@ namespace JMS.DVB.TS.TSBuilders
         /// <param name="packet">Ein Zwischenspeicher mit den Paketdaten.</param>
         /// <param name="offset">Die Position des ersten zu analysierenden Bytes im Zwischenspeicher.</param>
         /// <param name="length">Die Anzahl der zu analysierenden Bytes.</param>
-        /// <param name="noincrement">Gesetzt, wenn der Paketz�hler nicht ver�ndert werden darf.</param>
+        /// <param name="noincrement">Gesetzt, wenn der PaketZähler nicht verändert werden darf.</param>
         /// <param name="first">Gesetzt, wenn die zu analyiserenden Daten den Tabellekopf enthalten.</param>
-        /// <param name="counter">Der aktuelle Paketz�hler.</param>
+        /// <param name="counter">Der aktuelle PaketZähler.</param>
         public override void AddPacket(byte[] packet, int offset, int length, bool noincrement, bool first, byte counter)
         {
             // See if we are awaiting the first packet

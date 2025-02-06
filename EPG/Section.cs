@@ -346,7 +346,7 @@ namespace JMS.DVB.EPG
         /// Kopiert Rohdaten in ein Feld.
         /// </summary>
         /// <param name="offset">Erstes Byte in den Rohdaten, das kopiert werden soll.</param>
-        /// <param name="target">Das Zielfeld, das bef�llt werden soll.</param>
+        /// <param name="target">Das Zielfeld, das beFüllt werden soll.</param>
         /// <param name="targetOffset">Das erste Byte im Zielfeld, das beschrieben werden soll.</param>
         /// <param name="bytes">Die Anzahl der zu kopierenden Bytes.</param>
         public void CopyBytes(int offset, byte[] target, int targetOffset, int bytes) => Array.Copy(m_RawData, offset, target, targetOffset, bytes);

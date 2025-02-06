@@ -19,7 +19,7 @@ namespace JMS.DVB.EPG.Descriptors
         /// Erzeugt eine neue Beschreibung.
         /// </summary>
         /// <param name="container">Der SI Bereich, in dem diese Beschreibung gefunden wurde.</param>
-        /// <param name="offset">Das erste Byte zu den Rohdaten dieser Beschreibung in dem zugeh�rigen Bereich.</param>
+        /// <param name="offset">Das erste Byte zu den Rohdaten dieser Beschreibung in dem zugehörigen Bereich.</param>
         /// <param name="length">Die Anzahl der Bytes für die Rohdaten dieser Beschreibung.</param>
         public TerrestrialDelivery(IDescriptorContainer container, int offset, int length)
             : base(container, offset, length)
