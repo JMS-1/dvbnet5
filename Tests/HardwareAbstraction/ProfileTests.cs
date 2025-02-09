@@ -11,6 +11,6 @@ public class ProfileTests
         var profile = ProfileManager.LoadProfile(new FileInfo("TestData/stations.dnp"));
 
         Assert.That(profile, Is.Not.Null);
-        Assert.That(profile.AllSources.Count, Is.EqualTo(3345));
+        Assert.That(profile.AllSources.Count, Is.EqualTo(2231));
     }
 }

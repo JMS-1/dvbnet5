@@ -9,9 +9,14 @@ namespace JMS.DVB.TS;
 public class VideoStream(IStreamConsumer consumer, short pid, bool isPCR) : StreamBase(consumer, pid, isPCR)
 {
 	/// <summary>
+	/// Default for accept any PES length.
+	/// </summary>
+	public static bool DefaultAcceptAnyLength = false;
+
+	/// <summary>
 	/// Get or set if any PES length is accepted.
 	/// </summary>
-	public bool AcceptAnyLength = false;
+	public bool AcceptAnyLength = DefaultAcceptAnyLength;
 
 	/// <summary>
 	/// Valid PES start codes for video streams range from <i>0x000001e0</i>

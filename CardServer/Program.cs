@@ -1,6 +1,7 @@
 ﻿using System.IO.Pipes;
 using System.Diagnostics;
 using System.ComponentModel;
+using JMS.DVB.TS;
 
 namespace JMS.DVB.CardServer
 {
@@ -19,6 +20,9 @@ namespace JMS.DVB.CardServer
             // Be safe
             try
             {
+                // Allow video streams to indicate the length - will actually be ignored.
+                VideoStream.DefaultAcceptAnyLength = true;
+
                 // Always use the configured language
                 UserProfile.ApplyLanguage();
 
