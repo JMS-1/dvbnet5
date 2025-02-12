@@ -453,7 +453,9 @@ public class TSParser : IDisposable
                         m_SyncIndex = 0;
 
                         // Find a sequence of start codes
-                        for (int i = 0, j, t; i < Manager.FullSize; ++i)
+                        int i = 0, j, t;
+
+                        for (; i < Manager.FullSize; ++i)
                         {
                             // Not a candidate
                             if (m_SyncBuffer[i] != 0x47)
