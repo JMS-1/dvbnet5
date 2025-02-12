@@ -1,5 +1,6 @@
-@use "sass:meta";
-﻿.vcrnet-favorites {
+@use 'sass:meta';
+
+.vcrnet-favorites {
     > table {
         margin-top: 10px;
         margin-left: 1rem;
@@ -10,4 +11,4 @@
     }
 }
 
-@include meta.load-css("favorites/entry");
+@include meta.load-css('favorites/entry');

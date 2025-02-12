@@ -1,5 +1,6 @@
-@use "sass:meta";
-﻿.vcrnet-log {
+@use 'sass:meta';
+
+.vcrnet-log {
     > form {
         font-size: small;
         margin-bottom: 6px;
@@ -20,4 +21,4 @@
     }
 }
 
-@include meta.load-css("log/details");
+@include meta.load-css('log/details');

@@ -1,9 +1,11 @@
-@use "sass:meta";
-﻿.vcrnet-guide {
+@use 'sass:meta';
+
+.vcrnet-guide {
     > form {
         margin-bottom: 10px;
 
-        > fieldset, select {
+        > fieldset,
+        select {
             font-size: small;
         }
 
@@ -42,7 +44,7 @@
     }
 }
 
-@include meta.load-css("guide/info");
-@include meta.load-css("guide/entry");
-@include meta.load-css("guide/details");
-@include meta.load-css("guide/navigator");
+@include meta.load-css('guide/info');
+@include meta.load-css('guide/entry');
+@include meta.load-css('guide/details');
+@include meta.load-css('guide/navigator');

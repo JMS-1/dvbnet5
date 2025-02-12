@@ -1,15 +1,16 @@
-@use "sass:meta";
-﻿.vcrnet-edit {
+@use 'sass:meta';
+
+.vcrnet-edit {
     .vcrnet-inline-help table {
         margin: 10px;
 
         > tbody {
             > tr {
-                &:nth-child(2n+1) {
+                &:nth-child(2n + 1) {
                     font-weight: bold;
                 }
 
-                &:nth-child(2n+2) > td {
+                &:nth-child(2n + 2) > td {
                     padding-left: 2rem;
                 }
             }
@@ -29,9 +30,9 @@
     }
 }
 
-@include meta.load-css("edit/job");
-@include meta.load-css("edit/channel");
-@include meta.load-css("edit/duration");
-@include meta.load-css("edit/schedule");
-@include meta.load-css("edit/exception");
-@include meta.load-css("edit/channelFlags");
+@include meta.load-css('edit/job');
+@include meta.load-css('edit/channel');
+@include meta.load-css('edit/duration');
+@include meta.load-css('edit/schedule');
+@include meta.load-css('edit/exception');
+@include meta.load-css('edit/channelFlags');

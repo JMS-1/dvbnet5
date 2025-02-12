@@ -1,5 +1,6 @@
-@use "sass:meta";
-﻿.vcrnet-home {
+@use 'sass:meta';
+
+.vcrnet-home {
     padding: 0 10px;
 
     .jmslib-pict {
@@ -25,5 +26,5 @@
     }
 }
 
-@include meta.load-css("home/task");
-@include meta.load-css("home/versionCheck");
+@include meta.load-css('home/task');
+@include meta.load-css('home/versionCheck');

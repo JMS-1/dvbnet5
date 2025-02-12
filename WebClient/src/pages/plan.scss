@@ -1,10 +1,12 @@
-@use "sass:meta";
-﻿.vcrnet-plan {
+@use 'sass:meta';
+
+.vcrnet-plan {
     .vcrnet-table {
         margin-top: 10px;
         min-width: 1050px;
 
-        > thead, > tbody {
+        > thead,
+        > tbody {
             > tr {
                 > td:nth-child(5) {
                     border-right-width: 0;
@@ -32,6 +34,6 @@
     }
 }
 
-@include meta.load-css("plan/row");
-@include meta.load-css("plan/guide");
-@include meta.load-css("plan/exception");
+@include meta.load-css('plan/row');
+@include meta.load-css('plan/guide');
+@include meta.load-css('plan/exception');
