@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("JMS")]
 [assembly: AssemblyProduct("DVB.NET")]
-[assembly: AssemblyCopyright("Copyright © 2003-24")]
+[assembly: AssemblyCopyright("Copyright © 2003-25")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

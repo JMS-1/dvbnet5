@@ -10,7 +10,7 @@
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("JMS")]
 [assembly: AssemblyProduct("DVB.NET")]
-[assembly: AssemblyCopyright("Copyright © 2003-2024")]
+[assembly: AssemblyCopyright("Copyright © 2003-2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

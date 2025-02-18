@@ -162,7 +162,7 @@ export class Home extends ComponentWithSite<IHomePage> {
                     <ExternalLink url='http://www.psimarron.net'>
                         <Pictogram name='psimarron' />
                     </ExternalLink>
-                    <span>Dr. Jochen Manns, 2003-24</span>
+                    <span>Dr. Jochen Manns, 2003-25</span>
                 </div>
             </div>
         )
