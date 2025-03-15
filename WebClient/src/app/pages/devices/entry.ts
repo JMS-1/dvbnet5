@@ -67,7 +67,8 @@ export class Info implements IDeviceInfo {
         private readonly _model: IPlanCurrentContract,
         toggleDetails: (info: Info, guide: boolean) => void,
         reload: () => void,
-        private readonly _findInGuide: (model: IGuideItemContract) => void
+        private readonly _findInGuide: (model: IGuideItemContract) => void,
+        private readonly _findInWeb: (model: IGuideItemContract) => void
     ) {
         // Für Geräte ohne laufende oder geplante Aufzeichnung können wir nicht viel tun.
         if (!_model.isIdle) {
@@ -198,7 +199,7 @@ export class Info implements IDeviceInfo {
         // Programmzeitschrift nach einem passenden Eintrag absuchen.
         getGuideItem(this._model.profileName, this._model.source, this._start, this._end).then((item) => {
             // Ergebnis übernehmen.
-            this._guideItem = item ? new GuideInfo(item, this._findInGuide) : null
+            this._guideItem = item ? new GuideInfo(item, this._findInGuide, this._findInWeb) : null
 
             // Im Erfolgsfall auch die Zeitschiene aufsetzen.
             if (this._guideItem)

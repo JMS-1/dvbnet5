@@ -77,7 +77,8 @@ export class PlanEntry implements IPlanEntry {
         private model: IPlanActivityContract,
         private _toggleDetail: (entry: PlanEntry, epg: boolean) => void,
         reload: () => void,
-        private readonly _findInGuide: (model: IGuideItemContract) => void
+        private readonly _findInGuide: (model: IGuideItemContract) => void,
+        private readonly _findInWeb: (model: IGuideItemContract) => void
     ) {
         // Zeiten umrechnen
         this.duration = parseInt(model.durationInSeconds)
@@ -226,7 +227,7 @@ export class PlanEntry implements IPlanEntry {
         // In der Programmzeitschrift suchen und den am besten passenden Eintrag ermitteln.
         getGuideItem(this.model.guideEntryDevice, this.model.source, this.start, this.end).then((item) => {
             // Eventuell Präsentationsmodell für den Eintrag erstellen.
-            this._guideItem = item ? new GuideInfo(item, this._findInGuide) : null
+            this._guideItem = item ? new GuideInfo(item, this._findInGuide, this._findInWeb) : null
 
             // Zusätzlich ein Präsentationsmodell für die Zeitschiene erstellen.
             if (this._guideItem)

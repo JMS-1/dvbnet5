@@ -327,6 +327,11 @@ export class GuidePage extends Page implements IGuidePage {
         else this.application.gotoPage(this.route)
     }
 
+    // In iMDB suchen.
+    findInWeb(model: IGuideItemContract): void {
+        window.open(`https://www.imdb.com/find/?q=${encodeURIComponent(model.name)}`, '_blank')
+    }
+
     // Vordefinierte Suche als Suchbedingung laden.
     loadFilter(filter: ISavedGuideQueryContract): void {
         this.clearFilter()
@@ -501,10 +506,11 @@ export class GuidePage extends Page implements IGuidePage {
             const toggleDetails = this.toggleDetails.bind(this)
             const createNew = this.createNewSchedule.bind(this)
             const similiar = this.findInGuide.bind(this)
+            const web = this.findInWeb.bind(this)
 
             this.entries = (items || [])
                 .slice(0, this._filter.pageSize)
-                .map((i) => new GuideEntry(i, similiar, toggleDetails, createNew, this._jobSelector))
+                .map((i) => new GuideEntry(i, similiar, web, toggleDetails, createNew, this._jobSelector))
             this._hasMore = items && items.length > this._filter.pageSize
 
             // Anwendung zur Bedienung freischalten.

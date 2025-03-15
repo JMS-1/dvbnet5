@@ -115,10 +115,11 @@ export class PlanPage extends Page implements IPlanPage {
         getPlan(500, endOfTime).then((plan) => {
             // Anzeigedarstellung für alle Aufträge erstellen.
             const similiar = this.application.guidePage.findInGuide.bind(this.application.guidePage)
+            const web = this.application.guidePage.findInWeb.bind(this.application.guidePage)
             const toggleDetail = this.toggleDetail.bind(this)
             const reload = this.reload.bind(this)
 
-            this._jobs = plan?.map((job) => new PlanEntry(job, toggleDetail, reload, similiar)) ?? []
+            this._jobs = plan?.map((job) => new PlanEntry(job, toggleDetail, reload, similiar, web)) ?? []
 
             // Die Seite kann nun normal verwendet werden.
             this.application.isBusy = false

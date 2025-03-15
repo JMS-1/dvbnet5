@@ -6,5 +6,10 @@
     > div:last-child {
         font-size: small;
         margin-top: 6px;
+        display: grid;
+        grid-auto-flow: column;
+        align-items: center;
+        justify-content: flex-start;
+        column-gap: 1em;
     }
 }

@@ -56,6 +56,7 @@ export class GuideEntryInfo extends Component<IGuideInfo> {
                 </table>
                 <div>
                     <ButtonCommand uvm={this.props.uvm.findSimiliar} />
+                    <ButtonCommand uvm={this.props.uvm.findWeb} />
                 </div>
             </div>
         )

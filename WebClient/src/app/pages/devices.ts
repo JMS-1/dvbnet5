@@ -40,11 +40,12 @@ export class DevicesPage extends Page implements IDevicesPage {
         getPlanCurrent().then((plan) => {
             // Aktionen des Anwenders einmal binden.
             const similiar = this.application.guidePage.findInGuide.bind(this.application.guidePage)
+            const web = this.application.guidePage.findInWeb.bind(this.application.guidePage)
             const refresh = this.toggleDetails.bind(this)
             const reload = this.reload.bind(this)
 
             // Die aktuellen Aktivitäten umwandeln.
-            this.infos = (plan || []).map((info) => new Info(info, refresh, reload, similiar))
+            this.infos = (plan || []).map((info) => new Info(info, refresh, reload, similiar, web))
 
             // Anwendung kann nun bedient werden.
             this.application.isBusy = false

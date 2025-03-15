@@ -24,7 +24,7 @@ public class InfoController(
     /// <summary>
     /// Wird beim Bauen automatisch eingemischt.
     /// </summary>
-    private const string CURRENTDATE = "2025/02/18";
+    private const string CURRENTDATE = "2025/03/15";
 
     /// <summary>
     /// Aktuelle Version des VCR.NET Recording Service.
@@ -41,7 +41,7 @@ public class InfoController(
             FTPPort = ftpServer.OuterPort,
             GuideUpdateEnabled = configuration.ProgramGuideUpdateEnabled,
             HasPendingExtensions = extensions.HasActiveProcesses,
-            InstalledVersion = "5.0.8",
+            InstalledVersion = "5.0.9",
             IsRunning = server.IsActive,
             ProfilesNames = [.. server.ProfileNames],
             SourceScanEnabled = configuration.SourceListUpdateInterval != 0,

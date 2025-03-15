@@ -37,6 +37,9 @@ export interface IGuideInfo {
 
     // Suche nach ähnlichen Einträgen in der Programmzeitschrift.
     readonly findSimiliar: ICommand
+
+    // Suche auf iMDB.
+    readonly findWeb: ICommand
 }
 
 // Schnittstelle zur Anzeige eines Eintrags in der Programmzeitschrift.
@@ -62,7 +65,8 @@ export class GuideInfo implements IGuideInfo {
     // Erstellt eine neue Beschreibung.
     constructor(
         protected readonly model: IGuideItemContract,
-        private readonly _findInGuide: (model: IGuideItemContract) => void
+        private readonly _findInGuide: (model: IGuideItemContract) => void,
+        private readonly _findInWeb: (model: IGuideItemContract) => void
     ) {
         // Zeitraum der Sendung.
         this.start = new Date(model.startTimeISO)
@@ -71,6 +75,9 @@ export class GuideInfo implements IGuideInfo {
 
     // Suche nach ähnlichen Einträgen in der Programmzeitschrift.
     readonly findSimiliar = new Command(() => this._findInGuide(this.model), 'Mögliche Wiederholungen')
+
+    // Suche auf iMDb.
+    readonly findWeb = new Command(() => this._findInWeb(this.model), 'Auf iMDB suchen')
 
     // Startzeit der Sendung.
     readonly start: Date
@@ -133,11 +140,12 @@ export class GuideEntry extends GuideInfo implements IGuideEntry {
     constructor(
         model: IGuideItemContract,
         findInGuide: (model: IGuideItemContract) => void,
+        findInWeb: (model: IGuideItemContract) => void,
         private _toggleDetails: (entry: GuideEntry) => void,
         createNew: (entry: GuideEntry) => void,
         public jobSelector: IValueFromList<string>
     ) {
-        super(model, findInGuide)
+        super(model, findInGuide, findInWeb)
 
         // Befehl zum Neuanlegen einer Aufzeichnung einrichten.
         this.createNew = new Command(
