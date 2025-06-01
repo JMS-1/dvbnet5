@@ -1,5 +1,5 @@
 # Build Frontend
-FROM node:20-alpine AS web-client
+FROM node:24-alpine AS web-client
 
 WORKDIR /usr/src/app
 

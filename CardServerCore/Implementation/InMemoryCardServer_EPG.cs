@@ -205,7 +205,7 @@ namespace JMS.DVB.CardServer
         {
             // First create it
             var info = CreateGuideItem(source, identifier, startTime, duration, descriptors);
-            if (null == info)
+            if (info == null)
                 return;
 
             // Must synchronize
