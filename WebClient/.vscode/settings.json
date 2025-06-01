@@ -1,20 +1,20 @@
 {
-    "css.validate": true,
-    "editor.codeActionsOnSave": {
-        "source.fixAll": "never",
-        "source.fixAll.eslint": "explicit",
-        "source.fixAll.stylelint": "explicit"
-    },
-    "editor.formatOnSave": true,
-    "eslint.validate": ["typescript", "typescriptreact", "javascript"],
-    "files.associations": {
-        "*.{overrides,variables}": "less"
-    },
-    "files.exclude": {
-        "**/node_modules": true
-    },
-    "less.validate": true,
-    "scss.validate": true,
-    "stylelint.enable": true,
-    "typescript.tsdk": "node_modules/typescript/lib"
+  "css.validate": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+
+  "editor.formatOnSave": true,
+  "eslint.validate": ["typescript", "typescriptreact", "javascript"],
+  "files.associations": {
+    "*.{overrides,variables}": "less"
+  },
+  "files.exclude": {
+    "**/node_modules": true
+  },
+  "less.validate": true,
+  "scss.validate": true,
+  "stylelint.enable": true,
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

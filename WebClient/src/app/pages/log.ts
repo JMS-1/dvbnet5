@@ -1,161 +1,193 @@
-﻿import { ILogEntry, LogEntry } from './log/entry'
-import { IPage, Page } from './page'
+﻿import { ILogEntry, LogEntry } from "./log/entry";
+import { IPage, Page } from "./page";
 
-import { DateTimeUtils } from '../../lib/dateTimeUtils'
-import { BooleanProperty, IToggableFlag } from '../../lib/edit/boolean/flag'
-import { IUiValue, IValueFromList, SingleListProperty, uiValue } from '../../lib/edit/list'
-import { getProtocolEntries } from '../../web/IProtocolEntryContract'
-import { ProfileCache } from '../../web/ProfileCache'
-import { Application } from '../app'
+import { DateTimeUtils } from "../../lib/dateTimeUtils";
+import { BooleanProperty, IToggableFlag } from "../../lib/edit/boolean/flag";
+import * as list from "../../lib/edit/list";
+import { getProtocolEntries } from "../../web/IProtocolEntryContract";
+import { ProfileCache } from "../../web/ProfileCache";
+import { Application } from "../app";
 
 // Schnittstelle zur Anzeige des Protokolls.
 export interface ILogPage extends IPage {
-    // Alle benutzen Geräte.
-    readonly profiles: IValueFromList<string>
+  // Alle benutzen Geräte.
+  readonly profiles: list.IValueFromList<string>;
 
-    // Auswahl des Startzeitpunkts zur Anzeige.
-    readonly startDay: IValueFromList<string>
+  // Auswahl des Startzeitpunkts zur Anzeige.
+  readonly startDay: list.IValueFromList<string>;
 
-    // Anzahl zur Anzeige von Aktualisierungen der Programmzeitschrift.
-    readonly showGuide: IToggableFlag
+  // Anzahl zur Anzeige von Aktualisierungen der Programmzeitschrift.
+  readonly showGuide: IToggableFlag;
 
-    // Auswahl zur Anzige der Aktualisierungen der Quellen.
-    readonly showScan: IToggableFlag
+  // Auswahl zur Anzige der Aktualisierungen der Quellen.
+  readonly showScan: IToggableFlag;
 
-    // Auswahl zur Anzeige von LIVE Verwendung.
-    readonly showLive: IToggableFlag
+  // Auswahl zur Anzeige von LIVE Verwendung.
+  readonly showLive: IToggableFlag;
 
-    // Alle anzuzeigenden Protokolleinträge.
-    readonly entries: ILogEntry[]
+  // Alle anzuzeigenden Protokolleinträge.
+  readonly entries: ILogEntry[];
 }
 
 // Präsentationmodell zur anzeige der Protokolleinträge.
 export class LogPage extends Page implements ILogPage {
-    // Aktualisierung in der Initialisierungsphase unterbinden.
-    private _disableLoad = true
+  // Aktualisierung in der Initialisierungsphase unterbinden.
+  private _disableLoad = true;
 
-    // Alle benutzen Geräte.
-    readonly profiles = new SingleListProperty({} as { value?: string }, 'value', 'Protokollbereich', () => this.load())
+  // Alle benutzen Geräte.
+  readonly profiles = new list.SingleListProperty(
+    {} as { value?: string },
+    "value",
+    "Protokollbereich",
+    () => this.load()
+  );
 
-    // Anzahl zur Anzeige von Aktualisierungen der Programmzeitschrift.
-    readonly showGuide = new BooleanProperty({} as { value?: boolean }, 'value', 'Programmzeitschrift', () =>
-        this.refreshUi()
-    )
+  // Anzahl zur Anzeige von Aktualisierungen der Programmzeitschrift.
+  readonly showGuide = new BooleanProperty(
+    {} as { value?: boolean },
+    "value",
+    "Programmzeitschrift",
+    () => this.refreshUi()
+  );
 
-    // Auswahl zur Anzige der Aktualisierungen der Quellen.
-    readonly showScan = new BooleanProperty({} as { value?: boolean }, 'value', 'Sendersuchlauf', () =>
-        this.refreshUi()
-    )
+  // Auswahl zur Anzige der Aktualisierungen der Quellen.
+  readonly showScan = new BooleanProperty(
+    {} as { value?: boolean },
+    "value",
+    "Sendersuchlauf",
+    () => this.refreshUi()
+  );
 
-    // Auswahl zur Anzeige von LIVE Verwendung.
-    readonly showLive = new BooleanProperty({} as { value?: boolean }, 'value', 'Zapping', () => this.refreshUi())
+  // Auswahl zur Anzeige von LIVE Verwendung.
+  readonly showLive = new BooleanProperty(
+    {} as { value?: boolean },
+    "value",
+    "Zapping",
+    () => this.refreshUi()
+  );
 
-    // Auswahl des Startzeitpunkts zur Anzeige.
-    readonly startDay
+  // Auswahl des Startzeitpunkts zur Anzeige.
+  readonly startDay;
 
-    // Alle Protokolleinträge.
-    private _entries: LogEntry[] = []
+  // Alle Protokolleinträge.
+  private _entries: LogEntry[] = [];
 
-    get entries(): ILogEntry[] {
-        // Aktuellen Filter berücksichtigen.
-        return this._entries.filter((e) => {
-            if (e.isGuide) return this.showGuide.value
-            if (e.isScan) return this.showScan.value
-            if (e.isLive) return this.showLive.value
+  get entries(): ILogEntry[] {
+    // Aktuellen Filter berücksichtigen.
+    return this._entries.filter((e) => {
+      if (e.isGuide) return this.showGuide.value;
+      if (e.isScan) return this.showScan.value;
+      if (e.isLive) return this.showLive.value;
 
-            return true
-        })
+      return true;
+    });
+  }
+
+  // Erstellt ein neues Präsentationsmodell.
+  constructor(application: Application) {
+    super("log", application);
+
+    // Die Liste der Starttage erstellen wir nur ein einziges Mal.
+    const now = new Date();
+    let start = new Date(
+      Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
+    );
+    const days: list.IUiValue<string>[] = [];
+
+    for (let i = 0; i < 10; i++) {
+      // Zur Auswahl durch den Anwender.
+      days.push(
+        list.uiValue(
+          start.toISOString(),
+          DateTimeUtils.formatNumber(start.getUTCDate()) +
+            "." +
+            DateTimeUtils.formatNumber(1 + start.getUTCMonth())
+        )
+      );
+
+      // Eine Woche zurück.
+      start = new Date(
+        Date.UTC(
+          start.getUTCFullYear(),
+          start.getUTCMonth(),
+          start.getUTCDate() - 7
+        )
+      );
     }
 
-    // Erstellt ein neues Präsentationsmodell.
-    constructor(application: Application) {
-        super('log', application)
+    // Auswahlliste aufsetzen.
+    this.startDay = new list.SingleListProperty(
+      {} as { _value?: string },
+      "_value",
+      undefined,
+      () => this.load(),
+      days
+    );
+  }
 
-        // Die Liste der Starttage erstellen wir nur ein einziges Mal.
-        const now = new Date()
-        let start = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()))
-        const days: IUiValue<string>[] = []
+  // Initialisiert das Präsentationsmodell.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  reset(sections: string[]): void {
+    // Kontrolliertes Laden der Protokolliste.
+    this._disableLoad = true;
 
-        for (let i = 0; i < 10; i++) {
-            // Zur Auswahl durch den Anwender.
-            days.push(
-                uiValue(
-                    start.toISOString(),
-                    DateTimeUtils.formatNumber(start.getUTCDate()) +
-                        '.' +
-                        DateTimeUtils.formatNumber(1 + start.getUTCMonth())
-                )
-            )
+    // Auswahl zurücksetzen.
+    this.startDay.value = this.startDay.allowedValues[0].value;
 
-            // Eine Woche zurück.
-            start = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate() - 7))
-        }
+    // Liste der Geräte anfordern.
+    ProfileCache.getAllProfiles().then((profiles) => {
+      // Auswahlliste vorbereiten.
+      this.profiles.allowedValues = profiles.map((p) => list.uiValue(p.name));
+      this.profiles.value = profiles[0] && profiles[0].name;
 
-        // Auswahlliste aufsetzen.
-        this.startDay = new SingleListProperty({} as { _value?: string }, '_value', undefined, () => this.load(), days)
-    }
+      // Zurück in den Normalbetrieb.
+      this._disableLoad = false;
 
-    // Initialisiert das Präsentationsmodell.
-    reset(sections: string[]): void {
-        // Kontrolliertes Laden der Protokolliste.
-        this._disableLoad = true
+      // Protokollliste laden.
+      this.load();
+    });
+  }
 
-        // Auswahl zurücksetzen.
-        this.startDay.value = this.startDay.allowedValues[0].value
+  // Protokolliste neu laden.
+  private load(): void {
+    // Das dürfen wir mal eben nicht.
+    if (this._disableLoad) return;
 
-        // Liste der Geräte anfordern.
-        ProfileCache.getAllProfiles().then((profiles) => {
-            // Auswahlliste vorbereiten.
-            this.profiles.allowedValues = profiles.map((p) => uiValue(p.name))
-            this.profiles.value = profiles[0] && profiles[0].name
+    // Suchparameter erstellen.
+    const profile = this.profiles.value ?? "";
+    const endDay = new Date(this.startDay.value ?? 0);
+    const startDay = new Date(endDay.getTime() - 7 * 86400000);
 
-            // Zurück in den Normalbetrieb.
-            this._disableLoad = false
+    // Protokolle vom VCR.NET Recording Service anfordern.
+    getProtocolEntries(profile, startDay, endDay).then((entries) => {
+      // Die Anzeige erfolgt immer mit den neuesten als erstes.
+      entries?.reverse();
 
-            // Protokollliste laden.
-            this.load()
-        })
-    }
+      // Präsentationsmodell erstellen.
+      const toggleDetail = this.toggleDetail.bind(this);
 
-    // Protokolliste neu laden.
-    private load(): void {
-        // Das dürfen wir mal eben nicht.
-        if (this._disableLoad) return
+      this._entries = entries?.map((e) => new LogEntry(e, toggleDetail)) || [];
 
-        // Suchparameter erstellen.
-        const profile = this.profiles.value ?? ''
-        const endDay = new Date(this.startDay.value ?? 0)
-        const startDay = new Date(endDay.getTime() - 7 * 86400000)
+      // Die Anwendung darf nun verwendet werden.
+      this.application.isBusy = false;
 
-        // Protokolle vom VCR.NET Recording Service anfordern.
-        getProtocolEntries(profile, startDay, endDay).then((entries) => {
-            // Die Anzeige erfolgt immer mit den neuesten als erstes.
-            entries?.reverse()
+      // Oberfläche zur Aktualisierung auffordern.
+      this.refreshUi();
+    });
+  }
 
-            // Präsentationsmodell erstellen.
-            const toggleDetail = this.toggleDetail.bind(this)
+  // Detailansicht eines einzelnen Protkolleintrags umschalten.
+  private toggleDetail(entry: LogEntry): void {
+    // Beim Anschalten alle anderen Detailansichten abschalten.
+    if (entry.showDetail.value)
+      this._entries.forEach((e) => (e.showDetail.value = e === entry));
 
-            this._entries = entries?.map((e) => new LogEntry(e, toggleDetail)) || []
+    // Oberfläche zur Aktualisierung auffordern.
+    this.refreshUi();
+  }
 
-            // Die Anwendung darf nun verwendet werden.
-            this.application.isBusy = false
-
-            // Oberfläche zur Aktualisierung auffordern.
-            this.refreshUi()
-        })
-    }
-
-    // Detailansicht eines einzelnen Protkolleintrags umschalten.
-    private toggleDetail(entry: LogEntry): void {
-        // Beim Anschalten alle anderen Detailansichten abschalten.
-        if (entry.showDetail.value) this._entries.forEach((e) => (e.showDetail.value = e === entry))
-
-        // Oberfläche zur Aktualisierung auffordern.
-        this.refreshUi()
-    }
-
-    // Der Titel für die Anzeige des Präsentationsmodells.
-    get title(): string {
-        return 'Aufzeichnungsprotokolle einsehen'
-    }
+  // Der Titel für die Anzeige des Präsentationsmodells.
+  get title(): string {
+    return "Aufzeichnungsprotokolle einsehen";
+  }
 }
