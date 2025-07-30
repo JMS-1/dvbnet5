@@ -67,11 +67,7 @@ namespace JMS.DVB.CardServer
         /// <summary>
         /// Deaktiviert die zugehörige Quelle.
         /// </summary>
-        public void Close()
-        {
-            // Forward
-            Manager.CloseStream();
-        }
+        public void Close() => Manager.CloseStream();
 
         /// <summary>
         /// Prüft, ob die Entschlüsselung funktioniert.

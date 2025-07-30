@@ -104,6 +104,17 @@ public class Manager : IDisposable, IStreamConsumer2
     private readonly UDPStreaming m_UDPStream = new(MulticastTTL, MaxUDPQueueLength);
 
     /// <summary>
+    /// Optional LIVE stream receiving all data.
+    /// </summary>
+    private Action<byte[]>? m_LiveStream;
+
+    /// <summary>
+    /// Set the LIVE target.
+    /// </summary>
+    /// <param name="stream">Stream to send all data to.</param>
+    public void SetLiveStream(Action<byte[]>? stream) => m_LiveStream = stream;
+
+    /// <summary>
     /// Set as soon as the first PCR arrived.
     /// </summary>
     private int m_PCRAvailable = 0;
@@ -1129,6 +1140,9 @@ public class Manager : IDisposable, IStreamConsumer2
         // Forward to optional stream
         m_UDPStream.Send(buf);
 
+        // Forward to LIVE stream
+        m_LiveStream?.Invoke(buf);
+
         // Read consumer
         InProcessConsumer?.Invoke(buf);
 
@@ -1463,6 +1477,9 @@ public class Manager : IDisposable, IStreamConsumer2
 
         // Release socket
         SetStreamTarget("localhost", 0);
+
+        // Release LIVE stream
+        SetLiveStream(null);
     }
 
     #endregion
