@@ -43,6 +43,7 @@ public class HardwareTests
 
     [TestCase("RTL Television")]
     [TestCase("ZDF HD")]
+    [Ignore("will access hardware")]
     public async Task Can_Create_HLS_LIVE_Stream(string name)
     {
         var profile = ProfileManager.LoadProfile(new FileInfo("TestData/stations.dnp"))!;
@@ -69,10 +70,13 @@ public class HardwareTests
 
             stream.SetLiveStream(live.AddPayload);
 
-            await Task.Delay(10000);
+            await Task.Delay(60000);
 
             Assert.That(stream.BytesReceived, Is.Not.Zero);
             Assert.That(live.BytesReceived, Is.EqualTo(stream.BytesReceived));
+            Assert.That(live.BytesProcessed, Is.Not.Zero.And.LessThanOrEqualTo(live.BytesReceived));
+
+            Console.WriteLine(live.MaxPending);
         }
     }
 }

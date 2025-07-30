@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Text;
 
 namespace JMS.DVB.TS;
 
@@ -13,10 +12,19 @@ public class HLStreaming : IDisposable
     /// </summary>
     public readonly string StreamIdentifier = Guid.NewGuid().ToString("N").ToUpper();
 
+    /// <summary>
+    /// Total number of bytes coming from the DVB device.
+    /// </summary>
     private long _BytesReceived;
 
-    private readonly string _Folder;
+    /// <summary>
+    /// Total number of bytes sent to the transcoder.
+    /// </summary>
+    private long _BytesProcessed;
 
+    /// <summary>
+    /// FFMPEG transcoder instance.
+    /// </summary>
     private readonly Process _Transcoder;
 
     /// <summary>
@@ -26,9 +34,9 @@ public class HLStreaming : IDisposable
     public HLStreaming(string folder)
     {
         // Create folder or this LIVE stream.
-        _Folder = Path.Join(folder, StreamIdentifier);
+        var liveFolder = Path.Join(folder, StreamIdentifier);
 
-        Directory.CreateDirectory(_Folder);
+        Directory.CreateDirectory(liveFolder);
 
         // Start transcoding.
         var start = new ProcessStartInfo
@@ -36,14 +44,14 @@ public class HLStreaming : IDisposable
             CreateNoWindow = true,
             FileName = "ffmpeg",
             RedirectStandardInput = true,
-            WorkingDirectory = _Folder,
+            WorkingDirectory = liveFolder,
             ArgumentList = {
                 "-i",               "-",
                 "-map",             "0",
                 "-map",             "-0:d",
                 "-map",             "-0:s",
                 "-c:v",             "libx264",
-                "-c:a",             "copy",
+                "-c:a",             "aac",
                 "-f",               "hls",
                 "-hls_time",        "5",
                 "-hls_list_size",   "10",
@@ -63,7 +71,32 @@ public class HLStreaming : IDisposable
     /// <summary>
     /// All bytes sent to the transcoder.
     /// </summary>
-    public long BytesProcessed { get; private set; }
+    public long BytesProcessed => _BytesProcessed;
+
+    /// <summary>
+    /// Maximum number of pending write operations.
+    /// </summary>
+    public int MaxPending { get; private set; }
+
+    /// <summary>
+    /// Overall synchronizer.
+    /// </summary>
+    private readonly Lock _Sync = new();
+
+    /// <summary>
+    /// Initial buffer is 1 MBytes in size.
+    /// </summary>
+    private byte[] _Buffer = new byte[1024 * 1024];
+
+    /// <summary>
+    /// Current buffer fill.
+    /// </summary>
+    private int _BufferPos = 0;
+
+    /// <summary>
+    /// Current number of pending writes to the transcoder.
+    /// </summary>
+    private int _Pending = 0;
 
     /// <summary>
     /// Process a new chunk of the stream.
@@ -74,7 +107,58 @@ public class HLStreaming : IDisposable
         // Count incoming.
         Interlocked.Add(ref _BytesReceived, payload.Length);
 
-        _Transcoder.StandardInput.BaseStream.Write(payload);
+        // Enqueue outgoing.
+        using (_Sync.EnterScope())
+        {
+            // Finish previous.
+            if (_BufferPos + payload.Length > _Buffer.Length)
+            {
+                // Clear Buffer.
+                SendBuffer();
+
+                // Reallocate if too small.
+                if (payload.Length > _Buffer.Length) _Buffer = new byte[payload.Length];
+            }
+
+            // Just collect.
+            payload.CopyTo(_Buffer, _BufferPos);
+
+            _BufferPos += payload.Length;
+        }
+    }
+
+    /// <summary>
+    /// Clear the current buffer and send it to the transcoder.
+    /// </summary>
+    private void SendBuffer()
+    {
+        // Nothing in it.
+        if (_BufferPos < 1) return;
+
+        // Count.
+        Interlocked.Add(ref _BytesProcessed, _BufferPos);
+
+        // Remember - we cache at most 100 MBytes of data.
+        var buffer = _Buffer.AsSpan(0, _BufferPos).ToArray();
+
+        // Try to send - clip at 100 MB Buffer count.
+        if (_Pending >= 100)
+            Console.WriteLine("HLS data overrun");
+        else
+        {
+            MaxPending = Math.Max(MaxPending, Interlocked.Increment(ref _Pending));
+
+            // Decrement counter when done.
+            _Transcoder
+                .StandardInput
+                .BaseStream
+                .WriteAsync(buffer)
+                .AsTask()
+                .ContinueWith(t => Interlocked.Decrement(ref _Pending));
+        }
+
+        // Reset.
+        _BufferPos = 0;
     }
 
     /// <inheritdoc/>
@@ -82,6 +166,7 @@ public class HLStreaming : IDisposable
     {
         try
         {
+            // This should close the transcoder process properly.
             _Transcoder.StandardInput.Close();
         }
         catch (Exception e)
