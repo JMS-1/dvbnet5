@@ -255,8 +255,13 @@ public class SourceStreamsManager : IDisposable
     /// <summary>
     /// Register LIVE stream processor.
     /// </summary>
-    /// <param name="callback">Method to be called on each data packet - may not block.</param>
-    public void SetLiveStream(Action<byte[]>? callback) => m_TransportStream?.SetLiveStream(callback);
+    /// <param name="folder">Root folder for HLS files.</param>
+    public HLStreaming? SetLiveStream(string? folder) => m_TransportStream?.SetLiveStream(folder);
+
+    /// <summary>
+    /// Report the current LIVE stream.
+    /// </summary>
+    public HLStreaming? LiveStream => m_TransportStream?.LiveStream;
 
     /// <summary>
     /// Liest oder setzt das Ziel für den Netzwerkversand. Die Angabe erfolgt

@@ -106,13 +106,35 @@ public class Manager : IDisposable, IStreamConsumer2
     /// <summary>
     /// Optional LIVE stream receiving all data.
     /// </summary>
-    private Action<byte[]>? m_LiveStream;
+    private HLStreaming? m_LiveStream;
+
+    /// <summary>
+    /// Report the current LIVE stream.
+    /// </summary>
+    public HLStreaming? LiveStream => m_LiveStream;
 
     /// <summary>
     /// Set the LIVE target.
     /// </summary>
-    /// <param name="stream">Stream to send all data to.</param>
-    public void SetLiveStream(Action<byte[]>? stream) => m_LiveStream = stream;
+    /// <param name="folder">Folder for HLS temporary files.</param>
+    public HLStreaming? SetLiveStream(string? folder)
+    {
+        try
+        {
+            // Create new.
+            var liveStream = string.IsNullOrEmpty(folder) ? null : new HLStreaming(folder);
+
+            // Forget old.
+            using (Interlocked.Exchange(ref m_LiveStream, liveStream))
+                return liveStream;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"unable to start or terminate LIVE streaming: {e.Message}");
+
+            return m_LiveStream;
+        }
+    }
 
     /// <summary>
     /// Set as soon as the first PCR arrived.
@@ -1141,7 +1163,7 @@ public class Manager : IDisposable, IStreamConsumer2
         m_UDPStream.Send(buf);
 
         // Forward to LIVE stream
-        m_LiveStream?.Invoke(buf);
+        m_LiveStream?.AddPayload(buf);
 
         // Read consumer
         InProcessConsumer?.Invoke(buf);

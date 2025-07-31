@@ -47,11 +47,10 @@ public class HLStreaming : IDisposable
             WorkingDirectory = liveFolder,
             ArgumentList = {
                 "-i",               "-",
-                "-map",             "0",
-                "-map",             "-0:d",
-                "-map",             "-0:s",
                 "-c:v",             "libx264",
                 "-c:a",             "aac",
+                "-g",               "50",
+                "-keyint_min",      "50",
                 "-f",               "hls",
                 "-hls_time",        "5",
                 "-hls_list_size",   "10",

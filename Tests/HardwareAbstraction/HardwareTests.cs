@@ -64,11 +64,10 @@ public class HardwareTests
             Assert.That(info, Is.Not.Null);
 
             using var stream = new SourceStreamsManager(device, profile, info.Source, new StreamSelection { MP2Tracks = { LanguageMode = LanguageModes.All } });
-            using var live = new HLStreaming($"/tmp/hls-{name}");
 
             Assert.That(stream.CreateStream(null!), Is.True);
 
-            stream.SetLiveStream(live.AddPayload);
+            var live = stream.SetLiveStream($"/tmp/hls-{name}")!;
 
             await Task.Delay(60000);
 

@@ -1,238 +1,227 @@
 ﻿using JMS.DVB.Algorithms;
 
+namespace JMS.DVB.CardServer;
 
-namespace JMS.DVB.CardServer
+/// <summary>
+/// Beschreibt den Empfang einer Quelle.
+/// </summary>
+public class ActiveStream : IDisposable
 {
     /// <summary>
-    /// Beschreibt den Empfang einer Quelle.
+    /// Die eindeutige Kennung dieser Quelle. Dies Identifikation erlaubt es, eine Quelle mehrfach zu
+    /// nutzen.
     /// </summary>
-    public class ActiveStream : IDisposable
+    public SourceIdentifierWithKey SourceKey { get; private set; }
+
+    /// <summary>
+    /// Die Verwaltung des Empfangs.
+    /// </summary>
+    public SourceStreamsManager Manager { get; private set; }
+
+    /// <summary>
+    /// Die ursprünglich angeforderte Aufzeichnungskonfiguration.
+    /// </summary>
+    public StreamSelection RequestedStreams { get; private set; }
+
+    /// <summary>
+    /// Der optionale Dateinamen, in dem die empfangenen Daten abgelegt werden.
+    /// </summary>
+    public string TargetPath { get; private set; }
+
+    /// <summary>
+    /// Gesetzt, sobald der Empfang aktiviert wurde.
+    /// </summary>
+    public bool FirstActivationDone { get; private set; }
+
+    /// <summary>
+    /// Die Anzahl der Versuche, die Entschlüsselung neu zu starten.
+    /// </summary>
+    private int m_DecryptionRestarts;
+
+    /// <summary>
+    /// Der Zeitpunkt, an dem das letzte Mal eine Prüfung ausgeführt wurde.
+    /// </summary>
+    private DateTime m_LastRetest = DateTime.MinValue;
+
+    /// <summary>
+    /// Erzeugt eine neue Beschreibung.
+    /// </summary>
+    /// <param name="uniqueIdentifier">Die eindeutige Kennung dieses Datenstroms.</param>
+    /// <param name="manager">Die Verwaltung des Empfangs.</param>
+    /// <param name="targetPath">Ein optionaler Dateiname zur Ablage der empfangenen Daten.</param>
+    /// <param name="originalSelection">Die ursprünglich angeforderte Konfiguration der Aufzeichnung.</param>
+    /// <exception cref="ArgumentNullException">Es wurde keine Verwaltung angegeben</exception>
+    public ActiveStream(Guid uniqueIdentifier, SourceStreamsManager manager, StreamSelection originalSelection, string targetPath)
     {
-        /// <summary>
-        /// Die eindeutige Kennung dieser Quelle. Dies Identifikation erlaubt es, eine Quelle mehrfach zu
-        /// nutzen.
-        /// </summary>
-        public SourceIdentifierWithKey SourceKey { get; private set; }
+        // Validate
+        ArgumentNullException.ThrowIfNull(manager);
 
-        /// <summary>
-        /// Die Verwaltung des Empfangs.
-        /// </summary>
-        public SourceStreamsManager Manager { get; private set; }
+        // Remember
+        SourceKey = new SourceIdentifierWithKey(uniqueIdentifier, manager.Source);
+        RequestedStreams = originalSelection.Clone();
+        TargetPath = targetPath;
+        Manager = manager;
+    }
 
-        /// <summary>
-        /// Die ursprünglich angeforderte Aufzeichnungskonfiguration.
-        /// </summary>
-        public StreamSelection RequestedStreams { get; private set; }
+    /// <summary>
+    /// Deaktiviert die zugehörige Quelle.
+    /// </summary>
+    public void Close() => Manager.CloseStream();
 
-        /// <summary>
-        /// Der optionale Dateinamen, in dem die empfangenen Daten abgelegt werden.
-        /// </summary>
-        public string TargetPath { get; private set; }
+    /// <summary>
+    /// Prüft, ob die Entschlüsselung funktioniert.
+    /// </summary>
+    /// <param name="interval">Das vom Profil her eingestellte Prüfintervall.</param>
+    public void TestDecryption(TimeSpan interval)
+    {
+        // Not active
+        if (Manager.ConsumerCount < 1)
+            return;
 
-        /// <summary>
-        /// Gesetzt, sobald der Empfang aktiviert wurde.
-        /// </summary>
-        public bool FirstActivationDone { get; private set; }
+        // See if it should be decrypted
+        var info = Manager.ActiveInformation;
+        if (info == null)
+            return;
+        if (!info.IsEncrypted)
+            return;
 
-        /// <summary>
-        /// Die Anzahl der Versuche, die Entschlüsselung neu zu starten.
-        /// </summary>
-        private int m_DecryptionRestarts;
+        // No retry allowed
+        if (m_DecryptionRestarts >= 3)
+            return;
 
-        /// <summary>
-        /// Der Zeitpunkt, an dem das letzte Mal eine Prüfung ausgeführt wurde.
-        /// </summary>
-        private DateTime m_LastRetest = DateTime.MinValue;
+        // See if data is coming in
+        if (Manager.CurrentAudioVideoBytes > 0)
+            return;
 
-        /// <summary>
-        /// Erzeugt eine neue Beschreibung.
-        /// </summary>
-        /// <param name="uniqueIdentifier">Die eindeutige Kennung dieses Datenstroms.</param>
-        /// <param name="manager">Die Verwaltung des Empfangs.</param>
-        /// <param name="targetPath">Ein optionaler Dateiname zur Ablage der empfangenen Daten.</param>
-        /// <param name="originalSelection">Die ursprünglich angeforderte Konfiguration der Aufzeichnung.</param>
-        /// <exception cref="ArgumentNullException">Es wurde keine Verwaltung angegeben</exception>
-        public ActiveStream(Guid uniqueIdentifier, SourceStreamsManager manager, StreamSelection originalSelection, string targetPath)
+        // See when we last tested
+        var started = Manager.LastActivationTime;
+        if (!started.HasValue)
+            return;
+
+        // Not so much
+        if ((DateTime.UtcNow - started.Value) <= interval)
+            return;
+
+        // Count retries
+        m_DecryptionRestarts += 1;
+
+        // Reset decryption
+        Manager.Hardware.Decrypt();
+
+        // Restart the stream
+        Manager.CloseStream();
+    }
+
+    /// <summary>
+    /// Aktiviert die Verbraucherkontrolle für diese Quelle.
+    /// </summary>
+    /// <param name="source">Eine volle Referenz zur Quelle.</param>
+    public void EnableOptimizer(SourceSelection source)
+    {
+        // Just register
+        Manager.BeforeRecreateStream += manager =>
         {
-            // Validate
-            ArgumentNullException.ThrowIfNull(manager);
+            // Create a brand new optimizer
+            var localOpt = new StreamSelectionOptimizer();
 
-            // Remember
-            SourceKey = new SourceIdentifierWithKey(uniqueIdentifier, manager.Source);
-            RequestedStreams = originalSelection.Clone();
-            TargetPath = targetPath;
-            Manager = manager;
-        }
+            // Add the one stream
+            localOpt.Add(source, RequestedStreams);
 
-        /// <summary>
-        /// Deaktiviert die zugehörige Quelle.
-        /// </summary>
-        public void Close() => Manager.CloseStream();
+            // Run the optimization
+            if (localOpt.Optimize() == 1)
+                return localOpt.GetStreams(0);
 
-        /// <summary>
-        /// Prüft, ob die Entschlüsselung funktioniert.
-        /// </summary>
-        /// <param name="interval">Das vom Profil her eingestellte Prüfintervall.</param>
-        public void TestDecryption(TimeSpan interval)
+            // Failed - activation is not possible
+            return null!;
+        };
+    }
+
+    /// <summary>
+    /// Erzeugt zum aktuellen Empfang einen Informationsblock.
+    /// </summary>
+    /// <returns>Die gewünschten Informationen.</returns>
+    public StreamInformation? CreateInformation()
+    {
+        // See if we are already stopped
+        var manager = Manager;
+        if (manager == null)
+            return null;
+
+        // Report state
+        var activeSelection = manager.ActiveSelection;
+        var liveStream = manager.LiveStream;
+
+        return
+            new StreamInformation
+            {
+                AllFiles = manager.AllFiles,
+                BytesReceived = manager.BytesReceived,
+                ConsumerCount = manager.ConsumerCount,
+                CurrentAudioVideoBytes = manager.CurrentAudioVideoBytes,
+                IsDecrypting = manager.IsDecrypting.GetValueOrDefault(false),
+                Source = manager.Source,
+                Streams = activeSelection?.Clone()!,
+                StreamTarget = liveStream == null ? manager.StreamingTarget : $"LIVE@{liveStream.StreamIdentifier}",
+                TargetPath = TargetPath,
+                UniqueIdentifier = SourceKey.UniqueIdentifier,
+            };
+    }
+
+    /// <summary>
+    /// Meldet, ob für die zugehörige Quelle die Auswertung der Programmzeitschrift aktiv ist.
+    /// </summary>
+    public bool? IsProgamGuideActive => Manager.ActiveSelection?.ProgramGuide;
+
+    /// <summary>
+    /// Startet oder aktualisiert den Empfang der Quelle.
+    /// </summary>
+    /// <param name="interval">Das Interval zur Erkennung von deaktivierten Quellen.</param>
+    public void Refresh(TimeSpan interval)
+    {
+        // Already stopped
+        var manager = Manager;
+        if (manager == null)
+            return;
+
+        // Get the source information
+        var info = manager.GetCurrentInformationAsync().CancelAfter(15000).Result;
+
+        // Must start
+        if (!FirstActivationDone)
         {
-            // Not active
-            if (Manager.ConsumerCount < 1)
-                return;
-
-            // See if it should be decrypted
-            var info = Manager.ActiveInformation;
+            // See if source information is available
             if (info == null)
                 return;
-            if (!info.IsEncrypted)
-                return;
 
-            // No retry allowed
-            if (m_DecryptionRestarts >= 3)
-                return;
-
-            // See if data is coming in
-            if (Manager.CurrentAudioVideoBytes > 0)
-                return;
-
-            // See when we last tested
-            var started = Manager.LastActivationTime;
-            if (!started.HasValue)
-                return;
-
-            // Not so much
-            if ((DateTime.UtcNow - started.Value) <= interval)
-                return;
-
-            // Count retries
-            m_DecryptionRestarts += 1;
-
-            // Reset decryption
-            Manager.Hardware.Decrypt();
-
-            // Restart the stream
-            Manager.CloseStream();
+            // Start the stream
+            FirstActivationDone = manager.CreateStream(TargetPath, info);
         }
-
-        /// <summary>
-        /// Aktiviert die Verbraucherkontrolle für diese Quelle.
-        /// </summary>
-        /// <param name="source">Eine volle Referenz zur Quelle.</param>
-        public void EnableOptimizer(SourceSelection source)
+        else
         {
-            // Just register
-            Manager.BeforeRecreateStream += manager =>
-            {
-                // Create a brand new optimizer
-                var localOpt = new StreamSelectionOptimizer();
-
-                // Add the one stream
-                localOpt.Add(source, RequestedStreams);
-
-                // Run the optimization
-                if (localOpt.Optimize() == 1)
-                    return localOpt.GetStreams(0);
-
-                // Failed - activation is not possible
-                return null!;
-            };
-        }
-
-        /// <summary>
-        /// Erzeugt zum aktuellen Empfang einen Informationsblock.
-        /// </summary>
-        /// <returns>Die gewünschten Informationen.</returns>
-        public StreamInformation? CreateInformation()
-        {
-            // See if we are already stopped
-            var manager = Manager;
-            if (manager == null)
-                return null;
-
-            // Report state
-            var activeSelection = manager.ActiveSelection;
-            return
-                new StreamInformation
-                {
-                    Streams = activeSelection?.Clone()!,
-                    IsDecrypting = manager.IsDecrypting.GetValueOrDefault(false),
-                    CurrentAudioVideoBytes = manager.CurrentAudioVideoBytes,
-                    UniqueIdentifier = SourceKey.UniqueIdentifier,
-                    StreamTarget = manager.StreamingTarget,
-                    BytesReceived = manager.BytesReceived,
-                    ConsumerCount = manager.ConsumerCount,
-                    AllFiles = manager.AllFiles,
-                    TargetPath = TargetPath,
-                    Source = manager.Source,
-                };
-        }
-
-        /// <summary>
-        /// Meldet, ob für die zugehörige Quelle die Auswertung der Programmzeitschrift aktiv ist.
-        /// </summary>
-        public bool? IsProgamGuideActive
-        {
-            get
-            {
-                // Report
-                var activeSelection = Manager.ActiveSelection;
-                if (activeSelection == null)
-                    return null;
-                else
-                    return activeSelection.ProgramGuide;
-            }
-        }
-
-        /// <summary>
-        /// Startet oder aktualisiert den Empfang der Quelle.
-        /// </summary>
-        /// <param name="interval">Das Interval zur Erkennung von deaktivierten Quellen.</param>
-        public void Refresh(TimeSpan interval)
-        {
-            // Already stopped
-            var manager = Manager;
-            if (manager == null)
-                return;
-
-            // Get the source information
-            var info = manager.GetCurrentInformationAsync().CancelAfter(15000).Result;
-
-            // Must start
-            if (!FirstActivationDone)
-            {
-                // See if source information is available
-                if (info == null)
+            // Skip if it seems that the source has been gone
+            if (info == null)
+                if ((DateTime.UtcNow - interval) < m_LastRetest)
                     return;
 
-                // Start the stream
-                FirstActivationDone = manager.CreateStream(TargetPath, info);
-            }
-            else
-            {
-                // Skip if it seems that the source has been gone
-                if (info == null)
-                    if ((DateTime.UtcNow - interval) < m_LastRetest)
-                        return;
+            // Update according to current station information
+            manager.RetestSourceInformation(info!);
 
-                // Update according to current station information
-                manager.RetestSourceInformation(info!);
-
-                // Remember
-                m_LastRetest = DateTime.UtcNow;
-            }
+            // Remember
+            m_LastRetest = DateTime.UtcNow;
         }
-
-        #region IDisposable Members
-
-        /// <summary>
-        /// Beendet die Nutzung dieser Quelle.
-        /// </summary>
-        public void Dispose()
-        {
-            // Free once
-            using (Manager)
-                Manager = null!;
-        }
-
-        #endregion
     }
+
+    #region IDisposable Members
+
+    /// <summary>
+    /// Beendet die Nutzung dieser Quelle.
+    /// </summary>
+    public void Dispose()
+    {
+        // Free once
+        using (Manager)
+            Manager = null!;
+    }
+
+    #endregion
 }

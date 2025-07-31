@@ -1,569 +1,791 @@
-﻿using System.Reflection;
+﻿using System.Collections.Concurrent;
+using System.Reflection;
 using JMS.DVB.Algorithms;
 using JMS.DVB.TS;
 
+namespace JMS.DVB.CardServer;
 
-namespace JMS.DVB.CardServer
+/// <summary>
+/// Implementierung eines <i>Card Servers</i>, der alle Befehle direkt in der Anwendung
+/// ausführt.
+/// </summary>
+public partial class InMemoryCardServer : ServerImplementation
 {
     /// <summary>
-    /// Implementierung eines <i>Card Servers</i>, der alle Befehle direkt in der Anwendung
-    /// ausführt.
+    /// Wurzelverzeichnis für alle temporären HLS Dateien.
     /// </summary>
-    public partial class InMemoryCardServer : ServerImplementation
+    private readonly string LiveStreamRoot = Path.Combine(Path.GetTempPath(), "DVBHLSLIVE");
+
+    /// <summary>
+    /// All HLS streams we started.
+    /// </summary>
+    private readonly ConcurrentDictionary<string, bool> LiveStreams = [];
+
+    /// <summary>
+    /// Wird als Rückgabewert verwendet, wenn eine Operation verzögert ausgeführt werden soll.
+    /// </summary>
+    private static readonly object DelayedOperationTag = new();
+
+    /// <summary>
+    /// Das gerade verwendete Geräteprofil.
+    /// </summary>
+    public Profile? Profile { get; private set; }
+
+    /// <summary>
+    /// Die Wartezeit zwischen zwei Prüfungen auf den Gesamtdatenstrom.
+    /// </summary>
+    private TimeSpan m_GroupWatchDogInterval = TimeSpan.FromSeconds(15);
+
+    /// <summary>
+    /// Die Wartezeit zwischen zwei Prüfungen auf einem entschlüsselten Nutzdatenstrom.
+    /// </summary>
+    private TimeSpan m_DecryptionWatchDogInterval = TimeSpan.FromSeconds(10);
+
+    /// <summary>
+    /// Die Wartezeit zwischen zwei Prüfungen auf eine Änderung der Senderdaten.
+    /// </summary>
+    private TimeSpan m_RetestWatchDogInterval = TimeSpan.FromSeconds(0);
+
+    /// <summary>
+    /// Der <see cref="Thread"/>, auf dem die Augaben ausgeführt werden.
+    /// </summary>
+    private Thread? m_Thread;
+
+    /// <summary>
+    /// Ein <see cref="Thread"/>, der eine periodische Aktivierung auslöst.
+    /// </summary>
+    private Thread? m_IdleThread;
+
+    /// <summary>
+    /// Gesetzt, so lange die Bearbeitung aktiv ist.
+    /// </summary>
+    private volatile bool m_Running = true;
+
+    /// <summary>
+    /// Wird ausgelöst, wenn ein neuer Auftrag bearbeitet werden soll.
+    /// </summary>
+    private readonly AutoResetEvent m_Trigger = new(false);
+
+    /// <summary>
+    /// Verwaltet alle aktiven Quellen.
+    /// </summary>
+    public Dictionary<SourceIdentifierWithKey, ActiveStream> Streams { get; private set; }
+
+    /// <summary>
+    /// Wird gesetzt, wenn <see cref="m_IdleThread"/> beendet werden soll.
+    /// </summary>
+    private readonly ManualResetEvent m_IdleDone = new(false);
+
+    /// <summary>
+    /// Die auszuführende Operation.
+    /// </summary>
+    private volatile Func<Hardware, object>? m_Operation;
+
+    /// <summary>
+    /// Ermittelt Daten zu den NVOD Diensten.
+    /// </summary>
+    private ServiceParser? m_ServiceParser;
+
+    /// <summary>
+    /// Meldet oder legt fest, wann das letzte Mal Daten zur aktuellen Quellegruppe
+    /// empfangen wurden.
+    /// </summary>
+    private DateTime m_LastGroupInfoTime = DateTime.UtcNow;
+
+    /// <summary>
+    /// Zählt, wie oft ein Neustart der aktuellen Gruppe ausgeführt wurde.
+    /// </summary>
+    public int GroupRestart { get; private set; }
+
+    /// <summary>
+    /// Wird aufgerufen, wenn die Leerlauffunktion aktiviert wurde.
+    /// </summary>
+    public event Action<InMemoryCardServer, Hardware>? OnAfterIdleProcessing;
+
+    /// <summary>
+    /// Erzeugt eine neue Implementierung.
+    /// </summary>
+    internal InMemoryCardServer()
     {
-        /// <summary>
-        /// Wird als Rückgabewert verwendet, wenn eine Operation verzögert ausgeführt werden soll.
-        /// </summary>
-        private static readonly object DelayedOperationTag = new();
+        // Create helpers
+        Streams = [];
+    }
 
-        /// <summary>
-        /// Das gerade verwendete Geräteprofil.
-        /// </summary>
-        public Profile? Profile { get; private set; }
+    /// <summary>
+    /// Führt die eintreffenden Aufträge aus.
+    /// </summary>
+    private void WorkerThread(object? reset)
+    {
+        // Always use the configured language
+        UserProfile.ApplyLanguage();
 
-        /// <summary>
-        /// Die Wartezeit zwischen zwei Prüfungen auf den Gesamtdatenstrom.
-        /// </summary>
-        private TimeSpan m_GroupWatchDogInterval = TimeSpan.FromSeconds(15);
-
-        /// <summary>
-        /// Die Wartezeit zwischen zwei Prüfungen auf einem entschlüsselten Nutzdatenstrom.
-        /// </summary>
-        private TimeSpan m_DecryptionWatchDogInterval = TimeSpan.FromSeconds(10);
-
-        /// <summary>
-        /// Die Wartezeit zwischen zwei Prüfungen auf eine Änderung der Senderdaten.
-        /// </summary>
-        private TimeSpan m_RetestWatchDogInterval = TimeSpan.FromSeconds(0);
-
-        /// <summary>
-        /// Der <see cref="Thread"/>, auf dem die Augaben ausgeführt werden.
-        /// </summary>
-        private Thread? m_Thread;
-
-        /// <summary>
-        /// Ein <see cref="Thread"/>, der eine periodische Aktivierung auslöst.
-        /// </summary>
-        private Thread? m_IdleThread;
-
-        /// <summary>
-        /// Gesetzt, so lange die Bearbeitung aktiv ist.
-        /// </summary>
-        private volatile bool m_Running = true;
-
-        /// <summary>
-        /// Wird ausgelöst, wenn ein neuer Auftrag bearbeitet werden soll.
-        /// </summary>
-        private readonly AutoResetEvent m_Trigger = new(false);
-
-        /// <summary>
-        /// Verwaltet alle aktiven Quellen.
-        /// </summary>
-        public Dictionary<SourceIdentifierWithKey, ActiveStream> Streams { get; private set; }
-
-        /// <summary>
-        /// Wird gesetzt, wenn <see cref="m_IdleThread"/> beendet werden soll.
-        /// </summary>
-        private readonly ManualResetEvent m_IdleDone = new(false);
-
-        /// <summary>
-        /// Die auszuführende Operation.
-        /// </summary>
-        private volatile Func<Hardware, object>? m_Operation;
-
-        /// <summary>
-        /// Ermittelt Daten zu den NVOD Diensten.
-        /// </summary>
-        private ServiceParser? m_ServiceParser;
-
-        /// <summary>
-        /// Meldet oder legt fest, wann das letzte Mal Daten zur aktuellen Quellegruppe
-        /// empfangen wurden.
-        /// </summary>
-        private DateTime m_LastGroupInfoTime = DateTime.UtcNow;
-
-        /// <summary>
-        /// Zählt, wie oft ein Neustart der aktuellen Gruppe ausgeführt wurde.
-        /// </summary>
-        public int GroupRestart { get; private set; }
-
-        /// <summary>
-        /// Wird aufgerufen, wenn die Leerlauffunktion aktiviert wurde.
-        /// </summary>
-        public event Action<InMemoryCardServer, Hardware>? OnAfterIdleProcessing;
-
-        /// <summary>
-        /// Erzeugt eine neue Implementierung.
-        /// </summary>
-        internal InMemoryCardServer()
+        // Use hardware manager
+        using (HardwareManager.Open())
         {
-            // Create helpers
-            Streams = [];
-        }
+            // Device to use
+            Hardware? device;
 
-        /// <summary>
-        /// Führt die eintreffenden Aufträge aus.
-        /// </summary>
-        private void WorkerThread(object? reset)
-        {
-            // Always use the configured language
-            UserProfile.ApplyLanguage();
-
-            // Use hardware manager
-            using (HardwareManager.Open())
+            // Try to attach profile
+            try
             {
-                // Device to use
-                Hardware? device;
+                // Open it
+                device = HardwareManager.OpenHardware(Profile!)!;
 
-                // Try to attach profile
-                try
-                {
-                    // Open it
-                    device = HardwareManager.OpenHardware(Profile!)!;
+                // Should reset
+                if ((bool?)reset == true)
+                    device.ResetWakeupDevice();
 
-                    // Should reset
-                    if ((bool?)reset == true)
-                        device.ResetWakeupDevice();
+                // Report success
+                ActionDone(null, null);
+            }
+            catch (Exception e)
+            {
+                // Report error
+                ActionDone(e, null);
 
-                    // Report success
-                    ActionDone(null, null);
-                }
-                catch (Exception e)
-                {
-                    // Report error
-                    ActionDone(e, null);
+                // Did it
+                return;
+            }
 
-                    // Did it
-                    return;
-                }
+            // Loop
+            for (var lastIdle = DateTime.UtcNow; m_Running;)
+            {
+                // Wait for new item to process
+                m_Trigger.WaitOne();
 
-                // Loop
-                for (var lastIdle = DateTime.UtcNow; m_Running;)
-                {
-                    // Wait for new item to process
-                    m_Trigger.WaitOne();
+                // Load operation
+                var operation = m_Operation;
 
-                    // Load operation
-                    var operation = m_Operation;
+                // Clear
+                m_Operation = null;
 
-                    // Clear
-                    m_Operation = null;
-
-                    // Process
-                    if (m_Running)
-                        if (operation != null)
-                            try
-                            {
-                                // Process
-                                var result = operation(device);
-
-                                // See if there is at least one active source with a program guide running
-                                var withGuide = Streams.Values.FirstOrDefault(stream => stream.IsProgamGuideActive.GetValueOrDefault(false));
-
-                                // Check for service parser operation
-                                if (m_ServiceParser == null)
-                                {
-                                    // Can be activated it at least one source with active program guide
-                                    if (withGuide != null)
-                                        try
-                                        {
-                                            // Create
-                                            m_ServiceParser = new ServiceParser(Profile!, withGuide.Manager.Source);
-                                        }
-                                        catch
-                                        {
-                                            // Ignore any error
-                                            m_ServiceParser = null;
-                                        }
-                                }
-                                else
-                                {
-                                    // Only allowed if there is at least one source with active program guide
-                                    if (withGuide == null)
-                                        DisableServiceParser();
-                                }
-
-                                // Done
-                                if (!ReferenceEquals(result, DelayedOperationTag))
-                                    ActionDone(null, result);
-                            }
-                            catch (Exception e)
-                            {
-                                // Report
-                                ActionDone(e, null);
-                            }
-
-                    // See if idle processing should be started
-                    if (m_Running)
-                        if ((DateTime.UtcNow - lastIdle).TotalSeconds >= 5)
+                // Process
+                if (m_Running)
+                    if (operation != null)
+                        try
                         {
-                            // Run
-                            OnIdle(device);
+                            // Process
+                            var result = operation(device);
 
-                            // Reset
-                            lastIdle = DateTime.UtcNow;
+                            // See if there is at least one active source with a program guide running
+                            var withGuide = Streams.Values.FirstOrDefault(stream => stream.IsProgamGuideActive.GetValueOrDefault(false));
+
+                            // Check for service parser operation
+                            if (m_ServiceParser == null)
+                            {
+                                // Can be activated it at least one source with active program guide
+                                if (withGuide != null)
+                                    try
+                                    {
+                                        // Create
+                                        m_ServiceParser = new ServiceParser(Profile!, withGuide.Manager.Source);
+                                    }
+                                    catch
+                                    {
+                                        // Ignore any error
+                                        m_ServiceParser = null;
+                                    }
+                            }
+                            else
+                            {
+                                // Only allowed if there is at least one source with active program guide
+                                if (withGuide == null)
+                                    DisableServiceParser();
+                            }
+
+                            // Done
+                            if (!ReferenceEquals(result, DelayedOperationTag))
+                                ActionDone(null, result);
                         }
-                }
+                        catch (Exception e)
+                        {
+                            // Report
+                            ActionDone(e, null);
+                        }
 
-                // Reset EPG flag
-                EPGProgress = null;
+                // See if idle processing should be started
+                if (m_Running)
+                    if ((DateTime.UtcNow - lastIdle).TotalSeconds >= 5)
+                    {
+                        // Run
+                        OnIdle(device);
 
-                // Clear EPG list to preserve memory
-                m_EPGItems.Clear();
+                        // Reset
+                        lastIdle = DateTime.UtcNow;
+                    }
+            }
 
-                // Reset PSI scan flag
-                using (var scanner = m_Scanner)
-                {
-                    // Forget all
-                    m_ScanProgress = -1;
-                    m_Scanner = null;
-                }
+            // Reset EPG flag
+            EPGProgress = null;
 
-                // Just be safe
+            // Clear EPG list to preserve memory
+            m_EPGItems.Clear();
+
+            // Reset PSI scan flag
+            using (var scanner = m_Scanner)
+            {
+                // Forget all
+                m_ScanProgress = -1;
+                m_Scanner = null;
+            }
+
+            // Just be safe
+            try
+            {
+                // Final cleanup
+                RemoveAll();
+            }
+            catch
+            {
+                // Ignore any error
+            }
+        }
+    }
+
+    /// <summary>
+    /// Prüft, ob auf allen Datenströmen etwas empfangen wird.
+    /// </summary>
+    /// <param name="device">Die verwendete Hardware.</param>
+    private void TestForRestart(Hardware device)
+    {
+        // No active group
+        if (device.CurrentGroup == null)
+            return;
+
+        // Get the group information
+        var info = device.GetGroupInformation(15000);
+        if (info == null)
+        {
+            // See if we are already out of retries
+            if (GroupRestart >= 3)
+                return;
+
+            // See if we are waiting long enough
+            if ((DateTime.UtcNow - m_LastGroupInfoTime) <= m_GroupWatchDogInterval)
+                return;
+
+            // Prepare to restart all streams
+            foreach (var stream in Streams.Values)
                 try
                 {
-                    // Final cleanup
-                    RemoveAll();
+                    // Stop it
+                    stream.Close();
                 }
                 catch
                 {
                     // Ignore any error
                 }
-            }
+
+            // Count the restart
+            m_LastGroupInfoTime = DateTime.UtcNow;
+            GroupRestart += 1;
+
+            // Get the current settings
+            var location = device.CurrentLocation;
+            var group = device.CurrentGroup;
+
+            // Detach from source group
+            device.SelectGroup(null, null);
+
+            // Reactivate source group
+            device.SelectGroup(location, group);
+
+            // Done - code following will try to restart all streams
+            return;
         }
 
-        /// <summary>
-        /// Prüft, ob auf allen Datenströmen etwas empfangen wird.
-        /// </summary>
-        /// <param name="device">Die verwendete Hardware.</param>
-        private void TestForRestart(Hardware device)
+        // Remember time
+        m_LastGroupInfoTime = DateTime.UtcNow;
+
+        // Check for any decrypted channel
+        foreach (var stream in Streams.Values)
+            stream.TestDecryption(m_DecryptionWatchDogInterval);
+    }
+
+    /// <summary>
+    /// Wird periodisch ausgelöst.
+    /// </summary>
+    /// <param name="device">Das aktuell verwendete DVB.NET Gerät.</param>
+    private void OnIdle(Hardware device)
+    {
+        // Force reload of group information if receiving sources
+        if (Streams.Count > 0)
         {
-            // No active group
-            if (device.CurrentGroup == null)
-                return;
+            // Make sure, hat stream information is reloaded
+            device.ResetInformationReaders();
 
-            // Get the group information
-            var info = device.GetGroupInformation(15000);
-            if (info == null)
-            {
-                // See if we are already out of retries
-                if (GroupRestart >= 3)
-                    return;
+            // Test for stream restart
+            TestForRestart(device);
 
-                // See if we are waiting long enough
-                if ((DateTime.UtcNow - m_LastGroupInfoTime) <= m_GroupWatchDogInterval)
-                    return;
-
-                // Prepare to restart all streams
-                foreach (var stream in Streams.Values)
-                    try
-                    {
-                        // Stop it
-                        stream.Close();
-                    }
-                    catch
-                    {
-                        // Ignore any error
-                    }
-
-                // Count the restart
-                m_LastGroupInfoTime = DateTime.UtcNow;
-                GroupRestart += 1;
-
-                // Get the current settings
-                var location = device.CurrentLocation;
-                var group = device.CurrentGroup;
-
-                // Detach from source group
-                device.SelectGroup(null, null);
-
-                // Reactivate source group
-                device.SelectGroup(location, group);
-
-                // Done - code following will try to restart all streams
-                return;
-            }
-
-            // Remember time
-            m_LastGroupInfoTime = DateTime.UtcNow;
-
-            // Check for any decrypted channel
+            // Just recheck all streams
             foreach (var stream in Streams.Values)
-                stream.TestDecryption(m_DecryptionWatchDogInterval);
+                try
+                {
+                    // Retest configuration
+                    stream.Refresh(m_RetestWatchDogInterval);
+                }
+                catch
+                {
+                    // Ignore any error
+                }
         }
 
-        /// <summary>
-        /// Wird periodisch ausgelöst.
-        /// </summary>
-        /// <param name="device">Das aktuell verwendete DVB.NET Gerät.</param>
-        private void OnIdle(Hardware device)
-        {
-            // Force reload of group information if receiving sources
-            if (Streams.Count > 0)
-            {
-                // Make sure, hat stream information is reloaded
-                device.ResetInformationReaders();
+        // Process EPG
+        CollectProgramGuide(device);
 
-                // Test for stream restart
-                TestForRestart(device);
+        // Process scan
+        CheckScanAbort();
 
-                // Just recheck all streams
-                foreach (var stream in Streams.Values)
-                    try
-                    {
-                        // Retest configuration
-                        stream.Refresh(m_RetestWatchDogInterval);
-                    }
-                    catch
-                    {
-                        // Ignore any error
-                    }
-            }
+        // Check for extensions
+        var onIdle = OnAfterIdleProcessing;
+        if (onIdle != null)
+            onIdle(this, device);
+    }
 
-            // Process EPG
-            CollectProgramGuide(device);
+    /// <summary>
+    /// Liest eine verfeinerte Einstellung für Aufzeichnungen.
+    /// </summary>
+    /// <param name="name">Der Name des Parameters.</param>
+    /// <param name="interval">Der aktuell verwendete Defaultwert.</param>
+    /// <param name="zeroMapping">Der Wert der zu verwenden ist, wenn der Parameter deaktiviert wurde.</param>
+    /// <returns></returns>
+    private void ReadRecordingParameter(string name, ref TimeSpan interval, TimeSpan zeroMapping)
+    {
+        // Load the setting
+        var setting = Profile!.GetParameter(name);
 
-            // Process scan
-            CheckScanAbort();
+        // Read the value
+        if (!uint.TryParse(setting, out var seconds))
+            return;
 
-            // Check for extensions
-            var onIdle = OnAfterIdleProcessing;
-            if (onIdle != null)
-                onIdle(this, device);
-        }
+        // Load
+        if (seconds < 1)
+            interval = zeroMapping;
+        else
+            interval = TimeSpan.FromSeconds(seconds);
+    }
 
-        /// <summary>
-        /// Liest eine verfeinerte Einstellung für Aufzeichnungen.
-        /// </summary>
-        /// <param name="name">Der Name des Parameters.</param>
-        /// <param name="interval">Der aktuell verwendete Defaultwert.</param>
-        /// <param name="zeroMapping">Der Wert der zu verwenden ist, wenn der Parameter deaktiviert wurde.</param>
-        /// <returns></returns>
-        private void ReadRecordingParameter(string name, ref TimeSpan interval, TimeSpan zeroMapping)
-        {
-            // Load the setting
-            var setting = Profile!.GetParameter(name);
+    /// <summary>
+    /// Aktiviert die Nutzung eines DVB.NET Geräteprofils.
+    /// </summary>
+    /// <param name="profileName">Der Name des Geräteprofils.</param>
+    /// <param name="reset">Gesetzt, wenn das zugehörige Windows Gerät neu initialisiert werden soll.</param>
+    /// <param name="disablePCRFromH264">Wird gesetzt um zu verhindern, dass die Systemzeit (PCR) aus
+    /// dem H.264 Bildsignal ermittelt wird, da dieser Mechanismus hochgradig unsicher ist.</param>
+    /// <param name="disablePCRFromMPEG2">Wird gesetzt um zu verhindern, dass die Systemzeit (PCR) aus
+    /// dem MPEG2 Bildsignal ermittelt wird, da dieser Mechanismus hochgradig unsicher ist.</param>
+    /// <exception cref="CardServerException">Es existiert kein Geräteprofil mit dem
+    /// angegebenen Namen.</exception>
+    protected override void OnAttachProfile(string profileName, bool reset, bool disablePCRFromH264, bool disablePCRFromMPEG2)
+    {
+        // Overwrite flags
+        Manager.DisablePCRForSDTV = disablePCRFromMPEG2;
+        Manager.DisablePCRForHDTV = disablePCRFromH264;
 
-            // Read the value
-            if (!uint.TryParse(setting, out var seconds))
-                return;
+        // Load the profile
+        Profile = ProfileManager.FindProfile(profileName);
 
-            // Load
-            if (seconds < 1)
-                interval = zeroMapping;
-            else
-                interval = TimeSpan.FromSeconds(seconds);
-        }
+        // Validate
+        if (Profile == null)
+            CardServerException.Throw(new NoProfileFault(profileName));
 
-        /// <summary>
-        /// Aktiviert die Nutzung eines DVB.NET Geräteprofils.
-        /// </summary>
-        /// <param name="profileName">Der Name des Geräteprofils.</param>
-        /// <param name="reset">Gesetzt, wenn das zugehörige Windows Gerät neu initialisiert werden soll.</param>
-        /// <param name="disablePCRFromH264">Wird gesetzt um zu verhindern, dass die Systemzeit (PCR) aus
-        /// dem H.264 Bildsignal ermittelt wird, da dieser Mechanismus hochgradig unsicher ist.</param>
-        /// <param name="disablePCRFromMPEG2">Wird gesetzt um zu verhindern, dass die Systemzeit (PCR) aus
-        /// dem MPEG2 Bildsignal ermittelt wird, da dieser Mechanismus hochgradig unsicher ist.</param>
-        /// <exception cref="CardServerException">Es existiert kein Geräteprofil mit dem
-        /// angegebenen Namen.</exception>
-        protected override void OnAttachProfile(string profileName, bool reset, bool disablePCRFromH264, bool disablePCRFromMPEG2)
-        {
-            // Overwrite flags
-            Manager.DisablePCRForSDTV = disablePCRFromMPEG2;
-            Manager.DisablePCRForHDTV = disablePCRFromH264;
+        // Load special overwrites
+        ReadRecordingParameter("CardServer.DecryptionWatchDogSeconds", ref m_DecryptionWatchDogInterval, TimeSpan.MaxValue);
+        ReadRecordingParameter("CardServer.SourceWatchDogSeconds", ref m_RetestWatchDogInterval, m_RetestWatchDogInterval);
+        ReadRecordingParameter("CardServer.StreamWatchDogSeconds", ref m_GroupWatchDogInterval, TimeSpan.MaxValue);
 
-            // Load the profile
-            Profile = ProfileManager.FindProfile(profileName);
+        // Create the thread
+        m_Thread = new Thread(WorkerThread) { Name = "DVB.NET Card Server Worker Thread", Priority = ThreadPriority.AboveNormal };
+        m_Thread.Start(reset);
 
-            // Validate
-            if (Profile == null)
-                CardServerException.Throw(new NoProfileFault(profileName));
+        // Create the idle thread
+        m_IdleThread = new Thread(Idle) { Name = "DVB.NET Card Server Idle Thread" };
+        m_IdleThread.Start();
+    }
 
-            // Load special overwrites
-            ReadRecordingParameter("CardServer.DecryptionWatchDogSeconds", ref m_DecryptionWatchDogInterval, TimeSpan.MaxValue);
-            ReadRecordingParameter("CardServer.SourceWatchDogSeconds", ref m_RetestWatchDogInterval, m_RetestWatchDogInterval);
-            ReadRecordingParameter("CardServer.StreamWatchDogSeconds", ref m_GroupWatchDogInterval, TimeSpan.MaxValue);
-
-            // Create the thread
-            m_Thread = new Thread(WorkerThread) { Name = "DVB.NET Card Server Worker Thread", Priority = ThreadPriority.AboveNormal };
-            m_Thread.Start(reset);
-
-            // Create the idle thread
-            m_IdleThread = new Thread(Idle) { Name = "DVB.NET Card Server Idle Thread" };
-            m_IdleThread.Start();
-        }
-
-        /// <summary>
-        /// Löst in einem festen Intervall die Bearbeitung aus.
-        /// </summary>
-        private void Idle()
-        {
-            // Just wait
-            while (!m_IdleDone.WaitOne(2500, false))
-                m_Trigger.Set();
-        }
-
-        /// <summary>
-        /// Bereitet eine Anfrage zur Ausführung vor.
-        /// </summary>
-        /// <param name="operation">Die gewünschte Aktion.</param>
-        private void Start(Func<Hardware, object> operation)
-        {
-            // Remember
-            m_Operation = operation;
-
-            // Process
+    /// <summary>
+    /// Löst in einem festen Intervall die Bearbeitung aus.
+    /// </summary>
+    private void Idle()
+    {
+        // Just wait
+        while (!m_IdleDone.WaitOne(2500, false))
             m_Trigger.Set();
-        }
+    }
 
-        /// <summary>
-        /// Bereitet eine Anfrage zur Ausführung vor.
-        /// </summary>
-        /// <param name="operation">Die gewünschte Aktion.</param>
-        private void Start(Action<Hardware> operation) => Start(device => { operation(device); return null!; });
+    /// <summary>
+    /// Bereitet eine Anfrage zur Ausführung vor.
+    /// </summary>
+    /// <param name="operation">Die gewünschte Aktion.</param>
+    private void Start(Func<Hardware, object> operation)
+    {
+        // Remember
+        m_Operation = operation;
 
-        /// <summary>
-        /// Bereitet eine Anfrage zur Ausführung vor.
-        /// </summary>
-        /// <param name="operation">Die gewünschte Aktion.</param>
-        private void Start(Action operation) => Start(device => { operation(); return null!; });
+        // Process
+        m_Trigger.Set();
+    }
 
-        /// <summary>
-        /// Wählt eine Quellgruppe an.
-        /// </summary>
-        /// <param name="device">Die zu verwendende Hardware.</param>
-        /// <param name="selection">Die gewünschte Quellgruppe.</param>
-        private void SelectGroup(Hardware device, SourceSelection selection)
-        {
-            // Check mode
-            if (EPGProgress.HasValue)
-                CardServerException.Throw(new EPGActiveFault());
-            if (m_ScanProgress >= 0)
-                CardServerException.Throw(new SourceUpdateActiveFault());
+    /// <summary>
+    /// Bereitet eine Anfrage zur Ausführung vor.
+    /// </summary>
+    /// <param name="operation">Die gewünschte Aktion.</param>
+    private void Start(Action<Hardware> operation) => Start(device => { operation(device); return null!; });
 
-            // Stop all current recordings
-            RemoveAll();
+    /// <summary>
+    /// Bereitet eine Anfrage zur Ausführung vor.
+    /// </summary>
+    /// <param name="operation">Die gewünschte Aktion.</param>
+    private void Start(Action operation) => Start(device => { operation(); return null!; });
 
-            // Forward
-            device.SelectGroup(selection.Location, selection.Group);
+    /// <summary>
+    /// Wählt eine Quellgruppe an.
+    /// </summary>
+    /// <param name="device">Die zu verwendende Hardware.</param>
+    /// <param name="selection">Die gewünschte Quellgruppe.</param>
+    private void SelectGroup(Hardware device, SourceSelection selection)
+    {
+        // Check mode
+        if (EPGProgress.HasValue)
+            CardServerException.Throw(new EPGActiveFault());
+        if (m_ScanProgress >= 0)
+            CardServerException.Throw(new SourceUpdateActiveFault());
 
-            // Time to reset counters
-            m_LastGroupInfoTime = DateTime.UtcNow;
-            GroupRestart = 0;
-        }
+        // Stop all current recordings
+        RemoveAll();
 
-        /// <summary>
-        /// Wählt eine bestimmte Quellgruppe (Transponder) an.
-        /// </summary>
-        /// <param name="selection">Die Beschreibung einer Quelle, deren Gruppe aktiviert werden soll.</param>
-        /// <exception cref="ArgumentNullException">Es wurde keine Quellgruppe angegeben.</exception>
-        /// <exception cref="CardServerException">Es wird bereits eine Anfrage ausgeführt.</exception>
-        protected override void OnSelect(SourceSelection selection) => Start(device => { SelectGroup(device, selection); });
+        // Forward
+        device.SelectGroup(selection.Location, selection.Group);
 
-        /// <summary>
-        /// Ermittelt den aktuellen Zustand des Servers.
-        /// </summary>
-        /// <param name="device">Die verwendete DVB.NET Hardware.</param>
-        /// <returns>Die gewünschten Daten.</returns>
-        private ServerInformation CreateState(Hardware device)
-        {
-            // Create the current selection
-            var selection =
-                new SourceSelection
-                {
-                    Location = device.CurrentLocation,
-                    Source = new SourceIdentifier(),
-                    Group = device.CurrentGroup,
-                    ProfileName = Profile!.Name
-                };
+        // Time to reset counters
+        m_LastGroupInfoTime = DateTime.UtcNow;
+        GroupRestart = 0;
+    }
 
-            // Create the full monty
-            var info =
-                new ServerInformation
-                {
-                    HasGroupInformation = device.GetGroupInformation(15000) != null,
-                    ProgramGuideProgress = EPGProgress,
-                    Selection = selection.SelectionKey
-                };
+    /// <summary>
+    /// Wählt eine bestimmte Quellgruppe (Transponder) an.
+    /// </summary>
+    /// <param name="selection">Die Beschreibung einer Quelle, deren Gruppe aktiviert werden soll.</param>
+    /// <exception cref="ArgumentNullException">Es wurde keine Quellgruppe angegeben.</exception>
+    /// <exception cref="CardServerException">Es wird bereits eine Anfrage ausgeführt.</exception>
+    protected override void OnSelect(SourceSelection selection) => Start(device => { SelectGroup(device, selection); });
 
-            // Finish EPG collection
-            if (info.ProgramGuideProgress.HasValue)
-                info.CurrentProgramGuideItems = m_EPGItemCount;
-
-            // Read scan progress
-            int scan = m_ScanProgress;
-            if (scan >= 0)
+    /// <summary>
+    /// Ermittelt den aktuellen Zustand des Servers.
+    /// </summary>
+    /// <param name="device">Die verwendete DVB.NET Hardware.</param>
+    /// <returns>Die gewünschten Daten.</returns>
+    private ServerInformation CreateState(Hardware device)
+    {
+        // Create the current selection
+        var selection =
+            new SourceSelection
             {
-                // Fill
-                info.UpdateSourceCount = m_ScanSources;
-                info.UpdateProgress = scan / 1000.0;
-            }
+                Location = device.CurrentLocation,
+                Source = new SourceIdentifier(),
+                Group = device.CurrentGroup,
+                ProfileName = Profile!.Name
+            };
 
-            // All all streams
-            info.Streams.AddRange(Streams.Values.Select(stream => stream.CreateInformation())!);
+        // Create the full monty
+        var info =
+            new ServerInformation
+            {
+                HasGroupInformation = device.GetGroupInformation(15000) != null,
+                ProgramGuideProgress = EPGProgress,
+                Selection = selection.SelectionKey
+            };
 
-            // Attach to NVOD service list
-            var services = (m_ServiceParser == null) ? null : m_ServiceParser.ServiceMap;
-            if (services != null)
-                info.Services = services.Select(service =>
+        // Finish EPG collection
+        if (info.ProgramGuideProgress.HasValue)
+            info.CurrentProgramGuideItems = m_EPGItemCount;
+
+        // Read scan progress
+        int scan = m_ScanProgress;
+        if (scan >= 0)
+        {
+            // Fill
+            info.UpdateSourceCount = m_ScanSources;
+            info.UpdateProgress = scan / 1000.0;
+        }
+
+        // All all streams
+        info.Streams.AddRange(Streams.Values.Select(stream => stream.CreateInformation())!);
+
+        // Attach to NVOD service list
+        var services = m_ServiceParser?.ServiceMap;
+
+        if (services != null)
+            info.Services = [..
+                services.Select(service =>
                     new ServiceInformation
                     {
                         Service = new SourceIdentifier(service.Key),
                         UniqueName = service.Value
-                    }).ToArray();
+                    })
+                ];
 
-            // Report
-            return info;
-        }
+        // Report
+        return info;
+    }
 
-        /// <summary>
-        /// Ermittelt den aktuellen Zustand des <i>Card Servers</i>.
-        /// </summary>
-        protected override void OnGetState() => Start(CreateState);
+    /// <summary>
+    /// Ermittelt den aktuellen Zustand des <i>Card Servers</i>.
+    /// </summary>
+    protected override void OnGetState() => Start(CreateState);
 
-        /// <summary>
-        /// Aktiviert eine einzelne Quelle für den <i>Zapping Modus</i>.
-        /// </summary>
-        /// <param name="source">Die gewünschte Quelle.</param>
-        /// <param name="target">Die Netzwerkadresse, an die alle Daten versendet werden sollen.</param>
-        protected override void OnSetZappingSource(SourceSelection source, string target) =>
-            Start(device =>
+    /// <summary>
+    /// Aktiviert eine einzelne Quelle für den <i>Zapping Modus</i>.
+    /// </summary>
+    /// <param name="source">Die gewünschte Quelle.</param>
+    /// <param name="target">Die Netzwerkadresse, an die alle Daten versendet werden sollen.</param>
+    protected override void OnSetZappingSource(SourceSelection source, string target) =>
+        Start(device =>
+            {
+                // The next stream identifier to use
+                short nextStreamIdentifier = 0;
+                if (Streams.Count > 0)
+                    nextStreamIdentifier = Streams.Values.First().Manager.NextStreamIdentifier;
+
+                // Activate the source group - will terminate all active streams
+                SelectGroup(device, source);
+
+                // Create optimizer and stream selector
+                var optimizer = new StreamSelectionOptimizer();
+                var streams =
+                    new StreamSelection
+                    {
+                        AC3Tracks = { LanguageMode = LanguageModes.All },
+                        MP2Tracks = { LanguageMode = LanguageModes.All },
+                        SubTitles = { LanguageMode = LanguageModes.All },
+                        ProgramGuide = true,
+                        Videotext = true,
+                    };
+
+                // Prepare to optimize
+                optimizer.Add(source, streams);
+
+                // See how many we are allowed to start
+                optimizer.Optimize();
+
+                // Create
+                var stream = new ActiveStream(Guid.Empty, source.Open(optimizer.GetStreams(0)), streams, null!);
+                try
                 {
-                    // The next stream identifier to use
-                    short nextStreamIdentifier = 0;
-                    if (Streams.Count > 0)
-                        nextStreamIdentifier = Streams.Values.First().Manager.NextStreamIdentifier;
+                    // Apply the target to the stream.
+                    SetTarget(stream, target);
 
-                    // Activate the source group - will terminate all active streams
-                    SelectGroup(device, source);
+                    // Attach next stream identifier
+                    stream.Manager.NextStreamIdentifier = nextStreamIdentifier;
 
-                    // Create optimizer and stream selector
-                    var optimizer = new StreamSelectionOptimizer();
-                    var streams =
-                        new StreamSelection
-                        {
-                            AC3Tracks = { LanguageMode = LanguageModes.All },
-                            MP2Tracks = { LanguageMode = LanguageModes.All },
-                            SubTitles = { LanguageMode = LanguageModes.All },
-                            ProgramGuide = true,
-                            Videotext = true,
-                        };
+                    // See if we have to connect an optimizer for restarts
+                    if (device.HasConsumerRestriction)
+                        stream.EnableOptimizer(source);
+
+                    // Try to start
+                    stream.Refresh(m_RetestWatchDogInterval);
+
+                    // Load
+                    Streams.Add(stream.SourceKey, stream);
+                }
+                catch
+                {
+                    // Cleanup
+                    stream.Dispose();
+
+                    // Forward
+                    throw;
+                }
+
+                // Report state
+                return CreateState(device);
+            });
+
+    private void SetTarget(ActiveStream stream, string target)
+    {
+        // Configure streaming target
+        var isLive = target == "LIVE";
+
+        stream.Manager.SetLiveStream(isLive ? LiveStreamRoot : null);
+        stream.Manager.StreamingTarget = isLive ? string.Empty : target;
+
+        // Remember LIVE stream for cleanup.
+        var liveStream = stream.Manager.LiveStream;
+
+        if (liveStream != null) LiveStreams[liveStream.StreamIdentifier] = true;
+    }
+
+    /// <summary>
+    /// Ermittelt eine aktive Quelle.
+    /// </summary>
+    /// <param name="source">Die eindeutige Kennung der Quelle.</param>
+    /// <returns>Der 0-basierte laufende Index der Quelle oder <i>-1</i>, 
+    /// wenn diese nicht in Benutzung ist.</returns>
+    public ActiveStream? FindSource(SourceIdentifierWithKey source) => Streams.TryGetValue(source, out var stream) ? stream : null;
+
+    /// <summary>
+    /// Stellt den Empfang für eine Quelle ein.
+    /// </summary>
+    /// <param name="source">Die betroffene Quelle.</param>
+    /// <param name="uniqueIdentifier">Der eindeutige Name der Quelle.</param>
+    protected override void OnRemoveSource(SourceIdentifier source, Guid uniqueIdentifier) =>
+        Start(() =>
+            {
+                // Find the source
+                var stream = FindSource(new SourceIdentifierWithKey(uniqueIdentifier, source));
+                if (stream == null)
+                    CardServerException.Throw(new NoSourceFault(source));
+
+                // Stop all activity on the source
+                using (stream)
+                    Streams.Remove(stream!.SourceKey);
+            });
+
+    /// <summary>
+    /// Verändert den Netzwerkversand für eine aktive Quelle.
+    /// </summary>
+    /// <param name="source">Die Auswahl der Quelle.</param>
+    /// <param name="uniqueIdentifier">Der eindeutige Name der Quelle.</param>
+    /// <param name="target">Die Daten zum Netzwerkversand.</param>
+    /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
+    protected override void OnSetStreamTarget(SourceIdentifier source, Guid uniqueIdentifier, string target) =>
+        Start(() =>
+        {
+            // Find the source
+            var stream = FindSource(new SourceIdentifierWithKey(uniqueIdentifier, source));
+
+            if (stream == null)
+                CardServerException.Throw(new NoSourceFault(source));
+            else
+            {
+                // Process
+                SetTarget(stream, target);
+            }
+        });
+
+    /// <summary>
+    /// Stellt den Empfang für alle Quellen ein.
+    /// </summary>
+    protected override void OnRemoveAllSources() =>
+        Start(() =>
+            {
+                // Check mode
+                if (EPGProgress.HasValue)
+                    CardServerException.Throw(new EPGActiveFault());
+                if (m_ScanProgress >= 0)
+                    CardServerException.Throw(new SourceUpdateActiveFault());
+
+                // Forward
+                RemoveAll();
+            });
+
+
+    /// <summary>
+    /// Lädt eine Bibliothek mit Erweiterungen.
+    /// </summary>
+    /// <param name="actionAssembly">Der Binärcode der Bibliothek.</param>
+    /// <param name="symbols">Informationen zum Debuggen der Erweiterung.</param>
+    /// <returns>Steuereinheit zur Synchronisation des Aufrufs.</returns>
+    protected override void OnLoadExtensions(byte[] actionAssembly, byte[] symbols)
+    {
+        // Load the assembly
+        var assembly = Assembly.Load(actionAssembly, symbols);
+
+        // Load types - server side
+        Request.AddTypes(assembly);
+
+        // Attach loader
+        AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => Equals(args.Name, assembly.FullName) ? assembly : null; ;
+
+        // Report success
+        ActionDone(null, null);
+    }
+
+    /// <summary>
+    /// Führt eine Erweiterungsoperation aus.
+    /// </summary>
+    /// <param name="actionType">Die Klasse, von der aus die Erweiterungsmethode abgerufen werden kann.</param>
+    /// <param name="parameters">Optionale Parameter zur Ausführung.</param>
+    protected override void OnCustomAction<TInput, TOutput>(string actionType, TInput parameters) =>
+        Start(device =>
+            {
+                // Resolve the type
+                var type = Type.GetType(actionType, false);
+                if (type == null)
+                    CardServerException.Throw(new NoSuchActionFault(actionType));
+
+                // Create the instance of the type
+                var customAction = Activator.CreateInstance(type!, [this]) as CustomAction<TInput, TOutput>;
+                if (customAction == null)
+                    CardServerException.Throw(new NoSuchActionFault(actionType));
+
+                // Process
+                return customAction!.Execute(device, parameters!)!;
+            });
+
+    /// <summary>
+    /// Aktiviert den Empfang einer Quelle.
+    /// </summary>
+    /// <param name="sources">Informationen zu den zu aktivierenden Quellen.</param>
+    protected override void OnAddSources(ReceiveInformation[] sources) =>
+        Start(device =>
+            {
+                // Check mode
+                if (EPGProgress.HasValue)
+                    CardServerException.Throw(new EPGActiveFault());
+                if (m_ScanProgress >= 0)
+                    CardServerException.Throw(new SourceUpdateActiveFault());
+
+                // Force reload of group information to be current
+                device.ResetInformationReaders();
+
+                // Create optimizer
+                var optimizer = new StreamSelectionOptimizer();
+
+                // Source backmap
+                var infos = new Dictionary<SourceIdentifierWithKey, ReceiveInformation>();
+
+                // Pre-Test
+                foreach (var info in sources)
+                {
+                    // It's not allowed to activate a source twice
+                    var key = new SourceIdentifierWithKey(info.UniqueIdentifier, info.Selection.Source);
+                    if (FindSource(key) != null)
+                        CardServerException.Throw(new SourceInUseFault(info.Selection.Source));
+
+                    // Remember
+                    infos.Add(key, info);
 
                     // Prepare to optimize
-                    optimizer.Add(source, streams);
+                    optimizer.Add(info.Selection, info.Streams);
+                }
 
-                    // See how many we are allowed to start
-                    optimizer.Optimize();
+                // See how many we are allowed to start
+                var allowed = optimizer.Optimize();
 
-                    // Create
-                    var stream = new ActiveStream(Guid.Empty, source.Open(optimizer.GetStreams(0)), streams, null!);
-                    try
+                // Streams to activate
+                var newStreams = new List<ActiveStream>();
+                try
+                {
+                    // Process all
+                    for (int i = 0; i < allowed; ++i)
                     {
-                        // Configure streaming target
-                        stream.Manager.StreamingTarget = target;
+                        // Attach to the source
+                        var current = sources[i];
+                        var source = current.Selection;
+                        var key = new SourceIdentifierWithKey(current.UniqueIdentifier, source.Source);
 
-                        // Attach next stream identifier
-                        stream.Manager.NextStreamIdentifier = nextStreamIdentifier;
+                        // Create the stream manager
+                        var manager = source.Open(optimizer.GetStreams(i));
+
+                        // Attach file size mapper
+                        manager.FileBufferSizeChooser = infos[key].GetFileBufferSize;
+
+                        // Create
+                        var stream = new ActiveStream(key.UniqueIdentifier, manager, current.Streams, current.RecordingPath);
+
+                        // Remember
+                        newStreams.Add(stream);
 
                         // See if we have to connect an optimizer for restarts
                         if (device.HasConsumerRestriction)
@@ -571,299 +793,111 @@ namespace JMS.DVB.CardServer
 
                         // Try to start
                         stream.Refresh(m_RetestWatchDogInterval);
-
-                        // Load
-                        Streams.Add(stream.SourceKey, stream);
-                    }
-                    catch
-                    {
-                        // Cleanup
-                        stream.Dispose();
-
-                        // Forward
-                        throw;
                     }
 
-                    // Report state
-                    return CreateState(device);
-                });
+                    // Loaded all
+                    newStreams.ForEach(stream => Streams.Add(stream.SourceKey, stream));
 
-
-        /// <summary>
-        /// Ermittelt eine aktive Quelle.
-        /// </summary>
-        /// <param name="source">Die eindeutige Kennung der Quelle.</param>
-        /// <returns>Der 0-basierte laufende Index der Quelle oder <i>-1</i>, 
-        /// wenn diese nicht in Benutzung ist.</returns>
-        public ActiveStream? FindSource(SourceIdentifierWithKey source) => Streams.TryGetValue(source, out var stream) ? stream : null;
-
-        /// <summary>
-        /// Stellt den Empfang für eine Quelle ein.
-        /// </summary>
-        /// <param name="source">Die betroffene Quelle.</param>
-        /// <param name="uniqueIdentifier">Der eindeutige Name der Quelle.</param>
-        protected override void OnRemoveSource(SourceIdentifier source, Guid uniqueIdentifier) =>
-            Start(() =>
-                {
-                    // Find the source
-                    var stream = FindSource(new SourceIdentifierWithKey(uniqueIdentifier, source));
-                    if (stream == null)
-                        CardServerException.Throw(new NoSourceFault(source));
-
-                    // Stop all activity on the source
-                    using (stream)
-                        Streams.Remove(stream!.SourceKey);
-                });
-
-        /// <summary>
-        /// Verändert den Netzwerkversand für eine aktive Quelle.
-        /// </summary>
-        /// <param name="source">Die Auswahl der Quelle.</param>
-        /// <param name="uniqueIdentifier">Der eindeutige Name der Quelle.</param>
-        /// <param name="target">Die Daten zum Netzwerkversand.</param>
-        /// <exception cref="ArgumentNullException">Es wurde keine Quelle angegeben.</exception>
-        protected override void OnSetStreamTarget(SourceIdentifier source, Guid uniqueIdentifier, string target) =>
-            Start(() =>
-            {
-                // Find the source
-                var stream = FindSource(new SourceIdentifierWithKey(uniqueIdentifier, source));
-                if (stream == null)
-                    CardServerException.Throw(new NoSourceFault(source));
-
-                // Process
-                stream!.Manager.StreamingTarget = target;
-            });
-
-        /// <summary>
-        /// Stellt den Empfang für alle Quellen ein.
-        /// </summary>
-        protected override void OnRemoveAllSources() =>
-            Start(() =>
-                {
-                    // Check mode
-                    if (EPGProgress.HasValue)
-                        CardServerException.Throw(new EPGActiveFault());
-                    if (m_ScanProgress >= 0)
-                        CardServerException.Throw(new SourceUpdateActiveFault());
-
-                    // Forward
-                    RemoveAll();
-                });
-
-
-        /// <summary>
-        /// Lädt eine Bibliothek mit Erweiterungen.
-        /// </summary>
-        /// <param name="actionAssembly">Der Binärcode der Bibliothek.</param>
-        /// <param name="symbols">Informationen zum Debuggen der Erweiterung.</param>
-        /// <returns>Steuereinheit zur Synchronisation des Aufrufs.</returns>
-        protected override void OnLoadExtensions(byte[] actionAssembly, byte[] symbols)
-        {
-            // Load the assembly
-            var assembly = Assembly.Load(actionAssembly, symbols);
-
-            // Load types - server side
-            Request.AddTypes(assembly);
-
-            // Attach loader
-            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => Equals(args.Name, assembly.FullName) ? assembly : null; ;
-
-            // Report success
-            ActionDone(null, null);
-        }
-
-        /// <summary>
-        /// Führt eine Erweiterungsoperation aus.
-        /// </summary>
-        /// <param name="actionType">Die Klasse, von der aus die Erweiterungsmethode abgerufen werden kann.</param>
-        /// <param name="parameters">Optionale Parameter zur Ausführung.</param>
-        protected override void OnCustomAction<TInput, TOutput>(string actionType, TInput parameters) =>
-            Start(device =>
-                {
-                    // Resolve the type
-                    var type = Type.GetType(actionType, false);
-                    if (type == null)
-                        CardServerException.Throw(new NoSuchActionFault(actionType));
-
-                    // Create the instance of the type
-                    var customAction = Activator.CreateInstance(type!, [this]) as CustomAction<TInput, TOutput>;
-                    if (customAction == null)
-                        CardServerException.Throw(new NoSuchActionFault(actionType));
-
-                    // Process
-                    return customAction!.Execute(device, parameters!)!;
-                });
-
-        /// <summary>
-        /// Aktiviert den Empfang einer Quelle.
-        /// </summary>
-        /// <param name="sources">Informationen zu den zu aktivierenden Quellen.</param>
-        protected override void OnAddSources(ReceiveInformation[] sources) =>
-            Start(device =>
-                {
-                    // Check mode
-                    if (EPGProgress.HasValue)
-                        CardServerException.Throw(new EPGActiveFault());
-                    if (m_ScanProgress >= 0)
-                        CardServerException.Throw(new SourceUpdateActiveFault());
-
-                    // Force reload of group information to be current
-                    device.ResetInformationReaders();
-
-                    // Create optimizer
-                    var optimizer = new StreamSelectionOptimizer();
-
-                    // Source backmap
-                    var infos = new Dictionary<SourceIdentifierWithKey, ReceiveInformation>();
-
-                    // Pre-Test
-                    foreach (var info in sources)
-                    {
-                        // It's not allowed to activate a source twice
-                        var key = new SourceIdentifierWithKey(info.UniqueIdentifier, info.Selection.Source);
-                        if (FindSource(key) != null)
-                            CardServerException.Throw(new SourceInUseFault(info.Selection.Source));
-
-                        // Remember
-                        infos.Add(key, info);
-
-                        // Prepare to optimize
-                        optimizer.Add(info.Selection, info.Streams);
-                    }
-
-                    // See how many we are allowed to start
-                    var allowed = optimizer.Optimize();
-
-                    // Streams to activate
-                    var newStreams = new List<ActiveStream>();
+                    // Generate response
                     try
                     {
-                        // Process all
-                        for (int i = 0; i < allowed; ++i)
-                        {
-                            // Attach to the source
-                            var current = sources[i];
-                            var source = current.Selection;
-                            var key = new SourceIdentifierWithKey(current.UniqueIdentifier, source.Source);
-
-                            // Create the stream manager
-                            var manager = source.Open(optimizer.GetStreams(i));
-
-                            // Attach file size mapper
-                            manager.FileBufferSizeChooser = infos[key].GetFileBufferSize;
-
-                            // Create
-                            var stream = new ActiveStream(key.UniqueIdentifier, manager, current.Streams, current.RecordingPath);
-
-                            // Remember
-                            newStreams.Add(stream);
-
-                            // See if we have to connect an optimizer for restarts
-                            if (device.HasConsumerRestriction)
-                                stream.EnableOptimizer(source);
-
-                            // Try to start
-                            stream.Refresh(m_RetestWatchDogInterval);
-                        }
-
-                        // Loaded all
-                        newStreams.ForEach(stream => Streams.Add(stream.SourceKey, stream));
-
-                        // Generate response
-                        try
-                        {
-                            // Create all
-                            return newStreams.Select(stream => stream.CreateInformation()).ToArray();
-                        }
-                        finally
-                        {
-                            // No need to clean up
-                            newStreams.Clear();
-                        }
+                        // Create all
+                        return newStreams.Select(stream => stream.CreateInformation()).ToArray();
                     }
                     finally
                     {
-                        // Cleanup
-                        newStreams.ForEach(stream => stream.Dispose());
+                        // No need to clean up
+                        newStreams.Clear();
                     }
-                });
+                }
+                finally
+                {
+                    // Cleanup
+                    newStreams.ForEach(stream => stream.Dispose());
+                }
+            });
 
-        /// <summary>
-        /// Beendet den Empfang auf allen Quellen.
-        /// </summary>
-        private void RemoveAll()
+    /// <summary>
+    /// Beendet den Empfang auf allen Quellen.
+    /// </summary>
+    private void RemoveAll()
+    {
+        // With cleanup
+        try
         {
-            // With cleanup
-            try
-            {
-                // For all
-                foreach (var stream in Streams.Values)
-                    try
-                    {
-                        // Just forward
-                        stream.Dispose();
-                    }
-                    catch
-                    {
-                        // Ignore any error
-                    }
-            }
-            finally
-            {
-                // Reset list
-                Streams.Clear();
-            }
-
-            // Shutdown parser, too
-            DisableServiceParser();
-        }
-
-        /// <summary>
-        /// Beendet die Auswertung der programmzeitschrift für die NVOD Dienste.
-        /// </summary>
-        private void DisableServiceParser()
-        {
-            // Stop service parser
-            if (m_ServiceParser != null)
+            // For all
+            foreach (var stream in Streams.Values)
                 try
                 {
-                    // Shut down
-                    m_ServiceParser.Disable();
+                    // Just forward
+                    stream.Dispose();
                 }
                 catch
                 {
                     // Ignore any error
                 }
-                finally
-                {
-                    // Forget
-                    m_ServiceParser = null;
-                }
         }
-
-        /// <summary>
-        /// Beendet die Nutzung dieser Instanz.
-        /// </summary>
-        protected override void OnDispose()
+        finally
         {
-            // Flag termination
-            m_Running = false;
-
-            // Wake up call
-            m_IdleDone.Set();
-            m_Trigger.Set();
-
-            // Stop the threads
-            var idleThread = Interlocked.Exchange(ref m_IdleThread, null);
-            if (idleThread != null)
-                idleThread.Join();
-
-            var thread = Interlocked.Exchange(ref m_Thread, null);
-            if (thread != null)
-                thread.Join();
-
-            // Forward
-            base.OnDispose();
+            // Reset list
+            Streams.Clear();
         }
+
+        // Shutdown parser, too
+        DisableServiceParser();
+    }
+
+    /// <summary>
+    /// Beendet die Auswertung der programmzeitschrift für die NVOD Dienste.
+    /// </summary>
+    private void DisableServiceParser()
+    {
+        // Stop service parser
+        if (m_ServiceParser != null)
+            try
+            {
+                // Shut down
+                m_ServiceParser.Disable();
+            }
+            catch
+            {
+                // Ignore any error
+            }
+            finally
+            {
+                // Forget
+                m_ServiceParser = null;
+            }
+    }
+
+    /// <summary>
+    /// Beendet die Nutzung dieser Instanz.
+    /// </summary>
+    protected override void OnDispose()
+    {
+        // Flag termination
+        m_Running = false;
+
+        // Wake up call
+        m_IdleDone.Set();
+        m_Trigger.Set();
+
+        // Stop the threads
+        Interlocked.Exchange(ref m_IdleThread, null)?.Join();
+        Interlocked.Exchange(ref m_Thread, null)?.Join();
+
+        // Cleanup all LIVE stream temporary files
+        foreach (var id in LiveStreams.Keys.ToArray())
+            try
+            {
+                Directory.Delete(Path.Join(LiveStreamRoot, id), true);
+            }
+            catch
+            {
+                // Ignore any error.
+            }
+
+        // Forward
+        base.OnDispose();
     }
 }
