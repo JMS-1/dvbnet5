@@ -30,6 +30,8 @@ public class ZappingProxy(
     /// </summary>
     private readonly string m_target = target;
 
+    private string m_realTarget = target;
+
     /// <summary>
     /// Die letzen Zustandsinformationen.
     /// </summary>
@@ -139,6 +141,11 @@ public class ZappingProxy(
         // Process and remember
         m_lastState = EnqueueActionAndWait(() => ServerImplementation.EndRequest(CardServer.BeginSetZappingSource(selection.SelectionKey, m_target)))!;
 
+        // Request status to get real target.
+        var realTarget = EnqueueActionAndWait(() => ServerImplementation.EndRequest(CardServer.BeginGetState()))?.Streams.FirstOrDefault()?.StreamTarget;
+
+        m_realTarget = string.IsNullOrEmpty(realTarget) ? m_target : realTarget;
+
         // Report
         return CreateStatus(factory);
     }
@@ -169,7 +176,7 @@ public class ZappingProxy(
         if (IsShuttingDown)
             return factory(null!, null!);
         else
-            return factory(m_target, m_lastState);
+            return factory(m_realTarget, m_lastState);
     }
 }
 

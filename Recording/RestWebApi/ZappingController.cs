@@ -28,10 +28,8 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         {
             // Attach to the profile and process
             var state = server.FindProfile(profile);
-            if (state == null)
-                return default!;
-            else
-                return state.LiveModeOperation(active, connectTo, source, factory);
+
+            return (state == null) ? default! : state.LiveModeOperation(active, connectTo, source, factory);
         }
 
         /// <summary>
@@ -82,5 +80,20 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         [HttpPut("tune/{profile}")]
         public ZappingStatus Tune(string profile, string source)
             => LiveModeOperation(profile, true, null!, SourceIdentifier.Parse(source), ZappingStatus.Create);
+
+        /// <summary>
+        /// Fordert eine LIVE stream Datei an.
+        /// </summary>
+        /// <param name="id">Eindeutige Kennung des HLS Datenstroms.</param>
+        /// <param name="path">Pfad zur Datei.</param>
+        [HttpGet("live/{id:regex(^[[0-9A-Z]]{{32}}$)}/{path}")]
+        public IActionResult Download(string id, string path)
+            => path.StartsWith('.')
+                ? throw new ArgumentException("bad file name", nameof(path))
+                : File(new FileStream(
+                    Path.Join(InMemoryCardServer.LiveStreamRoot, id, path), FileMode.Open, FileAccess.Read),
+                    "application/octet-stream",
+                    path,
+                    enableRangeProcessing: true);
     }
 }
