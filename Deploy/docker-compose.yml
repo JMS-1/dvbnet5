@@ -13,6 +13,12 @@ services:
       - 29300-29399:29300-29399
       - $PORT:8080
       - $FTPPort:8081
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "16m"
+        max-file: "8"
+
   nginx:
     image: docker.io/nginx:stable-alpine
     restart: always
@@ -23,3 +29,8 @@ services:
       - ./passwd:/etc/nginx/basic_auth:Z
       - ./host.crt:/etc/ssl/certs/nginx/host.crt:Z
       - ./host.key:/etc/ssl/certs/nginx/host.key:Z
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "16m"
+        max-file: "8"

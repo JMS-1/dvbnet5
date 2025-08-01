@@ -46,7 +46,11 @@ public class HLStreaming : IDisposable
             RedirectStandardInput = true,
             WorkingDirectory = liveFolder,
             ArgumentList = {
+                "-loglevel",        "fatal",
                 "-i",               "-",
+                "-map",             "0",
+                "-map",             "-0:d",
+                "-map",             "-0:s",
                 "-c:v",             "libx264",
                 "-c:a",             "aac",
                 "-g",               "50",

@@ -5,19 +5,13 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "args": [],
-      "console": "internalConsole",
-      "cwd": "${workspaceFolder}",
-      "name": "Tests",
-      "preLaunchTask": "build",
-      "program": "${workspaceFolder}/TestApp/bin/Debug/net9.0/TestApp.dll",
-      "request": "launch",
-      "stopAtEntry": false,
+      "name": "Server",
+      "processName": "JMS.VCR.NET",
+      "request": "attach",
       "type": "coreclr"
     },
     {
-      "name": "Server",
-      "processName": "JMS.VCR.NET",
+      "name": "Card-Server",
       "request": "attach",
       "type": "coreclr"
     },

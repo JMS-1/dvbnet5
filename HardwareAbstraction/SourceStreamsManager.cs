@@ -118,7 +118,12 @@ public class SourceStreamsManager : IDisposable
     /// <summary>
     /// Die zuletzt gewählte TCP/IP Zieladresse.
     /// </summary>
-    private string m_LastStreamTarget = null!;
+    private string? m_LastStreamTarget = null;
+
+    /// <summary>
+    /// Zuletzt aktiviertes HLS LIVE Streaming.
+    /// </summary>
+    private string? m_LastLiveFolder = null;
 
     /// <summary>
     /// Gesetzt, wenn die Entschlüsselung aktiviert wurde.
@@ -242,6 +247,9 @@ public class SourceStreamsManager : IDisposable
         if (!string.IsNullOrEmpty(m_LastStreamTarget))
             StreamingTarget = m_LastStreamTarget;
 
+        if (!string.IsNullOrEmpty(m_LastLiveFolder))
+            SetLiveStream(m_LastLiveFolder);
+
         // Did it
         return true;
     }
@@ -256,7 +264,16 @@ public class SourceStreamsManager : IDisposable
     /// Register LIVE stream processor.
     /// </summary>
     /// <param name="folder">Root folder for HLS files.</param>
-    public HLStreaming? SetLiveStream(string? folder) => m_TransportStream?.SetLiveStream(folder);
+    public HLStreaming? SetLiveStream(string? folder)
+    {
+        // Activate.
+        var stream = m_TransportStream?.SetLiveStream(folder);
+
+        // Remember.
+        m_LastLiveFolder = folder;
+
+        return stream;
+    }
 
     /// <summary>
     /// Report the current LIVE stream.
@@ -273,7 +290,7 @@ public class SourceStreamsManager : IDisposable
         {
             // None
             if (m_TransportStream == null)
-                return m_LastStreamTarget;
+                return m_LastStreamTarget ?? string.Empty;
 
             // Check mode
             if (m_TransportStream.TCPPort == 0)
@@ -286,10 +303,7 @@ public class SourceStreamsManager : IDisposable
         {
             // Check mode
             if (string.IsNullOrEmpty(value))
-            {
-                // Clear
                 m_TransportStream?.SetStreamTarget(string.Empty, 0);
-            }
             else
             {
                 // Split

@@ -1,7 +1,7 @@
-﻿using System.Collections.Concurrent;
-using System.Reflection;
-using JMS.DVB.Algorithms;
+﻿using JMS.DVB.Algorithms;
 using JMS.DVB.TS;
+using System.Collections.Concurrent;
+using System.Reflection;
 
 namespace JMS.DVB.CardServer;
 
@@ -14,7 +14,7 @@ public partial class InMemoryCardServer : ServerImplementation
     /// <summary>
     /// Wurzelverzeichnis für alle temporären HLS Dateien.
     /// </summary>
-    private readonly string LiveStreamRoot = Path.Combine(Path.GetTempPath(), "DVBHLSLIVE");
+    public static readonly string LiveStreamRoot = Path.Combine(Path.GetTempPath(), "DVBHLSLIVE");
 
     /// <summary>
     /// All HLS streams we started.
@@ -322,7 +322,7 @@ public partial class InMemoryCardServer : ServerImplementation
                 try
                 {
                     // Retest configuration
-                    stream.Refresh(m_RetestWatchDogInterval);
+                    Refresh(stream);
                 }
                 catch
                 {
@@ -583,7 +583,7 @@ public partial class InMemoryCardServer : ServerImplementation
                         stream.EnableOptimizer(source);
 
                     // Try to start
-                    stream.Refresh(m_RetestWatchDogInterval);
+                    Refresh(stream);
 
                     // Load
                     Streams.Add(stream.SourceKey, stream);
@@ -657,10 +657,7 @@ public partial class InMemoryCardServer : ServerImplementation
             if (stream == null)
                 CardServerException.Throw(new NoSourceFault(source));
             else
-            {
-                // Process
                 SetTarget(stream, target);
-            }
         });
 
     /// <summary>
@@ -792,7 +789,7 @@ public partial class InMemoryCardServer : ServerImplementation
                             stream.EnableOptimizer(source);
 
                         // Try to start
-                        stream.Refresh(m_RetestWatchDogInterval);
+                        Refresh(stream);
                     }
 
                     // Loaded all
@@ -816,6 +813,21 @@ public partial class InMemoryCardServer : ServerImplementation
                     newStreams.ForEach(stream => stream.Dispose());
                 }
             });
+
+    /// <summary>
+    /// Aktualisiert die Daten eines einzelnen Datenstroms.
+    /// </summary>
+    /// <param name="stream">Der betroffene Datenstrom.</param> 
+    private void Refresh(ActiveStream stream)
+    {
+        // First call will create the stream.
+        stream.Refresh(m_RetestWatchDogInterval);
+
+        // Remember LIVE stream for cleanup.
+        var liveStream = stream.Manager.LiveStream;
+
+        if (liveStream != null) LiveStreams[liveStream.StreamIdentifier] = true;
+    }
 
     /// <summary>
     /// Beendet den Empfang auf allen Quellen.
@@ -848,7 +860,7 @@ public partial class InMemoryCardServer : ServerImplementation
     }
 
     /// <summary>
-    /// Beendet die Auswertung der programmzeitschrift für die NVOD Dienste.
+    /// Beendet die Auswertung der Programmzeitschrift für die NVOD Dienste.
     /// </summary>
     private void DisableServiceParser()
     {
@@ -885,6 +897,9 @@ public partial class InMemoryCardServer : ServerImplementation
         // Stop the threads
         Interlocked.Exchange(ref m_IdleThread, null)?.Join();
         Interlocked.Exchange(ref m_Thread, null)?.Join();
+
+        // Remove all streams.
+        RemoveAll();
 
         // Cleanup all LIVE stream temporary files
         foreach (var id in LiveStreams.Keys.ToArray())
