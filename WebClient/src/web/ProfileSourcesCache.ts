@@ -3,6 +3,7 @@
 // Beschreibt einen einzelne Quelle, so wie sie dem Anwender zur Auswahl angeboten wird
 export class SourceEntry {
   constructor(rawData: profileContract.IProfileSourceContract) {
+    this.id = rawData.source;
     this.isTelevision = rawData.isTVStation;
     this.name = rawData.name;
     this.isEncrypted = rawData.isEncrypted;
@@ -22,6 +23,9 @@ export class SourceEntry {
 
   // Der eindeutige Name der Quelle.
   readonly name: string;
+
+  // Die eindeutige Kennung der Quelle.
+  readonly id?: string;
 }
 
 // Verwaltet Listen von Quellen zu Geräteprofilen

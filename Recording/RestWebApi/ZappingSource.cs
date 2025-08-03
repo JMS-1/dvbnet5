@@ -1,19 +1,10 @@
-﻿namespace JMS.DVB.NET.Recording.RestWebApi
-{
-    /// <summary>
-    /// Beschreibt eine mögliche Datenquelle.
-    /// </summary>
-    public class ZappingSource : SourceInformation<ZappingSource>
-    {
-        /// <summary>
-        /// Die eindeutige Kennung der Quelle.
-        /// </summary>
-        public string Source { get; set; } = null!;
+﻿namespace JMS.DVB.NET.Recording.RestWebApi;
 
-        /// <summary>
-        /// Führt individuelle Initialisierungen aus.
-        /// </summary>
-        /// <param name="station">Die Informationen zur Quelle.</param>
-        protected override void OnCreate(Station station) => Source = SourceIdentifier.ToString(station)!.Replace(" ", "");
-    }
+/// <summary>
+/// Beschreibt eine mögliche Datenquelle.
+/// </summary>
+public class ZappingSource : SourceInformation<ZappingSource>
+{
+    /// <inheritdoc/>
+    protected override void OnCreate(Station station) { }
 }

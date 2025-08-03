@@ -1,8 +1,11 @@
 ﻿// Repräsentiert die Klasse SourceInformation
 export interface ISourceInformationContract {
-    // Der volle Name der Quelle
-    name: string
+  // Der volle Name der Quelle
+  name: string;
 
-    // Gesetzt, wenn die Quelle verschlüsselt ist
-    isEncrypted: boolean
+  // Die eindeutige Kennung der Quelle
+  source?: string;
+
+  // Gesetzt, wenn die Quelle verschlüsselt ist
+  isEncrypted: boolean;
 }

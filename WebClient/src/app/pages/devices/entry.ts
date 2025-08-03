@@ -6,7 +6,10 @@ import { IConnectable, IView } from "../../../lib/site";
 import { ITimeBar, TimeBar } from "../../../lib/timebar";
 import * as guide from "../../../web/IGuideItemContract";
 import { IPlanCurrentContract } from "../../../web/IPlanCurrentContract";
+import { ProfileSourcesCache } from "../../../web/ProfileSourcesCache";
 import { getDemuxRoot, getDeviceRoot } from "../../../web/VCRServer";
+import { Application } from "../../app";
+import { ChannelProperty, IChannelSelector } from "../channel";
 import { GuideInfo, IGuideInfo } from "../guide/entry";
 
 // Ansicht einer Aktivität.
@@ -55,6 +58,15 @@ export interface IDeviceInfo extends IConnectable {
 
   // URL zum Demux abgeschlossener Teilaufzeichungen.
   readonly demux?: string;
+
+  // Aktuelle LIVE Quelle.
+  readonly liveSource: IChannelSelector;
+
+  // Fordert die Liste der Quellen vom aktuellen ausgewählten Gerät an.
+  loadSources(): Promise<void>;
+
+  // Ermittelt die eindeutige Kennung der ausgewählten Quelle.
+  getSelectedId(): string | undefined;
 }
 
 // Präsentationsmodell zur Anzeige einer Aktivität.
@@ -64,6 +76,7 @@ export class Info implements IDeviceInfo {
 
   // Erstellt ein neues Präsentationsmodell.
   constructor(
+    private readonly _application: Application,
     private readonly _model: IPlanCurrentContract,
     toggleDetails: (info: Info, guide: boolean) => void,
     reload: () => void,
@@ -99,6 +112,7 @@ export class Info implements IDeviceInfo {
         !this._model.source ||
         this.mode === "null"
     );
+
     this.showControl = new BooleanProperty(
       {} as { value?: boolean },
       "value",
@@ -106,7 +120,20 @@ export class Info implements IDeviceInfo {
       () => toggleDetails(this, false),
       () => !this.controller
     );
+
+    // Auswahl einer LIVE Quelle vorbereiten.
+    this.liveSource = new ChannelProperty(
+      _application.profile,
+      {} as { value?: boolean },
+      "value",
+      _application.profile.recentSources || [],
+      () => this.refreshUi()
+    );
   }
+
+  // Aktuelle LIVE Quelle.
+  readonly liveSource;
+
   // Gesetzt um den zugehörigen Eintrag der Programmzeitschrift zu sehen.
   readonly showGuide: IFlag;
 
@@ -237,4 +264,28 @@ export class Info implements IDeviceInfo {
   private refreshUi(): void {
     if (this.view) this.view.refreshUi();
   }
+
+  // Fordert die Liste der Quellen vom aktuellen ausgewählten Gerät an.
+  readonly loadSources = () => {
+    this.liveSource.allSources = [];
+    this.liveSource.value = "";
+
+    return ProfileSourcesCache.getSources(this.device).then((sources) => {
+      // Auswahlliste setzen.
+      this.liveSource.allSources = sources;
+
+      // Anwendung zur Benutzung freischalten.
+      this._application.isBusy = false;
+
+      // Oberfläche zur Aktualisierung auffordern.
+      this.refreshUi();
+    });
+  };
+
+  // Ermittelt die eindeutige Kennung der ausgewählten Quelle.
+  readonly getSelectedId = () => {
+    const selected = this.liveSource.value;
+
+    return this.liveSource.allSources.find((s) => s.name === selected)?.id;
+  };
 }

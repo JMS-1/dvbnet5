@@ -51,7 +51,8 @@ export class DevicesPage extends Page implements IDevicesPage {
 
       // Die aktuellen Aktivitäten umwandeln.
       this.infos = (plan || []).map(
-        (info) => new Info(info, refresh, reload, similiar, web)
+        (info) =>
+          new Info(this.application, info, refresh, reload, similiar, web)
       );
 
       // Anwendung kann nun bedient werden.

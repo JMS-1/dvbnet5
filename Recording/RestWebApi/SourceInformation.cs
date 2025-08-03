@@ -1,51 +1,56 @@
 ﻿using JMS.DVB.NET.Recording.Services.Configuration;
 
-namespace JMS.DVB.NET.Recording.RestWebApi
+namespace JMS.DVB.NET.Recording.RestWebApi;
+
+/// <summary>
+/// Beschreibt eine mögliche Datenquelle.
+/// </summary>
+/// <typeparam name="TReal">Die konkrete Art der Klasse.</typeparam>
+public abstract class SourceInformation<TReal> where TReal : SourceInformation<TReal>, new()
 {
     /// <summary>
-    /// Beschreibt eine mögliche Datenquelle.
+    /// Der Anzeigename der Quelle.
     /// </summary>
-    /// <typeparam name="TReal">Die konkrete Art der Klasse.</typeparam>
-    public abstract class SourceInformation<TReal> where TReal : SourceInformation<TReal>, new()
+    public string Name { get; set; } = null!;
+
+    /// <summary>
+    /// Gesetzt, wenn die Quelle verschlüsselt ist.
+    /// </summary>
+    public bool IsEncrypted { get; set; }
+
+    /// <summary>
+    /// Eindeutige Kennung der Quelle.
+    /// </summary>
+    public string? Source { get; set; }
+
+    /// <summary>
+    /// Führt individuelle Initialisierungen aus.
+    /// </summary>
+    /// <param name="station">Die Informationen zur Quelle.</param>
+    protected abstract void OnCreate(Station station);
+
+    /// <summary>
+    /// Erstellt eine alternative Repräsentation einer Quelle.
+    /// </summary>
+    /// <param name="source">Die volle Beschreibung der Quelle.</param>
+    /// <returns>Das Transferformat.</returns>
+    public static TReal Create(SourceSelection source, IVCRProfiles profiles)
     {
-        /// <summary>
-        /// Der Anzeigename der Quelle.
-        /// </summary>
-        public string Name { get; set; } = null!;
+        // Attach to the station
+        var station = (Station)source.Source;
 
-        /// <summary>
-        /// Gesetzt, wenn die Quelle verschlüsselt ist.
-        /// </summary>
-        public bool IsEncrypted { get; set; }
-
-        /// <summary>
-        /// Führt individuelle Initialisierungen aus.
-        /// </summary>
-        /// <param name="station">Die Informationen zur Quelle.</param>
-        protected abstract void OnCreate(Station station);
-
-        /// <summary>
-        /// Erstellt eine alternative Repräsentation einer Quelle.
-        /// </summary>
-        /// <param name="source">Die volle Beschreibung der Quelle.</param>
-        /// <returns>Das Transferformat.</returns>
-        public static TReal Create(SourceSelection source, IVCRProfiles profiles)
+        // Construct
+        var info = new TReal
         {
-            // Attach to the station
-            var station = (Station)source.Source;
+            IsEncrypted = station.IsEncrypted || station.IsService,
+            Name = profiles.GetUniqueName(source),
+            Source = SourceIdentifier.ToString(station)?.Replace(" ", ""),
+        };
 
-            // Construct
-            var info = new TReal
-            {
-                IsEncrypted = station.IsEncrypted || station.IsService,
-                Name = profiles.GetUniqueName(source),
-            };
+        // Finish setup
+        info.OnCreate(station);
 
-            // Finish setup
-            info.OnCreate(station);
-
-            // Report
-            return info;
-        }
+        // Report
+        return info;
     }
 }

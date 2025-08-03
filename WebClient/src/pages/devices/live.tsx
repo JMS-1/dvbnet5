@@ -4,6 +4,7 @@ import * as React from "react";
 import { IDeviceInfo } from "../../app/pages/devices/entry";
 import { webCallRoot } from "../../lib/http/config";
 import * as live from "../../web/IZappingContract";
+import { EditChannel } from "../edit/channel";
 
 interface ILiveVideoProps {
   className?: string;
@@ -19,23 +20,32 @@ export const LiveVideo = (props: ILiveVideoProps & ILiveVideoActions) => {
     undefined
   );
 
+  const [enableStatus, setEnableStatus] = React.useState(false);
+
   const [stream, setStream] = React.useState("");
 
   const [hls] = React.useState(new HLS());
 
   const video = React.useRef<HTMLVideoElement>(null);
 
-  const { device } = props.uvm;
+  const { device, loadSources, liveSource, getSelectedId } = props.uvm;
+  const { value } = liveSource;
 
   React.useEffect(() => {
-    live.startZapping(device);
+    loadSources()
+      .then(() => live.startZapping(device))
+      .then(() => setEnableStatus(true));
 
     return () => {
       live.stopZapping(device);
+
+      liveSource.value = "";
     };
-  }, [device]);
+  }, [device, liveSource, loadSources]);
 
   React.useEffect(() => {
+    if (!enableStatus) return;
+
     setStream(
       status?.target?.startsWith("LIVE@") ? status.target.substring(5) : ""
     );
@@ -46,7 +56,7 @@ export const LiveVideo = (props: ILiveVideoProps & ILiveVideoActions) => {
     );
 
     return () => clearTimeout(timer);
-  }, [device, status]);
+  }, [device, status, enableStatus]);
 
   React.useEffect(() => {
     if (!stream || !video.current) return;
@@ -65,27 +75,33 @@ export const LiveVideo = (props: ILiveVideoProps & ILiveVideoActions) => {
     hls.loadSource(uri);
     hls.attachMedia(video.current);
 
-    return () => hls.destroy();
+    return () => hls.detachMedia();
   }, [stream, hls]);
 
-  const select = React.useCallback(() => {
-    live.setZappingSource(device, "(1,1107,17501)");
-  }, [device]);
+  React.useEffect(() => {
+    const selected = getSelectedId();
+
+    if (!selected) return;
+
+    live.setZappingSource(device, selected);
+  }, [device, getSelectedId, value]);
 
   return (
     <div className={clsx("vcrnet-live-video", props.className)}>
       <div>
-        <button onClick={select}>Go</button>
+        <EditChannel uvm={liveSource} />
         <button onClick={props.close}>Close</button>
-        {stream && [
-          <video
-            controls
-            autoPlay
-            ref={video}
-            key={stream}
-            style={{ display: "block" }}
-          />,
-        ]}
+        <div className="video">
+          {stream && [
+            <video
+              controls
+              autoPlay
+              ref={video}
+              key={stream}
+              style={{ display: "block" }}
+            />,
+          ]}
+        </div>
       </div>
     </div>
   );
