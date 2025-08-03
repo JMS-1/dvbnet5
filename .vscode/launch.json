@@ -13,7 +13,8 @@
     {
       "name": "Card-Server",
       "request": "attach",
-      "type": "coreclr"
+      "type": "coreclr",
+      "processId": "${input:FindCardServer}"
     },
     {
       "args": [],
@@ -30,8 +31,19 @@
         "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
         "uriFormat": "%s/swagger"
       },
-      "stopAtEntry": true,
+      "stopAtEntry": false,
       "type": "coreclr"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "FindCardServer",
+      "type": "command",
+      "command": "shellCommand.execute",
+      "args": {
+        "command": "ps -eo pid,comm,args | grep dotnet | grep JMS.DVB.NET.CardServer.dll | grep -v grep | awk '{print $1}'",
+        "useFirstResult": true
+      }
     }
   ]
 }
