@@ -1,21 +1,22 @@
 ﻿@use "../../constants";
+@use "./live.scss";
 
 .vcrnet-device-control {
-    padding-top: 10px;
+  padding-top: 10px;
 
-    > .jmslib-slider {
-        margin: constants.$editLineSpacing 0;
-    }
+  > .jmslib-slider {
+    margin: constants.$editLineSpacing 0;
+  }
 
-    > .vcrnet-device-target:not(:first-child) {
-        margin-top: constants.$editLineSpacing;
-    }
+  > .vcrnet-device-target:not(:first-child) {
+    margin-top: constants.$editLineSpacing;
+  }
 
-    > table {
-        margin: constants.$editLineSpacing 0;
-    }
+  > table {
+    margin: constants.$editLineSpacing 0;
+  }
 
-    .jmslib-command {
-        margin-right: 4px;
-    }
+  .jmslib-command {
+    margin-right: 4px;
+  }
 }

@@ -88,12 +88,22 @@ namespace JMS.DVB.NET.Recording.RestWebApi
         /// <param name="path">Pfad zur Datei.</param>
         [HttpGet("live/{id:regex(^[[0-9A-Z]]{{32}}$)}/{path}")]
         public IActionResult Download(string id, string path)
-            => path.StartsWith('.')
-                ? throw new ArgumentException("bad file name", nameof(path))
-                : File(new FileStream(
-                    Path.Join(InMemoryCardServer.LiveStreamRoot, id, path), FileMode.Open, FileAccess.Read),
+        {
+            if (path.StartsWith('.')) throw new ArgumentException("bad file name", nameof(path));
+
+            try
+            {
+                return File(
+                    new FileStream(Path.Join(InMemoryCardServer.LiveStreamRoot, id, path), FileMode.Open, FileAccess.Read),
                     "application/octet-stream",
                     path,
-                    enableRangeProcessing: true);
+                    enableRangeProcessing: true
+                );
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
     }
 }

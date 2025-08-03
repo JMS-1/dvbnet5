@@ -18,7 +18,8 @@ export interface IEmpty {}
 export abstract class ComponentEx<
   TViewModelType,
   TConfigType extends IComponent<TViewModelType>,
-> extends React.Component<TConfigType, IEmpty> {}
+  TStateType = IEmpty,
+> extends React.Component<TConfigType, TStateType> {}
 
 export abstract class Component<TViewModelType> extends ComponentEx<
   TViewModelType,
