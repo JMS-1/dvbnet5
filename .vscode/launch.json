@@ -24,7 +24,7 @@
       },
       "name": "Startup",
       "preLaunchTask": "build-server",
-      "program": "${workspaceFolder}/WebServer/bin/Debug/net9.0/JMS.VCR.NET.dll",
+      "program": "${workspaceFolder}/WebServer/bin/Debug/net10.0/JMS.VCR.NET.dll",
       "request": "launch",
       "serverReadyAction": {
         "action": "openExternally",

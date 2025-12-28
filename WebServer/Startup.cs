@@ -1,6 +1,6 @@
 using JMS.DVB.NET.Recording;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace JMS.VCR.NET;
 
