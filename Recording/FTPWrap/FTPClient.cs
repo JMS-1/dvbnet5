@@ -90,16 +90,23 @@ public class FTPClient : IDisposable
 	private readonly Func<int> m_PassivePort;
 
 	/// <summary>
+	/// Der Endpunkt so wie er für die Anmeldung des Servers verwendet wurde.
+	/// </summary>
+	private readonly IPEndPoint m_EndPoint;
+
+	/// <summary>
 	/// Erzeugt eine neue Client Verbindung.
 	/// </summary>
 	/// <param name="socket">Netzwerkverbindung zum Client.</param>
+	/// <param name="endPoint">Der Endpunkt des Servers.</param>
 	/// <param name="passivePort">Für die passive verbindung zu nutzender Port.</param>
 	/// <param name="onFinished">Methode zum Rückrufe nach Beenden der Verbindung.</param>
 	/// <param name="jobs">Verwaltung der Aufträge.</param>
 	/// <param name="recodings">Ermittelt aktive Aufzeichungen..</param>
-	public FTPClient(Socket socket, Func<int> passivePort, FinishedHandler onFinished, IJobManager jobs, IRecordings recodings)
+	public FTPClient(Socket socket, IPEndPoint endPoint, Func<int> passivePort, FinishedHandler onFinished, IJobManager jobs, IRecordings recodings)
 	{
 		m_Jobs = jobs;
+		m_EndPoint = endPoint;
 		m_Recodings = recodings;
 		m_PassivePort = passivePort;
 
@@ -141,7 +148,7 @@ public class FTPClient : IDisposable
 		m_Passive = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp) { Blocking = false };
 
 		// Bind to some port
-		m_Passive.Bind(new IPEndPoint(((IPEndPoint)m_Socket!.LocalEndPoint!).Address, m_PassivePort()));
+		m_Passive.Bind(new IPEndPoint(m_EndPoint.Address, m_PassivePort()));
 
 		// Read the new endpoint
 		var endPoint = (IPEndPoint)m_Passive.LocalEndPoint!;

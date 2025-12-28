@@ -6,6 +6,8 @@ namespace JMS.VCR.NET;
 
 public class Startup(IConfiguration configuration)
 {
+    private static readonly string ExecutableFolder = Path.GetDirectoryName(typeof(Startup).Assembly.Location)!;
+
     private readonly IConfiguration Configuration = configuration;
 
     public void ConfigureServices(IServiceCollection services)
@@ -39,7 +41,7 @@ public class Startup(IConfiguration configuration)
 
         var clientPath = Configuration.GetSection("ClientPath").Get<List<string>>()!;
 
-        clientPath.Insert(0, Path.GetDirectoryName(typeof(Startup).Assembly.Location)!);
+        clientPath.Insert(0, ExecutableFolder);
 
         app.UseStaticFiles(new StaticFileOptions() { FileProvider = new PhysicalFileProvider(Path.Combine([.. clientPath])) });
     }

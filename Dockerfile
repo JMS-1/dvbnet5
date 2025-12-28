@@ -10,7 +10,7 @@ WORKDIR /usr/src/app/WebClient
 RUN yarn && yarn build
 
 # Build Backend
-FROM mcr.microsoft.com/dotnet/sdk:10 AS web-server
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS web-server
 
 WORKDIR /usr/src/app
 

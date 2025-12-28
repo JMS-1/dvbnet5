@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using JMS.DVB.NET.Recording.Actions;
@@ -62,7 +63,14 @@ public class FTPWrap : IFTPWrap, IDisposable
         {
             // Add a new client
             lock (m_Clients)
-                m_Clients.Add(new FTPClient(m_Socket.EndAccept(result), () => 29300 + (Interlocked.Increment(ref m_PassivePort) % 100), OnClientFinished, m_Jobs, m_Recordings));
+                m_Clients.Add(new FTPClient(
+                    m_Socket.EndAccept(result),
+                    (IPEndPoint)m_Socket.LocalEndPoint!,
+                    () => 29300 + (Interlocked.Increment(ref m_PassivePort) % 100),
+                    OnClientFinished,
+                    m_Jobs,
+                    m_Recordings
+                ));
 
             // Await next connection
             m_Socket.BeginAccept(OnAccept, null);
@@ -105,7 +113,8 @@ public class FTPWrap : IFTPWrap, IDisposable
             Thread.Sleep(500);
 
             // Finish all client activities
-            foreach (var client in m_Clients) client.Dispose();
+            foreach (var client in m_Clients.ToArray())
+                client.Dispose();
 
             // Reset client list
             m_Clients.Clear();
