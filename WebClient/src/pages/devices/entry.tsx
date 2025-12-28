@@ -1,5 +1,5 @@
-﻿import * as React from "react";
-
+﻿import clsx from "clsx";
+import * as React from "react";
 import { IDevicesPage } from "../../app/pages/devices";
 import { IDeviceInfo } from "../../app/pages/devices/entry";
 import { InternalLink } from "../../lib.react/command/internalLink";
@@ -85,9 +85,10 @@ export class Device extends ComponentEx<IDeviceInfo, IDevice, IDeviceState> {
             </a>
             <span>{this.props.uvm.device}</span>
             <a
-              className={
+              className={clsx(
+                "hls-only",
                 mode === "running" || mode === "done" ? "inactive" : ""
-              }
+              )}
               onClick={this.openLive}
             >
               <Pictogram name="running" />
