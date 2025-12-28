@@ -110,9 +110,6 @@ public class FTPClient : IDisposable
 		// Asnychronous
 		m_Socket.Blocking = false;
 
-		// Start reply
-		Send(220, "FTP Wrap");
-
 		// Register
 		m_Processors["ABOR"] = ProcessABOR;
 		m_Processors["CWD"] = ProcessCWD;
@@ -126,6 +123,9 @@ public class FTPClient : IDisposable
 		m_Processors["SYST"] = ProcessSYST;
 		m_Processors["TYPE"] = ProcessTYPE;
 		m_Processors["USER"] = ProcessUSER;
+
+		// Start reply
+		Send(220, "FTP Wrap");
 	}
 
 	/// <summary>
